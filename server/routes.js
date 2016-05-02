@@ -9,9 +9,13 @@ import path from 'path';
 
 export default function(app) {
   // Insert routes below
+<<<<<<< HEAD
   app.use('/api/caches', require('./api/cache'));
   app.use('/api/typeEffets', require('./api/typeEffet'));
   app.use('/api/effets', require('./api/effet'));
+=======
+  app.use('/api/composants', require('./api/composant'));
+>>>>>>> 6d7e958a2c8ff253b50e7b39ae1f1942bfde2b1e
   app.use('/api/things', require('./api/thing'));
   app.use('/api/users', require('./api/user'));
 
