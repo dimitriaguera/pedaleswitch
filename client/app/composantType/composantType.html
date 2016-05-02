@@ -1,0 +1,36 @@
+  <div class="row">
+    <div class="col-lg-12">
+      <h1 class="page-header">Liste des Types de Composants : </h1>
+      <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="composantType in $ctrl.composantTypes">
+        <li>
+          <a href="#">{{composantType.titre}}
+            <button type="button" class="close" ng-click="$ctrl.deleteComposantType(composantType)">&times;</button>
+          </a>
+          <input type="checkbox" class="edit" ng-model="composantType.checked">
+          <div ng-show="composantType.checked">
+            <ul ng-repeat="(k,v) in composantType">
+              <li>
+                <input type="text" ng-model="composantType[k]">
+              </li>
+            </ul>
+            <button type="button" class="btn btn-primary" ng-click="$ctrl.updateComposantType(composantType)">Save Modif</button>
+          </div>
+
+          <div ng-show="composantType.checked">
+            <input type="text" ng-model="composantType.titre">
+            <button type="button" class="btn btn-primary" ng-click="$ctrl.updateComposantType(composantType)">Save Modif</button>
+          </div>
+
+        </li>
+      </ul>
+    </div>
+  </div>
+
+
+  <form class="thing-form">
+    <label>Ajouter un type de composant dans la db</label>
+    <p class="input-group">
+      <input type="text" class="form-control" placeholder="Titre." ng-model="$ctrl.newComposantType.titre">
+    </p>
+    <button type="submit" class="btn btn-primary" ng-click="$ctrl.addComposantType()">Add New</button>
+  </form>

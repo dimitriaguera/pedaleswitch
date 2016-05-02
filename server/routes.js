@@ -9,6 +9,8 @@ import path from 'path';
 
 export default function(app) {
   // Insert routes below
+  app.use('/api/dummyjsons', require('./api/dummyjson'));
+  app.use('/api/composanttypes', require('./api/composantType'));
   app.use('/api/composants', require('./api/composant'));
   app.use('/api/things', require('./api/thing'));
   app.use('/api/users', require('./api/user'));

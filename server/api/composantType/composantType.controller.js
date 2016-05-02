@@ -1,26 +1,16 @@
 /**
  * Using Rails-like standard naming convention for endpoints.
- * GET     /api/composants              ->  index
- * POST    /api/composants              ->  create
- * GET     /api/composants/:id          ->  show
- * PUT     /api/composants/:id          ->  update
- * DELETE  /api/composants/:id          ->  destroy
+ * GET     /api/composantTypes              ->  index
+ * POST    /api/composantTypes              ->  create
+ * GET     /api/composantTypes/:id          ->  show
+ * PUT     /api/composantTypes/:id          ->  update
+ * DELETE  /api/composantTypes/:id          ->  destroy
  */
 
 'use strict';
 
 import _ from 'lodash';
-import Composant from './composant.model';
-
-
-
-// Creates a new Composant in the DB
-export function create(req, res) {
-  return Composant.create(req.body)
-    .then(respondWithResult(res, 201))
-    .catch(handleError(res));
-}
-
+import ComposantType from './composantType.model';
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -69,38 +59,44 @@ function handleError(res, statusCode) {
   };
 }
 
-// Gets a list of Composants
+// Gets a list of ComposantTypes
 export function index(req, res) {
-  return Composant.find().exec()
+  return ComposantType.find().exec()
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
-// Gets a single Composant from the DB
+// Gets a single ComposantType from the DB
 export function show(req, res) {
-  return Composant.findById(req.params.id).exec()
+  return ComposantType.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
+// Creates a new ComposantType in the DB
+export function create(req, res) {
+  console.log(req.body);
+  return ComposantType.create(req.body)
+    .then(respondWithResult(res, 201))
+    .catch(handleError(res));
+}
 
-
-// Updates an existing Composant in the DB
+// Updates an existing ComposantType in the DB
 export function update(req, res) {
   if (req.body._id) {
     delete req.body._id;
   }
-  return Composant.findById(req.params.id).exec()
+  return ComposantType.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
     .then(saveUpdates(req.body))
     .then(respondWithResult(res))
     .catch(handleError(res));
 }
 
-// Deletes a Composant from the DB
+// Deletes a ComposantType from the DB
 export function destroy(req, res) {
-  return Composant.findById(req.params.id).exec()
+  return ComposantType.findById(req.params.id).exec()
     .then(handleEntityNotFound(res))
     .then(removeEntity(res))
     .catch(handleError(res));

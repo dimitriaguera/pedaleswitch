@@ -35,8 +35,13 @@ describe('Composant API:', function() {
       request(app)
         .post('/api/composants')
         .send({
-          name: 'New Composant',
-          info: 'This is the brand new composant!!!'
+          titre: 'led verte',
+          type: 'led',
+          description: 'on aime la led',
+          disponible: true,
+          prix_additionnel: 5,
+          dimensions: {x:1, y:2},
+          media: []
         })
         .expect(201)
         .expect('Content-Type', /json/)
@@ -50,8 +55,13 @@ describe('Composant API:', function() {
     });
 
     it('should respond with the newly created composant', function() {
-      newComposant.name.should.equal('New Composant');
-      newComposant.info.should.equal('This is the brand new composant!!!');
+      newComposant.titre.should.equal('led verte');
+      newComposant.type.should.equal('led');
+      newComposant.description.should.equal('on aime la led');
+      newComposant.disponible.should.equal(true);
+      newComposant.prix_additionnel.should.equal(5);
+      newComposant.dimensions.x.should.equal(1);
+      newComposant.dimensions.y.should.equal(2);
     });
 
   });
@@ -78,8 +88,13 @@ describe('Composant API:', function() {
     });
 
     it('should respond with the requested composant', function() {
-      composant.name.should.equal('New Composant');
-      composant.info.should.equal('This is the brand new composant!!!');
+      newComposant.titre.should.equal('led verte');
+      newComposant.type.should.equal('led');
+      newComposant.description.should.equal('on aime la led');
+      newComposant.disponible.should.equal(true);
+      newComposant.prix_additionnel.should.equal(5);
+      newComposant.dimensions.x.should.equal(1);
+      newComposant.dimensions.y.should.equal(2);
     });
 
   });
@@ -91,8 +106,8 @@ describe('Composant API:', function() {
       request(app)
         .put('/api/composants/' + newComposant._id)
         .send({
-          name: 'Updated Composant',
-          info: 'This is the updated composant!!!'
+          titre: 'Updated Composant',
+          description: 'This is the updated composant!!!'
         })
         .expect(200)
         .expect('Content-Type', /json/)
@@ -110,8 +125,8 @@ describe('Composant API:', function() {
     });
 
     it('should respond with the updated composant', function() {
-      updatedComposant.name.should.equal('Updated Composant');
-      updatedComposant.info.should.equal('This is the updated composant!!!');
+      updatedComposant.titre.should.equal('Updated Composant');
+      updatedComposant.description.should.equal('This is the updated composant!!!');
     });
 
   });

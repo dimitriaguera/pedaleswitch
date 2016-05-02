@@ -3,15 +3,13 @@
 import mongoose from 'mongoose';
 
 var ComposantSchema = new mongoose.Schema({
-
-  disponible: Boolean,
-  prix_additionnel: Number,
-  compo_id: Number,
   titre: String,
   type: String,
-  dimentions: [],
-  media: [],
-  description: String
+  description: String,
+  disponible: Boolean,
+  prix_additionnel: Number,
+  dimensions: {x:Number, y:Number},
+  media: []
 });
 
 export default mongoose.model('Composant', ComposantSchema);

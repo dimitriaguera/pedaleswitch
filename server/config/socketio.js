@@ -17,6 +17,7 @@ function onConnect(socket) {
   });
 
   // Insert sockets below
+  require('../api/composantType/composantType.socket').register(socket);
   require('../api/composant/composant.socket').register(socket);
   require('../api/thing/thing.socket').register(socket);
 
