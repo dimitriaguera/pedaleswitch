@@ -11,6 +11,9 @@ class NavbarController {
   },{
     title: 'Effets',
     state: 'addeffet'
+  },{
+    title: 'RemplirDb',
+    state: 'random'
   }
   ];
 

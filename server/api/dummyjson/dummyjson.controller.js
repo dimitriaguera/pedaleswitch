@@ -40,6 +40,9 @@ function makejson() {
           composantType: function() {
             // Use randomArrayItem to ensure the seeded random number generator is used
             return dummyjson.utils.randomArrayItem(['Led', 'Potar', 'Transfo']);
+          },
+          effetType: function(){
+            return dummyjson.utils.randomArrayItem(['Disto', 'Delay', 'Reverb', 'Wawa']);
           }
         };
 

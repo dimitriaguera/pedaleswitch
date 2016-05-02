@@ -66,11 +66,6 @@
     this.$http.delete('/api/composants/' + composant._id);
   }
 
-  randJson(){
-    this.$http.get('/api/dummyjsons/composant').then(response => {
-      this.json = response.data;
-    });
-  }
 
 }
 
