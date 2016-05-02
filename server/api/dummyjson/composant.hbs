@@ -1,0 +1,20 @@
+[
+  {{#repeat 2}}
+  {
+    "titre": "{{firstName}}",
+    "type": "{{city}}",
+    "description": "{{lastName}}",
+    "disponible": {{boolean}},
+    "prix_additionnel": {{int 1 100}},
+    "dimensions": {
+      "x": {{float 0 50 "0.00"}},
+      "y": {{float 0 25 "0.00"}}
+    },
+    "media": [
+      {{#repeat 3}}
+      "img{{@index}}.png"
+      {{/repeat}}
+    ]
+  }
+  {{/repeat}}
+]
