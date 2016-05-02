@@ -17,8 +17,17 @@ function onConnect(socket) {
   });
 
   // Insert sockets below
+<<<<<<< HEAD
   require('../api/composantType/composantType.socket').register(socket);
+=======
+<<<<<<< HEAD
+  require('../api/cache/cache.socket').register(socket);
+  require('../api/typeEffet/typeEffet.socket').register(socket);
+  require('../api/effet/effet.socket').register(socket);
+=======
+>>>>>>> 20e15d959f39450ec6d13b364e7c907d6549161d
   require('../api/composant/composant.socket').register(socket);
+>>>>>>> 6d7e958a2c8ff253b50e7b39ae1f1942bfde2b1e
   require('../api/thing/thing.socket').register(socket);
 
 }

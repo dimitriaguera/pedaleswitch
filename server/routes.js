@@ -9,9 +9,18 @@ import path from 'path';
 
 export default function(app) {
   // Insert routes below
+<<<<<<< HEAD
   app.use('/api/dummyjsons', require('./api/dummyjson'));
   app.use('/api/composanttypes', require('./api/composantType'));
+=======
+<<<<<<< HEAD
+  app.use('/api/caches', require('./api/cache'));
+  app.use('/api/typeEffets', require('./api/typeEffet'));
+  app.use('/api/effets', require('./api/effet'));
+=======
+>>>>>>> 20e15d959f39450ec6d13b364e7c907d6549161d
   app.use('/api/composants', require('./api/composant'));
+>>>>>>> 6d7e958a2c8ff253b50e7b39ae1f1942bfde2b1e
   app.use('/api/things', require('./api/thing'));
   app.use('/api/users', require('./api/user'));
 
