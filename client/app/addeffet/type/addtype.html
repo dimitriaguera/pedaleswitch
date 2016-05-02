@@ -1,0 +1,20 @@
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">TYPES EFFETS</h1>
+            <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="type in $ctrl.types">
+                <li ><a href="#" uib-tooltip="{{type.info}}"><button type="button" class="close" ng-click="$ctrl.deleteTypeEffet(type)">&times;</button><editablefield field-value="type.name" field-type="text" on-update="$ctrl.updateEffet(type, value)"></editablefield></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <form class="effet-form">
+        <label>Ajouter un type d'effet</label>
+        <p class="input-group">
+            <input type="text" class="form-control" placeholder="Nom du type d'effet" ng-model="$ctrl.newTypeEffet.name">
+      <span class="input-group-btn">
+        <button type="submit" class="btn btn-primary" ng-click="$ctrl.addTypeEffet()">Ajouter</button>
+      </span>
+        </p>
+    </form>
+</div>

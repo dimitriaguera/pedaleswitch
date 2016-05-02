@@ -1,0 +1,25 @@
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">EFFETS</h1>
+            <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="effet in $ctrl.indexEffets">
+                <li><a href="#" uib-tooltip="INFO: {{effet.info}} TYPE: {{effet.type}}">{{effet.name}}<button type="button" class="close" ng-click="$ctrl.deleteEffet(effet)">&times;</button></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <form class="effet-form">
+        <label>Ajouter un effet</label>
+        <p class="input-group">
+            <input type="text" class="form-control" placeholder="Nom de l'effet" ng-model="$ctrl.newEffet.name">
+            <input type="text" class="form-control" placeholder="Info sur l'effet" ng-model="$ctrl.newEffet.info">
+            <select class="form-control" ng-model="$ctrl.newEffet.type">
+                <option value="">---Choisissez un type d'effet---</option>
+                <option ng-repeat="type in $ctrl.types" value="{{type.name}}">{{type.name}}</option>
+            </select>
+      <span class="input-group-btn">
+        <button type="submit" class="btn btn-primary" ng-click="$ctrl.addEffet()">Ajouter</button>
+      </span>
+        </p>
+    </form>
+</div>

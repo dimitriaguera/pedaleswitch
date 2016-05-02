@@ -17,6 +17,9 @@ function onConnect(socket) {
   });
 
   // Insert sockets below
+  require('../api/cache/cache.socket').register(socket);
+  require('../api/typeEffet/typeEffet.socket').register(socket);
+  require('../api/effet/effet.socket').register(socket);
   require('../api/thing/thing.socket').register(socket);
 
 }
