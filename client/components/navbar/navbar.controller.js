@@ -8,6 +8,9 @@ class NavbarController {
   },{
     title: 'Composant',
     state: 'composant'
+  },{
+    title: 'Effets',
+    state: 'addeffet'
   }
   ];
 
