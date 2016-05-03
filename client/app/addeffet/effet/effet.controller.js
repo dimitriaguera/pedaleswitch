@@ -12,26 +12,10 @@ class EffetComponent {
     });
   }
   $onInit(){
-      this.$http.get('/api/effets').then(response => {
+    this.$http.get('/api/effets').then(response => {
       this.indexEffets = response.data;
       this.socket.syncUpdates('effet', this.indexEffets);
     });
-  }
-  addEffet() {
-    if (this.newEffet.name) {
-      var data = {
-        name: this.newEffet.name,
-        info: this.newEffet.info,
-        type: this.newEffet.type,
-      }
-      this.$http.post('/api/effets', data);
-      this.newEffet.name = '';
-      this.newEffet.info = '';
-      this.newEffet.type = '';
-    }
-  }
-  deleteEffet(effet) {
-    this.$http.delete('/api/effets/' + effet._id);
   }
 }
 

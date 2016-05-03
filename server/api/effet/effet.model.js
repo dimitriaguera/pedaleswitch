@@ -3,8 +3,12 @@
 import mongoose from 'mongoose';
 
 var ComposantEffetSchema = new mongoose.Schema({
-  compo_id: [],
-  coordonnées: {x:Number, y:Number}
+  titre: String,
+  available_compo_id: [],
+  coordonnées: {
+    x:Number,
+    y:Number
+  }
 });
 
 var OptionSchema = new mongoose.Schema({
@@ -13,7 +17,10 @@ var OptionSchema = new mongoose.Schema({
   disponible: Boolean,
   prix: Number,
   media: [],
-  dimensions: {x:Number, y:Number},
+  dimensions: {
+    w:Number,
+    h:Number
+  },
   composants: [ComposantEffetSchema]
 });
 
@@ -22,7 +29,8 @@ var EffetSchema = new mongoose.Schema({
   description: String,
   type: String,
   disponible: Boolean,
-  options: [OptionSchema]
+  options: [OptionSchema],
 });
 
 export default mongoose.model('Effet', EffetSchema);
+

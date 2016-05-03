@@ -1,10 +1,16 @@
 [
-  {{#repeat 1000}}
+  {{#repeat 5}}
   {
-    "name": "{{firstName}}",
-    "info": "{{composantType}}",
+    "titre": "{{firstName}}",
+    "description": "{{composantType}}",
     "type": "{{effetType}}",
-    "active": {{boolean}}
+    "active": {{boolean}},
+    "options": [
+         {{#repeat 3}}
+          "titre": "{{firstName}}",
+          "description": "{{composantType}}"
+         {{/repeat}}
+     ]
   }
   {{/repeat}}
 ]
