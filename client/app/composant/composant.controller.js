@@ -4,14 +4,12 @@
 
   class ComposantComponent {
 
-  constructor($http, $scope, socket) {
+  constructor($http, $scope, socket, Auth) {
     this.$http = $http;
     this.socket = socket;
+
     this.composants = [];
-    this.obj = [];
-
     this.composantTypes = [];
-
     this.newComposant = {
       titre: '',
       type: '',
@@ -22,6 +20,24 @@
       media: []
     };
 
+    this.obj = [];
+
+    // @todo Authentification pour ne pas afficher des boutons.
+    // Surement a supprimer d'ici
+    this.isLoggedIn = Auth.isLoggedIn;
+    this.isAdmin = Auth.isAdmin;
+    this.getCurrentUser = Auth.getCurrentUser;
+
+
+    // Pager.
+    this.nbItems = 0;
+    this.currentPage = 1;
+    this.itemsPerPage = 10;
+
+    //loading
+    this.loading = true;
+
+
     $scope.$on('$destroy', function() {
       socket.unsyncUpdates('composant');
     });
@@ -31,8 +47,9 @@
   $onInit() {
     this.$http.get('/api/composants').then(response => {
       this.composants = response.data;
+      this.nbItems = this.composants.length;
       this.socket.syncUpdates('composant', this.composants);
-  });
+    });
   }
 
 

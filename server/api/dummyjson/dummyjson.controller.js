@@ -4,14 +4,17 @@
  * GET     /api/dummyjsons/:id          ->  show
  */
 
-'use strict';
+import tt from './dummyjson.events';
 
+'use strict';
 export function show(req, res) {
   var file = req.params.id || 'default';
 
   return readfile(file)
+    .then(emitmes('lecture fichier ok'))
     .then(makejson())
     .then(insertdbjson(res, file))
+    .then(emitmes('db rempli'))
     .catch(handleError(res));
 }
 
@@ -67,6 +70,7 @@ function insertdbjson(res, file) {
         if (err) {
           reject('Problème insertion db :' + err);
         }
+        resolve('insert db ok');
         console.log('Insertion db ok');
         res.status(204).end();
       });
@@ -78,5 +82,14 @@ function handleError(res) {
   return function(err) {
     console.log(err);
     res.status(500).send(err);
+  };
+}
+
+function emitmes(mess) {
+  return function (entity) {
+    return new Promise(function (resolve, reject) {
+      tt.emit('message', mess);
+      resolve(entity);
+    });
   };
 }
