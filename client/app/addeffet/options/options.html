@@ -1,6 +1,16 @@
-<label>Option 1</label>
+<div ng-show="$ctrl.nouvEffet">
+    <p><label>Option par defaut</label></p>
     <p class="input-group">
-        <input type="text" class="form-control" ng-model="$ctrl.optionsEffet[0].titre">
-        <input type="text" class="form-control" ng-model="$ctrl.optionsEffet[0].description">
+        <input type="text" class="form-control" ng-model="option.titre">
+        <input type="text" class="form-control" ng-model="option.description">
     </p>
+</div>
 
+
+<div ng-repeat="option in $ctrl.optionsEffet">
+    <p><label>Option - {{option.titre}}</label></p>
+    <p class="input-group">
+        <input type="text" class="form-control" ng-model="option.titre">
+        <input type="text" class="form-control" ng-model="option.description">
+    </p>
+</div>

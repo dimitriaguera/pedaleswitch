@@ -14,7 +14,9 @@ class EditEffetComponent {
         titre: this.entity.titre,
         description: this.entity.description,
         type: this.entity.type,
-        options: this.entity.options,
+      };
+      for(var i=0; i<this.entity.options.length; i++){
+        data.options.push(this.entity.options[i]);
       }
       this.$http.post('/api/effets', data);
       this.entity.titre = '';
