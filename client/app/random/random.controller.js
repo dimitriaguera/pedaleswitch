@@ -2,8 +2,12 @@
 (function(){
 
 class RandomComponent {
-  constructor($http) {
+  constructor($http, socket) {
     this.$http = $http;
+
+    socket.socket.on('DummyJsonEvents:message', function(mess) {
+      alert('Le serveur a un message pour vous : ' + mess);
+    });
   }
 
   randJson(){

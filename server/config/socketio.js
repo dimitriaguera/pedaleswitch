@@ -23,6 +23,7 @@ function onConnect(socket) {
   require('../api/effet/effet.socket').register(socket);
   require('../api/composant/composant.socket').register(socket);
   require('../api/thing/thing.socket').register(socket);
+  require('../api/dummyjson/dummyjson.socket').register(socket);
 
 }
 

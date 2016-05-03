@@ -4,14 +4,20 @@
  * GET     /api/dummyjsons/:id          ->  show
  */
 
-'use strict';
+import tt from './dummyjson.events';
 
+'use strict';
 export function show(req, res) {
   var file = req.params.id || 'default';
 
   return readfile(file)
+    .then(emitmes('lecture fichier ok'))
     .then(makejson())
+    .then(emitmes('Transforme le template en string OK'))
+    .then(parseJson())
+    .then(emitmes('Parse Json Ok'))
     .then(insertdbjson(res, file))
+    .then(emitmes('db rempli ok'))
     .catch(handleError(res));
 }
 
@@ -47,14 +53,41 @@ function makejson() {
         };
 
         var result = dummyjson.parse(template, {helpers: myHelpers});
-        console.log('Random Json créé');
+        console.log('Random Template créé');
+        // console.log(result);
         resolve(result);
       }
       catch(err) {
-        reject('Random Json non crée :' + err);
+        reject('Random Template non crée :' + err);
       }
     });
   }
+}
+
+function parseJson() {
+  return function(json) {
+    return new Promise(function (resolve, reject) {
+      try{
+        // preserve newlines, etc - use valid JSON
+        json = json.replace(/\\n/g, "\\n")
+          .replace(/\\'/g, "\\'")
+          .replace(/\\"/g, '\\"')
+          .replace(/\\&/g, "\\&")
+          .replace(/\\r/g, "\\r")
+          .replace(/\\t/g, "\\t")
+          .replace(/\\b/g, "\\b")
+          .replace(/\\f/g, "\\f");
+        // remove non-printable and other non-valid JSON chars
+        json = json.replace(/[\u0000-\u0019]+/g,"");
+        json = JSON.parse(json);
+        resolve(json);
+        console.log('Parse Json ok');
+      }
+      catch(err) {
+        reject('Problème Parse Json :' + err);
+      }
+    });
+  };
 }
 
 function insertdbjson(res, file) {
@@ -62,12 +95,14 @@ function insertdbjson(res, file) {
   return function(json){
     return new Promise(function (resolve, reject) {
       var db = require('../' + file + '/' + file + '.model').default;
-      var obj = JSON.parse(json);
-      db.insertMany(obj, function (err, data) {
+      db.insertMany(json, function (err, data) {
         if (err) {
           reject('Problème insertion db :' + err);
+          return;
         }
+        resolve('insert db ok');
         console.log('Insertion db ok');
+        //console.dir(obj);
         res.status(204).end();
       });
     });
@@ -78,5 +113,14 @@ function handleError(res) {
   return function(err) {
     console.log(err);
     res.status(500).send(err);
+  };
+}
+
+function emitmes(mess) {
+  return function (entity) {
+    return new Promise(function (resolve, reject) {
+      tt.emit('message', mess);
+      resolve(entity);
+    });
   };
 }

@@ -5,6 +5,7 @@ angular.module('pedaleswitchApp')
     $stateProvider
       .state('composant', {
         url: '/composant',
-        template: '<composant></composant>'
+        template: '<composant></composant>',
       });
   });
+

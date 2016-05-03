@@ -1,24 +1,19 @@
-<div class="container">
+<div class="container" loading="loading">
   <composant-type></composant-type>
-  <div class="row">
-    <div class="col-lg-12">
-      <h1 class="page-header">Liste de Composants : </h1>
-      <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="composant in $ctrl.composants">
+  <h1 class="page-header">Liste de Composants : </h1>
+  <div class="row" >
+      <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="composant in $ctrl.composants.slice((($ctrl.currentPage-1)*$ctrl.itemsPerPage), (($ctrl.currentPage)*$ctrl.itemsPerPage))">
         <li><a href="#" uib-tooltip="{{composant.description}}">{{composant.titre}}<br/>Type : {{composant.type}}<br/>Prix : {{composant.prix_additionnel}}euro<br/>Dimension : {{composant.dimensions.x}} x {{composant.dimensions.y}}<button type="button" class="close" ng-click="$ctrl.deleteComposant(composant)">&times;</button></a></li>
       </ul>
-    </div>
   </div>
-
+  <uib-pagination total-items="$ctrl.nbItems" ng-model="$ctrl.currentPage" items-per-page="$ctrl.itemsPerPage" max-size="50" boundary-links="true"></uib-pagination>
   <form class="thing-form">
     <label>Ajouter un composant dans la db</label>
     <p class="input-group">
       <input type="text" class="form-control" placeholder="Titre." ng-model="$ctrl.newComposant.titre">
-
       <select ng-model="$ctrl.newComposant.type">
         <option ng-repeat="composantType in $ctrl.composantTypes">{{composantType.titre}}</option>
       </select>
-
-
       <input type="text" class="form-control" placeholder="Description." ng-model="$ctrl.newComposant.description">
       <label>
         Disponible : <input type="checkbox" ng-model="$ctrl.newComposant.disponible">
@@ -27,17 +22,6 @@
       <input type="text" class="form-control" placeholder="x." ng-model="$ctrl.newComposant.x">
       <input type="text" class="form-control" placeholder="y." ng-model="$ctrl.newComposant.y">
     </p>
-    <button type="submit" class="btn btn-primary" ng-click="$ctrl.addComposant()">Add New</button>
-
-
-    <button type="submit" class="btn btn-primary" ng-click="$ctrl.randJson()">randjson</button>
-
-    <ul ng-repeat="obj as $ctrl.obj">
-      <li>
-        {{obj}}
-      </li>
-    </ul>
-
-
+    <button ng-show="$ctrl.isAdmin()" type="submit" class="btn btn-primary" ng-click="$ctrl.addComposant()">Add New</button>
   </form>
 </div>
