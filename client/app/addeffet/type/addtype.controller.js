@@ -17,16 +17,16 @@
     });
     }
     addTypeEffet() {
-      if (this.newTypeEffet.name) {
-        this.$http.post('/api/typeEffets', { name: this.newTypeEffet.name });
-        this.newTypeEffet.name = '';
+      if (this.newTypeEffet.titre) {
+        this.$http.post('/api/typeEffets', { titre: this.newTypeEffet.titre });
+        this.newTypeEffet.titre = '';
       }
     }
     deleteTypeEffet(effet) {
       this.$http.delete('/api/typeEffets/' + effet._id);
     }
-    updateEffet(effet, value) {
-      this.$http.put('/api/typeEffets/' + effet._id, { name: value });
+    updateTypeEffet(effet, value) {
+      this.$http.put('/api/typeEffets/' + effet._id, { titre: value });
     }
   }
 

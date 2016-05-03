@@ -3,7 +3,7 @@
 import mongoose from 'mongoose';
 
 var TypeEffetSchema = new mongoose.Schema({
-  name: String,
+  titre: String,
   active: Boolean
 });
 

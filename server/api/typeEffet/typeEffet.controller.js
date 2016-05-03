@@ -36,7 +36,7 @@ function saveUpdates(updates) {
 // Save in cache.
 function saveInCache(req) {
   return function(entity) {
-    if (entity && (req.body.name !== '')) {
+    if (entity && (req.body.titre !== '')) {
       console.log('Type effet chargé : OK');
       return Effet.find().lean().exec()
           .then(data => {
@@ -47,7 +47,7 @@ function saveInCache(req) {
       return Cache.create(data)
           .then(en => {
           console.log('Effets mis en cache: OK');
-      return Cache.update({type: entity.name}, {type: req.body.name}, {multi: true})
+      return Cache.update({type: entity.titre}, {type: req.body.titre}, {multi: true})
           .then(en => {
           console.log('Cache updaté: OK');
       return Effet.remove({})

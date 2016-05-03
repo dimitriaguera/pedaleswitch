@@ -1,0 +1,19 @@
+<h1 class="page-header">EDITER EFFET</h1>
+    <form class="effet-form">
+        <label>Editer l'effet "{{$ctrl.entity.titre}}"</label>
+        <a ui-sref="addeffet">
+            <button type="button" class="close">&times;</button>
+        </a>
+        <p class="input-group">
+            <input type="text" class="form-control" ng-model="$ctrl.entity.titre">
+            <input type="text" class="form-control" ng-model="$ctrl.entity.description">
+            <select class="form-control" ng-model="$ctrl.entity.type">
+                <option ng-repeat="type in $ctrl.types" value="{{type.titre}}">{{type.titre}}</option>
+            </select>
+            <options options-effet="$ctrl.entity.options" nouv-effet="$ctrl.nouv"></options>
+        </p>
+      <span class="input-group-btn">
+        <button type="submit" class="btn btn-primary" ng-click="$ctrl.onAction($ctrl.nouv)">{{$ctrl.nouv ? 'Enregistrer' : 'Modifier'}}</button>
+          <button type="submit" class="btn btn-primary" ng-click="$ctrl.deleteEffet($ctrl.entity)" ng-hide="$ctrl.nouv">Supprimer</button>
+      </span>
+    </form>
