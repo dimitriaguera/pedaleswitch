@@ -2,12 +2,9 @@
 
 import mongoose from 'mongoose';
 
-var EffetSchema = new mongoose.Schema({
-  titre: String,
-  description: String,
-  type: String,
-  disponible: Boolean,
-  options: {}
+var ComposantEffetSchema = new mongoose.Schema({
+  compo_id: [],
+  coordonnées: {x:Number, y:Number}
 });
 
 var OptionSchema = new mongoose.Schema({
@@ -17,12 +14,15 @@ var OptionSchema = new mongoose.Schema({
   prix: Number,
   media: [],
   dimensions: {x:Number, y:Number},
-  composants: {}
+  composants: [ComposantEffetSchema]
 });
 
-var ComposantEffetSchema = new mongoose.Schema({
-  compo_id: [],
-  coordonnées: {x:Number, y:Number}
+var EffetSchema = new mongoose.Schema({
+  titre: String,
+  description: String,
+  type: String,
+  disponible: Boolean,
+  options: [OptionSchema]
 });
 
 export default mongoose.model('Effet', EffetSchema);
