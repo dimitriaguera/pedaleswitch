@@ -1,0 +1,11 @@
+<uib-tabset active="0">
+    <uib-tab index="$index" ng-repeat="composant in $ctrl.oneOption.composants track by $index" heading="Comp. {{$index + 1}} - {{composant.titre}}">
+        <p class="input-group">
+            <input type="text" class="form-control" placeholder="nom du composant" ng-model="$ctrl.oneOption.composants[$index].titre">
+            <input type="text" class="form-control" placeholder="coord. X" ng-model="$ctrl.oneOption.composants[$index].coordonnees.x">
+            <input type="text" class="form-control" placeholder="coord. Y" ng-model="$ctrl.oneOption.composants[$index].coordonnees.y">
+            <button type="submit" class="btn btn-primary" ng-click="$ctrl.newComposant()">+ compo</button>
+            <button type="submit" class="btn btn-danger" ng-click="$ctrl.deleteComposant($index)">- compo</button>
+        </p>
+    </uib-tab>
+</uib-tabset>

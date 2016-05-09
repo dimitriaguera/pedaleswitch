@@ -5,15 +5,15 @@
             <button type="button" class="close">&times;</button>
         </a>
         <p class="input-group">
-            <input type="text" class="form-control" ng-model="$ctrl.entity.titre">
-            <input type="text" class="form-control" ng-model="$ctrl.entity.description">
+            <input type="text" class="form-control" placeholder="nom de l'effet" ng-model="$ctrl.entity.titre">
+            <input type="text" class="form-control" placeholder="description de l'effet" ng-model="$ctrl.entity.description">
             <select class="form-control" ng-model="$ctrl.entity.type">
                 <option ng-repeat="type in $ctrl.types" value="{{type.titre}}">{{type.titre}}</option>
             </select>
-            <options options-effet="$ctrl.entity.options" nouv-effet="$ctrl.nouv"></options>
+            <options effet="$ctrl.entity" nouv-effet="$ctrl.nouv"></options>
         </p>
       <span class="input-group-btn">
-        <button type="submit" class="btn btn-primary" ng-click="$ctrl.onAction($ctrl.nouv)">{{$ctrl.nouv ? 'Enregistrer' : 'Modifier'}}</button>
-          <button type="submit" class="btn btn-primary" ng-click="$ctrl.deleteEffet($ctrl.entity)" ng-hide="$ctrl.nouv">Supprimer</button>
+        <button type="submit" class="btn btn-primary" ng-click="$ctrl.onAction($ctrl.nouv)">{{$ctrl.nouv ? 'Enregistrer' : 'Enregistrer'}}</button>
+          <button type="submit" class="btn btn-danger" ng-click="$ctrl.deleteEffet($ctrl.entity)" ng-hide="$ctrl.nouv">Supprimer</button>
       </span>
     </form>

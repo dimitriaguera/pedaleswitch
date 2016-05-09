@@ -23,6 +23,11 @@ function respondWithResult(res, statusCode) {
 
 function saveUpdates(updates) {
   return function(entity) {
+    entity.options = [];
+    for(var i=0; i<updates.options.length; i++){
+      entity.options.push(updates.options[i]);
+    }
+    updates.options = [];
     var updated = _.merge(entity, updates);
     return updated.save()
       .then(updated => {

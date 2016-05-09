@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 var ComposantEffetSchema = new mongoose.Schema({
   titre: String,
   available_compo_id: [],
-  coordonnées: {
+  coordonnees: {
     x:Number,
     y:Number
   }

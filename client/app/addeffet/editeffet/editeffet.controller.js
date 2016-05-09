@@ -8,18 +8,23 @@ class EditEffetComponent {
     this.types = $stateParams.types || {};
     this.nouv = $stateParams.nouv;
   }
+
   addEffet() {
     if (this.entity.titre) {
       var data = {
         titre: this.entity.titre,
         description: this.entity.description,
         type: this.entity.type,
-        options: this.entity.options,
+        options:[],
+      };
+      for(var i=0; i<this.entity.options.length; i++){
+        data.options.push(this.entity.options[i]);
       }
       this.$http.post('/api/effets', data);
       this.entity.titre = '';
       this.entity.description = '';
       this.entity.type = '';
+      this.entity.options = [];
     }
   }
   updateEffet(effet) {
