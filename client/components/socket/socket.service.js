@@ -55,6 +55,29 @@ angular.module('pedaleswitchApp')
           var event = 'deleted';
           _.remove(array, {_id: item._id});
           cb(event, item, array);
+
+          /*
+          var arrays = $.map(array, function(value, index) {
+            return [value];
+          });
+
+          var x = [];
+          x = x.concat.apply([], arrays);
+          var y ={};
+          y = _.find(x, {_id: item._id});
+          var i = x;
+          /*
+          var merged = [].concat.apply([], array);
+
+          var x = {};
+          x= _.filter(array, function(item){
+            var z = '';
+            x=item;
+          })
+          
+          */
+          
+          
         });
       },
 
