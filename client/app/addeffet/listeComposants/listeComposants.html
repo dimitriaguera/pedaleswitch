@@ -1,0 +1,31 @@
+<!--<div name="listCompoForm">-->
+    <!--<div ng-repeat="(k, v) in $ctrl.listeCompo">-->
+        <!--<h2>{{k}}</h2>-->
+    <!--<div class="list-group">-->
+        <!--<label class="list-group-item" ng-repeat="compo in v">-->
+            <!--<input type="checkbox" ng-model="compo.value">-->
+            <!--{{compo.titre}}-->
+        <!--</label>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--<div class="modal-footer">-->
+        <!--<button class="btn btn-primary" type="button" ng-click="$ctrl.validation()">OK</button>-->
+        <!--<button class="btn btn-warning" type="button" ng-click="$ctrl.annuler()">Annuler</button>-->
+    <!--</div>-->
+<!--</form>-->
+
+
+<div name="listCompoForm">
+    <div ng-repeat="(k, v) in $ctrl.listeCompo">
+        <h2>{{k}}</h2>
+        <div class="btn-group">
+            <label class="btn btn-default" ng-repeat="compo in v" ng-model="compo.value" uib-btn-checkbox>
+                {{compo.titre}}
+            </label>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="$ctrl.validation()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="$ctrl.annuler()">Annuler</button>
+    </div>
+    </form>

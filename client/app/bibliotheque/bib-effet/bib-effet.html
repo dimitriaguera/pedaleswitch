@@ -1,0 +1,7 @@
+<h3>Effets</h3>
+<uib-accordion>
+    <uib-accordion-group heading="{{k}}" ng-repeat="(k, v) in $ctrl.effets">
+        <label class="btn btn-primary btn-block" ng-repeat="effet in v" ng-model="$ctrl.selecteffet" ng-click="$ctrl.chgmteffet({value:$ctrl.selecteffet})" uib-btn-radio="effet">{{effet.titre}}
+        </label>
+    </uib-accordion-group>
+</uib-accordion>

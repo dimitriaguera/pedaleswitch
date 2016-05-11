@@ -14,6 +14,9 @@ class NavbarController {
   },{
     title: 'RemplirDb',
     state: 'random'
+  },{
+    title: 'Bibliothèque',
+    state: 'bibliotheque'
   }
   ];
 
