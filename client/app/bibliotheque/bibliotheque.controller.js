@@ -11,7 +11,7 @@ class BibliothequeComponent {
   }
   $onInit(){
     this.$http.get('/api/effets').then(response => {
-      this.effets = this.OrderArray.order(response.data);
+      this.effets = this.OrderArray.order(response.data, 'type');
   });
   }
 

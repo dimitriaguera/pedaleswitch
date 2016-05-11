@@ -12,7 +12,7 @@ class ListeComposants {
 
   $onInit(){
     this.$http.get('/api/composants').then(response => {
-      this.listeCompo = this.OrderArray.order(response.data);
+      this.listeCompo = this.OrderArray.order(response.data, 'type');
       if(this.saved){
         for (var p in this.listeCompo) {
           if (this.listeCompo.hasOwnProperty(p)) {
