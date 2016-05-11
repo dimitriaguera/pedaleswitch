@@ -48,7 +48,7 @@
     $onInit() {
       this.loading = true;
       this.$http.get('/api/composants').then(response => {
-        this.composants = this.OrderArray.order(response.data);
+        this.composants = this.OrderArray.order(response.data, 'type');
         this.nbItems = this.composants.length;
         this.socket.syncUpdates('composant', this.composants);
         this.loading = false;

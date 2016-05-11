@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('pedaleswitchApp')
-  .factory('socket', function(socketFactory) {
+  .factory('socket', function(socketFactory, OrderArray) {
     // socket.io now auto-configures its connection when we ommit a connection url
     var ioSocket = io('', {
       // Send auth token on connection, you will need to DI the Auth service above
@@ -14,7 +14,8 @@ angular.module('pedaleswitchApp')
 
     return {
       socket,
-
+      OrderArray,
+      
       /**
        * Register listeners to sync an array with updates on a model
        *
@@ -27,7 +28,7 @@ angular.module('pedaleswitchApp')
        */
       syncUpdates(modelName, array, cb) {
         cb = cb || angular.noop;
-
+        OrderArray;
         /**
          * Syncs item creation/updates on 'model:save'
          */
@@ -53,31 +54,20 @@ angular.module('pedaleswitchApp')
          */
         socket.on(modelName + ':remove', function (item) {
           var event = 'deleted';
-          _.remove(array, {_id: item._id});
+
+          var test = _.remove(array, {_id: item._id});
+
+          if (test.length === 0){
+            var path = [],
+              index = 0,
+              arraytmp = [];
+            path = OrderArray.boucle(array, '_id', item._id, 3);
+            if (path.length > 1) {
+              OrderArray.supwithpath(array, path.slice(0,path.length-1));
+            }
+          }
+
           cb(event, item, array);
-
-          /*
-          var arrays = $.map(array, function(value, index) {
-            return [value];
-          });
-
-          var x = [];
-          x = x.concat.apply([], arrays);
-          var y ={};
-          y = _.find(x, {_id: item._id});
-          var i = x;
-          /*
-          var merged = [].concat.apply([], array);
-
-          var x = {};
-          x= _.filter(array, function(item){
-            var z = '';
-            x=item;
-          })
-          
-          */
-          
-          
         });
       },
 
