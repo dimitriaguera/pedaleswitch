@@ -3,7 +3,6 @@
 
 class OptionsComponent {
   constructor() {
-    this.message = 'Hello';
     this.nouvoption = false;
   }
   $onInit(){
@@ -27,7 +26,7 @@ angular.module('pedaleswitchApp')
     controller: OptionsComponent,
     bindings: {
       effet: '=',
-      nouvEffet: '='
+      nouvEffet: '<'
     },
   });
 

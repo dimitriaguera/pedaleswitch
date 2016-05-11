@@ -1,0 +1,19 @@
+<div class="list-group" ng-show="$ctrl.op.titre">
+    <!--<h3>Description</h3>-->
+    <h2 class="list-group-item">{{$ctrl.eff.titre}} - {{$ctrl.op.titre}}</h2>
+    <div class="list-group-item">Type: {{$ctrl.eff.type}}</div>
+    <div class="list-group-item">Info generale: {{$ctrl.eff.description}}</div>
+    <div class="list-group-item">A propos de l'option: {{$ctrl.op.description}}</div>
+    <div class="list-group-item">Tarif unitaire: {{$ctrl.op.prix}}</div>
+    <div class="list-group-item">Taille: {{$ctrl.op.dimensions.h}} x {{$ctrl.op.dimensions.w}}</div>
+    <div class="list-group-item">
+        Composants:
+        <div ng_repeat="compo in $ctrl.op.composants">
+            - {{compo.titre}} [{{compo.type}}]
+        </div>
+    </div>
+    <div class="btn-group">
+    <button type="submit" class="btn btn-warning" ng-click="$ctrl.addEffet()">Ajouter l'effet</button>
+    <a class="btn btn-default" ui-sref="addeffet.edit({entity: $ctrl.eff, types: '', nouv: false})">éditer</a>
+        </div>
+</div>

@@ -3,6 +3,7 @@
 import mongoose from 'mongoose';
 
 var ComposantEffetSchema = new mongoose.Schema({
+  type: String,
   titre: String,
   available_compo_id: [],
   coordonnees: {

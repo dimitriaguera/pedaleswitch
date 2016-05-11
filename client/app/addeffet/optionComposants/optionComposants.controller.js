@@ -2,13 +2,18 @@
 (function(){
 
 class OptionsComposants {
-  constructor() {
-    this.message = 'Hello';
+  constructor($http) {
+    this.$http = $http;
+    this.typeCompo = {};
   }
+
   $onInit(){
     if(this.nouvoption){
       this.oneOption.composants = [{titre:"A définir"}];
     }
+    this.$http.get('/api/composantTypes').then(response => {
+      this.typeCompo = response.data;
+    });
   }
   newComposant(){
     this.oneOption.composants.push({titre:"nouveau composant"});
