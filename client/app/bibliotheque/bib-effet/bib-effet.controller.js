@@ -3,6 +3,7 @@
 
   class BibEffet {
     constructor() {
+      this.selecteffet = {};
     }
   }
 
@@ -11,7 +12,6 @@
       templateUrl: 'app/bibliotheque/bib-effet/bib-effet.html',
       bindings: {
         effets: '<',
-        selecteffet: '<',
         chgmteffet: '&'
       },
       controller: BibEffet,

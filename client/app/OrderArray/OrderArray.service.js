@@ -110,7 +110,6 @@ angular.module('pedaleswitchApp')
       supwithpath: function(obj, path){
         var arraytmp = obj,
             index = 0;
-
         while (arraytmp != null && index < path.length-1) {
           arraytmp = arraytmp[path[index]];
           index++;
@@ -119,7 +118,7 @@ angular.module('pedaleswitchApp')
       },
 
       /**
-       * NE MARCHE PAS POUR L INSTANT.
+       *@todo a faire NE MARCHE PAS POUR L INSTANT.
        * @param obj
        * @param path
        * @returns {*}

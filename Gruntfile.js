@@ -53,7 +53,8 @@ module.exports = function (grunt) {
     },
     open: {
       server: {
-        url: 'http://localhost:<%= express.options.port %>'
+        url: 'http://localhost:<%= express.options.port %>',
+        app: '/Applications/Google\ Chrome.app'
       }
     },
     watch: {
