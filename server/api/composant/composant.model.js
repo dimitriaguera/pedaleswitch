@@ -8,7 +8,7 @@ var ComposantSchema = new mongoose.Schema({
   description: String,
   disponible: Boolean,
   prix_additionnel: Number,
-  dimensions: {x:Number, y:Number},
+  dimensions: {w:Number, h:Number},
   media: []
 });
 

@@ -17,6 +17,9 @@ class NavbarController {
   },{
     title: 'Bibliothèque',
     state: 'bibliotheque'
+  },{
+    title: 'Dessin',
+    state: 'pageDessin'
   }
   ];
 

@@ -1,0 +1,23 @@
+<h3>Panier des effets</h3>
+<uib-accordion>
+<uib-accordion-group draggable="true" heading="{{effet.titre}} - {{effet.titre_option}}" ng-repeat="effet in $ctrl.effets">
+                            <div ng-repeat="(k, compo) in effet.composants">
+                                <label>{{compo.titre}} - {{compo.titre_item}}</label>
+                                <p class="input-group input-group-sm">
+                                    <select class="form-control" ng-model="$ctrl.newItem">
+                                        <option selected value="{{compo.item_id}}">{{compo.titre_item}}</option>
+                                        <option ng-repeat="item in compo.items" value="{{item}}">{{$ctrl.items[item].titre}}</option>
+                                    </select>
+                                    <span class="input-group-btn">
+                                        <button type="submit" class="btn btn-warning" ng-click="$ctrl.chgmtitem({opt: effet._id, compo: k, item: $ctrl.newItem})">Changer</button>
+                                    </span>
+                                </p>
+                            </div>
+
+                            <p>{{effet.description}}</p>
+                            <p>{{effet.description_option}}</p>
+                            <button type="submit" class="btn btn-primary btn-sm" ng-click="$ctrl.addToTable({value: effet})">+</button>
+
+
+</uib-accordion-group>
+</uib-accordion>

@@ -2,11 +2,11 @@
 (function(){
 
   class BibDescription {
-    constructor() {
-
+    constructor(instanceDessin) {
+      this.instanceDessin = instanceDessin;
     }
     addEffet(){
-      alert('Salut Francis, l\'effet a été ajouté dans ton cul. Bise.');
+      this.instanceDessin.setEffet(this.eff, this.op);
     }
   }
 
