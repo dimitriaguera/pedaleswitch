@@ -26,11 +26,11 @@ var OptionSchema = new mongoose.Schema({
 });
 
 var EffetSchema = new mongoose.Schema({
+  type: String,
   titre: String,
   description: String,
-  type: String,
   disponible: Boolean,
-  options: [OptionSchema],
+  options: [OptionSchema]
 });
 
 export default mongoose.model('Effet', EffetSchema);

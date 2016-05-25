@@ -6,7 +6,7 @@
   <uib-accordion>
     <uib-accordion-group heading="{{k}}" ng-repeat="(k, v) in $ctrl.composants">
       <ul ng-repeat="composant in v">
-        <li><a href="#" uib-tooltip="{{composant.description}}">{{composant.titre}}<br/>Type : {{composant.type}}<br/>Prix : {{composant.prix_additionnel}}euro<br/>Dimension : {{composant.dimensions.x}} x {{composant.dimensions.y}}<button type="button" class="close" ng-click="$ctrl.deleteComposant(composant)">&times;</button></a></li>
+        <li><a href="#" uib-tooltip="{{composant.description}}">{{composant.titre}}<br/>Type : {{composant.type}}<br/>Prix : {{composant.prix_additionnel}}euro<br/>Dimension : {{composant.dimensions.w}} x {{composant.dimensions.h}}<button type="button" class="close" ng-click="$ctrl.deleteComposant(composant)">&times;</button></a></li>
       </ul>
     </uib-accordion-group>
   </uib-accordion>

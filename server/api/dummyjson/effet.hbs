@@ -1,16 +1,46 @@
 [
-  {{#repeat 10}}
+  {{#repeat 1}}
   {
+    "type": "{{effetType}}",
     "titre": "{{firstName}}",
     "description": "{{composantType}}",
-    "type": "{{effetType}}",
-    "active": {{boolean}},
+    "disponible": {{boolean}},
     "options":
       [
-      {{#repeat 3}}
-          {"titre": "{{firstName}}",
-          "description": "{{composantType}}"}
-      {{/repeat}}
+        {{#repeat 1}}
+            {
+              "titre": "{{firstName}}",
+              "description": "{{composantType}}",
+              "disponible": {{boolean}},
+              "prix": {{int 1 100}},
+              "media":
+                [
+                  {{#repeat 1}}
+                  "img{{@index}}.png"
+                  {{/repeat}}
+                ],
+              "dimensions":
+              {
+                  "w": {{float 0 50 "0.00"}},
+                  "h": {{float 0 25 "0.00"}}
+              },
+              "composants":
+                [
+                  {{#repeat 1}}
+                    {
+                      "type": "{{composantType}}",
+                      "titre": "{{firstName}}",
+                      "available_compo_id": {{float 0 50 "0.00"}},
+                      "coordonnees":
+                        {
+                          "x": {{float 0 50 "0.00"}},
+                          "y": {{float 0 25 "0.00"}},
+                        }
+                    }
+                  {{/repeat}}
+                ]
+            }
+        {{/repeat}}
       ]
   }
   {{/repeat}}

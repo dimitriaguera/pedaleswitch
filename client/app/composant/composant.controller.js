@@ -17,7 +17,7 @@
         description: '',
         disponible: true,
         prix_additionnel: '',
-        dimensions: {x: '', y: ''},
+        dimensions: {w: '', h: ''},
         media: []
       };
 
@@ -65,7 +65,7 @@
             description: this.newComposant.description,
             disponible: this.newComposant.disponible,
             prix_additionnel: this.newComposant.prix_additionnel,
-            dimensions: {x: this.newComposant.x, y: this.newComposant.y},
+            dimensions: {w: this.newComposant.w, w: this.newComposant.h},
             media: []
           });
       }
@@ -77,7 +77,7 @@
         description: '',
         disponible: true,
         prix_additionnel: '',
-        dimensions: {x: '', y: ''},
+        dimensions: {w: '', h: ''},
         media: []
       };
     }
