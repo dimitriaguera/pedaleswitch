@@ -6,7 +6,7 @@ angular.module('pedaleswitchApp')
 
       /**
        * Cette fonction permet de trier un tableau.
-       * Exemple : 
+       * Exemple :
        * Composant = {
        *     0: {_id:'1', type:'Led'}
        *     1: {_id:'2', type:'Led'}
@@ -60,7 +60,7 @@ angular.module('pedaleswitchApp')
           index = '';
 
         if (typeof init == 'undefined') init = true;
-        
+
         // Déclaration et initialisation d'une variable statique.
         if (init){
           this.path = [];
@@ -69,26 +69,26 @@ angular.module('pedaleswitchApp')
           this.deep = 0;
         }
 
-  
-        if (typeof ArrOrObj !== 'object') {
+
+        if (typeof ArrOrObj !== 'object' && ArrOrObj !== null) {
           return 0;
         }
-  
+
         // Coupe la boucle.
         if (this.ok === true || this.deep > profondeur) {
           return this.pathok;
         }
-  
+
         arr = Object.keys(ArrOrObj);
         arr_l = arr.length;
-  
+
         for (i = 0; i < arr_l; ++i) {
           if (ArrOrObj[index_voulu] === val_voulu) {
             // console.log('deep :' + this.deep);
             this.path[this.deep] = index_voulu;
             // console.log(this.path.slice(0, this.deep + 1));
             this.ok = true;
-            this.pathok = this.path.slice(0, this.deep + 1)
+            this.pathok = this.path.slice(0, this.deep + 1);
             return this.pathok;
           }
           // Si l'élément est un tableau ou un object boucle dessus.
@@ -99,7 +99,7 @@ angular.module('pedaleswitchApp')
           }
         }
         this.deep--;
-        return this.pathok;
+        return (this.pathok.length === 0) ? false : this.pathok;
       },
 
       /**
@@ -109,7 +109,7 @@ angular.module('pedaleswitchApp')
        */
       supwithpath: function(obj, path){
         var arraytmp = obj,
-            index = 0;
+          index = 0;
         while (arraytmp != null && index < path.length-1) {
           arraytmp = arraytmp[path[index]];
           index++;
@@ -118,16 +118,17 @@ angular.module('pedaleswitchApp')
       },
 
       /**
-       *@todo a faire NE MARCHE PAS POUR L INSTANT.
+       * Si on donne un objet (ou array) avec un chemin il retourne le sous objet.
+       *
        * @param obj
        * @param path
        * @returns {*}
        */
       returnsubarray: function (obj, path) {
-        if(typeof path === 'object'){
+        if(typeof path === 'object' && path !== null){
           path = path.join('.');
         }
-        if(typeof obj === 'undefined') {
+        if(typeof obj === 'undefined' && obj !== null) {
           return false;
         }
         var _index = path.indexOf('.');
@@ -136,7 +137,7 @@ angular.module('pedaleswitchApp')
         }
         return obj[path];
       }
-      
-      
+
+
     };
   });

@@ -14,7 +14,10 @@
         items: '<',
         effets: '<',
         chgmtitem: '&',
-        addToTable: '&'
+        addToTable: '&',
+        onCompo: '&',
+        onEffet: '&',
+        leaveEffet: '&'
       },
       controller: PanierDessin,
     });

@@ -1,10 +1,13 @@
 <div class="container-fluid">
+    <div class="col-xs-12">
+        <menu-dessin switch-deb="$ctrl.switchDeb(value)" active-effet="$ctrl.activeEffet()" active-compo="$ctrl.activeCompo()"></menu-dessin>
+    </div>
     <div class="row">
         <div class="col-xs-3">
-            <panier-dessin items="$ctrl.items" effets="$ctrl.dessin.options" chgmtitem="$ctrl.updateComposant(opt, compo, item)" add-to-table="$ctrl.addToTable(value)"></panier-dessin>
+            <panier-dessin items="$ctrl.items" effets="$ctrl.dessin.options" on-compo="$ctrl.mouseOnCompo(value)" on-effet="$ctrl.mouseOnEffet(value)" leave-effet="$ctrl.mouseLeaveEffet()" chgmtitem="$ctrl.updateComposant(opt, compo, item)" add-to-table="$ctrl.addToTable(value)"></panier-dessin>
         </div>
         <div class="col-xs-3">
-            <table-dessin active-table="$ctrl.activeTable"></table-dessin>
+            <table-dessin></table-dessin>
         </div>
     </div>
 </div>

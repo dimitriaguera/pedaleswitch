@@ -1,55 +1,101 @@
 'use strict';
 
 angular.module('pedaleswitchApp')
-  .factory('mouseHelper', function (canvasControl, $rootScope) {
+  .factory('mouseHelper', function (canvasControl, checkCollision, $rootScope) {
 
     var dragIdx;
     var dragOffsetX;
     var dragOffsetY;
+    var update = function (handle) {
+      document.body.style.cursor = handle;
+    };
+
 
     // Public API here
     return {
 
-      mousedown: function (ontable) {
-        return function (e) {
+      //update: function (handle) {
+      //  document.body.style.cursor = handle;
+      //},
 
+      mousedown: function (e) {
+
+          var ontable = canvasControl.getTableActive();
           var mouseX = e.layerX,
-            mouseY = e.layerY;
+              mouseY = e.layerY;
 
-          for (var i = 0; i < ontable.length; i++) {
-            var dx = mouseX - ontable[i].getCenterX();
-            var dy = mouseY - ontable[i].getCenterY();
+          var dragid = checkCollision.checkmousebox({x: mouseX, y: mouseY}, ontable, 10);
 
-            if (Math.sqrt((dx * dx) + (dy * dy)) < ontable[i].getRadius()) {
+          if (dragid !== false) {
+            dragIdx = dragid.id;
+            dragOffsetX = dragid.dx;
+            dragOffsetY = dragid.dy;
 
-              dragIdx = i;
-              dragOffsetX = dx;
-              dragOffsetY = dy;
+            ontable[dragIdx].setSelected(true);
 
-              $rootScope.$emit('click-on-element');
-              canvasControl.drawStuff(ontable);
-            }
+           update('move');
+            $rootScope.$emit('click-on-element');
+            canvasControl.drawStuff();
           }
-        }
       },
 
-      mousemove: function(ontable){
-        return function (e) {
+      mousemove: function (e) {
 
+          var ontable = canvasControl.getTableActive();
           var mouseX = e.layerX,
-            mouseY = e.layerY;
+              mouseY = e.layerY;
 
           ontable[dragIdx].setCenterX(mouseX - dragOffsetX);
           ontable[dragIdx].setCenterY(mouseY - dragOffsetY);
 
-          canvasControl.drawStuff(ontable);
-        }
+          checkCollision.checkall(ontable);
+
+          if(!canvasControl.getDeb()){
+            var compos = ontable[dragIdx].composants;
+            for(var i=0; i<compos.length; i++){
+              compos[i].setX(ontable[dragIdx].pos.x + compos[i].pos_default.x);
+              compos[i].setY(ontable[dragIdx].pos.y + compos[i].pos_default.y);
+            }
+          }
+          canvasControl.drawStuff();
       },
 
-      mouseup: function(ontable){
-        return function (e) {
+      mouseup: function (e) {
+          var ontable = canvasControl.getTableActive();
+
+          var mouseX = e.layerX,// - mousehelper.canvas.offsetLeft,
+              mouseY = e.layerY;// - mousehelper.canvas.offsetTop;
+
+          ontable[dragIdx].setCenterX(mouseX - dragOffsetX);
+          ontable[dragIdx].setCenterY(mouseY - dragOffsetY);
+
+          ontable[dragIdx].setSelected(false);
+          update('default');
+
+          checkCollision.checkall(ontable);
+          canvasControl.drawStuff();
+
+          dragIdx = -1;
+
           $rootScope.$emit('no-click-on-element');
+      },
+
+      mousemovebox: function (e) {
+        var ontable = canvasControl.getTableActive();
+
+        var mouseX = e.layerX, //- mousehelper.canvas.offsetLeft,
+            mouseY = e.layerY; //- mousehelper.canvas.offsetTop;
+
+        var onElement = checkCollision.checkmousebox({x: mouseX, y: mouseY}, ontable, 10);
+
+        if(onElement) {
+          update('pointer');
         }
+        else {
+          update('default');
+        }
+        canvasControl.drawStuff();
       }
+
     };
   });

@@ -7,14 +7,80 @@ class PageDessinComponent {
     this.items = {};
     this.instanceDessin = instanceDessin;
     this.canvasControl = canvasControl;
-    this.activeTable = [];
+    this.isActive = 'effet';
   }
 
   $onInit(){
+    var active = this.canvasControl.getTableEffet();
+    var inactive = this.canvasControl.getTableComposant();
+    this.canvasControl.setDeb(false);
+    this.canvasControl.resetTableDashed();
+    this.canvasControl.setTableActive(active);
+    this.canvasControl.setTableThin(inactive);
     this.dessin = this.instanceDessin.getDessin();
     this.items = this.instanceDessin.getComposantItems();
-    this.activeTable = this.canvasControl.getTableEffet();
-    this.tableCompo = this.canvasControl.getTableComposant();
+  }
+
+  mouseOnEffet(value){
+    var effets = [];
+    var effet = this.canvasControl.searchEffetById(value._id, value.key);
+    if (effet) {
+      switch(this.isActive) {
+        case 'effet' :
+          effets.push(effet);
+          this.canvasControl.setTableShine(effets);
+          break;
+        case 'compo' :
+          this.canvasControl.setTableShine(effet.composants);
+          break;
+      }
+      this.canvasControl.drawStuff();
+    }
+  }
+
+  mouseOnCompo(value){
+    var compos = [];
+    var compo = this.canvasControl.searchCompoById(value._id, value.key);
+    if(compo) {
+      compos.push(compo);
+      this.canvasControl.resetTableShine();
+      this.canvasControl.setTableShine(compos);
+      this.tableShine = this.canvasControl.getTableShine();
+      this.canvasControl.drawStuff();
+    }
+  }
+
+  mouseLeaveEffet(){
+    this.canvasControl.resetTableShine();
+    this.canvasControl.drawStuff();
+  }
+
+  switchDeb(value){
+    this.canvasControl.setDeb(value);
+    this.canvasControl.resetCompPos(value);
+    if(!value){
+      this.activeEffet();
+    }
+  }
+
+  activeEffet(){
+    this.isActive = 'effet';
+    var active = this.canvasControl.getTableEffet();
+    var inactive = this.canvasControl.getTableComposant();
+    this.canvasControl.resetTableDashed();
+    this.canvasControl.setTableActive(active);
+    this.canvasControl.setTableThin(inactive);
+    this.canvasControl.drawStuff();
+  }
+
+  activeCompo(){
+    this.isActive = 'compo';
+    var active = this.canvasControl.getTableComposant();
+    var inactive = this.canvasControl.getTableEffet();
+    this.canvasControl.resetTableThin();
+    this.canvasControl.setTableActive(active);
+    this.canvasControl.setTableDashed(inactive);
+    this.canvasControl.drawStuff();
   }
 
   updateComposant(opt, compo, item){
@@ -23,7 +89,7 @@ class PageDessinComponent {
 
   addToTable(value){
     this.canvasControl.addToCanvas(value);
-    this.canvasControl.drawStuff(this.activeTable);
+    this.canvasControl.drawStuff();
   }
 }
 

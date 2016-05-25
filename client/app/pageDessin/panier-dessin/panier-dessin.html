@@ -1,7 +1,8 @@
 <h3>Panier des effets</h3>
 <uib-accordion>
-<uib-accordion-group draggable="true" heading="{{effet.titre}} - {{effet.titre_option}}" ng-repeat="effet in $ctrl.effets">
-                            <div ng-repeat="(k, compo) in effet.composants">
+<uib-accordion-group ng-mouseleave="$ctrl.leaveEffet()" ng-mouseenter="$ctrl.onEffet({value:effet})" draggable heading="{{effet.titre}} - {{effet.titre_option}}" ng-repeat="effet in $ctrl.effets">
+
+                            <div ng-mouseleave="$ctrl.leaveEffet()" ng-mouseenter="$ctrl.onCompo({value:compo})" ng-repeat="(k, compo) in effet.composants">
                                 <label>{{compo.titre}} - {{compo.titre_item}}</label>
                                 <p class="input-group input-group-sm">
                                     <select class="form-control" ng-model="$ctrl.newItem">
