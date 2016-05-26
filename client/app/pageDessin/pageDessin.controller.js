@@ -8,6 +8,8 @@ class PageDessinComponent {
     this.instanceDessin = instanceDessin;
     this.canvasControl = canvasControl;
     this.isActive = 'effet';
+    this.activeTable = [];
+    this.tableCompo = [];
   }
 
   $onInit(){
@@ -33,6 +35,8 @@ class PageDessinComponent {
         case 'compo' :
           this.canvasControl.setTableShine(effet.composants);
           break;
+        default:
+          return console.log('Variable "isActive" not defined in pageDessin.controller.js');
       }
       this.canvasControl.drawStuff();
     }
@@ -71,6 +75,8 @@ class PageDessinComponent {
     this.canvasControl.setTableActive(active);
     this.canvasControl.setTableThin(inactive);
     this.canvasControl.drawStuff();
+    this.activeTable = this.canvasControl.getTableActive();
+    this.tableCompo = this.canvasControl.getTableComposant();
   }
 
   activeCompo(){

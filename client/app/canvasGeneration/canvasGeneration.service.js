@@ -197,7 +197,7 @@ angular.module('pedaleswitchApp')
       }
       drawCanvas(ctx){
         ctx.beginPath();
-        ctx.rect(this.pos.x + this.pos_parent.x, this.pos.y + this.pos_parent.y, this.size.w, this.size.h);
+        ctx.rect(this.pos.x, this.pos.y, this.size.w, this.size.h);
         if (this.isOverlapping) {
           ctx.fillStyle = "rgba(255, 00, 00, 0.2)";
           ctx.fill();

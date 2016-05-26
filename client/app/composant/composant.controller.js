@@ -8,16 +8,16 @@
       this.$http = $http;
       this.socket = socket;
 
-
       this.composants = {};
       this.composantTypes = [];
       this.newComposant = {
         titre: '',
         type: '',
+        shape: '',
         description: '',
         disponible: true,
         prix_additionnel: '',
-        dimensions: {w: '', h: ''},
+        size: {w: '', h: ''},
         media: []
       };
 
@@ -62,10 +62,11 @@
           {
             titre: this.newComposant.titre,
             type: this.newComposant.type,
+            shape: this.newComposant.shape,
             description: this.newComposant.description,
             disponible: this.newComposant.disponible,
             prix_additionnel: this.newComposant.prix_additionnel,
-            dimensions: {w: this.newComposant.w, w: this.newComposant.h},
+            size: {w: this.newComposant.size.w, h: this.newComposant.size.h},
             media: []
           });
       }
@@ -74,10 +75,11 @@
       this.newComposant = {
         titre: '',
         type: '',
+        shape: '',
         description: '',
         disponible: true,
         prix_additionnel: '',
-        dimensions: {w: '', h: ''},
+        size: {w: '', h: ''},
         media: []
       };
     }

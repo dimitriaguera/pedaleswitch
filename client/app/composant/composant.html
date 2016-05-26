@@ -2,36 +2,36 @@
   <composant-type></composant-type>
   <h1 class="page-header">Liste de Composants : </h1>
 
-
   <uib-accordion>
     <uib-accordion-group heading="{{k}}" ng-repeat="(k, v) in $ctrl.composants">
       <ul ng-repeat="composant in v">
-        <li><a href="#" uib-tooltip="{{composant.description}}">{{composant.titre}}<br/>Type : {{composant.type}}<br/>Prix : {{composant.prix_additionnel}}euro<br/>Dimension : {{composant.dimensions.w}} x {{composant.dimensions.h}}<button type="button" class="close" ng-click="$ctrl.deleteComposant(composant)">&times;</button></a></li>
+        <li><a href="#" uib-tooltip="{{composant.description}}">
+          {{composant.titre}}<br/>
+          Type : {{composant.type}}<br/>
+          Forme : {{composant.shape}}<br/>
+          Prix : {{composant.prix_additionnel}}euro<br/>
+          Dimension : {{composant.size.w}} x {{composant.size.h}}
+          <button type="button" class="close" ng-click="$ctrl.deleteComposant(composant)">&times;</button>
+        </a></li>
       </ul>
     </uib-accordion-group>
   </uib-accordion>
 
-
-
   <form class="thing-form">
-    <label>Ajouter un composant dans la db</label>
-    <p class="input-group">
-      <input type="text" class="form-control" placeholder="Titre." ng-model="$ctrl.newComposant.titre">
+    <h2>Ajouter un composant dans la db</h2>
+      <label>Nom :</label><input type="text" class="form-control" placeholder="Nom" ng-model="$ctrl.newComposant.titre">
+      <label>Type de composant :</label>
       <select ng-model="$ctrl.newComposant.type">
         <option ng-repeat="composantType in $ctrl.composantTypes">{{composantType.titre}}</option>
       </select>
-      <input type="text" class="form-control" placeholder="Description." ng-model="$ctrl.newComposant.description">
-      <label>
-        Disponible : <input type="checkbox" ng-model="$ctrl.newComposant.disponible">
-      </label>
-      <input type="text" class="form-control" placeholder="Prix." ng-model="$ctrl.newComposant.prix_additionnel">
-      <input type="text" class="form-control" placeholder="x." ng-model="$ctrl.newComposant.x">
-      <input type="text" class="form-control" placeholder="y." ng-model="$ctrl.newComposant.y">
-    </p>
+      </br>
+      <label>Forme :</label><input type="text" class="form-control" placeholder="(Rect, Cercle, Poly)" ng-model="$ctrl.newComposant.shape">
+      <label>Description :</label><input type="text" class="form-control" placeholder="Description." ng-model="$ctrl.newComposant.description">
+      <label>Disponible :</label><input type="checkbox" ng-model="$ctrl.newComposant.disponible">
+      </br>
+      <label>Prix :</label><input type="text" class="form-control" placeholder="Prix." ng-model="$ctrl.newComposant.prix_additionnel">
+      <label>Largueur :</label><input type="text" class="form-control" placeholder="Largueur" ng-model="$ctrl.newComposant.size.w">
+      <label>Hauteur :</label><input type="text" class="form-control" placeholder="Hauteur" ng-model="$ctrl.newComposant.size.h">
     <button type="submit" class="btn btn-primary" ng-click="$ctrl.addComposant()">Add New</button>
-
-
-    <button type="submit" class="btn btn-primary" ng-click="$ctrl.order($ctrl.composants)">Order</button>
-
   </form>
 </div>

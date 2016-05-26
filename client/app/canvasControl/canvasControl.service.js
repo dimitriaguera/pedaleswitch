@@ -15,16 +15,34 @@ angular.module('pedaleswitchApp')
     var tableShine = [];
     var debrayable = false;
 
+    var thing = function(entity) {
+      switch (entity.shape){
+        case 'Rect':
+          return canvasGeneration.newRect(entity);
+          break;
+        case 'Cercle':
+          return canvasGeneration.newCercle(entity);
+          break;
+        case 'Poly':
+          //return canvasGeneration.newPoly(entity);
+          break;
+        default:
+          console.log('Shape not match in canvasControl :' + entity.shape);
+          return false;
+      }      
+    };
+    
+    
     // Public API here
     return {
-
+      
       addToCanvas: function(effet) {
         var tmp_eff = canvasGeneration.newRect(effet);
         var tmp_comp = [];
         var compos = effet.composants;
         for (var compo in compos) {
           if (compos.hasOwnProperty(compo)) {
-            tmp_comp = canvasGeneration.newCercle(compos[compo]);
+            tmp_comp = thing(compos[compo]);
             tableComposant.push(tmp_comp);
             tmp_eff.composants.push(tmp_comp);
           }

@@ -55,10 +55,10 @@ angular.module('pedaleswitchApp')
           description: effet.description,
           description_option: option.description,
           prix: option.prix,
-          size: option.dimensions,
+          size: option.size,
           pos: {
             x: 20,
-            y:20
+            y: 20
           },
           composants: {}
         };
@@ -69,17 +69,17 @@ angular.module('pedaleswitchApp')
             titre: option.composants[i].titre,
             items: option.composants[i].available_compo_id,
             pos_parent: nouvEffet.pos,
-            pos_default: option.composants[i].coordonnees,
+            pos_default: option.composants[i].pos,
             pos: {
-              x: option.composants[i].coordonnees.x + nouvEffet.pos.x,
-              y: option.composants[i].coordonnees.y + nouvEffet.pos.y
+              x: option.composants[i].pos.x + nouvEffet.pos.x,
+              y: option.composants[i].pos.y + nouvEffet.pos.y
             },
             id_item: composantItems[option.composants[i].available_compo_id[0]]._id,
+            shape: composantItems[option.composants[i].available_compo_id[0]].shape,
             titre_item: composantItems[option.composants[i].available_compo_id[0]].titre,
-            size: composantItems[option.composants[i].available_compo_id[0]].dimensions,
+            size: composantItems[option.composants[i].available_compo_id[0]].size,
             prix_add: composantItems[option.composants[i].available_compo_id[0]].prix_additionnel
           };
-          //nouvEffet.composants[option.composants[i]._id].coord.x = 100;
         }
         dessin.options.push(nouvEffet);
       },
@@ -87,7 +87,7 @@ angular.module('pedaleswitchApp')
       updateComposant: function(idOption, idCompo, idItem) {
         var data = {
           titre_item: composantItems[idItem].titre,
-          dimensions: composantItems[idItem].dimensions,
+          size: composantItems[idItem].size,
           prix_add: composantItems[idItem].prix_additionnel
         };
         for(var i=0; i<dessin.options.length; i++){

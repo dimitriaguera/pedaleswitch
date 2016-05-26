@@ -1,17 +1,16 @@
 <uib-tabset active="0">
     <uib-tab index="$index" ng-repeat="composant in $ctrl.oneOption.composants track by $index" heading="Comp. {{$index + 1}} - {{composant.titre}}">
-        <p class="input-group">
-            <select class="form-control" ng-model="$ctrl.oneOption.composants[$index].type">
-                <option ng-repeat="type in $ctrl.typeCompo" value="{{type.titre}}">{{type.titre}}</option>
-            </select>
-            <input type="text" class="form-control" placeholder="nom du composant" ng-model="$ctrl.oneOption.composants[$index].titre">
-            <modal-composants one-composant="$ctrl.oneOption.composants[$index]"></modal-composants>
-            <input type="text" class="form-control" placeholder="coord. X" ng-model="$ctrl.oneOption.composants[$index].coordonnees.x">
-            <input type="text" class="form-control" placeholder="coord. Y" ng-model="$ctrl.oneOption.composants[$index].coordonnees.y">
-            <div class="btn-group">
-            <button type="submit" class="btn btn-primary" ng-click="$ctrl.newComposant()">+ compo</button>
-            <button type="submit" class="btn btn-danger" ng-click="$ctrl.deleteComposant($index)">- compo</button>
-            </div>
-        </p>
+      <label>Type de composant :</label>
+      <select class="form-control" ng-model="$ctrl.oneOption.composants[$index].type">
+        <option ng-repeat="type in $ctrl.typeCompo" value="{{type.titre}}">{{type.titre}}</option>
+      </select>
+      <label>Nom du composant :</label><input type="text" class="form-control" placeholder="nom du composant" ng-model="$ctrl.oneOption.composants[$index].titre">
+      <label>Choix de composants possibles :</label><modal-composants one-composant="$ctrl.oneOption.composants[$index]"></modal-composants>
+      <label>Position x :</label><input type="text" class="form-control" placeholder="coord. X" ng-model="$ctrl.oneOption.composants[$index].pos.x">
+      <label>Position y :</label><input type="text" class="form-control" placeholder="coord. Y" ng-model="$ctrl.oneOption.composants[$index].pos.y">
+      <div class="btn-group">
+        <button type="submit" class="btn btn-primary" ng-click="$ctrl.newComposant()">+ compo</button>
+        <button type="submit" class="btn btn-danger" ng-click="$ctrl.deleteComposant($index)">- compo</button>
+      </div>
     </uib-tab>
 </uib-tabset>

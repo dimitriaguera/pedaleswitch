@@ -6,7 +6,7 @@ var ComposantEffetSchema = new mongoose.Schema({
   type: String,
   titre: String,
   available_compo_id: [],
-  coordonnees: {
+  pos: {
     x:Number,
     y:Number
   }
@@ -18,7 +18,7 @@ var OptionSchema = new mongoose.Schema({
   disponible: Boolean,
   prix: Number,
   media: [],
-  dimensions: {
+  size: {
     w:Number,
     h:Number
   },

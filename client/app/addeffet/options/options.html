@@ -1,16 +1,14 @@
 <uib-tabset active="0">
     <uib-tab index="$index" ng-repeat="option in $ctrl.effet.options track by $index" heading="Option {{$index + 1}} - {{option.titre}}">
-        <p class="input-group">
-            <input type="text" class="form-control" placeholder="nom de l'option" ng-model="$ctrl.effet.options[$index].titre">
-            <input type="text" class="form-control" placeholder="description" ng-model="$ctrl.effet.options[$index].description">
-            <input type="text" class="form-control" placeholder="prix" ng-model="$ctrl.effet.options[$index].prix">
-            <input type="text" class="form-control" placeholder="largeur de l'option" ng-model="$ctrl.effet.options[$index].dimensions.w">
-            <input type="text" class="form-control" placeholder="hauteur de l'option" ng-model="$ctrl.effet.options[$index].dimensions.h">
-            <option-composants one-option="$ctrl.effet.options[$index]" nouvoption="$ctrl.nouvoption"></option-composants>
+        <label>Nom de l'option :</label><input type="text" class="form-control" placeholder="nom de l'option" ng-model="$ctrl.effet.options[$index].titre">
+        <label>Description :</label><input type="text" class="form-control" placeholder="description" ng-model="$ctrl.effet.options[$index].description">
+        <label>Prix :</label><input type="text" class="form-control" placeholder="prix" ng-model="$ctrl.effet.options[$index].prix">
+        <label>Largueur :</label><input type="text" class="form-control" placeholder="largeur de l'option" ng-model="$ctrl.effet.options[$index].size.w">
+        <label>Hauteur :</label><input type="text" class="form-control" placeholder="hauteur de l'option" ng-model="$ctrl.effet.options[$index].size.h">
+        <option-composants one-option="$ctrl.effet.options[$index]" nouvoption="$ctrl.nouvoption"></option-composants>
         <div class="btn-group">
             <button type="submit" class="btn btn-primary" ng-click="$ctrl.newOption()" ng-hide="$ctrl.nouv">+ Option</button>
             <button type="submit" class="btn btn-danger" ng-click="$ctrl.deleteOption($index)" ng-hide="$ctrl.nouv">- Option</button>
         </div>
-        </p>
     </uib-tab>
 </uib-tabset>
