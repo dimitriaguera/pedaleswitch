@@ -49,20 +49,25 @@ angular.module('pedaleswitchApp')
       },
       
       addToCanvas: function(effet) {
-        var tmp_eff = canvasGeneration.newRect(effet);
-        var tmp_comp = [];
-        var compos = effet.composants;
-        for (var compo in compos) {
-          if (compos.hasOwnProperty(compo)) {
-            tmp_comp = thing(compos[compo]);
-            tableComposant.push(tmp_comp);
-            tmp_eff.composants.push(tmp_comp);
+        // if check si l'effet est deja dans le canvas.
+        if (!effet.incanvas) {
+          effet.incanvas = true;
+          var tmp_eff = canvasGeneration.newRect(effet);
+          var tmp_comp = [];
+          var compos = effet.composants;
+          for (var compo in compos) {
+            if (compos.hasOwnProperty(compo)) {
+              tmp_comp = thing(compos[compo]);
+              tableComposant.push(tmp_comp);
+              tmp_eff.composants.push(tmp_comp);
+            }
           }
+          tableEffet.push(tmp_eff);
         }
-        tableEffet.push(tmp_eff);
       },
 
       removeToCanvas: function(effet) {
+        effet.incanvas = false;
         var index = this.searchTabByIdReturnIndex(tableEffet, effet._id, effet.key);
         if(index !== false){
           var removeIndex = [];

@@ -15,7 +15,7 @@
     </div>
     <p>{{effet.description}}</p>
     <p>{{effet.description_option}}</p>
-    <button type="submit" class="btn btn-primary btn-sm" ng-click="$ctrl.addToTable({value: effet})">+</button>
-    <button type="submit" class="btn btn-primary btn-sm" ng-click="$ctrl.removeToTable({value: effet})">-</button>
+    <button ng-hide="effet.incanvas" type="submit" class="btn btn-primary btn-sm" ng-click="$ctrl.addToTable({value: effet})">+</button>
+    <button ng-show="effet.incanvas" type="submit" class="btn btn-primary btn-sm" ng-click="$ctrl.removeToTable({value: effet})">-</button>
   </uib-accordion-group>
 </uib-accordion>
