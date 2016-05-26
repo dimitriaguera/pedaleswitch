@@ -20,7 +20,7 @@ class PageDessinComponent {
     this.$http.get('/api/effets').then(response => {
       this.effets = response.data;
       this.instanceDessin.setEffet(this.effets[0], this.effets[0].options[0]);
-      this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
+      //this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
 
 
       //@todo il faut garder juste c ligne et les mettre en dehors du $http.get
