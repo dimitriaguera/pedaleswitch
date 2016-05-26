@@ -34,7 +34,6 @@ class PageDessinComponent {
       this.canvasControl.setTableThin(inactive);
       this.dessin = this.instanceDessin.getDessin();
       this.items = this.instanceDessin.getComposantItems();
-
       // Redessine les objets précédement présent.
       if (active.length > 0){
         this.canvasControl.drawStuff();
