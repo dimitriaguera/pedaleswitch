@@ -19,9 +19,11 @@ class PageDessinComponent {
     //@todo a supp et verifier dans le constructor de virer http et OrderArray.
     this.$http.get('/api/effets').then(response => {
       this.effets = response.data;
-      this.instanceDessin.setEffet(this.effets[0], this.effets[0].options[0]);
-      //this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
 
+      if (this.instanceDessin.getDessin().options.length === 0){
+        this.instanceDessin.setEffet(this.effets[0], this.effets[0].options[0]);
+        this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
+      }
 
       //@todo il faut garder juste c ligne et les mettre en dehors du $http.get
       var active = this.canvasControl.getTableEffet();
@@ -32,6 +34,12 @@ class PageDessinComponent {
       this.canvasControl.setTableThin(inactive);
       this.dessin = this.instanceDessin.getDessin();
       this.items = this.instanceDessin.getComposantItems();
+
+      // Redessine les objets précédement présent.
+      if (active.length > 0){
+        this.canvasControl.drawStuff();
+      }
+
     });
   }
 
