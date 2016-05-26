@@ -8,6 +8,8 @@ class PageDessinComponent {
     this.instanceDessin = instanceDessin;
     this.canvasControl = canvasControl;
     this.isActive = 'effet';
+    this.zoom = 100;
+    this.okZoom = true;
 
     
     //@todo a sup verifier le oninit.
@@ -20,14 +22,15 @@ class PageDessinComponent {
     this.$http.get('/api/effets').then(response => {
       this.effets = response.data;
 
-      if (this.instanceDessin.getDessin().options.length === 0){
-        this.instanceDessin.setEffet(this.effets[0], this.effets[0].options[0]);
-        this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
-      }
+      //if (this.instanceDessin.getDessin().options.length === 0){
+      //  this.instanceDessin.setEffet(this.effets[0], this.effets[0].options[0]);
+      //  this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
+      //}
 
       //@todo il faut garder juste c ligne et les mettre en dehors du $http.get
       var active = this.canvasControl.getTableEffet();
       var inactive = this.canvasControl.getTableComposant();
+      this.zoom = this.canvasControl.getZoom();
       this.canvasControl.setDeb(false);
       this.canvasControl.resetTableDashed();
       this.canvasControl.setTableActive(active);
@@ -113,14 +116,18 @@ class PageDessinComponent {
   addToTable(value){
     this.canvasControl.addToCanvas(value);
     this.canvasControl.drawStuff();
+    this.toutesTables = this.canvasControl.tableState();
   }
 
   removeToTable(value){
     this.canvasControl.removeToCanvas(value);
     this.canvasControl.drawStuff();
   }
-  
-  
+
+  zoomAdd(value){
+    this.okZoom = this.canvasControl.zoomChange(value);
+    this.zoom = this.canvasControl.getZoom();
+  }
 }
 
 angular.module('pedaleswitchApp')

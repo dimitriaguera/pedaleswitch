@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('pedaleswitchApp')
-  .factory('canvasControl', function (canvasGeneration) {
+  .factory('canvasControl', function (canvasGeneration, canvasConversion) {
     // Service logic
     // ...
 
@@ -62,6 +62,8 @@ angular.module('pedaleswitchApp')
               tmp_eff.composants.push(tmp_comp);
             }
           }
+          canvasConversion.convertEffetSize(tmp_eff);
+          canvasConversion.initializeEffetZoom(tmp_eff);
           tableEffet.push(tmp_eff);
         }
       },
@@ -110,6 +112,30 @@ angular.module('pedaleswitchApp')
         return false;
       },
 
+      getZoom: function(){
+        return canvasConversion.getZoomRatio();
+      },
+
+      zoomInitialize: function(value){
+        canvasConversion.setZoom(value);
+        for (var i = 0; i < tableEffet.length; i++) {
+          canvasConversion.initializeEffetZoom(tableEffet[i]);
+        }
+        this.drawStuff();
+        return canvasConversion.getZoomRatio();
+      },
+
+      zoomChange: function(value){
+        var okZoom = canvasConversion.setZoom(value);
+        if (okZoom) {
+          for (var i = 0; i < tableEffet.length; i++) {
+            canvasConversion.convertEffetZoom(tableEffet[i]);
+          }
+          this.drawStuff();
+        }
+        return okZoom;
+      },
+
       drawStuff: function() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.lineWidth = 1;
@@ -119,7 +145,7 @@ angular.module('pedaleswitchApp')
 
         if(tableActive.length !== 0) {
           ctx.restore();
-          ctx.lineWidth = 2;
+          ctx.lineWidth = '1px';
           ctx.strokeStyle = "black";
           for (var i = 0; i < tableActive.length; i++) {
             tableActive[i].drawCanvas(ctx);
@@ -173,6 +199,9 @@ angular.module('pedaleswitchApp')
       },
 
       setCanvas: function(canv){
+        var canvasSize = canvasConversion.getCanvasSize();
+        canv.width = canvasSize.w;
+        canv.height = canvasSize.h;
         canvas = canv;
       },
 

@@ -56,7 +56,7 @@ angular.module('pedaleswitchApp')
           description: effet.description,
           description_option: option.description,
           prix: option.prix,
-          size: option.size,
+          size: Object.assign({}, option.size),
           pos: {
             x: 20,
             y: 20
@@ -70,7 +70,7 @@ angular.module('pedaleswitchApp')
             titre: option.composants[i].titre,
             items: option.composants[i].available_compo_id,
             pos_parent: nouvEffet.pos,
-            pos_default: option.composants[i].pos,
+            pos_default: Object.assign({}, option.composants[i].pos),
             pos: {
               x: option.composants[i].pos.x + nouvEffet.pos.x,
               y: option.composants[i].pos.y + nouvEffet.pos.y
@@ -78,7 +78,7 @@ angular.module('pedaleswitchApp')
             id_item: composantItems[option.composants[i].available_compo_id[0]]._id,
             shape: composantItems[option.composants[i].available_compo_id[0]].shape,
             titre_item: composantItems[option.composants[i].available_compo_id[0]].titre,
-            size: composantItems[option.composants[i].available_compo_id[0]].size,
+            size: Object.assign({}, composantItems[option.composants[i].available_compo_id[0]].size),
             prix_add: composantItems[option.composants[i].available_compo_id[0]].prix_additionnel
           };
         }
