@@ -17,7 +17,7 @@
         op: '<',
         eff: '<'
       },
-      controller: BibDescription,
+      controller: BibDescription
     });
 
 })();

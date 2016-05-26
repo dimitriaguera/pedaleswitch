@@ -60,10 +60,9 @@ angular.module('pedaleswitchApp')
 
             var coords = offset(e.target, e);
 
-            // call the drop passed drop function
             var obj = JSON.parse(e.dataTransfer.getData('data'));
+            
             var effet = instanceDessin.searchEffetInDessin(obj._id, obj.key);
-
             if(effet) {
               effet.pos.x = coords[0];
               effet.pos.y = coords[1];
@@ -77,12 +76,6 @@ angular.module('pedaleswitchApp')
               canvasControl.addToCanvas(effet);
               canvasControl.drawStuff();
             }
-
-            //x['x'] = coords[0];
-            //x['y'] = coords[1];
-            //scope.DessinZone.handleDrop(x);
-
-            
             return false;
           },
           false

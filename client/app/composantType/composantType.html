@@ -9,19 +9,9 @@
           </a>
           <input type="checkbox" class="edit" ng-model="composantType.checked">
           <div ng-show="composantType.checked">
-            <ul ng-repeat="(k,v) in composantType">
-              <li>
-                <input type="text" ng-model="composantType[k]">
-              </li>
-            </ul>
-            <button type="button" class="btn btn-primary" ng-click="$ctrl.updateComposantType(composantType)">Save Modif</button>
-          </div>
-
-          <div ng-show="composantType.checked">
             <input type="text" ng-model="composantType.titre">
             <button type="button" class="btn btn-primary" ng-click="$ctrl.updateComposantType(composantType)">Save Modif</button>
           </div>
-
         </li>
       </ul>
     </div>

@@ -35,6 +35,18 @@ angular.module('pedaleswitchApp')
     
     // Public API here
     return {
+
+      //@todo a supprimer
+      tableState: function(){
+        return {
+        tableEffet: tableEffet,
+        tableComposant: tableComposant,
+        tableActive: tableActive,
+        tableDashed:  tableDashed,
+        tableThin: tableThin,
+        tableShine: tableShine
+        }
+      },
       
       addToCanvas: function(effet) {
         var tmp_eff = canvasGeneration.newRect(effet);
@@ -48,6 +60,31 @@ angular.module('pedaleswitchApp')
           }
         }
         tableEffet.push(tmp_eff);
+      },
+
+      removeToCanvas: function(effet) {
+        var index = this.searchTabByIdReturnIndex(tableEffet, effet._id, effet.key);
+        if(index !== false){
+          var removeIndex = [];
+          for (var i = 0  ; i < tableComposant.length ; i++) {
+            if (effet.key === tableComposant[i].key) {
+              removeIndex.push(i);
+            }
+          }
+          for (i = removeIndex.length -1; i >= 0; i--){
+            tableComposant.splice(removeIndex[i],1);
+          }
+          tableEffet.splice(index,1);
+        }
+      },
+      
+      searchTabByIdReturnIndex: function(tab, id, key){
+        for(var i = 0; i < tab.length; i++){
+          if(tab[i]._id === id && tab[i].key === key) {
+            return i;
+          }
+        }
+        return false;
       },
 
       searchEffetById: function(id, key){

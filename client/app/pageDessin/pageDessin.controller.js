@@ -2,25 +2,37 @@
 (function(){
 
 class PageDessinComponent {
-  constructor(instanceDessin, canvasControl) {
+  constructor(instanceDessin, canvasControl, $http) {
     this.dessin = {};
     this.items = {};
     this.instanceDessin = instanceDessin;
     this.canvasControl = canvasControl;
     this.isActive = 'effet';
-    this.activeTable = [];
-    this.tableCompo = [];
+
+    
+    //@todo a sup verifier le oninit.
+    this.$http = $http; //@todo a supp et dans la declaration aussi
+    this.effets = [];//@todo a supp
   }
 
   $onInit(){
-    var active = this.canvasControl.getTableEffet();
-    var inactive = this.canvasControl.getTableComposant();
-    this.canvasControl.setDeb(false);
-    this.canvasControl.resetTableDashed();
-    this.canvasControl.setTableActive(active);
-    this.canvasControl.setTableThin(inactive);
-    this.dessin = this.instanceDessin.getDessin();
-    this.items = this.instanceDessin.getComposantItems();
+    //@todo a supp et verifier dans le constructor de virer http et OrderArray.
+    this.$http.get('/api/effets').then(response => {
+      this.effets = response.data;
+      this.instanceDessin.setEffet(this.effets[0], this.effets[0].options[0]);
+      this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
+
+
+      //@todo il faut garder juste c ligne et les mettre en dehors du $http.get
+      var active = this.canvasControl.getTableEffet();
+      var inactive = this.canvasControl.getTableComposant();
+      this.canvasControl.setDeb(false);
+      this.canvasControl.resetTableDashed();
+      this.canvasControl.setTableActive(active);
+      this.canvasControl.setTableThin(inactive);
+      this.dessin = this.instanceDessin.getDessin();
+      this.items = this.instanceDessin.getComposantItems();
+    });
   }
 
   mouseOnEffet(value){
@@ -75,8 +87,6 @@ class PageDessinComponent {
     this.canvasControl.setTableActive(active);
     this.canvasControl.setTableThin(inactive);
     this.canvasControl.drawStuff();
-    this.activeTable = this.canvasControl.getTableActive();
-    this.tableCompo = this.canvasControl.getTableComposant();
   }
 
   activeCompo(){
@@ -97,6 +107,13 @@ class PageDessinComponent {
     this.canvasControl.addToCanvas(value);
     this.canvasControl.drawStuff();
   }
+
+  removeToTable(value){
+    this.canvasControl.removeToCanvas(value);
+    this.canvasControl.drawStuff();
+  }
+  
+  
 }
 
 angular.module('pedaleswitchApp')

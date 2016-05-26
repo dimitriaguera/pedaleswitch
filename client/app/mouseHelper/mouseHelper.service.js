@@ -30,10 +30,8 @@ angular.module('pedaleswitchApp')
             dragIdx = dragid.id;
             dragOffsetX = dragid.dx;
             dragOffsetY = dragid.dy;
-
             ontable[dragIdx].setSelected(true);
-
-           update('move');
+            update('move');
             $rootScope.$emit('click-on-element');
             canvasControl.drawStuff();
           }
@@ -68,15 +66,11 @@ angular.module('pedaleswitchApp')
 
           ontable[dragIdx].setCenterX(mouseX - dragOffsetX);
           ontable[dragIdx].setCenterY(mouseY - dragOffsetY);
-
           ontable[dragIdx].setSelected(false);
           update('default');
-
           checkCollision.checkall(ontable);
           canvasControl.drawStuff();
-
           dragIdx = -1;
-
           $rootScope.$emit('no-click-on-element');
       },
 

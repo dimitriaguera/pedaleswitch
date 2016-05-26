@@ -15,11 +15,12 @@
         effets: '<',
         chgmtitem: '&',
         addToTable: '&',
+        removeToTable: '&',
         onCompo: '&',
         onEffet: '&',
         leaveEffet: '&'
       },
-      controller: PanierDessin,
+      controller: PanierDessin
     });
 
 })();

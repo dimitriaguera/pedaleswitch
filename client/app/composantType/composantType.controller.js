@@ -5,19 +5,14 @@ class ComposantTypeComponent {
   constructor($http, $scope, socket) {
     this.$http = $http;
     this.socket = socket;
-
     $scope.$on('$destroy', function() {
       socket.unsyncUpdates('composantType');
     });
-
   }
 
   $onInit() {
     this.$http.get('/api/composantTypes').then(response => {
-      this.composantTypes = this.ctrlCompo.composantTypes = response.data;
-      this.composantTypes.forEach( function(v) {
-        v.checked = false;
-        });
+      this.composantTypes = response.data;
       this.socket.syncUpdates('composantType', this.composantTypes);
     });
   }

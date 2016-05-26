@@ -50,6 +50,7 @@ angular.module('pedaleswitchApp')
         var nouvEffet = {
           _id: option._id,
           key: key,
+          
           titre: effet.titre,
           titre_option: option.titre,
           description: effet.description,
