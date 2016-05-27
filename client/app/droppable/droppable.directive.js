@@ -63,7 +63,7 @@ angular.module('pedaleswitchApp')
             var obj = JSON.parse(e.dataTransfer.getData('data'));
             
             var effet = instanceDessin.searchEffetInDessin(obj._id, obj.key);
-            if(effet && !effet.incanvas) {
+            if(effet && !effet.in_canvas) {
               effet.pos.x = coords[0] - (effet.size.w / 2);
               effet.pos.y = coords[1] - (effet.size.h / 2);
               var compos = effet.composants;

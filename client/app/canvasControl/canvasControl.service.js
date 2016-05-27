@@ -48,10 +48,17 @@ angular.module('pedaleswitchApp')
         }
       },
       
+      
+      /**
+       * Cette fonction créé les objets du canvas à partir du modèle dessin.
+       * Et l'ajoute dans tableEffet et tableComposant pour les composants correspondants.
+       * 
+       * @param effet : objet effet du modele dessin (entrée de la table option du panier).
+       */
       addToCanvas: function(effet) {
         // if check si l'effet est deja dans le canvas.
-        if (!effet.incanvas) {
-          effet.incanvas = true;
+        if (!effet.in_canvas) {
+          effet.in_canvas = true;
           var tmp_eff = canvasGeneration.newRect(effet);
           var tmp_comp = [];
           var compos = effet.composants;
@@ -69,7 +76,7 @@ angular.module('pedaleswitchApp')
       },
 
       removeToCanvas: function(effet) {
-        effet.incanvas = false;
+        effet.in_canvas = false;
         var index = this.searchTabByIdReturnIndex(tableEffet, effet._id, effet.key);
         if(index !== false){
           var removeIndex = [];
@@ -122,7 +129,6 @@ angular.module('pedaleswitchApp')
           canvasConversion.initializeEffetZoom(tableEffet[i]);
         }
         this.drawStuff();
-        return canvasConversion.getZoomRatio();
       },
 
       zoomChange: function(value){
