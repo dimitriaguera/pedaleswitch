@@ -93,6 +93,22 @@ angular.module('pedaleswitchApp')
       
       getRulersSize: function(){
         return RULERS_SIZE;        
+      },
+
+      drawGrid: function(canvas, ctx) {
+        var w = canvas.width, h = canvas.height;
+        ctx.strokeStyle = 'rgba(94, 94, 94, 0.8)';
+        //ctx.setLineDash([1, 5]);
+        ctx.beginPath();
+        for (var e = 0; e < w; e += 15) {
+          ctx.moveTo(e, 0);
+          ctx.lineTo(e, w);
+        }
+        for (var f = 0; f < h; f += 15) {
+          ctx.moveTo(0, f);
+          ctx.lineTo(w, f);
+        }
+        ctx.stroke();
       }
       
     };

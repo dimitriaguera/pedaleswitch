@@ -145,10 +145,14 @@ angular.module('pedaleswitchApp')
       drawRulers: function() {
         rulers.render(canvas, ctx, '#aaa', 'pixels', 100);
       },
+      
+      drawGrid: function() {
+        rulers.drawGrid(canvas, ctx);
+      },
 
       drawStuff: function() {
         ctx.clearRect(rulers.getRulersSize(), rulers.getRulersSize(), canvas.width, canvas.height);
-
+        rulers.drawGrid(canvas, ctx);
         ctx.lineWidth = 1;
         ctx.strokeStyle = "black";
         ctx.setLineDash([0, 0]);
