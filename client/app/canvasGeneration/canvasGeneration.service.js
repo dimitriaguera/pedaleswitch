@@ -97,6 +97,7 @@ angular.module('pedaleswitchApp')
           ctx.fill();
         }
         ctx.stroke();
+        ctx.closePath();
       }
     }
 
@@ -207,6 +208,7 @@ angular.module('pedaleswitchApp')
           ctx.fill();
         }
         ctx.stroke();
+        ctx.closePath();
       }
     }
 

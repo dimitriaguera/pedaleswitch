@@ -9,7 +9,7 @@
                 <option ng-repeat="item in compo.items" value="{{item}}">{{$ctrl.items[item].titre}}</option>
             </select>
             <span class="input-group-btn">
-                <button type="submit" class="btn btn-warning" ng-click="$ctrl.chgmtitem({opt: effet._id, compo: k, item: $ctrl.newItem})">Changer</button>
+                <button type="submit" class="btn btn-warning" ng-click="$ctrl.chgmtitem({opt: effet._id, compo: compo._id, item: $ctrl.newItem})">Changer</button>
             </span>
         </p>
     </div>

@@ -1,12 +1,13 @@
 'use strict';
 
 angular.module('pedaleswitchApp')
-  .factory('canvasControl', function (canvasGeneration, canvasConversion, rulers) {
+  .factory('canvasControl', function (canvasGeneration, canvasConversion, checkCollision, rulers) {
     // Service logic
     // ...
 
     var ctx = {};
     var canvas = {};
+    var canvas_window = {};
     var tableEffet = [];
     var tableComposant = [];
     var tableActive = [];
@@ -62,15 +63,11 @@ angular.module('pedaleswitchApp')
           var tmp_eff = canvasGeneration.newRect(effet);
           var tmp_comp = [];
           var compos = effet.composants;
-          for (var compo in compos) {
-            if (compos.hasOwnProperty(compo)) {
-              tmp_comp = thing(compos[compo]);
+          for (var i = 0; i < compos.length; i++) {
+              tmp_comp = thing(compos[i]);
               tableComposant.push(tmp_comp);
               tmp_eff.composants.push(tmp_comp);
-            }
           }
-          canvasConversion.convertEffetSize(tmp_eff);
-          canvasConversion.initializeEffetZoom(tmp_eff);
           tableEffet.push(tmp_eff);
         }
       },
@@ -123,24 +120,24 @@ angular.module('pedaleswitchApp')
         return canvasConversion.getZoomRatio();
       },
 
-      zoomInitialize: function(value){
-        canvasConversion.setZoom(value);
-        for (var i = 0; i < tableEffet.length; i++) {
-          canvasConversion.initializeEffetZoom(tableEffet[i]);
-        }
-        this.drawStuff();
-      },
-
-      zoomChange: function(value){
-        var okZoom = canvasConversion.setZoom(value);
-        if (okZoom) {
-          for (var i = 0; i < tableEffet.length; i++) {
-            canvasConversion.convertEffetZoom(tableEffet[i]);
-          }
-          this.drawStuff();
-        }
-        return okZoom;
-      },
+      //zoomInitialize: function(value){
+      //  canvasConversion.setZoom(value);
+      //  for (var i = 0; i < tableEffet.length; i++) {
+      //    canvasConversion.initializeEffetZoom(tableEffet[i]);
+      //  }
+      //  this.drawStuff();
+      //},
+      //
+      //zoomChange: function(value){
+      //  var okZoom = canvasConversion.setZoom(value);
+      //  if (okZoom) {
+      //    for (var i = 0; i < tableEffet.length; i++) {
+      //      canvasConversion.convertEffetZoom(tableEffet[i]);
+      //    }
+      //    this.drawStuff();
+      //  }
+      //  return okZoom;
+      //},
 
       drawRulers: function() {
         rulers.render(canvas, ctx, '#aaa', 'pixels', 100);
@@ -152,13 +149,14 @@ angular.module('pedaleswitchApp')
 
       drawStuff: function() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.lineWidth = 1;
+        ctx.lineWidth = '1px';
         ctx.strokeStyle = "black";
-        ctx.setLineDash([0, 0]);
+        ctx.setLineDash([]);
         ctx.save();
 
         if(tableActive.length !== 0) {
           ctx.restore();
+          ctx.setLineDash([]);
           ctx.lineWidth = '1px';
           ctx.strokeStyle = "black";
           for (var i = 0; i < tableActive.length; i++) {
@@ -168,6 +166,7 @@ angular.module('pedaleswitchApp')
 
         if(tableThin.length !== 0) {
           ctx.restore();
+          ctx.setLineDash([]);
           ctx.lineWidth = 0.5;
           ctx.strokeStyle = "gray";
           for (var j = 0; j < tableThin.length; j++) {
@@ -187,12 +186,14 @@ angular.module('pedaleswitchApp')
 
         if(tableShine.length !== 0) {
           ctx.restore();
+          ctx.setLineDash([]);
           ctx.lineWidth = 1;
           ctx.strokeStyle = "#00bfff";
           for (var l = 0; l < tableShine.length; l++) {
             tableShine[l].drawCanvas(ctx);
           }
         }
+        ctx.restore();
       },
 
       resetCompPos: function(value){
@@ -219,6 +220,14 @@ angular.module('pedaleswitchApp')
         canvas = canv;
       },
 
+      setCanvasWindow: function(canv_window){
+        var canvasSize = canvasConversion.getCanvasSize();
+        canv_window.style.width = canvasSize.w.toString() + "px";
+        canv_window.style.height = canvasSize.h.toString() + "px";
+        canvas_window = canv_window;
+      },
+
+
       getCanvas: function(){
         return canvas;
       },
@@ -232,6 +241,7 @@ angular.module('pedaleswitchApp')
       },
 
       setTableActive: function(tabr){
+        checkCollision.checkall(tabr);
         tableActive = tabr;
       },
 
@@ -264,6 +274,7 @@ angular.module('pedaleswitchApp')
       },
 
       setTableThin: function(tabr){
+        checkCollision.checkall(tabr);
         tableThin = tabr;
       },
 

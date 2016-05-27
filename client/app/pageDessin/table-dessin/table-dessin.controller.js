@@ -8,10 +8,12 @@ angular.module('pedaleswitchApp')
         templateUrl: 'app/pageDessin/table-dessin/table-dessin.html',
         scope: {},
         link: function(scope, element) {
+          var canv_window = document.getElementById('canvas-window');
           var canv = document.getElementById('canvas-dessin');
           var ctx = canv.getContext('2d');
-          canvasControl.setCtx(ctx);
+          canvasControl.setCanvasWindow(canv_window);
           canvasControl.setCanvas(canv);
+          canvasControl.setCtx(ctx);
           
           canv.addEventListener("mousedown", mouseHelper.mousedown);
           canv.addEventListener("mousemove", mouseHelper.mousemovebox);

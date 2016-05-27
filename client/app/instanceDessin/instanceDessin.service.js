@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('pedaleswitchApp')
-  .factory('instanceDessin', function ($http, canvasControl) {
+  .factory('instanceDessin', function ($http, canvasConversion) {
     // Service logic
     // ...
 
@@ -47,7 +47,7 @@ angular.module('pedaleswitchApp')
 
       setEffet: function(effet, option) {
         key ++;
-        var nouvEffet = {
+        var nouv_effet = {
           _id: option._id,
           key: key,
           in_canvas: effet.in_canvas || false,
@@ -56,33 +56,62 @@ angular.module('pedaleswitchApp')
           description: effet.description,
           description_option: option.description,
           prix: option.prix,
-          size: Object.assign({}, option.size),
+          size: {
+            w: option.size.w,
+            h: option.size.h
+          },
           pos: {
             x: 20,
             y: 20
           },
-          composants: {}
+          composants: []
         };
         for(var i=0; i<option.composants.length; i++){
-          nouvEffet.composants[option.composants[i]._id] = {
+          var compo = {
             _id: option.composants[i]._id,
             key: key,
             titre: option.composants[i].titre,
             items: option.composants[i].available_compo_id,
-            pos_parent: nouvEffet.pos,
-            pos_default: Object.assign({}, option.composants[i].pos),
+            pos_parent: nouv_effet.pos,
+            pos_default: {
+              x: option.composants[i].pos.x,
+              y: option.composants[i].pos.y
+            },
             pos: {
-              x: option.composants[i].pos.x + nouvEffet.pos.x,
-              y: option.composants[i].pos.y + nouvEffet.pos.y
+              x: option.composants[i].pos.x + nouv_effet.pos.x,
+              y: option.composants[i].pos.y + nouv_effet.pos.y
+            },
+            size: {
+              w: composantItems[option.composants[i].available_compo_id[0]].size.w,
+              h: composantItems[option.composants[i].available_compo_id[0]].size.h
             },
             id_item: composantItems[option.composants[i].available_compo_id[0]]._id,
             shape: composantItems[option.composants[i].available_compo_id[0]].shape,
             titre_item: composantItems[option.composants[i].available_compo_id[0]].titre,
-            size: Object.assign({}, composantItems[option.composants[i].available_compo_id[0]].size),
             prix_add: composantItems[option.composants[i].available_compo_id[0]].prix_additionnel
           };
+          nouv_effet.composants.push(compo);
         }
-        dessin.options.push(nouvEffet);
+        canvasConversion.convertEffetSize(nouv_effet);
+        canvasConversion.initializeEffetZoom(nouv_effet);
+        dessin.options.push(nouv_effet);
+      },
+
+      zoomInitialize: function(value){
+        canvasConversion.setZoom(value);
+        for (var i = 0; i < dessin.options.length; i++) {
+          canvasConversion.initializeEffetZoom(dessin.options[i]);
+        }
+      },
+
+      zoomChange: function(value){
+        var okZoom = canvasConversion.setZoom(value);
+        if (okZoom) {
+          for (var i = 0; i < dessin.options.length; i++) {
+            canvasConversion.convertEffetZoom(dessin.options[i]);
+          }
+        }
+        return okZoom;
       },
 
       updateComposant: function(idOption, idCompo, idItem) {
@@ -93,8 +122,12 @@ angular.module('pedaleswitchApp')
         };
         for(var i=0; i<dessin.options.length; i++){
           if(dessin.options[i]._id === idOption){
-            dessin.options[i].composants[idCompo] = _.merge(dessin.options[i].composants[idCompo], data);
-            return;
+            for (var j = 0; j < dessin.options[i].composants.length; j++){
+              if (dessin.options[i].composants[j]._id === idCompo){
+                dessin.options[i].composants[j] = _.merge(dessin.options[i].composants[j], data);
+                return;
+              }
+            }
           }
         }
       }

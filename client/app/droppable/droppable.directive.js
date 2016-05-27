@@ -67,11 +67,9 @@ angular.module('pedaleswitchApp')
               effet.pos.x = coords[0] - (effet.size.w / 2);
               effet.pos.y = coords[1] - (effet.size.h / 2);
               var compos = effet.composants;
-              for (var compo in compos) {
-                if (compos.hasOwnProperty(compo)) {
-                  compos[compo].pos.x = compos[compo].pos_default.x + effet.pos.x;
-                  compos[compo].pos.y = compos[compo].pos_default.y + effet.pos.y;
-                }
+              for (var i = 0; i < compos.length; i++) {
+                  compos[i].pos.x = compos[i].pos_default.x + effet.pos.x;
+                  compos[i].pos.y = compos[i].pos_default.y + effet.pos.y;
               }
               canvasControl.addToCanvas(effet);
               checkCollision.checkall(canvasControl.getTableActive());

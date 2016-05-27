@@ -22,10 +22,10 @@ class PageDessinComponent {
     this.$http.get('/api/effets').then(response => {
       this.effets = response.data;
 
-      if (this.instanceDessin.getDessin().options.length === 0){
-        this.instanceDessin.setEffet(this.effets[0], this.effets[0].options[0]);
-        this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
-      }
+      //if (this.instanceDessin.getDessin().options.length === 0){
+      //  this.instanceDessin.setEffet(this.effets[0], this.effets[0].options[0]);
+      //  this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
+      //}
 
       //@todo il faut garder juste c ligne et les mettre en dehors du $http.get
       var active = this.canvasControl.getTableEffet();
@@ -86,6 +86,7 @@ class PageDessinComponent {
     this.canvasControl.resetCompPos(value);
     if(!value){
       this.activeEffet();
+      this.canvasControl.drawStuff();
     }
   }
 
@@ -125,8 +126,9 @@ class PageDessinComponent {
   }
 
   zoomAdd(value){
-    this.okZoom = this.canvasControl.zoomChange(value);
+    this.okZoom = this.instanceDessin.zoomChange(value);
     this.zoom = this.canvasControl.getZoom();
+    this.canvasControl.drawStuff();
   }
 }
 
