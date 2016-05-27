@@ -12,9 +12,6 @@ angular.module('pedaleswitchApp')
           var ctx = canv.getContext('2d');
           canvasControl.setCtx(ctx);
           canvasControl.setCanvas(canv);
-
-          canvasControl.drawRulers();
-          canvasControl.drawGrid();
           
           canv.addEventListener("mousedown", mouseHelper.mousedown);
           canv.addEventListener("mousemove", mouseHelper.mousemovebox);
