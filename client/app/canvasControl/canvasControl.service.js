@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('pedaleswitchApp')
-  .factory('canvasControl', function (canvasGeneration, canvasConversion) {
+  .factory('canvasControl', function (canvasGeneration, canvasConversion, rulers) {
     // Service logic
     // ...
 
@@ -142,8 +142,13 @@ angular.module('pedaleswitchApp')
         return okZoom;
       },
 
+      drawRulers: function() {
+        rulers.render(canvas, ctx, '#aaa', 'pixels', 100);
+      },
+
       drawStuff: function() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(rulers.getRulersSize(), rulers.getRulersSize(), canvas.width, canvas.height);
+
         ctx.lineWidth = 1;
         ctx.strokeStyle = "black";
         ctx.setLineDash([0, 0]);

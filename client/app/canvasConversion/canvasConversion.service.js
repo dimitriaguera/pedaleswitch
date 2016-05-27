@@ -7,7 +7,7 @@ angular.module('pedaleswitchApp')
 
     //var resolution = 72;
     //var resoInMm = 25.4;
-    var resolution = 2;
+    var resolution = 1;
     var resoInMm = 1;
     var ratioW = 3/4.2;
     var ratioH = 300;
