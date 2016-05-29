@@ -149,51 +149,55 @@ angular.module('pedaleswitchApp')
 
       drawStuff: function() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.lineWidth = '1px';
+        ctx.lineWidth = "1px";
         ctx.strokeStyle = "black";
-        ctx.setLineDash([]);
-        ctx.save();
 
         if(tableActive.length !== 0) {
-          ctx.restore();
-          ctx.setLineDash([]);
-          ctx.lineWidth = '1px';
-          ctx.strokeStyle = "black";
+          ctx.save();
           for (var i = 0; i < tableActive.length; i++) {
             tableActive[i].drawCanvas(ctx);
           }
+          ctx.restore();
         }
 
         if(tableThin.length !== 0) {
-          ctx.restore();
-          ctx.setLineDash([]);
-          ctx.lineWidth = 0.5;
+          ctx.save();
           ctx.strokeStyle = "gray";
           for (var j = 0; j < tableThin.length; j++) {
             tableThin[j].drawCanvas(ctx);
           }
+          ctx.restore();
         }
 
         if(tableDashed.length !== 0) {
-          ctx.restore();
-          ctx.lineWidth = 0.3;
+          ctx.save();
           ctx.setLineDash([10, 3]);
           ctx.strokeStyle = "gray";
           for (var k = 0; k < tableDashed.length; k++) {
             tableDashed[k].drawCanvas(ctx);
           }
+          ctx.restore();
         }
 
         if(tableShine.length !== 0) {
-          ctx.restore();
-          ctx.setLineDash([]);
-          ctx.lineWidth = 1;
+          ctx.save();
+
+          ctx.font="16px sans-serif";
+
           ctx.strokeStyle = "#00bfff";
+
+          ctx.shadowColor   = "black";
+          ctx.shadowOffsetX = 1;
+          ctx.shadowOffsetY = 1;
+          ctx.shadowBlur    = 3;
+
           for (var l = 0; l < tableShine.length; l++) {
+            ctx.fillStyle = "#00bfff";
+            ctx.fillText(tableShine[l].titre, tableShine[l].getCenterX(),tableShine[l].pos.y - 20);
             tableShine[l].drawCanvas(ctx);
           }
+          ctx.restore();
         }
-        ctx.restore();
       },
 
       resetCompPos: function(value){
