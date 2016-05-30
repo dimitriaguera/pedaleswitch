@@ -221,6 +221,12 @@ angular.module('pedaleswitchApp')
       getTableShine: function(){
         return tableShine;
       },
+      
+      resetIsSelected: function(tabr) {
+        for (var i = 0; i < tabr.length; i++){
+          tabr[i].isSelected = false;
+        }
+      },
 
       resetTableShine: function(){
         for (var i = 0; i < tableShine.length; i++){

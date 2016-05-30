@@ -45,6 +45,9 @@ angular.module('pedaleswitchApp')
     controller: ComposantTypeComponent,
     require: {
       ctrlCompo: '^composant'
+    },
+    bindings: {
+      composantTypes: '='
     }
   });
 

@@ -23,7 +23,7 @@ angular.module('pedaleswitchApp')
           var ontable = canvasControl.getTableActive();
           var mouseX = e.layerX,
               mouseY = e.layerY;
-
+        
           var dragid = checkCollision.checkmousebox({x: mouseX, y: mouseY}, ontable, 10);
 
           if (dragid !== false) {
@@ -46,8 +46,6 @@ angular.module('pedaleswitchApp')
           ontable[dragIdx].setCenterX(mouseX - dragOffsetX);
           ontable[dragIdx].setCenterY(mouseY - dragOffsetY);
 
-          checkCollision.checkall(ontable);
-
           if(!canvasControl.getDeb()){
             var compos = ontable[dragIdx].composants;
             for(var i=0; i<compos.length; i++){
@@ -55,6 +53,9 @@ angular.module('pedaleswitchApp')
               compos[i].setY(ontable[dragIdx].pos.y + compos[i].pos_default.y);
             }
           }
+
+          checkCollision.checkall(ontable);
+        
           canvasDraw.drawStuff();
       },
 
@@ -68,6 +69,7 @@ angular.module('pedaleswitchApp')
           ontable[dragIdx].setCenterY(mouseY - dragOffsetY);
           ontable[dragIdx].setSelected(false);
           update('default');
+
           checkCollision.checkall(ontable);
           canvasDraw.drawStuff();
           dragIdx = -1;
@@ -80,9 +82,11 @@ angular.module('pedaleswitchApp')
         var mouseX = e.layerX, //- mousehelper.canvas.offsetLeft,
             mouseY = e.layerY; //- mousehelper.canvas.offsetTop;
 
+        canvasControl.resetIsSelected(ontable);
         var onElement = checkCollision.checkmousebox({x: mouseX, y: mouseY}, ontable, 10);
 
         if(onElement) {
+          ontable[onElement.id].setSelected(true);
           update('pointer');
         }
         else {
