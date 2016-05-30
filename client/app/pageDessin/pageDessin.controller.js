@@ -25,7 +25,7 @@ class PageDessinComponent {
 
       if (this.instanceDessin.getDessin().options.length === 0){
         this.instanceDessin.setEffet(this.effets[0], this.effets[0].options[0]);
-        this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
+        //this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
       }
 
       //@todo il faut garder juste c ligne et les mettre en dehors du $http.get
@@ -96,6 +96,8 @@ class PageDessinComponent {
     this.isActive = 'effet';
     var active = this.canvasControl.getTableEffet();
     var inactive = this.canvasControl.getTableComposant();
+    this.canvasControl.resetIsSelected(active);
+    this.canvasControl.resetIsSelected(inactive);
     this.canvasControl.resetTableDashed();
     this.canvasControl.setTableActive(active);
     this.canvasControl.setTableThin(inactive);
@@ -106,6 +108,8 @@ class PageDessinComponent {
     this.isActive = 'compo';
     var active = this.canvasControl.getTableComposant();
     var inactive = this.canvasControl.getTableEffet();
+    this.canvasControl.resetIsSelected(active);
+    this.canvasControl.resetIsSelected(inactive);
     this.canvasControl.resetTableThin();
     this.canvasControl.setTableActive(active);
     this.canvasControl.setTableDashed(inactive);
