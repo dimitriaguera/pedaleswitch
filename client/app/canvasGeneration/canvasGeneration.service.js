@@ -85,7 +85,6 @@ angular.module('pedaleswitchApp')
         this.isOverlapping = overlap;
       }
       drawCanvas(ctx){
-        ctx.save();
         ctx.beginPath();
         ctx.arc(this.getCenterX(), this.getCenterY(), this.getRadius(), 0, 2*Math.PI);
 
@@ -97,19 +96,8 @@ angular.module('pedaleswitchApp')
           ctx.fillStyle = "rgba(255, 00, 00, 0.2)";
           ctx.fill();
         }
-        else if (this.isSelected) {
-          ctx.font = "16px sans-serif";
-          ctx.strokeStyle = "#00bfff";
-          ctx.fillStyle = "#00bfff";
-          ctx.fillText(this.titre, this.getCenterX(),this.pos.y - 20);
-          ctx.shadowColor   = "#666";
-          ctx.shadowOffsetX = 1;
-          ctx.shadowOffsetY = 1;
-          ctx.shadowBlur    = 2;
-        }
         ctx.stroke();
         ctx.closePath();
-        ctx.restore();
       }
     }
 
@@ -208,7 +196,6 @@ angular.module('pedaleswitchApp')
         this.isOverlapping = overlap;
       }
       drawCanvas(ctx){
-        ctx.save();
         ctx.beginPath();
         ctx.rect(this.pos.x, this.pos.y, this.size.w, this.size.h);
 
@@ -219,19 +206,8 @@ angular.module('pedaleswitchApp')
           ctx.fillStyle = "rgba(255, 00, 00, 0.2)";
           ctx.fill();
         }
-         if (this.isSelected) {
-           ctx.font = "16px sans-serif";
-           ctx.strokeStyle = "#00bfff";
-           ctx.fillStyle = "#00bfff";
-           ctx.fillText(this.titre, this.getCenterX(),this.pos.y - 20);
-           ctx.shadowColor   = "#666";
-           ctx.shadowOffsetX = 1;
-           ctx.shadowOffsetY = 1;
-           ctx.shadowBlur    = 2;
-        }
         ctx.stroke();
         ctx.closePath();
-        ctx.restore();
       }
     }
 
