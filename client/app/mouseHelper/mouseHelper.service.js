@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('pedaleswitchApp')
-  .factory('mouseHelper', function (canvasControl, checkCollision, $rootScope) {
+  .factory('mouseHelper', function (canvasControl, checkCollision, canvasDraw, $rootScope) {
 
     var dragIdx;
     var dragOffsetX;
@@ -33,7 +33,7 @@ angular.module('pedaleswitchApp')
             ontable[dragIdx].setSelected(true);
             update('move');
             $rootScope.$emit('click-on-element');
-            canvasControl.drawStuff();
+            canvasDraw.drawStuff();
           }
       },
 
@@ -55,7 +55,7 @@ angular.module('pedaleswitchApp')
               compos[i].setY(ontable[dragIdx].pos.y + compos[i].pos_default.y);
             }
           }
-          canvasControl.drawStuff();
+          canvasDraw.drawStuff();
       },
 
       mouseup: function (e) {
@@ -69,7 +69,7 @@ angular.module('pedaleswitchApp')
           ontable[dragIdx].setSelected(false);
           update('default');
           checkCollision.checkall(ontable);
-          canvasControl.drawStuff();
+          canvasDraw.drawStuff();
           dragIdx = -1;
           $rootScope.$emit('no-click-on-element');
       },
@@ -88,7 +88,7 @@ angular.module('pedaleswitchApp')
         else {
           update('default');
         }
-        canvasControl.drawStuff();
+        canvasDraw.drawStuff();
       }
 
     };

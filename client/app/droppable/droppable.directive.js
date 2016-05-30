@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('pedaleswitchApp')
-  .directive('droppable', function (canvasControl, instanceDessin, checkCollision) {
+  .directive('droppable', function (canvasControl, canvasDraw, instanceDessin, checkCollision) {
     return {
 
       link: function(scope, element) {
@@ -73,7 +73,7 @@ angular.module('pedaleswitchApp')
               }
               canvasControl.addToCanvas(effet);
               checkCollision.checkall(canvasControl.getTableActive());
-              canvasControl.drawStuff();
+              canvasDraw.drawStuff();
             }
             return false;
           },
