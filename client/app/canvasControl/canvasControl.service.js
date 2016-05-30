@@ -150,6 +150,7 @@ angular.module('pedaleswitchApp')
       drawStuff: function() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.lineWidth = "1px";
+        ctx.fillStyle = "white";
         ctx.strokeStyle = "black";
 
         if(tableActive.length !== 0) {
@@ -175,26 +176,6 @@ angular.module('pedaleswitchApp')
           ctx.strokeStyle = "gray";
           for (var k = 0; k < tableDashed.length; k++) {
             tableDashed[k].drawCanvas(ctx);
-          }
-          ctx.restore();
-        }
-
-        if(tableShine.length !== 0) {
-          ctx.save();
-
-          ctx.font="16px sans-serif";
-
-          ctx.strokeStyle = "#00bfff";
-
-          ctx.shadowColor   = "black";
-          ctx.shadowOffsetX = 1;
-          ctx.shadowOffsetY = 1;
-          ctx.shadowBlur    = 3;
-
-          for (var l = 0; l < tableShine.length; l++) {
-            ctx.fillStyle = "#00bfff";
-            ctx.fillText(tableShine[l].titre, tableShine[l].getCenterX(),tableShine[l].pos.y - 20);
-            tableShine[l].drawCanvas(ctx);
           }
           ctx.restore();
         }
@@ -266,6 +247,9 @@ angular.module('pedaleswitchApp')
       },
 
       setTableShine: function(tabr){
+        for (var i = 0; i < tabr.length; i++){
+          tabr[i].isSelected = true;
+        }
         tableShine = tabr;
       },
 
@@ -274,6 +258,9 @@ angular.module('pedaleswitchApp')
       },
 
       resetTableShine: function(){
+        for (var i = 0; i < tableShine.length; i++){
+          tableShine[i].isSelected = false;
+        }
         tableShine = [];
       },
 
