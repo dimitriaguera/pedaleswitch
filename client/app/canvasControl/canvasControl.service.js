@@ -68,7 +68,8 @@ angular.module('pedaleswitchApp')
               tableComposant.push(tmp_comp);
               tmp_eff.composants.push(tmp_comp);
           }
-          tableEffet.push(tmp_eff);
+          var indice = tableEffet.push(tmp_eff);
+          return tableEffet[indice-1];
         }
       },
 
@@ -152,6 +153,39 @@ angular.module('pedaleswitchApp')
           for (var i = 0; i < tableEffet.length; i++) {
             tableEffet[i].resetCompPos();
           }
+        }
+      },
+
+      /**
+       * Permet de modifier les coordonnées d'un thing s'il depace les bordures.
+       */
+      moveCloseBorder: function(entity) {
+        var marginTop = 10,
+          marginRight = 10,
+          marginBottom = 10,
+          marginLeft = 10;
+
+        // Regarde si la figure sort du canvas.
+        var top = entity.getTop(),
+          right = entity.getRight(),
+          bottom = entity.getBottom(),
+          left = entity.getLeft();
+
+        // Debordement par le haut.
+        if (top - marginTop < 0) {
+          entity.setCenterY(entity.size.h / 2 + marginTop);
+        }
+        // Debordement par la droite.
+        if (right + marginRight > canvas.width) {
+          entity.setCenterX(canvas.width - entity.size.w / 2 - marginLeft);
+        }
+        // Debordement par le bas.
+        if (bottom + marginBottom > canvas.height) {
+          entity.setCenterY(canvas.height - entity.size.h / 2 - marginTop);
+        }
+        // Debordement par la gauche.
+        if (left - marginLeft < 0) {
+          entity.setCenterX(entity.size.w / 2 + marginLeft);
         }
       },
 

@@ -88,6 +88,11 @@ angular.module('pedaleswitchApp')
         ctx.save();
         ctx.beginPath();
         ctx.arc(this.getCenterX(), this.getCenterY(), this.getRadius(), 0, 2*Math.PI);
+
+        // Draw center.
+        ctx.fillRect(this.getCenterX(),this.getCenterY(),1,1);
+
+
         if (this.isOverlapping) {
           ctx.fillStyle = "rgba(255, 00, 00, 0.2)";
           ctx.fill();
@@ -206,6 +211,10 @@ angular.module('pedaleswitchApp')
         ctx.save();
         ctx.beginPath();
         ctx.rect(this.pos.x, this.pos.y, this.size.w, this.size.h);
+
+        // Draw center.
+        ctx.fillRect(this.getCenterX(),this.getCenterY(),1,1);
+
         if (this.isOverlapping) {
           ctx.fillStyle = "rgba(255, 00, 00, 0.2)";
           ctx.fill();

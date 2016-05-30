@@ -47,6 +47,8 @@ angular.module('pedaleswitchApp')
             // Remove class over.
             this.classList.remove('over');
 
+
+            /*
             // Function to calculate the absolute position
             var offset = function (el, event) {
               var ox = -el.offsetLeft,
@@ -59,19 +61,28 @@ angular.module('pedaleswitchApp')
             };
 
             var coords = offset(e.target, e);
+            */
+
 
             var obj = JSON.parse(e.dataTransfer.getData('data'));
-            
+
+            var mouseX = e.layerX,
+                mouseY = e.layerY;
+
             var effet = instanceDessin.searchEffetInDessin(obj._id, obj.key);
             if(effet && !effet.in_canvas) {
-              effet.pos.x = coords[0] - (effet.size.w / 2);
-              effet.pos.y = coords[1] - (effet.size.h / 2);
+              effet.pos.x = mouseX - (effet.size.w / 2);
+              effet.pos.y = mouseY - (effet.size.h / 2);
               var compos = effet.composants;
               for (var i = 0; i < compos.length; i++) {
                   compos[i].pos.x = compos[i].pos_default.x + effet.pos.x;
                   compos[i].pos.y = compos[i].pos_default.y + effet.pos.y;
               }
-              canvasControl.addToCanvas(effet);
+
+              var canvaseffet = canvasControl.addToCanvas(effet);
+
+              canvasControl.moveCloseBorder(canvaseffet);
+
               checkCollision.checkall(canvasControl.getTableActive());
               canvasDraw.drawStuff();
             }
