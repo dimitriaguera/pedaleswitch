@@ -147,46 +147,11 @@ angular.module('pedaleswitchApp')
         rulers.drawGrid(canvas, ctx);
       },
 
-      drawStuff: function() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.lineWidth = "1px";
-        ctx.fillStyle = "white";
-        ctx.strokeStyle = "black";
-
-        if(tableActive.length !== 0) {
-          ctx.save();
-          for (var i = 0; i < tableActive.length; i++) {
-            tableActive[i].drawCanvas(ctx);
-          }
-          ctx.restore();
-        }
-
-        if(tableThin.length !== 0) {
-          ctx.save();
-          ctx.strokeStyle = "gray";
-          for (var j = 0; j < tableThin.length; j++) {
-            tableThin[j].drawCanvas(ctx);
-          }
-          ctx.restore();
-        }
-
-        if(tableDashed.length !== 0) {
-          ctx.save();
-          ctx.setLineDash([10, 3]);
-          ctx.strokeStyle = "gray";
-          for (var k = 0; k < tableDashed.length; k++) {
-            tableDashed[k].drawCanvas(ctx);
-          }
-          ctx.restore();
-        }
-      },
-
       resetCompPos: function(value){
         if (!value) {
           for (var i = 0; i < tableEffet.length; i++) {
             tableEffet[i].resetCompPos();
           }
-          this.drawStuff();
         }
       },
 

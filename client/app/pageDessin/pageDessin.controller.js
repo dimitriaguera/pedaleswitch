@@ -2,11 +2,12 @@
 (function(){
 
 class PageDessinComponent {
-  constructor(instanceDessin, canvasControl, $http) {
+  constructor(instanceDessin, canvasControl, canvasDraw, $http) {
     this.dessin = {};
     this.items = {};
     this.instanceDessin = instanceDessin;
     this.canvasControl = canvasControl;
+    this.canvasDraw = canvasDraw;
     this.isActive = 'effet';
     this.zoom = 100;
     this.okZoom = true;
@@ -39,7 +40,7 @@ class PageDessinComponent {
       this.items = this.instanceDessin.getComposantItems();
       // Redessine les objets précédement présent.
       if (active.length > 0){
-        this.canvasControl.drawStuff();
+        this.canvasDraw.drawStuff();
       }
 
     });
@@ -60,7 +61,7 @@ class PageDessinComponent {
         default:
           return console.log('Variable "isActive" not defined in pageDessin.controller.js');
       }
-      this.canvasControl.drawStuff();
+      this.canvasDraw.drawStuff();
     }
   }
 
@@ -72,21 +73,22 @@ class PageDessinComponent {
       this.canvasControl.resetTableShine();
       this.canvasControl.setTableShine(compos);
       this.tableShine = this.canvasControl.getTableShine();
-      this.canvasControl.drawStuff();
+      this.canvasDraw.drawStuff();
     }
   }
 
   mouseLeaveEffet(){
     this.canvasControl.resetTableShine();
-    this.canvasControl.drawStuff();
+    this.canvasDraw.drawStuff();
   }
 
   switchDeb(value){
     this.canvasControl.setDeb(value);
     this.canvasControl.resetCompPos(value);
+    this.canvasDraw.drawStuff();
     if(!value){
       this.activeEffet();
-      this.canvasControl.drawStuff();
+      this.canvasDraw.drawStuff();
     }
   }
 
@@ -97,7 +99,7 @@ class PageDessinComponent {
     this.canvasControl.resetTableDashed();
     this.canvasControl.setTableActive(active);
     this.canvasControl.setTableThin(inactive);
-    this.canvasControl.drawStuff();
+    this.canvasDraw.drawStuff();
   }
 
   activeCompo(){
@@ -107,7 +109,7 @@ class PageDessinComponent {
     this.canvasControl.resetTableThin();
     this.canvasControl.setTableActive(active);
     this.canvasControl.setTableDashed(inactive);
-    this.canvasControl.drawStuff();
+    this.canvasDraw.drawStuff();
   }
 
   updateComposant(opt, compo, item){
@@ -116,19 +118,19 @@ class PageDessinComponent {
 
   addToTable(value){
     this.canvasControl.addToCanvas(value);
-    this.canvasControl.drawStuff();
+    this.canvasDraw.drawStuff();
     this.toutesTables = this.canvasControl.tableState();
   }
 
   removeToTable(value){
     this.canvasControl.removeToCanvas(value);
-    this.canvasControl.drawStuff();
+    this.canvasDraw.drawStuff();
   }
 
   zoomAdd(value){
     this.okZoom = this.instanceDessin.zoomChange(value);
     this.zoom = this.canvasControl.getZoom();
-    this.canvasControl.drawStuff();
+    this.canvasDraw.drawStuff();
   }
 }
 
