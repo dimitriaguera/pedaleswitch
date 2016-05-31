@@ -119,11 +119,13 @@ angular.module('pedaleswitchApp')
         }
         // Debordement par la droite.
         if (right + marginRight > canvas.width) {
-          entity.setCenterX(canvas.width - entity.size.w / 2 - marginLeft);
+          canvas.width += canvas.width + entity.size.w;
+          //entity.setCenterX(canvas.width - entity.size.w / 2 - marginLeft);
         }
         // Debordement par le bas.
         if (bottom + marginBottom > canvas.height) {
-          entity.setCenterY(canvas.height - entity.size.h / 2 - marginTop);
+          canvas.height += canvas.height + entity.size.h;
+          //entity.setCenterY(canvas.height - entity.size.h / 2 - marginTop);
         }
         // Debordement par la gauche.
         if (left - marginLeft < 0) {
