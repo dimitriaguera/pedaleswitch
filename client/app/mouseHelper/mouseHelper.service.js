@@ -45,6 +45,7 @@ angular.module('pedaleswitchApp')
         // Deplace si la nouvelle position depasse le canvas.
         canvasControl.moveCloseBorder(ontable[dragIdx]);
 
+        // Bouge les composants.
         if(!canvasControl.getDeb()){
           var compos = ontable[dragIdx].composants;
           for(var i=0; i<compos.length; i++){
@@ -53,9 +54,46 @@ angular.module('pedaleswitchApp')
           }
         }
 
-        checkCollision.checkall(ontable);
+        checkCollision.check(ontable[dragIdx], ontable);
 
         canvasDraw.drawStuff();
+
+
+        var tab = checkCollision.checkLine(ontable[dragIdx], ontable);
+
+        var canvas = canvasControl.getCanvas(),
+          ctx = canvasControl.getCtx(),
+          i;
+
+        for (i = 0 ; i < tab.x.length ; i++) {
+          ctx.beginPath();
+          ctx.save();
+          ctx.setLineDash([10, 3]);
+          if (tab.x[i].isPile) {
+            ctx.strokeStyle = '#ff0000';
+          }
+          ctx.moveTo(tab.x[i].x,0);
+          ctx.lineTo(tab.x[i].x,canvas.height);
+          ctx.stroke();
+          ctx.closePath();
+          ctx.restore();
+        }
+        for (i = 0 ; i < tab.y.length ; i++) {
+          ctx.beginPath();
+          ctx.save();
+          ctx.setLineDash([10, 3]);
+          if (tab.y[i].isPile) {
+            ctx.strokeStyle = '#ff0000';
+          }
+          ctx.moveTo(0,tab.y[i].y);
+          ctx.lineTo(canvas.width,tab.y[i].y);
+          ctx.stroke();
+          ctx.closePath();
+          ctx.restore();
+        }
+
+
+
       },
 
       mouseup: function (e) {
@@ -74,6 +112,15 @@ angular.module('pedaleswitchApp')
 
         // Deplace si la nouvelle position depasse le canvas.
         canvasControl.moveCloseBorder(ontable[dragIdx]);
+
+        // Bouge les composants.
+        if(!canvasControl.getDeb()){
+          var compos = ontable[dragIdx].composants;
+          for(var i=0; i<compos.length; i++){
+            compos[i].setX(ontable[dragIdx].pos.x + compos[i].pos_default.x);
+            compos[i].setY(ontable[dragIdx].pos.y + compos[i].pos_default.y);
+          }
+        }
 
         // Regarde les collisions.
         checkCollision.checkall(ontable);

@@ -5,6 +5,33 @@ angular.module('pedaleswitchApp')
     
     return {
 
+      /**
+       * Check la collision entre un thing et un tableau de thing.
+       * @param item
+       * @param items
+       */
+      check: function(item, items) {
+        var indexCounter,
+          outer = items.length,
+          comparitor;
+
+        var intersect = new this.intersectHelper();
+        for (indexCounter = 0; indexCounter < outer; indexCounter++) {
+          comparitor = items[indexCounter];
+          comparitor.setOverlapping(false);
+          if (!(item._id == comparitor._id && item.key == comparitor.key)){
+            if (intersect.check(item, comparitor) === true) {
+              item.setOverlapping(true);
+              comparitor.setOverlapping(true);
+            }
+          }
+        }
+      },
+
+      /**
+       * Check la collision entre tout les things d'un tableau.
+       * @param items
+       */
       checkall: function (items) {
         var intersect = new this.intersectHelper();
         var indexCounter,
@@ -30,6 +57,14 @@ angular.module('pedaleswitchApp')
         }
       },
 
+
+      /**
+       * Check la collision entre la souris et un tableau de thing avec un tolérance en pixel donnée.
+       * @param mouse object contenant x,y
+       * @param items
+       * @param tolerance
+       * @returns {*}
+       */
       checkmousebox: function(mouse, items, tolerance) {
         var indexCounter,
           outer = items.length,
@@ -45,7 +80,33 @@ angular.module('pedaleswitchApp')
         return false;
       },
 
-      
+
+      checkLine: function(item, items) {
+        var indexCounter,
+          outer = items.length,
+          comparitor;
+        var tab = {x: [], y: []}, k;
+        
+        var intersect = new this.intersectHelper();
+        for (indexCounter = 0; indexCounter < outer; indexCounter++) {
+          comparitor = items[indexCounter];
+          if (!(item._id == comparitor._id && item.key == comparitor.key)){
+            if (intersect.pointInVertligne(item, comparitor) === true) {
+              k = tab.y.push({y:comparitor.getCenterY()});
+              if (comparitor.getCenterY() === item.getCenterY()){
+                tab.y[k-1].isPile = true;
+              }
+            }
+            if (intersect.pointInHoriligne(item, comparitor) === true) {
+              k = tab.x.push({x: comparitor.getCenterX()});
+              if (comparitor.getCenterX() === item.getCenterX()){
+                tab.x[k-1].isPile = true;
+              }
+            }
+          }
+        }
+        return tab;
+      },
       
       intersectHelper: function () {
   
@@ -70,7 +131,15 @@ angular.module('pedaleswitchApp')
   
           return result;
         };
-  
+
+        this.pointInVertligne = function(item, comparitor){
+          return this.between(comparitor.getCenterY()-10,item.getCenterY(),comparitor.getCenterY()+10) ;
+        };
+
+        this.pointInHoriligne = function(item, comparitor){
+          return this.between(comparitor.getCenterX()-10,item.getCenterX(),comparitor.getCenterX()+10) ;
+        };
+
         this.pointInRect = function(x, y, left, top, right, bottom) {
           return (this.between(left, x, right) && this.between(top, y, bottom));
         };

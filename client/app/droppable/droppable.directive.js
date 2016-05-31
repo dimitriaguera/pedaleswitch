@@ -73,15 +73,17 @@ angular.module('pedaleswitchApp')
             if(effet && !effet.in_canvas) {
               effet.pos.x = mouseX - (effet.size.w / 2);
               effet.pos.y = mouseY - (effet.size.h / 2);
-              var compos = effet.composants;
-              for (var i = 0; i < compos.length; i++) {
-                  compos[i].pos.x = compos[i].pos_default.x + effet.pos.x;
-                  compos[i].pos.y = compos[i].pos_default.y + effet.pos.y;
-              }
 
               var canvaseffet = canvasControl.addToCanvas(effet);
-
               canvasControl.moveCloseBorder(canvaseffet);
+
+              if(!canvasControl.getDeb()){
+                var compos = canvaseffet.composants;
+                for(var i=0; i<compos.length; i++){
+                  compos[i].setX(canvaseffet.pos.x + compos[i].pos_default.x);
+                  compos[i].setY(canvaseffet.pos.y + compos[i].pos_default.y);
+                }
+              }
 
               checkCollision.checkall(canvasControl.getTableActive());
               canvasDraw.drawStuff();
