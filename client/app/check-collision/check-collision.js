@@ -2,7 +2,10 @@
 
 angular.module('pedaleswitchApp')
   .factory('checkCollision', function () {
-    
+
+
+    var marginLine = 10;
+
     return {
 
       /**
@@ -97,18 +100,18 @@ angular.module('pedaleswitchApp')
         for (indexCounter = 0; indexCounter < outer; indexCounter++) {
           comparitor = items[indexCounter];
           if (!(item._id == comparitor._id && item.key == comparitor.key)){
-            if (intersect.pointInVertligne(item, comparitor) === true) {
-              k = tab.y.push({y:comparitor.getCenterY()});
-              if (comparitor.getCenterY() === item.getCenterY()){
-                tab.y[k-1].isPile = true;
-              }
-            }
+
+            tab.y = tab.y.concat(intersect.pointInVertligne2(item,comparitor));
+            tab.x = tab.x.concat(intersect.pointInHoriligne2(item,comparitor));
+            /*
             if (intersect.pointInHoriligne(item, comparitor) === true) {
               k = tab.x.push({x: comparitor.getCenterX()});
               if (comparitor.getCenterX() === item.getCenterX()){
                 tab.x[k-1].isPile = true;
               }
             }
+            */
+
           }
         }
         return tab;
@@ -138,12 +141,79 @@ angular.module('pedaleswitchApp')
           return result;
         };
 
+
+        this.betweenstrict = function (min, p, max) {
+          var result = false;
+          if (min < max) {
+            if (p > min && p < max) {
+              result = true;
+            }
+          }
+          if (min > max) {
+            if (p > max && p < min) {
+              result = true;
+            }
+          }
+          return result;
+        };
+
+        this.pointInVertligne2 = function(item, comparitor) {
+          var tab = [], k;
+          var ipos = [], cpos = [], i, c;
+
+          ipos.push(item.getTop());
+          ipos.push(item.getCenterY());
+          ipos.push(item.getBottom());
+
+          cpos.push(comparitor.getTop());
+          cpos.push(comparitor.getCenterY());
+          cpos.push(comparitor.getBottom());
+
+          for (i = 0; i < 3; i++) {
+            for (c = 0; c < 3; c++) {
+              if (this.betweenstrict(cpos[c] - marginLine, ipos[i], cpos[c] + marginLine)) {
+                k = tab.push({y: cpos[c]});
+                if (ipos[i] === cpos[c]) {
+                  tab[k - 1].isPile = true;
+                }
+              }
+            }
+          }
+          return tab;
+        };
+
+        this.pointInHoriligne2 = function(item, comparitor){
+          var tab = [], k;
+          var ipos = [], cpos = [], i, c;
+
+          ipos.push(item.getLeft());
+          ipos.push(item.getCenterX());
+          ipos.push(item.getRight());
+
+          cpos.push(comparitor.getLeft());
+          cpos.push(comparitor.getCenterX());
+          cpos.push(comparitor.getRight());
+
+          for (i = 0; i < 3; i++) {
+            for (c = 0; c < 3; c++) {
+              if (this.betweenstrict(cpos[c] - marginLine, ipos[i], cpos[c] + marginLine)) {
+                k = tab.push({x: cpos[c]});
+                if (ipos[i] === cpos[c]) {
+                  tab[k - 1].isPile = true;
+                }
+              }
+            }
+          }
+          return tab;
+        };
+
+
         this.pointInVertligne = function(item, comparitor){
-          return this.between(comparitor.getCenterY()-10,item.getCenterY(),comparitor.getCenterY()+10) ;
+          return this.between(comparitor.getCenterY()-marginLine,item.getCenterY(),comparitor.getCenterY()+marginLine) ;
         };
 
         this.pointInHoriligne = function(item, comparitor){
-          return this.between(comparitor.getCenterX()-10,item.getCenterX(),comparitor.getCenterX()+10) ;
+          return this.between(comparitor.getCenterX()-marginLine,item.getCenterX(),comparitor.getCenterX()+marginLine) ;
         };
 
         this.pointInRect = function(x, y, left, top, right, bottom) {
