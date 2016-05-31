@@ -40,6 +40,7 @@ angular.module('pedaleswitchApp')
       mousemove: function (e) {
 
           var ontable = canvasControl.getTableActive();
+          var boite = canvasControl.getBoite();
           var mouseX = e.layerX,
               mouseY = e.layerY;
 
@@ -61,6 +62,7 @@ angular.module('pedaleswitchApp')
 
       mouseup: function (e) {
           var ontable = canvasControl.getTableActive();
+          var boite = canvasControl.getBoite();
 
           var mouseX = e.layerX,// - mousehelper.canvas.offsetLeft,
               mouseY = e.layerY;// - mousehelper.canvas.offsetTop;
@@ -71,6 +73,7 @@ angular.module('pedaleswitchApp')
           update('default');
 
           checkCollision.checkall(ontable);
+          boite.checkBorderBoite(ontable[dragIdx]);
           canvasDraw.drawStuff();
           dragIdx = -1;
           $rootScope.$emit('no-click-on-element');

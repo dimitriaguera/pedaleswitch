@@ -8,6 +8,7 @@ angular.module('pedaleswitchApp')
     var ctx = {};
     var canvas = {};
     var canvas_window = {};
+    var boite = null;
     var tableEffet = [];
     var tableComposant = [];
     var tableActive = [];
@@ -67,6 +68,13 @@ angular.module('pedaleswitchApp')
               tmp_comp = thing(compos[i]);
               tableComposant.push(tmp_comp);
               tmp_eff.composants.push(tmp_comp);
+          }
+          if(!boite){
+            boite = canvasGeneration.newBoite(effet);
+            canvasConversion.initializeMarginBoite(boite);
+          }
+          else {
+            boite.checkBorderBoite(tmp_eff);
           }
           tableEffet.push(tmp_eff);
         }
@@ -153,6 +161,14 @@ angular.module('pedaleswitchApp')
             tableEffet[i].resetCompPos();
           }
         }
+      },
+
+      setBoite: function(bo){
+        boite = bo;
+      },
+
+      getBoite: function(){
+        return boite;
       },
 
       setDeb: function(deb){

@@ -5,6 +5,7 @@ angular.module('pedaleswitchApp')
 
     var canvas = {};
     var ctx = {};
+    var boite = null;
     var tableActive = [];
     var tableDashed = [];
     var tableThin = [];
@@ -30,18 +31,23 @@ angular.module('pedaleswitchApp')
 
     return {
 
-      drawTableActive: function (context, colorStroke, colorFill, lineWidth) {
-        tableActive = canvasControl.getTableActive();
-        if(tableActive.length !== 0) {
+      drawTableDashed: function (context, colorStroke, colorFill, lineWidth, dashArray) {
+        tableDashed = canvasControl.getTableDashed();
+        if(tableDashed.length !== 0) {
           context.save();
           context.lineWidth = lineWidth;
           context.strokeStyle = colorStroke;
-          for (var i = 0; i < tableActive.length; i++) {
+          context.setLineDash(dashArray);
+          for (var k = 0; k < tableDashed.length; k++) {
             context.save();
-            selectDraw(context, tableActive[i]);
-            //overlappingDraw(context, tableActive[i]);
-            tableActive[i].drawCanvas(context);
-            context.restore();
+            selectDraw(context, tableDashed[k]);
+            //overlappingDraw(context, tableDashed[k]);
+            tableDashed[k].drawCanvas(context);
+            if (colorFill){
+              context.fillStyle = colorFill;
+              context.fill();
+            }
+            context.restore()
           }
           context.restore();
         }
@@ -58,25 +64,51 @@ angular.module('pedaleswitchApp')
             selectDraw(context, tableThin[j]);
             //overlappingDraw(context, tableThin[j]);
             tableThin[j].drawCanvas(context);
+            if (colorFill){
+              context.fillStyle = colorFill;
+              context.fill();
+            }
             context.restore()
           }
           context.restore();
         }
       },
 
-      drawTableDashed: function (context, colorStroke, colorFill, lineWidth, dashArray) {
-        tableDashed = canvasControl.getTableDashed();
-        if(tableDashed.length !== 0) {
+      drawTableActive: function (context, colorStroke, colorFill, lineWidth) {
+        tableActive = canvasControl.getTableActive();
+        if(tableActive.length !== 0) {
           context.save();
           context.lineWidth = lineWidth;
           context.strokeStyle = colorStroke;
-          context.setLineDash(dashArray);
-          for (var k = 0; k < tableDashed.length; k++) {
+          for (var i = 0; i < tableActive.length; i++) {
             context.save();
-            selectDraw(context, tableDashed[k]);
-            //overlappingDraw(context, tableDashed[k]);
-            tableDashed[k].drawCanvas(context);
-            context.restore()
+            selectDraw(context, tableActive[i]);
+            //overlappingDraw(context, tableActive[i]);
+            tableActive[i].drawCanvas(context);
+            if (colorFill){
+              context.fillStyle = colorFill;
+              context.fill();
+            }
+            context.restore();
+          }
+          context.restore();
+        }
+      },
+
+      drawBoite: function (context, colorStroke, colorFill, lineWidth) {
+        boite = canvasControl.getBoite();
+        if(boite) {
+          context.save();
+          context.lineWidth = lineWidth;
+          context.strokeStyle = colorStroke;
+          context.shadowColor   = "#666";
+          context.shadowOffsetX = 0;
+          context.shadowOffsetY = 0;
+          context.shadowBlur    = 2;
+          boite.drawCanvas(context);
+          if (colorFill){
+            context.fillStyle = colorFill;
+            context.fill();
           }
           context.restore();
         }
@@ -89,9 +121,10 @@ angular.module('pedaleswitchApp')
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        this.drawTableActive(ctx, "black", null, "1px");
+        this.drawBoite(ctx, "gray", "#f6f6f6", "1px");
+        this.drawTableDashed(ctx, "gray", "#f6f6f6", "1px", [10, 3]);
         this.drawTableThin(ctx, "gray", null, "1px");
-        this.drawTableDashed(ctx, "gray", null, "1px", [10, 3]);
+        this.drawTableActive(ctx, "black", null, "1px");
       }
 
     };

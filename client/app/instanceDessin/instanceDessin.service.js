@@ -10,7 +10,7 @@ angular.module('pedaleswitchApp')
     var key = 0;
     var dessin = {
       options: [],
-      boite: {}
+      boite: null
     };
 
     $http.get('/api/composants').then(response => {
@@ -107,6 +107,9 @@ angular.module('pedaleswitchApp')
       zoomChange: function(value){
         var okZoom = canvasConversion.setZoom(value);
         if (okZoom) {
+          if (dessin.boite) {
+            canvasConversion.convertEffetZoom(dessin.boite);
+          }
           for (var i = 0; i < dessin.options.length; i++) {
             canvasConversion.convertEffetZoom(dessin.options[i]);
           }

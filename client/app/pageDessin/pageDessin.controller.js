@@ -122,6 +122,7 @@ class PageDessinComponent {
 
   addToTable(value){
     this.canvasControl.addToCanvas(value);
+    this.dessin.boite = this.canvasControl.getBoite();
     this.canvasDraw.drawStuff();
     this.toutesTables = this.canvasControl.tableState();
   }

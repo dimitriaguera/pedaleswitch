@@ -63,6 +63,8 @@ angular.module('pedaleswitchApp')
             var obj = JSON.parse(e.dataTransfer.getData('data'));
             
             var effet = instanceDessin.searchEffetInDessin(obj._id, obj.key);
+            var dessin = instanceDessin.getDessin();
+
             if(effet && !effet.in_canvas) {
               effet.pos.x = coords[0] - (effet.size.w / 2);
               effet.pos.y = coords[1] - (effet.size.h / 2);
@@ -72,6 +74,7 @@ angular.module('pedaleswitchApp')
                   compos[i].pos.y = compos[i].pos_default.y + effet.pos.y;
               }
               canvasControl.addToCanvas(effet);
+              dessin.boite = canvasControl.getBoite();
               checkCollision.checkall(canvasControl.getTableActive());
               canvasDraw.drawStuff();
             }
