@@ -34,7 +34,6 @@ angular.module('pedaleswitchApp')
 
       mousemove: function (e) {
         var ontable = canvasControl.getTableActive();
-        var boite = canvasControl.getBoite();
         var mouseX = e.layerX,
             mouseY = e.layerY;
 
@@ -47,52 +46,18 @@ angular.module('pedaleswitchApp')
 
         // Bouge les composants.
         if(!canvasControl.getDeb()){
-          var compos = ontable[dragIdx].composants;
-          for(var i=0; i<compos.length; i++){
-            compos[i].setX(ontable[dragIdx].pos.x + compos[i].pos_default.x);
-            compos[i].setY(ontable[dragIdx].pos.y + compos[i].pos_default.y);
-          }
+          ontable[dragIdx].resetCompPos();
         }
 
+        // Check les collisions entre l'item déplacer et la table active.
         checkCollision.check(ontable[dragIdx], ontable);
 
+        // Check l'alignement des things.
+        canvasControl.setTableAlignLine(checkCollision.checkLine(ontable[dragIdx], ontable));
+
+        // Dessine.
         canvasDraw.drawStuff();
         
-        var tab = checkCollision.checkLine(ontable[dragIdx], ontable);
-
-        var canvas = canvasControl.getCanvas(),
-          ctx = canvasControl.getCtx(),
-          i;
-
-        for (i = 0 ; i < tab.x.length ; i++) {
-          ctx.beginPath();
-          ctx.save();
-          ctx.setLineDash([10, 3]);
-          if (tab.x[i].isPile) {
-            ctx.strokeStyle = '#ff0000';
-          }
-          ctx.moveTo(tab.x[i].x,0);
-          ctx.lineTo(tab.x[i].x,canvas.height);
-          ctx.stroke();
-          ctx.closePath();
-          ctx.restore();
-        }
-        for (i = 0 ; i < tab.y.length ; i++) {
-          ctx.beginPath();
-          ctx.save();
-          ctx.setLineDash([10, 3]);
-          if (tab.y[i].isPile) {
-            ctx.strokeStyle = '#ff0000';
-          }
-          ctx.moveTo(0,tab.y[i].y);
-          ctx.lineTo(canvas.width,tab.y[i].y);
-          ctx.stroke();
-          ctx.closePath();
-          ctx.restore();
-        }
-
-
-
       },
 
       mouseup: function (e) {
@@ -117,28 +82,20 @@ angular.module('pedaleswitchApp')
 
         // Bouge les composants.
         if(!canvasControl.getDeb()){
-          var compos = ontable[dragIdx].composants;
-          for(var i=0; i<compos.length; i++){
-            compos[i].setX(ontable[dragIdx].pos.x + compos[i].pos_default.x);
-            compos[i].setY(ontable[dragIdx].pos.y + compos[i].pos_default.y);
-          }
+          ontable[dragIdx].resetCompPos();
         }
 
-        // Regarde les collisions.
+        // Check all collision.
         checkCollision.checkall(ontable);
-
-        // Desine
-        canvasDraw.drawStuff();
-
-        // Enlève le listener.
-        dragIdx = -1;
-        $rootScope.$emit('no-click-on-element');
-
         
-        checkCollision.checkall(ontable);
+        // Bouge boite.
         boite.checkBorderBoite(ontable[dragIdx]);
+        
+        // Dessine.
         canvasDraw.drawStuff();
         dragIdx = -1;
+        
+        // Enlève le listener
         $rootScope.$emit('no-click-on-element');
 
       },

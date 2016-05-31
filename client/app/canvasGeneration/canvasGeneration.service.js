@@ -239,6 +239,7 @@ angular.module('pedaleswitchApp')
         this.margin = 5;
         this.isSelected = false;
       }
+      
       checkBorderBoite(entity){
         if (entity.pos.x < (this.pos.x + this.margin)){
           this.pos.x = entity.pos.x - this.margin;
@@ -257,6 +258,7 @@ angular.module('pedaleswitchApp')
           this.size.h = (entity.pos.y + entity.size.h) - this.pos.y + this.margin;
         }
       }
+      
       getCenterX(){
         return this.pos.x + (this.size.w / 2);
       }

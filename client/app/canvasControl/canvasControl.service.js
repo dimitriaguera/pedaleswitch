@@ -15,6 +15,7 @@ angular.module('pedaleswitchApp')
     var tableDashed = [];
     var tableThin = [];
     var tableShine = [];
+    var tableAlignLine = [];
     var debrayable = false;
 
     var thing = function(entity) {
@@ -69,7 +70,14 @@ angular.module('pedaleswitchApp')
               tableComposant.push(tmp_comp);
               tmp_eff.composants.push(tmp_comp);
           }
-          
+
+          // Empeche que l'effet depasse du canvas.
+          canvasConversion.moveCloseBorder(tmp_eff, canvas);
+
+          // Place bien les composants.
+          tmp_eff.resetCompPos();
+
+          // Créer le boitier de la pedale.
           if(!boite){
             boite = canvasGeneration.newBoite(effet);
             canvasConversion.initializeMarginBoite(boite);
@@ -78,12 +86,21 @@ angular.module('pedaleswitchApp')
             boite.checkBorderBoite(tmp_eff);
           }
 
-          var indice = tableEffet.push(tmp_eff);
-          return tableEffet[indice-1];
+          tableEffet.push(tmp_eff);
 
+          // Check les collisions entre tout les obj.
+          checkCollision.checkall(tableEffet);
+
+          return tmp_eff;
         }
       },
 
+      // Empeche que l'effet depasse du canvas.
+      moveCloseBorder: function(effet){
+        canvasConversion.moveCloseBorder(effet, canvas);
+      },
+      
+      
       removeToCanvas: function(effet) {
         effet.in_canvas = false;
         var index = this.searchTabByIdReturnIndex(tableEffet, effet._id, effet.key);
@@ -150,7 +167,7 @@ angular.module('pedaleswitchApp')
       //  }
       //  return okZoom;
       //},
-
+      
       drawRulers: function() {
         rulers.render(canvas, ctx, '#aaa', 'pixels', 100);
       },
@@ -166,40 +183,7 @@ angular.module('pedaleswitchApp')
           }
         }
       },
-
-      /**
-       * Permet de modifier les coordonnées d'un thing s'il depace les bordures.
-       */
-      moveCloseBorder: function(entity) {
-        var marginTop = 10,
-          marginRight = 10,
-          marginBottom = 10,
-          marginLeft = 10;
-
-        // Regarde si la figure sort du canvas.
-        var top = entity.getTop(),
-          right = entity.getRight(),
-          bottom = entity.getBottom(),
-          left = entity.getLeft();
-
-        // Debordement par le haut.
-        if (top - marginTop < 0) {
-          entity.setCenterY(entity.size.h / 2 + marginTop);
-        }
-        // Debordement par la droite.
-        if (right + marginRight > canvas.width) {
-          entity.setCenterX(canvas.width - entity.size.w / 2 - marginLeft);
-        }
-        // Debordement par le bas.
-        if (bottom + marginBottom > canvas.height) {
-          entity.setCenterY(canvas.height - entity.size.h / 2 - marginTop);
-        }
-        // Debordement par la gauche.
-        if (left - marginLeft < 0) {
-          entity.setCenterX(entity.size.w / 2 + marginLeft);
-        }
-      },
-
+      
       setBoite: function(bo){
         boite = bo;
       },
@@ -315,7 +299,15 @@ angular.module('pedaleswitchApp')
 
       getTableComposant: function(){
         return tableComposant;
-      }
+      },
 
+      setTableAlignLine: function(tabr) {
+        tableAlignLine = tabr;
+      },
+
+      getTableAlignLine: function(){
+        return tableAlignLine;
+      },
+      
     };
   });

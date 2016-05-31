@@ -2,12 +2,13 @@
 (function(){
 
 class PageDessinComponent {
-  constructor(instanceDessin, canvasControl, canvasDraw, $http) {
+  constructor(instanceDessin, canvasControl, canvasDraw, checkCollision, $http) {
     this.dessin = {};
     this.items = {};
     this.instanceDessin = instanceDessin;
     this.canvasControl = canvasControl;
     this.canvasDraw = canvasDraw;
+    this.checkCollision = checkCollision;
     this.isActive = 'effet';
     this.zoom = 100;
     this.okZoom = true;
@@ -121,9 +122,16 @@ class PageDessinComponent {
   }
 
   addToTable(value){
+    // Ajouter l'effet au canvas.
     this.canvasControl.addToCanvas(value);
-    this.dessin.boite = this.canvasControl.getBoite();
+
+    // Initialise le boite dans l'instance de dessin.
+    this.instanceDessin.setBoite(this.canvasControl.getBoite());
+    
+    // Dessine.
     this.canvasDraw.drawStuff();
+
+    //@todo a sup sert au dev.
     this.toutesTables = this.canvasControl.tableState();
   }
 

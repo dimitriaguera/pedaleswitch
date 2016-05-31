@@ -80,7 +80,13 @@ angular.module('pedaleswitchApp')
         return false;
       },
 
-
+      /**
+       * Permet de voir si le centre de l'obj deplace est aligné avec le centre des obj actifs.
+       * 
+       * @param item
+       * @param items
+       * @returns {{x: Array, y: Array, isPile: Bool}}
+       */
       checkLine: function(item, items) {
         var indexCounter,
           outer = items.length,
@@ -107,7 +113,7 @@ angular.module('pedaleswitchApp')
         }
         return tab;
       },
-      
+            
       intersectHelper: function () {
   
         this.between = function (min, p, max) {

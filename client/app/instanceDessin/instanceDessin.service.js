@@ -27,6 +27,10 @@ angular.module('pedaleswitchApp')
         return dessin;
       },
 
+      setBoite: function (boite) {
+        dessin.boite = boite;
+      },
+      
       getComposantItems: function () {
         return composantItems;
       },

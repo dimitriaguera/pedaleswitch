@@ -114,6 +114,44 @@ angular.module('pedaleswitchApp')
         }
       },
 
+      drawTableAlignLine: function (canvas, context, colorClose, colorAlign, lineWidth, dashArray) {
+        var tab = canvasControl.getTableAlignLine() || [];
+        var i;
+
+        if(tab.length !== 0) {
+          context.save();
+          context.lineWidth = lineWidth;
+          context.setLineDash(dashArray);
+
+          // Ligne Horizontale.
+          for (i = 0 ; i < tab.x.length ; i++) {
+            context.strokeStyle = colorClose;
+            context.beginPath();
+            if (tab.x[i].isPile) {
+              context.strokeStyle = colorAlign;
+            }
+            context.moveTo(tab.x[i].x,0);
+            context.lineTo(tab.x[i].x,canvas.height);
+            context.stroke();
+            context.closePath();
+          }
+
+          // Ligne Verticale.
+          for (i = 0 ; i < tab.y.length ; i++) {
+            context.strokeStyle = colorClose;
+            context.beginPath();
+            if (tab.y[i].isPile) {
+              context.strokeStyle = colorAlign;
+            }
+            context.moveTo(0,tab.y[i].y);
+            context.lineTo(canvas.width,tab.y[i].y);
+            context.stroke();
+            context.closePath();
+          }
+          context.restore();
+        }
+      },
+
       drawStuff: function() {
 
         canvas = canvasControl.getCanvas();
@@ -124,6 +162,7 @@ angular.module('pedaleswitchApp')
         this.drawBoite(ctx, "gray", "#f6f6f6", "1px");
         this.drawTableDashed(ctx, "gray", "#f6f6f6", "1px", [10, 3]);
         this.drawTableThin(ctx, "gray", null, "1px");
+        this.drawTableAlignLine(canvas, ctx, "#d0d0d0", "#00bfff", "1px", [10, 3]);
         this.drawTableActive(ctx, "black", null, "1px");
       }
 

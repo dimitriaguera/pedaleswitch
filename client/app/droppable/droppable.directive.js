@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('pedaleswitchApp')
-  .directive('droppable', function (canvasControl, canvasDraw, instanceDessin, checkCollision) {
+  .directive('droppable', function (canvasControl, canvasDraw, instanceDessin, canvasConversion) {
     return {
 
       link: function(scope, element) {
@@ -47,49 +47,28 @@ angular.module('pedaleswitchApp')
             // Remove class over.
             this.classList.remove('over');
 
-
-            /*
-            // Function to calculate the absolute position
-            var offset = function (el, event) {
-              var ox = -el.offsetLeft,
-                oy = -el.offsetTop;
-              while (el = el.offsetParent) {
-                ox += el.scrollLeft - el.offsetLeft;
-                oy += el.scrollTop - el.offsetTop;
-              }
-              return [event.clientX + ox, event.clientY + oy];
-            };
-
-            var coords = offset(e.target, e);
-            */
-
-
+            
+            //@todo modifier architecture panier et binder addEffet du controleur page dessin.
             var obj = JSON.parse(e.dataTransfer.getData('data'));
 
             var mouseX = e.layerX,
                 mouseY = e.layerY;
 
+            // Lors du drop transmet l'id et le key de l'effet qui est draggé.
+            // Puis va chercher l'effet correspondant dans le modèle dessin.
             var effet = instanceDessin.searchEffetInDessin(obj._id, obj.key);
-            var dessin = instanceDessin.getDessin();
-
+            
             if(effet && !effet.in_canvas) {
               effet.pos.x = mouseX - (effet.size.w / 2);
               effet.pos.y = mouseY - (effet.size.h / 2);
-
-              var canvaseffet = canvasControl.addToCanvas(effet);
-              canvasControl.moveCloseBorder(canvaseffet);
-
-              if(!canvasControl.getDeb()){
-                var compos = canvaseffet.composants;
-                for(var i=0; i<compos.length; i++){
-                  compos[i].setX(canvaseffet.pos.x + compos[i].pos_default.x);
-                  compos[i].setY(canvaseffet.pos.y + compos[i].pos_default.y);
-                }
-              }
               
+              // Le rajoute au canvas avec les bonnes positions.
               canvasControl.addToCanvas(effet);
-              dessin.boite = canvasControl.getBoite();
-              checkCollision.checkall(canvasControl.getTableActive());
+              
+              // Initialise le boite dans l'instance de dessin.
+              instanceDessin.setBoite(canvasControl.getBoite());
+              
+              // Dessine.
               canvasDraw.drawStuff();
             }
             return false;
