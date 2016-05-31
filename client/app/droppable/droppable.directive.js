@@ -70,6 +70,8 @@ angular.module('pedaleswitchApp')
                 mouseY = e.layerY;
 
             var effet = instanceDessin.searchEffetInDessin(obj._id, obj.key);
+            var dessin = instanceDessin.getDessin();
+
             if(effet && !effet.in_canvas) {
               effet.pos.x = mouseX - (effet.size.w / 2);
               effet.pos.y = mouseY - (effet.size.h / 2);
@@ -84,7 +86,9 @@ angular.module('pedaleswitchApp')
                   compos[i].setY(canvaseffet.pos.y + compos[i].pos_default.y);
                 }
               }
-
+              
+              canvasControl.addToCanvas(effet);
+              dessin.boite = canvasControl.getBoite();
               checkCollision.checkall(canvasControl.getTableActive());
               canvasDraw.drawStuff();
             }

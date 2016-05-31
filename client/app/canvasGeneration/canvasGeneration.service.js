@@ -222,6 +222,113 @@ angular.module('pedaleswitchApp')
     //    this.pos = entity.pos;
     //}
 
+    class Boite {
+      constructor (entity) {
+        this.size = {
+          w: entity.size.w,
+          h: entity.size.h
+        };
+        this.pos = {
+          x: entity.pos.x,
+          y: entity.pos.y
+        };
+        this.old_pos = {
+          x: entity.pos.x,
+          y: entity.pos.y
+        };
+        this.margin = 5;
+        this.isSelected = false;
+      }
+      checkBorderBoite(entity){
+        if (entity.pos.x < (this.pos.x + this.margin)){
+          this.pos.x = entity.pos.x - this.margin;
+          this.size.w =  this.size.w + (this.old_pos.x - entity.pos.x) + this.margin;
+          this.old_pos.x = this.pos.x;
+        }
+        if (entity.pos.y < (this.pos.y + this.margin)){
+          this.pos.y = entity.pos.y - this.margin;
+          this.size.h =  this.size.h + (this.old_pos.y - entity.pos.y) + this.margin;
+          this.old_pos.y = this.pos.y;
+        }
+        if ((entity.pos.x + entity.size.w) > (this.pos.x + this.size.w - this.margin)){
+          this.size.w = (entity.pos.x + entity.size.w) - this.pos.x + this.margin;
+        }
+        if ((entity.pos.y + entity.size.h) > (this.pos.y + this.size.h - this.margin)){
+          this.size.h = (entity.pos.y + entity.size.h) - this.pos.y + this.margin;
+        }
+      }
+      getCenterX(){
+        return this.pos.x + (this.size.w / 2);
+      }
+      getCenterY(){
+        return this.pos.y + (this.size.h / 2);
+      }
+      getRadius(){
+        return this.size.w / 2;
+      }
+      setX(coord){
+        this.pos.x = coord;
+      }
+      setY(coord){
+        this.pos.y = coord;
+      }
+      getX() {
+        return this.pos.x;
+      }
+      getY() {
+        return this.pos.y;
+      }
+      getLeft() {
+        return this.getX();
+      }
+      getTop() {
+        return this.getY();
+      }
+      getRight() {
+        return this.getX() + this.size.w;
+      }
+      getBottom() {
+        return this.getY() + this.size.h;
+      }
+      setCenterX(center){
+        this.pos.x = center - (this.size.w / 2);
+      }
+      setCenterY(center){
+        this.pos.y = center - (this.size.h / 2);
+      }
+      getBoundingBoxPoints() {
+        // Bords du rectangle.
+        // 0 haut gauche, 1 haut droit, 2 bas droit, 3 bas gauche.
+        return ([
+          {
+            x: this.pos.x,
+            y: this.pos.y
+          },
+          {
+            x: this.pos.x + this.size.w,
+            y: this.pos.y
+          },
+          {
+            x: this.pos.x + this.size.w,
+            y: this.pos.y + this.size.h
+          },
+          {
+            x: this.pos.x,
+            y: this.pos.y + this.size.h
+          }
+        ]);
+      }
+      setSelected(selected) {
+        this.isSelected = selected;
+      }
+      drawCanvas(ctx){
+        ctx.beginPath();
+        ctx.rect(this.pos.x, this.pos.y, this.size.w, this.size.h);
+        ctx.stroke();
+        ctx.closePath();
+      }
+    }
+
     // Public API here
     return {
       newCercle: function (entity) {
@@ -230,6 +337,10 @@ angular.module('pedaleswitchApp')
 
       newRect: function (entity) {
         return new Rect(entity);
+      },
+
+      newBoite: function (entity) {
+        return new Boite(entity);
       },
 
       //newPoly: function (entity) {

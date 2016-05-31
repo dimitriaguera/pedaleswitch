@@ -26,14 +26,19 @@ angular.module('pedaleswitchApp')
       entity.pos.y = Math.round(ratio * entity.pos.y);
       entity.size.w = Math.round(ratio * entity.size.w);
       entity.size.h = Math.round(ratio * entity.size.h);
-      var compos = entity.composants;
-      for (var i = 0; i < compos.length; i++){
-        compos[i].pos.x = Math.round(ratio * compos[i].pos.x);
-        compos[i].pos.y = Math.round(ratio * compos[i].pos.y);
-        compos[i].pos_default.x = Math.round(ratio * compos[i].pos_default.x);
-        compos[i].pos_default.y = Math.round(ratio * compos[i].pos_default.y);
-        compos[i].size.w = Math.round(ratio * compos[i].size.w);
-        compos[i].size.h = Math.round(ratio * compos[i].size.h);
+      if (entity.composants) {
+        var compos = entity.composants;
+        for (var i = 0; i < compos.length; i++) {
+          compos[i].pos.x = Math.round(ratio * compos[i].pos.x);
+          compos[i].pos.y = Math.round(ratio * compos[i].pos.y);
+          compos[i].pos_default.x = Math.round(ratio * compos[i].pos_default.x);
+          compos[i].pos_default.y = Math.round(ratio * compos[i].pos_default.y);
+          compos[i].size.w = Math.round(ratio * compos[i].size.w);
+          compos[i].size.h = Math.round(ratio * compos[i].size.h);
+        }
+      }
+      if (entity.margin){
+        entity.margin = Math.round(ratio * entity.margin);
       }
     };
 
@@ -59,6 +64,23 @@ angular.module('pedaleswitchApp')
           return true;
         }
         return false;
+      },
+
+      initializeMarginBoite: function(entity) {
+        var newRatio = resolution/resoInMm;
+        entity.margin = zoom * newRatio * entity.margin;
+        entity.size = {
+          w: entity.size.w + 2 * entity.margin,
+          h: entity.size.h + 2 * entity.margin
+        };
+        entity.pos = {
+          x: entity.pos.x - entity.margin,
+          y: entity.pos.y - entity.margin
+        };
+        entity.old_pos = {
+          x: entity.pos.x - entity.margin,
+          y: entity.pos.y - entity.margin
+        };
       },
 
       initializeEffetZoom: function (entity) {
