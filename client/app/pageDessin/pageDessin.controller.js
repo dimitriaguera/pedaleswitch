@@ -26,7 +26,7 @@ class PageDessinComponent {
 
       if (this.instanceDessin.getDessin().options.length === 0){
         this.instanceDessin.setEffet(this.effets[0], this.effets[0].options[0]);
-        //this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
+        this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
       }
 
       //@todo il faut garder juste c ligne et les mettre en dehors du $http.get
@@ -127,7 +127,7 @@ class PageDessinComponent {
 
     // Initialise le boite dans l'instance de dessin.
     this.instanceDessin.setBoite(this.canvasControl.getBoite());
-    
+
     // Dessine.
     this.canvasDraw.drawStuff();
 

@@ -131,8 +131,7 @@ angular.module('pedaleswitchApp')
         if (left - marginLeft < 0) {
           entity.setCenterX(entity.size.w / 2 + marginLeft);
         }
-      },
-      
+      }
 
     };
   });

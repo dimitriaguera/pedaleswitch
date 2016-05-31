@@ -85,6 +85,9 @@ angular.module('pedaleswitchApp')
           ontable[dragIdx].resetCompPos();
         }
 
+        // Enlève les lignes d'alignement.
+        canvasControl.setTableAlignLine([]);
+
         // Check all collision.
         checkCollision.checkall(ontable);
         
