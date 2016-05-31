@@ -9,6 +9,7 @@ angular.module('pedaleswitchApp')
     var tableActive = [];
     var tableDashed = [];
     var tableThin = [];
+    var tableArrow = [];
     var tableShine = [];
     var selectDraw = function(context, item){
       if (item.isSelected) {
@@ -114,13 +115,12 @@ angular.module('pedaleswitchApp')
         }
       },
 
-      drawTableAlignLine: function (canvas, context, colorClose, colorAlign, lineWidth, dashArray) {
+      drawTableAlignLine: function (canvas, context, colorClose, colorAlign, dashArray) {
         var tab = canvasControl.getTableAlignLine() || [];
         var i;
 
         if(tab.length !== 0) {
           context.save();
-          context.lineWidth = lineWidth;
           context.setLineDash(dashArray);
 
           // Ligne Horizontale.
@@ -152,6 +152,22 @@ angular.module('pedaleswitchApp')
         }
       },
 
+      drawArrow: function (context, colorFill) {
+        var tableArrow = canvasControl.getTableArrow();
+        if(tableArrow.length !== 0) {
+          context.save();
+          context.shadowColor   = "gray";
+          context.shadowOffsetX = 0;
+          context.shadowOffsetY = 0;
+          context.shadowBlur    = 1;
+          context.fillStyle = colorFill;
+          for (var i = 0; i < tableArrow.length; i++) {
+            tableArrow[i].drawCanvas(context);
+          }
+          context.restore();
+        }
+      },
+
       drawStuff: function() {
 
         canvas = canvasControl.getCanvas();
@@ -162,8 +178,9 @@ angular.module('pedaleswitchApp')
         this.drawBoite(ctx, "gray", "#f6f6f6", "1px");
         this.drawTableDashed(ctx, "gray", "#f6f6f6", "1px", [10, 3]);
         this.drawTableThin(ctx, "gray", null, "1px");
-        this.drawTableAlignLine(canvas, ctx, "#d0d0d0", "#00bfff", "1px", [10, 3]);
+        this.drawTableAlignLine(canvas, ctx, "#d0d0d0", "#00bfff", [10, 3]);
         this.drawTableActive(ctx, "black", null, "1px");
+        this.drawArrow(ctx, "gray");
       }
 
     };

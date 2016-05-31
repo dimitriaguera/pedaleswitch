@@ -83,6 +83,12 @@ angular.module('pedaleswitchApp')
         };
       },
 
+      convertToMm: function(value){
+        var newValue = value / zoom;
+        newValue = newValue / resolution/resoInMm;
+        return Math.round(newValue);
+      },
+
       initializeEffetZoom: function (entity) {
         convertSize(entity, zoom);
       },

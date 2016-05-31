@@ -16,6 +16,7 @@ angular.module('pedaleswitchApp')
     var tableThin = [];
     var tableShine = [];
     var tableAlignLine = [];
+    var tableArrow = [];
     var debrayable = false;
 
     var thing = function(entity) {
@@ -81,9 +82,12 @@ angular.module('pedaleswitchApp')
           if(!boite){
             boite = canvasGeneration.newBoite(effet);
             canvasConversion.initializeMarginBoite(boite);
+            tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
+            tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
           }
           else {
             boite.checkBorderBoite(tmp_eff);
+            this.setArrowPos();
           }
 
           tableEffet.push(tmp_eff);
@@ -100,7 +104,12 @@ angular.module('pedaleswitchApp')
         canvasConversion.moveCloseBorder(effet, canvas);
       },
       
-      
+      setArrowPos: function(){
+        for(var i = 0; i < tableArrow.length; i++){
+          tableArrow[i].setPos(tableArrow[i].loc);
+        }
+      },
+
       removeToCanvas: function(effet) {
         effet.in_canvas = false;
         var index = this.searchTabByIdReturnIndex(tableEffet, effet._id, effet.key);
@@ -307,6 +316,14 @@ angular.module('pedaleswitchApp')
 
       getTableAlignLine: function(){
         return tableAlignLine;
+      },
+
+      setTableArrow: function(tabr) {
+        tableArrow = tabr;
+      },
+
+      getTableArrow: function(){
+        return tableArrow;
       },
       
     };

@@ -142,6 +142,7 @@ class PageDessinComponent {
 
   zoomAdd(value){
     this.okZoom = this.instanceDessin.zoomChange(value);
+    this.canvasControl.setArrowPos();
     this.zoom = this.canvasControl.getZoom();
     this.canvasDraw.drawStuff();
   }

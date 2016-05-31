@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('pedaleswitchApp')
-  .factory('canvasGeneration', function () {
+  .factory('canvasGeneration', function (canvasConversion) {
     // Service logic
     // ...
 
@@ -331,6 +331,118 @@ angular.module('pedaleswitchApp')
       }
     }
 
+    class Arrow {
+      constructor(entity, location) {
+
+        this.loc = location || 'argument "location" missing';
+        this.entity = entity;
+        this.margin = 30;
+        this.isSelected = false;
+        this.setPos(this.loc);
+        this.setTriangleDraw(this.loc);
+      }
+
+      setPos(loc){
+        switch(loc) {
+          case 'right':
+            this.pos_start = {
+              x: this.entity.pos.x + this.entity.size.w + this.margin,
+              y: this.entity.pos.y
+            };
+            this.pos_end = {
+              x: this.entity.pos.x + this.entity.size.w + this.margin,
+              y: this.entity.pos.y + this.entity.size.h
+            };
+            break;
+          case 'bottom':
+            this.pos_start = {
+              x: this.entity.pos.x,
+              y: this.entity.pos.y + this.entity.size.h + this.margin
+            };
+            this.pos_end = {
+              x: this.entity.pos.x + this.entity.size.w,
+              y: this.entity.pos.y + this.entity.size.h + this.margin
+            };
+            break;
+          default:
+          console.log(loc + '--> terme non reconnu par le constructeur Arrow');
+        }
+      }
+
+      setTriangleDraw(loc){
+        switch(loc) {
+          case 'right':
+            this.drawTriangle = function(ctx){
+              ctx.save();
+              ctx.fillStyle="gray";
+              ctx.beginPath();
+              ctx.moveTo(this.pos_start.x, this.pos_start.y);
+              ctx.lineTo(this.pos_start.x - 5, this.pos_start.y + 10);
+              ctx.lineTo(this.pos_start.x + 5, this.pos_start.y + 10);
+              ctx.closePath();
+              ctx.fill();
+              ctx.moveTo(this.pos_end.x, this.pos_end.y);
+              ctx.lineTo(this.pos_end.x - 5, this.pos_end.y - 10);
+              ctx.lineTo(this.pos_end.x + 5, this.pos_end.y - 10);
+              ctx.closePath();
+              ctx.fill();
+              ctx.restore();
+            };
+
+            this.drawText = function(ctx){
+              ctx.save();
+              ctx.font = "14px sans-serif";
+              ctx.fillText(canvasConversion.convertToMm(this.entity.size.h) + ' mm', this.pos_start.x + 10, this.pos_start.y + (this.pos_end.y - this.pos_start.y)/2);
+              ctx.restore();
+            };
+
+            this.drawCanvas = function(ctx){
+              ctx.beginPath();
+              ctx.fillRect(this.pos_start.x, this.pos_start.y + 5, 1, this.pos_end.y - this.pos_start.y - 5);
+              ctx.closePath();
+              this.drawTriangle(ctx);
+              this.drawText(ctx);
+            };
+            break;
+          case 'bottom':
+            this.drawTriangle = function (ctx){
+              ctx.save();
+              ctx.fillStyle="gray";
+              ctx.beginPath();
+              ctx.moveTo(this.pos_start.x, this.pos_start.y);
+              ctx.lineTo(this.pos_start.x + 10, this.pos_start.y - 5);
+              ctx.lineTo(this.pos_start.x + 10, this.pos_start.y + 5);
+              ctx.closePath();
+              ctx.fill();
+              ctx.moveTo(this.pos_end.x, this.pos_end.y);
+              ctx.lineTo(this.pos_end.x - 10, this.pos_end.y - 5);
+              ctx.lineTo(this.pos_end.x - 10, this.pos_end.y + 5);
+              ctx.closePath();
+              ctx.fill();
+              ctx.restore();
+            };
+
+            this.drawText = function(ctx){
+              ctx.save();
+              ctx.font = "14px sans-serif";
+              ctx.fillText(canvasConversion.convertToMm(this.entity.size.w) + ' mm', this.pos_start.x + (this.pos_end.x - this.pos_start.x)/2, this.pos_start.y + 24);
+              ctx.restore();
+            };
+
+            this.drawCanvas = function(ctx){
+              ctx.beginPath();
+              ctx.fillRect(this.pos_start.x + 5, this.pos_start.y, this.pos_end.x - this.pos_start.x - 5, 1);
+              ctx.closePath();
+              this.drawTriangle(ctx);
+              this.drawText(ctx);
+            };
+            break;
+          default:
+            console.log(loc + '--> terme non reconnu par le constructeur Arrow');
+        }
+      }
+    }
+
     // Public API here
     return {
       newCercle: function (entity) {
@@ -343,6 +455,10 @@ angular.module('pedaleswitchApp')
 
       newBoite: function (entity) {
         return new Boite(entity);
+      },
+
+      newArrow: function (entity, location) {
+        return new Arrow(entity, location);
       },
 
       //newPoly: function (entity) {

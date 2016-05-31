@@ -93,6 +93,9 @@ angular.module('pedaleswitchApp')
         
         // Bouge boite.
         boite.checkBorderBoite(ontable[dragIdx]);
+
+        // Recalcule les positions de fleches.
+        canvasControl.setArrowPos();
         
         // Dessine.
         canvasDraw.drawStuff();
