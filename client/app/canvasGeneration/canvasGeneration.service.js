@@ -151,23 +151,27 @@ angular.module('pedaleswitchApp')
     //}
 
     class Boite {
-      constructor (entity) {
-        this.size = {
-          w: entity.size.w,
-          h: entity.size.h
-        };
-        this.pos = {
-          x: entity.pos.x,
-          y: entity.pos.y
-        };
-        this.old_pos = {
-          x: entity.pos.x,
-          y: entity.pos.y
-        };
-        this.margin = 5; // En mm, converti en px juste après création de la boite dans canvasControl.
+      constructor () {
+        this.margin = canvasConversion.convertToPixel(5); // En mm, converti en px juste après création de la boite dans canvasControl.
         this.isSelected = false;
       }
+
+      init(entity){
+        this.size = {
+          w: entity.size.w + 2 * this.margin,
+          h: entity.size.h + 2 * this.margin
+        };
+        this.pos = {
+          x: entity.pos.x - this.margin,
+          y: entity.pos.y - this.margin
+        };
+        this.old_pos = {
+          x: entity.pos.x - this.margin,
+          y: entity.pos.y - this.margin
+        };
+      }
       
+      // Redimensionne la boite si le nouvelle effet est en dehors.
       checkBorderBoite(entity){
         if (entity.pos.x < (this.pos.x + this.margin)){
           this.pos.x = entity.pos.x - this.margin;
@@ -390,8 +394,8 @@ angular.module('pedaleswitchApp')
         return new Rect(entity);
       },
 
-      newBoite: function (entity) {
-        return new Boite(entity);
+      newBoite: function () {
+        return new Boite();
       },
 
       newArrow: function (entity, location) {

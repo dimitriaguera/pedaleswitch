@@ -60,6 +60,8 @@ angular.module('pedaleswitchApp')
         
       },
 
+      //@todo peut etre mettre la ligne $rootScope.$emit('no-click-on-element');
+      // Au tout debut pour enlever le listener meme s'il y a eu des problèmes.
       mouseup: function (e) {
 
         var ontable = canvasControl.getTableActive();

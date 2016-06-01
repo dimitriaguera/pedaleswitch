@@ -13,9 +13,9 @@
       bindings: {
         zoom: '<',
         okZoom: '<',
-        zoomAdd: '&',
+        zoomAdd: '&'
       },
-      controller: NavigationDessin,
+      controller: NavigationDessin
     });
 
 })();

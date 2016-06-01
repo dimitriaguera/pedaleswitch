@@ -71,22 +71,28 @@ angular.module('pedaleswitchApp')
               tableComposant.push(tmp_comp);
               tmp_eff.composants.push(tmp_comp);
           }
-
-          // Empeche que l'effet depasse du canvas.
-          canvasConversion.moveCloseBorder(tmp_eff, canvas);
-
-          // Place bien les composants.
-          tmp_eff.resetCompPos();
-
+          
           // Créer le boitier de la pedale.
-          if(!boite){
-            boite = canvasGeneration.newBoite(effet);
-            canvasConversion.initializeMarginBoite(boite);
+          if(!boite) {
+            boite = canvasGeneration.newBoite();
+            // Empeche que l'effet depasse du canvas.
+            this.moveCloseBorder(tmp_eff);
+            // Place bien les composants.
+            tmp_eff.resetCompPos();
+            // Initiliase la boite.
+            boite.init(tmp_eff);
+            // Créer les flèches autour de la boite.
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
           }
           else {
+            // Empeche que l'effet depasse du canvas.
+            this.moveCloseBorder(tmp_eff);
+            // Place bien les composants.
+            tmp_eff.resetCompPos();
+            // Redimensionne la boite si le nouvelle effet est en dehors.
             boite.checkBorderBoite(tmp_eff);
+            // Repositionne les arraw.
             this.setArrowPos();
           }
 
@@ -101,12 +107,31 @@ angular.module('pedaleswitchApp')
 
       // Empeche que l'effet depasse du canvas.
       moveCloseBorder: function(effet){
-        canvasConversion.moveCloseBorder(effet, canvas);
+        canvasConversion.moveCloseBorder(effet, boite, canvas);
         //if (effet.constructor.name !== "Boite"){
         //  canvasConversion.moveCloseBorder(boite, canvas);
         //}
       },
+
+      // Si après zoom les obj déborde du canvas l'agrendie.
+      resizeCanvasOnZoom: function(){
+        if (boite) {
+          var realmargin = 150;
+          var bbot = boite.getBottom(),
+              bright = boite.getRight();
+
+          // Debordement par la droite.
+          if (bright + realmargin > canvas.width) {
+            canvas.width = bright + realmargin;
+          }
+          // Debordement par le bas.
+          if (bbot + realmargin > canvas.height) {
+            canvas.height = bbot + realmargin;
+          }
+        }
+      },
       
+      //@todo optimisation possible check arraw active.
       setArrowPos: function(){
         for(var i = 0; i < tableArrow.length; i++){
           tableArrow[i].setPos(tableArrow[i].loc);

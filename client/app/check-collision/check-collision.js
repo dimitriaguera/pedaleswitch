@@ -18,11 +18,13 @@ angular.module('pedaleswitchApp')
           outer = items.length,
           comparitor;
 
+        item.setOverlapping(false);
+
         var intersect = new this.intersectHelper();
         for (indexCounter = 0; indexCounter < outer; indexCounter++) {
           comparitor = items[indexCounter];
-          comparitor.setOverlapping(false);
           if (!(item._id == comparitor._id && item.key == comparitor.key)){
+            comparitor.setOverlapping(false);
             if (intersect.check(item, comparitor) === true) {
               item.setOverlapping(true);
               comparitor.setOverlapping(true);
