@@ -92,6 +92,23 @@ class PageDessinComponent {
     }
   }
 
+  activeBoite(){
+
+    var tabEffet = this.canvasControl.getTableEffet();
+    var tabCompo = this.canvasControl.getTableComposant();
+    var tabDash = tabEffet.concat(tabCompo);
+
+    this.isActive = 'boite';
+    this.canvasControl.setTableActive([this.canvasControl.getBoite()]);
+    
+    this.canvasControl.resetIsSelected(tabEffet);
+    this.canvasControl.resetIsSelected(tabCompo);
+    this.canvasControl.resetTableThin();
+    this.canvasControl.setTableDashed(tabDash);
+    
+    this.canvasDraw.drawStuff();
+  }
+
   activeEffet(){
     this.isActive = 'effet';
     var active = this.canvasControl.getTableEffet();

@@ -235,13 +235,26 @@ angular.module('pedaleswitchApp')
         };
 
         this.rectInRect = function(shape, comparitor) {
-          // Recupère les coordonnées de la forme que l'on déplace.
-          var points = shape.getBoundingBoxPoints();
-          for (var counter = 0, l = points.length; counter < l; counter++) {
+          var points, counter, l;
+
+          // Regarde si chaque angle du rectangle shape ne sont pas dans le rectangle comparitor.
+          points = shape.getBoundingBoxPoints();
+          for (counter = 0, l = points.length; counter < l; counter++) {
             var point = points[counter];
             if (this.pointInRect(point.x, point.y,
                 comparitor.getLeft(), comparitor.getTop(),
                 comparitor.getRight(), comparitor.getBottom()) === true) {
+              return true;
+            }
+          }
+
+          // Regarde si chaque angle du rectangle shape ne sont pas dans le rectangle comparitor.
+          points = comparitor.getBoundingBoxPoints();
+          for (var counter = 0, l = points.length; counter < l; counter++) {
+            var point = points[counter];
+            if (this.pointInRect(point.x, point.y,
+                shape.getLeft(), shape.getTop(),
+                shape.getRight(), shape.getBottom()) === true) {
               return true;
             }
           }

@@ -81,6 +81,8 @@ angular.module('pedaleswitchApp')
             tmp_eff.resetCompPos();
             // Initiliase la boite.
             boite.init(tmp_eff);
+            // Lie les effets a la boite
+            boite.effets = tableEffet;
             // Créer les flèches autour de la boite.
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
@@ -107,10 +109,14 @@ angular.module('pedaleswitchApp')
 
       // Empeche que l'effet depasse du canvas.
       moveCloseBorder: function(effet){
-        canvasConversion.moveCloseBorder(effet, boite, canvas);
-        //if (effet.constructor.name !== "Boite"){
-        //  canvasConversion.moveCloseBorder(boite, canvas);
-        //}
+        // On deplace un effet.
+        if (effet.constructor.name !== "Boite"){
+          canvasConversion.moveCloseBorder(effet, boite.margin, canvas);
+        } 
+        // On deplace la boite.  
+        else {
+          canvasConversion.moveCloseBorder(effet, 0, canvas);
+        }
       },
 
       // Si après zoom les obj déborde du canvas l'agrendie.
