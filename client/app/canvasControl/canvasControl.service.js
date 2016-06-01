@@ -115,11 +115,9 @@ angular.module('pedaleswitchApp')
 
       resizeCanvasOnZoom: function(){
         if (boite) {
-          var margin = 50;
+          var realmargin = 150;
           var bbot = boite.getBottom(),
-            bright = boite.getRight();
-
-          var realmargin = margin + boite.margin;
+              bright = boite.getRight();
 
           // Debordement par la droite.
           if (bright + realmargin > canvas.width) {
