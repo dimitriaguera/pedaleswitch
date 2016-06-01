@@ -102,6 +102,9 @@ angular.module('pedaleswitchApp')
       // Empeche que l'effet depasse du canvas.
       moveCloseBorder: function(effet){
         canvasConversion.moveCloseBorder(effet, canvas);
+        //if (effet.constructor.name !== "Boite"){
+        //  canvasConversion.moveCloseBorder(boite, canvas);
+        //}
       },
       
       setArrowPos: function(){

@@ -2,10 +2,8 @@
 
 angular.module('pedaleswitchApp')
   .factory('canvasGeneration', function (canvasConversion) {
-    // Service logic
-    // ...
 
-    class Cercle {
+    class Shape {
       constructor (entity) {
         this._id = entity._id || null;
         this.key = entity.key || null;
@@ -71,6 +69,16 @@ angular.module('pedaleswitchApp')
       setCenterY(center){
         this.pos.y = center - (this.size.h / 2);
       }
+      setSelected(selected) {
+        this.isSelected = selected;
+      }
+      setOverlapping(overlap) {
+        this.isOverlapping = overlap;
+      }
+    }
+
+
+    class Cercle extends Shape {
       getBoundingBoxPoints() {
         return ({
           x: this.pos.x + this.size.w / 2,
@@ -78,20 +86,11 @@ angular.module('pedaleswitchApp')
           r: this.size.w / 2
         });
       }
-      setSelected(selected) {
-        this.isSelected = selected;
-      }
-      setOverlapping(overlap) {
-        this.isOverlapping = overlap;
-      }
-      drawCanvas(ctx){
+      drawCanvas(ctx) {
         ctx.beginPath();
         ctx.arc(this.getCenterX(), this.getCenterY(), this.getRadius(), 0, 2*Math.PI);
-
         // Draw center.
         ctx.fillRect(this.getCenterX(),this.getCenterY(),1,1);
-
-
         if (this.isOverlapping) {
           ctx.fillStyle = "rgba(255, 00, 00, 0.2)";
           ctx.fill();
@@ -101,72 +100,7 @@ angular.module('pedaleswitchApp')
       }
     }
 
-    class Rect {
-      constructor (entity) {
-        this._id = entity._id || null;
-        this.key = entity.key || null;
-        this.titre = entity.titre || null;
-        this.titre_option = entity.titre_option || null;
-        this.description = entity.description || null;
-        this.description_option = entity.description_option || null;
-        this.composants = [];
-        this.prix = entity.prix || null;
-        this.prix_add = entity.prix_add || null;
-        this.size = entity.size || {w: 10, h: 10};
-        this.pos = entity.pos;
-        this.pos_default = entity.pos_default || null;
-        this.pos_parent = entity.pos_parent || {x: 0, y: 0};
-        this.isSelected = false;
-        this.isOverlapping = false;
-      }
-      resetCompPos(){
-        var compos = this.composants;
-        if(compos.length !== 0) {
-          for (var i = 0; i < compos.length; i++) {
-            compos[i].setX(this.pos.x + compos[i].pos_default.x);
-            compos[i].setY(this.pos.y + compos[i].pos_default.y);
-          }
-        }
-      }
-      getCenterX(){
-        return this.pos.x + (this.size.w / 2);
-      }
-      getCenterY(){
-        return this.pos.y + (this.size.h / 2);
-      }
-      getRadius(){
-        return this.size.w / 2;
-      }
-      setX(coord){
-        this.pos.x = coord;
-      }
-      setY(coord){
-        this.pos.y = coord;
-      }
-      getX() {
-        return this.pos.x;
-      }
-      getY() {
-        return this.pos.y;
-      }
-      getLeft() {
-        return this.getX();
-      }
-      getTop() {
-        return this.getY();
-      }
-      getRight() {
-        return this.getX() + this.size.w;
-      }
-      getBottom() {
-        return this.getY() + this.size.h;
-      }
-      setCenterX(center){
-        this.pos.x = center - (this.size.w / 2);
-      }
-      setCenterY(center){
-        this.pos.y = center - (this.size.h / 2);
-      }
+    class Rect extends Shape {
       getBoundingBoxPoints() {
         // Bords du rectangle.
         // 0 haut gauche, 1 haut droit, 2 bas droit, 3 bas gauche.
@@ -188,12 +122,6 @@ angular.module('pedaleswitchApp')
             y: this.pos.y + this.size.h
           }
         ]);
-      }
-      setSelected(selected) {
-        this.isSelected = selected;
-      }
-      setOverlapping(overlap) {
-        this.isOverlapping = overlap;
       }
       drawCanvas(ctx){
         ctx.beginPath();
@@ -236,7 +164,7 @@ angular.module('pedaleswitchApp')
           x: entity.pos.x,
           y: entity.pos.y
         };
-        this.margin = 5;
+        this.margin = 5; // En mm, converti en px juste après création de la boite dans canvasControl.
         this.isSelected = false;
       }
       
@@ -330,6 +258,15 @@ angular.module('pedaleswitchApp')
         ctx.closePath();
       }
     }
+
+    /**
+     * Constructeur de classe Arrow.
+     *
+     * @param entity: objet Thing auquel lier l'Arrow.
+     * @param location : string. Valeurs acceptées :
+     *   'rigth' : fleche a droite de l'objet Thing.
+     *   'bottom' : fleche en bas de l'objet Thing.
+     */
 
     class Arrow {
       constructor(entity, location) {
