@@ -2,13 +2,12 @@
 (function(){
 
 class PageDessinComponent {
-  constructor(instanceDessin, canvasControl, canvasDraw, checkCollision, $http) {
+  constructor(instanceDessin, canvasControl, canvasDraw, $http) {
     this.dessin = {};
     this.items = {};
     this.instanceDessin = instanceDessin;
     this.canvasControl = canvasControl;
     this.canvasDraw = canvasDraw;
-    this.checkCollision = checkCollision;
     this.isActive = 'effet';
     this.zoom = 100;
     this.okZoom = true;
@@ -142,6 +141,7 @@ class PageDessinComponent {
 
   zoomAdd(value){
     this.okZoom = this.instanceDessin.zoomChange(value);
+    this.canvasControl.resizeCanvasOnZoom();
     this.canvasControl.setArrowPos();
     this.zoom = this.canvasControl.getZoom();
     this.canvasDraw.drawStuff();

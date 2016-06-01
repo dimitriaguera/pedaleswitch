@@ -73,7 +73,7 @@ angular.module('pedaleswitchApp')
           }
 
           // Empeche que l'effet depasse du canvas.
-          canvasConversion.moveCloseBorder(tmp_eff, canvas);
+          this.moveCloseBorder(tmp_eff);
 
           // Place bien les composants.
           tmp_eff.resetCompPos();
@@ -101,9 +101,27 @@ angular.module('pedaleswitchApp')
 
       // Empeche que l'effet depasse du canvas.
       moveCloseBorder: function(effet){
-        canvasConversion.moveCloseBorder(effet, canvas);
+        canvasConversion.moveCloseBorder(effet, boite, canvas);
+      },
+
+      resizeCanvasOnZoom: function(){
+        if (boite) {
+          var margin = 30;
+          var bbot = boite.getBottom(),
+            bright = boite.getRight();
+
+          // Debordement par la droite.
+          if (bright + margin > canvas.width) {
+            canvas.width = bright + margin + 30;
+          }
+          // Debordement par le bas.
+          if (bbot + margin > canvas.height) {
+            canvas.height = bbot + margin + 30;
+          }
+        }
       },
       
+      //@todo optimisation possible check arraw active.
       setArrowPos: function(){
         for(var i = 0; i < tableArrow.length; i++){
           tableArrow[i].setPos(tableArrow[i].loc);

@@ -105,13 +105,10 @@ angular.module('pedaleswitchApp')
 
       /**
        * Permet de modifier les coordonnées d'un thing s'il depace les bordures.
-       * //@todo a reflechir.
+       * @todo a reflechir.
        */
-      moveCloseBorder: function(entity, canvas) {
-        var marginTop = 30,
-          marginRight = 30,
-          marginBottom = 30,
-          marginLeft = 30;
+      moveCloseBorder: function(entity, boite, canvas) {
+        var margin = 30;
 
         // Regarde si la figure sort du canvas.
         var top = entity.getTop(),
@@ -119,23 +116,25 @@ angular.module('pedaleswitchApp')
           bottom = entity.getBottom(),
           left = entity.getLeft();
 
+        var realmargin = margin + boite.margin;
+
         // Debordement par le haut.
-        if (top - marginTop < 0) {
-          entity.setCenterY(entity.size.h / 2 + marginTop);
+        if (top - realmargin < 0) {
+          entity.setCenterY(entity.size.h / 2 + realmargin);
         }
         // Debordement par la droite.
-        if (right + marginRight > canvas.width) {
-          canvas.width += canvas.width + entity.size.w;
-          //entity.setCenterX(canvas.width - entity.size.w / 2 - marginLeft);
+        if (right + realmargin > canvas.width) {
+          canvas.width = right + realmargin;
+          //entity.setCenterX(canvas.width - entity.size.w / 2 - margin);
         }
         // Debordement par le bas.
-        if (bottom + marginBottom > canvas.height) {
-          canvas.height += canvas.height + entity.size.h;
-          //entity.setCenterY(canvas.height - entity.size.h / 2 - marginTop);
+        if (bottom + realmargin > canvas.height) {
+          canvas.height = bottom + realmargin;
+          //entity.setCenterY(canvas.height - entity.size.h / 2 - margin);
         }
         // Debordement par la gauche.
-        if (left - marginLeft < 0) {
-          entity.setCenterX(entity.size.w / 2 + marginLeft);
+        if (left - realmargin < 0) {
+          entity.setCenterX(entity.size.w / 2 + realmargin);
         }
       }
 
