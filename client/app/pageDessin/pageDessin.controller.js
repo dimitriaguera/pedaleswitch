@@ -58,6 +58,9 @@ class PageDessinComponent {
         case 'compo' :
           this.canvasControl.setTableShine(effet.composants);
           break;
+        case 'boite' :
+          this.canvasControl.setTableShine([this.canvasControl.getBoite()]);
+          break;
         default:
           return console.log('Variable "isActive" not defined in pageDessin.controller.js');
       }
