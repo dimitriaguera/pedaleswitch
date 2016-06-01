@@ -113,6 +113,7 @@ angular.module('pedaleswitchApp')
         //}
       },
 
+      // Si après zoom les obj déborde du canvas l'agrendie.
       resizeCanvasOnZoom: function(){
         if (boite) {
           var realmargin = 150;

@@ -166,8 +166,8 @@ angular.module('pedaleswitchApp')
           y: entity.pos.y - this.margin
         };
         this.old_pos = {
-          x: entity.pos.x,
-          y: entity.pos.y
+          x: entity.pos.x - this.margin,
+          y: entity.pos.y - this.margin
         };
       }
       
