@@ -39,6 +39,8 @@ angular.module('pedaleswitchApp')
       }
       if (entity.margin){
         entity.margin = Math.round(ratio * entity.margin);
+        entity.old_pos.x = Math.round(ratio * entity.old_pos.x);
+        entity.old_pos.y = Math.round(ratio * entity.old_pos.y);
       }
     };
 
@@ -65,22 +67,10 @@ angular.module('pedaleswitchApp')
         }
         return false;
       },
-
-      initializeMarginBoite: function(entity) {
-        var newRatio = resolution/resoInMm;
-        entity.margin = zoom * newRatio * entity.margin;
-        entity.size = {
-          w: entity.size.w + 2 * entity.margin,
-          h: entity.size.h + 2 * entity.margin
-        };
-        entity.pos = {
-          x: entity.pos.x - entity.margin,
-          y: entity.pos.y - entity.margin
-        };
-        entity.old_pos = {
-          x: entity.pos.x - entity.margin,
-          y: entity.pos.y - entity.margin
-        };
+      
+      convertToPixel: function(value){
+        var newRatio = resolution / resoInMm;
+        return Math.round(zoom * newRatio * value);
       },
 
       convertToMm: function(value){
@@ -108,7 +98,7 @@ angular.module('pedaleswitchApp')
        * @todo a reflechir.
        */
       moveCloseBorder: function(entity, boite, canvas) {
-        var margin = 30;
+        var margin = this.convertToPixel(40);
 
         // Regarde si la figure sort du canvas.
         var top = entity.getTop(),
@@ -123,13 +113,13 @@ angular.module('pedaleswitchApp')
           entity.setCenterY(entity.size.h / 2 + realmargin);
         }
         // Debordement par la droite.
-        if (right + realmargin > canvas.width) {
-          canvas.width = right + realmargin;
+        if (right + realmargin + 150 > canvas.width) {
+          canvas.width = right + realmargin + 150;
           //entity.setCenterX(canvas.width - entity.size.w / 2 - margin);
         }
         // Debordement par le bas.
-        if (bottom + realmargin > canvas.height) {
-          canvas.height = bottom + realmargin;
+        if (bottom + realmargin + 150 > canvas.height) {
+          canvas.height = bottom + realmargin + 150;
           //entity.setCenterY(canvas.height - entity.size.h / 2 - margin);
         }
         // Debordement par la gauche.

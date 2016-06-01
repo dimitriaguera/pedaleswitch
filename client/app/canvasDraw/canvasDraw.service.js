@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('pedaleswitchApp')
-  .factory('canvasDraw', function (canvasControl) {
+  .factory('canvasDraw', function (canvasControl, canvasConversion) {
 
     var canvas = {};
     var ctx = {};
@@ -16,7 +16,8 @@ angular.module('pedaleswitchApp')
         context.font = "16px sans-serif";
         context.strokeStyle = "#00bfff";
         context.fillStyle = "#00bfff";
-        context.fillText(item.titre, item.getCenterX(), item.pos.y - 20);
+        context.textAlign = 'center';
+        context.fillText(item.titre, item.getCenterX(), item.pos.y - canvasConversion.convertToPixel(5));
         context.shadowColor   = "#666";
         context.shadowOffsetX = 1;
         context.shadowOffsetY = 1;
