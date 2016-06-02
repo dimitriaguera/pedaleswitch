@@ -29,6 +29,7 @@ class PageDessinComponent {
       }
 
       //@todo il faut garder juste c ligne et les mettre en dehors du $http.get
+      this.tableArrow = this.canvasControl.getTableArrow();
       var active = this.canvasControl.getTableEffet();
       var inactive = this.canvasControl.getTableComposant();
       this.zoom = this.canvasControl.getZoom();

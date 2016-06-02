@@ -6,7 +6,9 @@ angular.module('pedaleswitchApp')
       return {
         restrict: 'E',
         templateUrl: 'app/pageDessin/table-dessin/table-dessin.html',
-        scope: {},
+        scope: {
+          tableData: '='
+        },
         link: function(scope, element) {
           var canv_window = document.getElementById('canvas-window');
           var canv = document.getElementById('canvas-dessin');
