@@ -13,7 +13,9 @@
       bindings: {
         zoom: '<',
         okZoom: '<',
-        zoomAdd: '&'
+        zoomAdd: '&',
+        load: '&',
+        save: '&'
       },
       controller: NavigationDessin
     });

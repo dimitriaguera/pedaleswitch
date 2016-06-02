@@ -2,12 +2,8 @@
 
 angular.module('pedaleswitchApp')
   .factory('instanceDessin', function ($http, canvasConversion) {
-    // Service logic
-    // ...
-
     var initialCompo = [];
     var composantItems = {};
-    var key = 0;
     var dessin = {
       options: [],
       boite: null
@@ -20,13 +16,17 @@ angular.module('pedaleswitchApp')
       }
     });
 
-    // Public API here
+
     return {
 
       getDessin: function () {
         return dessin;
       },
 
+      setDessin: function(newdessin) {
+        return dessin = newdessin;
+      },
+      
       setBoite: function (boite) {
         dessin.boite = boite;
       },
@@ -50,7 +50,7 @@ angular.module('pedaleswitchApp')
       },
 
       setEffet: function(effet, option) {
-        key ++;
+        var key = dessin.options.length;
         var nouv_effet = {
           _id: option._id,
           key: key,
@@ -64,10 +64,7 @@ angular.module('pedaleswitchApp')
             w: option.size.w,
             h: option.size.h
           },
-          pos: {
-            x: 20,
-            y: 20
-          },
+          pos: option.pos || {x: 20,y:  20},
           composants: []
         };
         for(var i=0; i<option.composants.length; i++){

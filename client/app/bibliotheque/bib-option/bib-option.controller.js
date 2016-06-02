@@ -13,7 +13,7 @@
         options: '<',
         selectoption: '='
       },
-      controller: BibOption,
+      controller: BibOption
     });
 
 })();

@@ -6,7 +6,12 @@ angular.module('pedaleswitchApp')
     class Shape {
       constructor (entity) {
         this._id = entity._id || null;
-        this.key = entity.key || null;
+
+        if (Number.isInteger(entity.key)) {
+          this.key = entity.key;
+        } else {
+          this.key = null;
+        }
         this.titre = entity.titre || null;
         this.titre_option = entity.titre_option || null;
         this.description = entity.description || null;

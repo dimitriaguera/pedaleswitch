@@ -3,140 +3,172 @@
 angular.module('pedaleswitchApp')
   .factory('mouseHelper', function (canvasControl, checkCollision, canvasDraw, $rootScope) {
 
-    var dragIdx,
-        dragOffsetX,
-        dragOffsetY;
-    
+    var mouseX, mouseY;
+
+    var drag = {};
+    var tabActive = [], oldTabActive = [];
+        //oldTabThin = [], oldTabDash = [], oldTabShine = [];
+
+    // Change la forme du pointeur de la souris.
     var update = function (handle) {
       document.body.style.cursor = handle;
     };
-    
-    // Public API here
+
+    // Check si la souris est sur un obj de tabActive.
+    var checkmouse = function(table){
+      // Regarde si on a cliquer sur un obj contenue dans tabActive
+      var drag = checkCollision.checkmousebox({x: mouseX, y: mouseY}, table, 10);
+      // Si oui met l'id dans dans drag.id et l'écart entre la souris et le baricentre de l'obj dragué.
+      if (drag !== false) {
+        table[drag.id].setSelected(true);
+        update('move');
+        $rootScope.$emit('click-on-element');
+        canvasDraw.drawStuff();
+      }
+      return drag;
+    };
+
+
     return {
 
       mousedown: function (e) {
-        var ontable = canvasControl.getTableActive();
-        var mouseX = e.layerX,
-            mouseY = e.layerY;
+        mouseX = e.layerX;
+        mouseY = e.layerY;
 
-        var dragid = checkCollision.checkmousebox({x: mouseX, y: mouseY}, ontable, 10);
+        // Regarde si la souris est sur un effet ou un composant.
+        tabActive = canvasControl.getTableActive();
+        drag = checkmouse(tabActive);
 
-        if (dragid !== false) {
-          dragIdx = dragid.id;
-          dragOffsetX = dragid.dx;
-          dragOffsetY = dragid.dy;
-          ontable[dragIdx].setSelected(true);
-          
-          if (ontable[dragIdx].constructor.name === "Boite"){
-            ontable[dragIdx].old_pos.x = ontable[dragIdx].pos.x;
-            ontable[dragIdx].old_pos.y = ontable[dragIdx].pos.y;
+        // Si souris pas sur effet ou compo =>
+        // Regarde si la souris est sur la boite.
+        if(drag === false){
+          drag = checkmouse([canvasControl.getBoite()]);
+          // Oui on drague la boite.
+          if(drag !== false){
+            // Stock l'ancienne tableActive.
+            oldTabActive = tabActive;
+            // Change la tabActive par la boite + l'ancienne tabactive. (Hack [] ...)
+            tabActive = canvasControl.setTableActive([canvasControl.getBoite()].concat(oldTabActive));
+            // Stock l'ancienne position.
+            tabActive[drag.id].old_pos.x = tabActive[drag.id].pos.x;
+            tabActive[drag.id].old_pos.y = tabActive[drag.id].pos.y;
+            /*
+            // Enlève le is select, vide la table Thin et met en Dash tout les effets et compo.
+            canvasControl.resetIsSelected(oldTabActive);
+            oldTabThin = canvasControl.getTableThin();
+            oldTabDash = canvasControl.getTableDashed();
+            oldTabShine = canvasControl.getTableShine();
+            canvasControl.resetTableThin();
+            canvasControl.setTableDashed(canvasControl.getTableEffet().concat(canvasControl.getTableComposant()));
+            */
           }
-          
-          update('move');
-          $rootScope.$emit('click-on-element');
-          canvasDraw.drawStuff();
         }
       },
 
       mousemove: function (e) {
-
-        var ontable = canvasControl.getTableActive();
-        var mouseX = e.layerX,
-            mouseY = e.layerY;
+        mouseX = e.layerX;
+        mouseY = e.layerY;
 
         // Affecte la nouvelle position.
-        ontable[dragIdx].setCenterX(mouseX - dragOffsetX);
-        ontable[dragIdx].setCenterY(mouseY - dragOffsetY);
+        tabActive[drag.id].setCenterX(mouseX - drag.dx);
+        tabActive[drag.id].setCenterY(mouseY - drag.dy);
 
         // Deplace l'obj si sa nouvelle position depasse le canvas.
-        canvasControl.moveCloseBorder(ontable[dragIdx]);
+        canvasControl.moveCloseBorder(tabActive[drag.id]);
 
-        // Si on deplace la boite il faut bouger les effets et les compos.
-        if (ontable[dragIdx].constructor.name === "Boite"){
-          ontable[dragIdx].moveEffetCompo();
-        }
-        // On deplace soit un effet soit un composants.
-        else {
+        // On  deplace un compososant ou un effet.
+        if (tabActive[drag.id].constructor.name !== "Boite"){
           // Bouge les composants si non debraillable.
           if(!canvasControl.getDeb()){
-            ontable[dragIdx].resetCompPos();
+            tabActive[drag.id].resetCompPos();
           }
+          // Check les collisions entre l'item déplacé et la table active.
+          checkCollision.check(tabActive[drag.id], tabActive);
+          // Check l'alignement des things.
+          canvasControl.setTableAlignLine(checkCollision.checkLine(tabActive[drag.id], tabActive));
         }
-        
-        // Check les collisions entre l'item déplacé et la table active.
-        checkCollision.check(ontable[dragIdx], ontable);
-
-        // Check l'alignement des things.
-        canvasControl.setTableAlignLine(checkCollision.checkLine(ontable[dragIdx], ontable));
+        // On deplace la boite.
+        else {
+          // Bouge les effets et les compos.
+          tabActive[drag.id].moveEffetCompo();
+        }
 
         // Dessine.
         canvasDraw.drawStuff();
       },
 
-      //@todo peut etre mettre la ligne $rootScope.$emit('no-click-on-element');
-      // Au tout debut pour enlever le listener meme s'il y a eu des problèmes.
+
       mouseup: function (e) {
-
-        var ontable = canvasControl.getTableActive();
-        var boite = canvasControl.getBoite();
-
-
-        var mouseX = e.layerX,// - mousehelper.canvas.offsetLeft,
-            mouseY = e.layerY;// - mousehelper.canvas.offsetTop;
+        mouseX = e.layerX;// - mousehelper.canvas.offsetLeft,
+        mouseY = e.layerY;// - mousehelper.canvas.offsetTop;
 
         // Enlève le listener
         $rootScope.$emit('no-click-on-element');
 
         // Deselection et met le curseur de la souris normal.
-        ontable[dragIdx].setSelected(false);
+        tabActive[drag.id].setSelected(false);
         update('default');
 
         // Nouvelle position.
-        ontable[dragIdx].setCenterX(mouseX - dragOffsetX);
-        ontable[dragIdx].setCenterY(mouseY - dragOffsetY);
+        tabActive[drag.id].setCenterX(mouseX - drag.dx);
+        tabActive[drag.id].setCenterY(mouseY - drag.dy);
 
         // Deplace si la nouvelle position depasse le canvas.
-        canvasControl.moveCloseBorder(ontable[dragIdx]);
-        
-        
-        if (ontable[dragIdx].constructor.name === "Boite") {
-          ontable[dragIdx].moveEffetCompo();
-        }
+        canvasControl.moveCloseBorder(tabActive[drag.id]);
+
         // On deplace soit un effet soit un composants.
-        else {
+        if (tabActive[drag.id].constructor.name !== "Boite") {
           // Bouge les composants si non debraillable.
           if(!canvasControl.getDeb()){
-            ontable[dragIdx].resetCompPos();
+            tabActive[drag.id].resetCompPos();
           }
+          // Enlève les lignes d'alignement.
+          canvasControl.setTableAlignLine([]);
+          // Check all collision.
+          checkCollision.checkall(tabActive);
           // Bouge boite.
-          boite.checkBorderBoite(ontable[dragIdx]);
+          canvasControl.getBoite().checkBorderBoite(tabActive[drag.id]);
+        }
+        // On deplace la boite.
+        else {
+          // Bouge les effets et les compos.
+          tabActive[drag.id].moveEffetCompo();
+          // Enlève le is select
+          canvasControl.resetIsSelected(tabActive);
+          // Restaure la table active précedente.
+          tabActive = oldTabActive;
+          canvasControl.setTableActive(tabActive);
+          /*
+          canvasControl.setTableActive(tabActive);
+          canvasControl.setTableDashed(oldTabDash);
+          canvasControl.setTableThin(oldTabThin);
+          canvasControl.setTableShine(oldTabShine);
+          */
         }
 
-        // Enlève les lignes d'alignement.
-        canvasControl.setTableAlignLine([]);
-
-        // Check all collision.
-        checkCollision.checkall(ontable);
-
-        // Recalcule les positions de fleches.
+        // Recalcule les positions de fleches entourant la boite.
         canvasControl.setArrowPos();
 
         // Dessine.
         canvasDraw.drawStuff();
-        dragIdx = -1;
+        drag.id = -1;
       },
 
+      
+      // Listener quand la souris bouge mais ne clique pas
+      // Quand on clique on passe au listener mousedown (cf. table-dessin.controller.js dans le link).
       mousemovebox: function (e) {
-        var ontable = canvasControl.getTableActive();
 
-        var mouseX = e.layerX, //- mousehelper.canvas.offsetLeft,
-            mouseY = e.layerY; //- mousehelper.canvas.offsetTop;
+        tabActive = canvasControl.getTableActive();
 
-        canvasControl.resetIsSelected(ontable);
-        var onElement = checkCollision.checkmousebox({x: mouseX, y: mouseY}, ontable, 10);
+        mouseX = e.layerX; //- mousehelper.canvas.offsetLeft,
+        mouseY = e.layerY; //- mousehelper.canvas.offsetTop;
+
+        canvasControl.resetIsSelected(tabActive);
+        var onElement = checkCollision.checkmousebox({x: mouseX, y: mouseY}, tabActive, 10);
 
         if(onElement) {
-          ontable[onElement.id].setSelected(true);
+          tabActive[onElement.id].setSelected(true);
           update('pointer');
         }
         else {
