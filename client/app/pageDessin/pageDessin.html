@@ -8,7 +8,7 @@
             <panier-dessin items="$ctrl.items" effets="$ctrl.dessin.options" on-compo="$ctrl.mouseOnCompo(value)" on-effet="$ctrl.mouseOnEffet(value)" leave-effet="$ctrl.mouseLeaveEffet()" chgmtitem="$ctrl.updateComposant(opt, compo, item)" add-to-table="$ctrl.addToTable(value)" remove-to-table="$ctrl.removeToTable(value)"></panier-dessin>
         </div>
         <div class="col-xs-3">
-            <table-dessin></table-dessin>
+            <table-dessin table-data="$ctrl.tableArrow"></table-dessin>
         </div>
     </div>
 </div>
