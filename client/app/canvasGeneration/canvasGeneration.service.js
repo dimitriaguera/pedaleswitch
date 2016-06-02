@@ -305,8 +305,22 @@ angular.module('pedaleswitchApp')
         this.entity = entity;
         this.margin = 30;
         this.isSelected = false;
+        this.setValue(this.loc);
         this.setPos(this.loc);
         this.setTriangleDraw(this.loc);
+      }
+
+      setValue(loc){
+        switch(loc) {
+          case 'right':
+            this.value = canvasConversion.convertToMm(this.entity.size.h);
+            break;
+          case 'bottom':
+            this.value = canvasConversion.convertToMm(this.entity.size.w);
+            break;
+          default:
+            console.log(loc + '--> terme non reconnu par le constructeur Arrow');
+        }
       }
 
       setPos(loc){
@@ -320,6 +334,10 @@ angular.module('pedaleswitchApp')
               x: this.entity.pos.x + this.entity.size.w + this.margin,
               y: this.entity.pos.y + this.entity.size.h
             };
+            this.pos_box = {
+              x: this.pos_start.x + 10,
+              y: this.pos_start.y + (this.pos_end.y - this.pos_start.y)/2
+            };
             break;
           case 'bottom':
             this.pos_start = {
@@ -329,6 +347,10 @@ angular.module('pedaleswitchApp')
             this.pos_end = {
               x: this.entity.pos.x + this.entity.size.w,
               y: this.entity.pos.y + this.entity.size.h + this.margin
+            };
+            this.pos_box = {
+              x: this.pos_start.x + (this.pos_end.x - this.pos_start.x)/2,
+              y: this.pos_start.y + 24
             };
             break;
           default:
@@ -359,7 +381,7 @@ angular.module('pedaleswitchApp')
             this.drawText = function(ctx){
               ctx.save();
               ctx.font = "14px sans-serif";
-              ctx.fillText(canvasConversion.convertToMm(this.entity.size.h) + ' mm', this.pos_start.x + 10, this.pos_start.y + (this.pos_end.y - this.pos_start.y)/2);
+              ctx.fillText(this.value + ' mm', this.pos_box.x, this.pos_box.y);
               ctx.restore();
             };
 
@@ -392,7 +414,7 @@ angular.module('pedaleswitchApp')
             this.drawText = function(ctx){
               ctx.save();
               ctx.font = "14px sans-serif";
-              ctx.fillText(canvasConversion.convertToMm(this.entity.size.w) + ' mm', this.pos_start.x + (this.pos_end.x - this.pos_start.x)/2, this.pos_start.y + 24);
+              ctx.fillText(this.value + ' mm', this.pos_box.x, this.pos_box.y);
               ctx.restore();
             };
 
