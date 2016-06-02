@@ -38,7 +38,21 @@ angular.module('pedaleswitchApp')
     
     
     // Public API here
-    return {
+    return{
+         
+    
+      resetAll: function(){
+        boite = null;
+        tableEffet = [];
+        tableComposant = [];
+        tableActive = [];
+        tableDashed = [];
+        tableThin = [];
+        tableShine = [];
+        tableAlignLine = [];
+        tableArrow = [];
+        debrayable = false;
+      },
 
       //@todo a supprimer
       tableState: function(){
@@ -145,9 +159,9 @@ angular.module('pedaleswitchApp')
       },
 
       removeToCanvas: function(effet) {
-        effet.in_canvas = false;
         var index = this.searchTabByIdReturnIndex(tableEffet, effet._id, effet.key);
         if(index !== false){
+          effet.in_canvas = false;
           var removeIndex = [];
           for (var i = 0  ; i < tableComposant.length ; i++) {
             if (effet.key === tableComposant[i].key) {
