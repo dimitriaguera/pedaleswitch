@@ -285,8 +285,9 @@ angular.module('pedaleswitchApp')
       },
 
       setTableActive: function(tabr){
-        checkCollision.checkall(tabr);
-        tableActive = tabr;
+        //@todo ne pas mettre cela ici car créer un bug lors du changement de table.
+        //checkCollision.checkall(tabr);
+        return tableActive = tabr;
       },
 
       getTableActive: function(){

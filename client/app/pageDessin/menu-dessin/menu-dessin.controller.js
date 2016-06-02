@@ -23,7 +23,6 @@
       templateUrl: 'app/pageDessin/menu-dessin/menu-dessin.html',
       bindings: {
         switchDeb: '&',
-        activeBoite: '&',
         activeEffet: '&',
         activeCompo: '&'
       },
