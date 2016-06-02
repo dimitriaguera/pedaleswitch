@@ -59,6 +59,9 @@ class PageDessinComponent {
         case 'compo' :
           this.canvasControl.setTableShine(effet.composants);
           break;
+        case 'boite' :
+          this.canvasControl.setTableShine([this.canvasControl.getBoite()]);
+          break;
         default:
           return console.log('Variable "isActive" not defined in pageDessin.controller.js');
       }
@@ -91,6 +94,23 @@ class PageDessinComponent {
       this.activeEffet();
       this.canvasDraw.drawStuff();
     }
+  }
+
+  activeBoite(){
+
+    var tabEffet = this.canvasControl.getTableEffet();
+    var tabCompo = this.canvasControl.getTableComposant();
+    var tabDash = tabEffet.concat(tabCompo);
+
+    this.isActive = 'boite';
+    this.canvasControl.setTableActive([this.canvasControl.getBoite()]);
+    
+    this.canvasControl.resetIsSelected(tabEffet);
+    this.canvasControl.resetIsSelected(tabCompo);
+    this.canvasControl.resetTableThin();
+    this.canvasControl.setTableDashed(tabDash);
+    
+    this.canvasDraw.drawStuff();
   }
 
   activeEffet(){

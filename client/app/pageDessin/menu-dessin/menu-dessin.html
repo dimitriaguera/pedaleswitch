@@ -7,6 +7,7 @@
     Composants positionnables : {{$ctrl.debrayable}}
 </button>
 <div class="btn-group">
+    <label class="btn btn-success" ng-click="$ctrl.activeBoite()" ng-model="$ctrl.isActive" uib-btn-radio="'boite'" uncheckable ng-hide="!$ctrl.debrayable">Deplacer la boite</label>
     <label class="btn btn-success" ng-click="$ctrl.activeEffet()" ng-model="$ctrl.isActive" uib-btn-radio="'effet'" uncheckable ng-hide="!$ctrl.debrayable">Deplacer les effets</label>
     <label class="btn btn-success" ng-click="$ctrl.activeCompo()" ng-model="$ctrl.isActive" uib-btn-radio="'compo'" uncheckable ng-hide="!$ctrl.debrayable">Deplacer les composants</label>
 </div>

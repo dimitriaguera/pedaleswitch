@@ -26,6 +26,12 @@ angular.module('pedaleswitchApp')
           dragOffsetX = dragid.dx;
           dragOffsetY = dragid.dy;
           ontable[dragIdx].setSelected(true);
+          
+          if (ontable[dragIdx].constructor.name === "Boite"){
+            ontable[dragIdx].old_pos.x = ontable[dragIdx].pos.x;
+            ontable[dragIdx].old_pos.y = ontable[dragIdx].pos.y;
+          }
+          
           update('move');
           $rootScope.$emit('click-on-element');
           canvasDraw.drawStuff();
@@ -33,6 +39,7 @@ angular.module('pedaleswitchApp')
       },
 
       mousemove: function (e) {
+
         var ontable = canvasControl.getTableActive();
         var mouseX = e.layerX,
             mouseY = e.layerY;
@@ -41,15 +48,22 @@ angular.module('pedaleswitchApp')
         ontable[dragIdx].setCenterX(mouseX - dragOffsetX);
         ontable[dragIdx].setCenterY(mouseY - dragOffsetY);
 
-        // Deplace si la nouvelle position depasse le canvas.
+        // Deplace l'obj si sa nouvelle position depasse le canvas.
         canvasControl.moveCloseBorder(ontable[dragIdx]);
 
-        // Bouge les composants.
-        if(!canvasControl.getDeb()){
-          ontable[dragIdx].resetCompPos();
+        // Si on deplace la boite il faut bouger les effets et les compos.
+        if (ontable[dragIdx].constructor.name === "Boite"){
+          ontable[dragIdx].moveEffetCompo();
         }
-
-        // Check les collisions entre l'item déplacer et la table active.
+        // On deplace soit un effet soit un composants.
+        else {
+          // Bouge les composants si non debraillable.
+          if(!canvasControl.getDeb()){
+            ontable[dragIdx].resetCompPos();
+          }
+        }
+        
+        // Check les collisions entre l'item déplacé et la table active.
         checkCollision.check(ontable[dragIdx], ontable);
 
         // Check l'alignement des things.
@@ -57,7 +71,6 @@ angular.module('pedaleswitchApp')
 
         // Dessine.
         canvasDraw.drawStuff();
-        
       },
 
       //@todo peut etre mettre la ligne $rootScope.$emit('no-click-on-element');
@@ -71,6 +84,9 @@ angular.module('pedaleswitchApp')
         var mouseX = e.layerX,// - mousehelper.canvas.offsetLeft,
             mouseY = e.layerY;// - mousehelper.canvas.offsetTop;
 
+        // Enlève le listener
+        $rootScope.$emit('no-click-on-element');
+
         // Deselection et met le curseur de la souris normal.
         ontable[dragIdx].setSelected(false);
         update('default');
@@ -81,10 +97,19 @@ angular.module('pedaleswitchApp')
 
         // Deplace si la nouvelle position depasse le canvas.
         canvasControl.moveCloseBorder(ontable[dragIdx]);
-
-        // Bouge les composants.
-        if(!canvasControl.getDeb()){
-          ontable[dragIdx].resetCompPos();
+        
+        
+        if (ontable[dragIdx].constructor.name === "Boite") {
+          ontable[dragIdx].moveEffetCompo();
+        }
+        // On deplace soit un effet soit un composants.
+        else {
+          // Bouge les composants si non debraillable.
+          if(!canvasControl.getDeb()){
+            ontable[dragIdx].resetCompPos();
+          }
+          // Bouge boite.
+          boite.checkBorderBoite(ontable[dragIdx]);
         }
 
         // Enlève les lignes d'alignement.
@@ -92,20 +117,13 @@ angular.module('pedaleswitchApp')
 
         // Check all collision.
         checkCollision.checkall(ontable);
-        
-        // Bouge boite.
-        boite.checkBorderBoite(ontable[dragIdx]);
 
         // Recalcule les positions de fleches.
         canvasControl.setArrowPos();
-        
+
         // Dessine.
         canvasDraw.drawStuff();
         dragIdx = -1;
-        
-        // Enlève le listener
-        $rootScope.$emit('no-click-on-element');
-
       },
 
       mousemovebox: function (e) {

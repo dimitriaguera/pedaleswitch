@@ -154,6 +154,9 @@ angular.module('pedaleswitchApp')
       constructor () {
         this.margin = canvasConversion.convertToPixel(5); // En mm, converti en px juste après création de la boite dans canvasControl.
         this.isSelected = false;
+        this.isOverlapping = false;
+        this.titre = 'Boite';
+        this.effets = [];
       }
 
       init(entity){
@@ -190,6 +193,26 @@ angular.module('pedaleswitchApp')
           this.size.h = (entity.pos.y + entity.size.h) - this.pos.y + this.margin;
         }
       }
+
+      moveEffetCompo(){
+        var effets = this.effets, compos, i, j;
+        if(effets.length !== 0) {
+          for (i = 0; i < effets.length; i++) {
+            effets[i].setX(this.pos.x - this.old_pos.x + effets[i].pos.x);
+            effets[i].setY(this.pos.y - this.old_pos.y + effets[i].pos.y);
+            
+            compos = effets[i].composants;
+            if(compos.length !== 0) {
+              for (j = 0; j < compos.length; j++) {
+                compos[j].setX(this.pos.x - this.old_pos.x + compos[j].pos.x);
+                compos[j].setY(this.pos.y - this.old_pos.y + compos[j].pos.y);
+              }
+            }
+          }
+        }
+        this.old_pos.x = this.pos.x;
+        this.old_pos.y = this.pos.y;
+      }
       
       getCenterX(){
         return this.pos.x + (this.size.w / 2);
@@ -225,10 +248,10 @@ angular.module('pedaleswitchApp')
         return this.getY() + this.size.h;
       }
       setCenterX(center){
-        this.pos.x = center - (this.size.w / 2);
+        this.setX(center - (this.size.w / 2));
       }
       setCenterY(center){
-        this.pos.y = center - (this.size.h / 2);
+        this.setY(center - (this.size.h / 2));
       }
       getBoundingBoxPoints() {
         // Bords du rectangle.
@@ -254,6 +277,9 @@ angular.module('pedaleswitchApp')
       }
       setSelected(selected) {
         this.isSelected = selected;
+      }
+      setOverlapping(overlap) {
+        this.isOverlapping = overlap;
       }
       drawCanvas(ctx){
         ctx.beginPath();
