@@ -91,6 +91,8 @@ angular.module('pedaleswitchApp')
         else {
           // Bouge les effets et les compos.
           tabActive[drag.id].moveEffetCompo();
+          // Recalcule les positions de fleches entourant la boite.
+          canvasControl.setArrowPos();
         }
 
         // Dessine.

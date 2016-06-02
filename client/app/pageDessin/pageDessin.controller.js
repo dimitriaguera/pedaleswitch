@@ -89,7 +89,7 @@ class PageDessinComponent {
 
     // Reset all Canvas.
     this.canvasControl.resetAll();
-    
+
     // Rajoute tout les effets au canvas.
     for (i = 0 ; i < this.dessin.options.length ; i++){
       if (this.dessin.options[i].in_canvas) {
@@ -175,16 +175,12 @@ class PageDessinComponent {
   }
 
   addToTable(effet){
-
     // Ajouter l'effet au canvas si pas deja.
     if (!effet.in_canvas) {this.canvasControl.addToCanvas(effet);}
-
     // Initialise le boite dans l'instance de dessin.
     this.instanceDessin.setBoite(this.canvasControl.getBoite());
-
     // Dessine.
     this.canvasDraw.drawStuff();
-
     //@todo a sup sert au dev.
     this.toutesTables = this.canvasControl.tableState();
   }

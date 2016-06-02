@@ -19,6 +19,11 @@ angular.module('pedaleswitchApp')
 
     return {
 
+      reset: function() {
+        dessin.options = [];
+        dessin.boite = null;        
+      },
+      
       getDessin: function () {
         return dessin;
       },
