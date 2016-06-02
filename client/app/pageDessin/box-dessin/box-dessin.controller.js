@@ -6,26 +6,34 @@
       return {
         restrict: 'EA',
         transclude: true,
-        template: '<div ng-transclude>' +
-                  '</div ng-transclude>',
+        templateUrl: 'app/pageDessin/box-dessin/box-dessin.html',
         bindToController: {
           data: '='
         },
         controller: function ($scope) {
-          $scope.data = this.data;
+
+          $scope.test = this.data.pos_box;
+          $scope.getStyle = function(){
+            console.log('coool');
+            var result = "top:" + $scope.item.pos_box.y + "px;left:" + $scope.item.pos_box.x + "px;position:absolute;z-index:2000;";
+            return result;
+          };
+
+          //$scope.posX = $scope.item.pos_box.x;
+
+          //$scope.posY = $scope.item.pos_box.y;
+          //
+          //function newBoxPos(newValue, oldValue, scope) {
+          //  scope.posX = newValue.x;
+          //  scope.posY = newValue.y;
+          //}
+          //
+          //$scope.$watch("item", newBoxPos, true);
         },
         controllerAs: '$ctrl',
         link: function (scope, element, attr) {
 
-          var leftPx = scope.data.pos_start.x;
-          var rightPx = scope.data.pos_start.y;
 
-          element.css({
-            "position": "absolute",
-            "z-index": "2000",
-            "top": rightPx.toString() + 'px',
-            "left": leftPx.toString() + 'px'
-          });
         }
       }
     });
