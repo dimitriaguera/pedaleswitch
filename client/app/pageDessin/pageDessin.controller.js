@@ -23,13 +23,14 @@ class PageDessinComponent {
 
 
     //@todo a supp et verifier dans le constructor de virer http et OrderArray.
-    this.$http.get('/api/effets').then(response => {
-      this.effets = response.data;
+    //this.$http.get('/api/effets').then(response => {
+    //  this.effets = response.data;
 
-      if (this.instanceDessin.getDessin().options.length === 0){
-       this.instanceDessin.setEffet(this.effets[0], this.effets[0].options[0]);
-       this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
-      }
+      
+      // if(this.instanceDessin.getDessin().options.length === 0){
+      //  tis.instanceDessin.setEffet(this.effets[0], this.effets[0].options[0]);
+      //  tis.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
+      // } 
 
       //@todo il faut garder juste c ligne et les mettre en dehors du $http.get
       this.tableArrow = this.canvasControl.getTableArrow();
@@ -47,7 +48,7 @@ class PageDessinComponent {
         this.canvasDraw.drawStuff();
       }
 
-    });
+    //});
   }
 
   mouseOnEffet(value){
@@ -196,6 +197,13 @@ class PageDessinComponent {
     this.zoom = this.canvasControl.getZoom();
     this.canvasDraw.drawStuff();
   }
+
+  arrowChangeValue(){
+    //@todo : implémenter verif collision box - effets.
+    this.canvasControl.setArrowPos();
+    this.canvasDraw.drawStuff();
+  }
+
 }
 
 angular.module('pedaleswitchApp')

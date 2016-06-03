@@ -310,18 +310,22 @@ angular.module('pedaleswitchApp')
         this.entity = entity;
         this.margin = 30;
         this.isSelected = false;
-        this.setValue(this.loc);
+        this.setMethods(this.loc);
         this.setPos(this.loc);
         this.setTriangleDraw(this.loc);
       }
 
-      setValue(loc){
+      setMethods(loc){
         switch(loc) {
           case 'right':
-            this.value = canvasConversion.convertToMm(this.entity.size.h);
+            this.setValue = function(value){
+              this.entity.size.h = canvasConversion.convertToPixel(value);
+            };
             break;
           case 'bottom':
-            this.value = canvasConversion.convertToMm(this.entity.size.w);
+            this.setValue = function(value){
+              this.entity.size.w = canvasConversion.convertToPixel(value);
+            };
             break;
           default:
             console.log(loc + '--> terme non reconnu par le constructeur Arrow');
@@ -343,6 +347,7 @@ angular.module('pedaleswitchApp')
               x: this.pos_start.x + 10,
               y: this.pos_start.y + (this.pos_end.y - this.pos_start.y)/2
             };
+            this.value = canvasConversion.convertToMm(this.entity.size.h);
             break;
           case 'bottom':
             this.pos_start = {
@@ -357,6 +362,7 @@ angular.module('pedaleswitchApp')
               x: this.pos_start.x + (this.pos_end.x - this.pos_start.x)/2,
               y: this.pos_start.y + 24
             };
+            this.value = canvasConversion.convertToMm(this.entity.size.w);
             break;
           default:
           console.log(loc + '--> terme non reconnu par le constructeur Arrow');

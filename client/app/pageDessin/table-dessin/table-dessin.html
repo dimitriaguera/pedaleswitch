@@ -1,9 +1,15 @@
 <h3>Dessin</h3>
-<div id="canvas-window" style="overflow: scroll; position:relative;" >
-    <box-dessin ng-repeat="item in tableData" data="item">
-        <div class="col-xs-4">
-            <input type="text" class="form-control form-control-sm" placeholder="{{item.entity.margin}}">
+<div id="canvas-window" style="overflow: scroll; position:relative;" ng-mousemove="">
+
+    <box-dessin ng-repeat="item in tableData" data="item" box-action="arrowChange()">
+        <div class="input-group input-group-sm" style="width:140px;">
+            <input type="text" class="form-control" ng-model="$ctrl.value" placeholder="{{item.value}}">
+            <span class="input-group-addon" id="basic-addon1">mm</span>
+            <span class="input-group-btn">
+                <button type="submit" class="btn btn-primary" ng-click="$ctrl.validation()">Ok</button>
+            </span>
         </div>
     </box-dessin>
+
     <canvas droppable id="canvas-dessin" style="position:relative;background-color:#f1f1f1;">Ooups, Votre navigateur ne supporte pas le html 5...</canvas>
 </div>

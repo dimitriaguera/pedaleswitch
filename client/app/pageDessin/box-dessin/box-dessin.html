@@ -1,2 +1,7 @@
-<div ng-transclude style="{{getStyle()}}">
-</div ng-transclude>
+<div style="
+    top:{{data.pos_box.y}}px;
+    left:{{data.pos_box.x}}px;
+    position:absolute;
+    z-index:2000;";>
+    <div ng-transclude></div>
+</div>
