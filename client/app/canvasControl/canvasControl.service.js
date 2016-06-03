@@ -143,7 +143,7 @@ angular.module('pedaleswitchApp')
 
       // Si après zoom les obj déborde du canvas l'agrendie.
       resizeCanvasOnZoom: function(){
-        if (boite) {
+        if (boite.constructor.name === "Boite") {
           var realmargin = 150;
           var bbot = boite.getBottom(),
               bright = boite.getRight();

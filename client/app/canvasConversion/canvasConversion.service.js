@@ -39,8 +39,6 @@ angular.module('pedaleswitchApp')
       }
       if (entity.margin){
         entity.margin = Math.round(ratio * entity.margin);
-        entity.old_pos.x = Math.round(ratio * entity.old_pos.x);
-        entity.old_pos.y = Math.round(ratio * entity.old_pos.y);
       }
     };
 

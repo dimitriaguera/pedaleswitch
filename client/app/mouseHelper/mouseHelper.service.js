@@ -5,6 +5,7 @@ angular.module('pedaleswitchApp')
 
     var mouseX, mouseY;
 
+    var oldX, oldY;
     var drag = {};
     var tabActive = [], oldTabActive = [];
         //oldTabThin = [], oldTabDash = [], oldTabShine = [];
@@ -50,8 +51,8 @@ angular.module('pedaleswitchApp')
             // Change la tabActive par la boite + l'ancienne tabactive. (Hack [] ...)
             tabActive = canvasControl.setTableActive([canvasControl.getBoite()].concat(oldTabActive));
             // Stock l'ancienne position.
-            tabActive[drag.id].old_pos.x = tabActive[drag.id].pos.x;
-            tabActive[drag.id].old_pos.y = tabActive[drag.id].pos.y;
+            oldX = tabActive[drag.id].pos.x;
+            oldY = tabActive[drag.id].pos.y;
             /*
             // Enlève le is select, vide la table Thin et met en Dash tout les effets et compo.
             canvasControl.resetIsSelected(oldTabActive);
@@ -90,7 +91,12 @@ angular.module('pedaleswitchApp')
         // On deplace la boite.
         else {
           // Bouge les effets et les compos.
-          tabActive[drag.id].moveEffetCompo();
+          tabActive[drag.id].moveEffetCompo({
+            deltaX: tabActive[drag.id].pos.x - oldX,
+            deltaY: tabActive[drag.id].pos.y - oldY 
+          });
+          oldX = tabActive[drag.id].pos.x;
+          oldY = tabActive[drag.id].pos.y;
           // Recalcule les positions de fleches entourant la boite.
           canvasControl.setArrowPos();
         }
@@ -134,7 +140,10 @@ angular.module('pedaleswitchApp')
         // On deplace la boite.
         else {
           // Bouge les effets et les compos.
-          tabActive[drag.id].moveEffetCompo();
+          tabActive[drag.id].moveEffetCompo({
+            deltaX: tabActive[drag.id].pos.x - oldX,
+            deltaY: tabActive[drag.id].pos.y - oldY
+          });
           // Enlève le is select
           canvasControl.resetIsSelected(tabActive);
           // Restaure la table active précedente.

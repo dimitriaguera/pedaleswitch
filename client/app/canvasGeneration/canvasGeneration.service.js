@@ -173,23 +173,19 @@ angular.module('pedaleswitchApp')
           x: entity.pos.x - this.margin,
           y: entity.pos.y - this.margin
         };
-        this.old_pos = {
-          x: entity.pos.x - this.margin,
-          y: entity.pos.y - this.margin
-        };
       }
       
       // Redimensionne la boite si le nouvelle effet est en dehors.
       checkBorderBoite(entity){
         if (entity.pos.x < (this.pos.x + this.margin)){
+          var old_pos_x = this.pos.x;
           this.pos.x = entity.pos.x - this.margin;
-          this.size.w =  this.size.w + (this.old_pos.x - entity.pos.x) + this.margin;
-          this.old_pos.x = this.pos.x;
+          this.size.w =  this.size.w + (old_pos_x - entity.pos.x) + this.margin;
         }
         if (entity.pos.y < (this.pos.y + this.margin)){
+          var old_pos_y = this.pos.y;
           this.pos.y = entity.pos.y - this.margin;
-          this.size.h =  this.size.h + (this.old_pos.y - entity.pos.y) + this.margin;
-          this.old_pos.y = this.pos.y;
+          this.size.h =  this.size.h + (old_pos_y - entity.pos.y) + this.margin;
         }
         if ((entity.pos.x + entity.size.w) > (this.pos.x + this.size.w - this.margin)){
           this.size.w = (entity.pos.x + entity.size.w) - this.pos.x + this.margin;
@@ -199,24 +195,22 @@ angular.module('pedaleswitchApp')
         }
       }
 
-      moveEffetCompo(){
+      moveEffetCompo(delta){
         var effets = this.effets, compos, i, j;
         if(effets.length !== 0) {
           for (i = 0; i < effets.length; i++) {
-            effets[i].setX(this.pos.x - this.old_pos.x + effets[i].pos.x);
-            effets[i].setY(this.pos.y - this.old_pos.y + effets[i].pos.y);
+            effets[i].setX(delta.deltaX + effets[i].pos.x);
+            effets[i].setY(delta.deltaY + effets[i].pos.y);
             
             compos = effets[i].composants;
             if(compos.length !== 0) {
               for (j = 0; j < compos.length; j++) {
-                compos[j].setX(this.pos.x - this.old_pos.x + compos[j].pos.x);
-                compos[j].setY(this.pos.y - this.old_pos.y + compos[j].pos.y);
+                compos[j].setX(delta.deltaX + compos[j].pos.x);
+                compos[j].setY(delta.deltaY + compos[j].pos.y);
               }
             }
           }
         }
-        this.old_pos.x = this.pos.x;
-        this.old_pos.y = this.pos.y;
       }
       
       getCenterX(){
