@@ -99,7 +99,7 @@ angular.module('pedaleswitchApp')
 
       drawBoite: function (context, colorStroke, colorFill, lineWidth) {
         boite = canvasControl.getBoite();
-        if(boite) {
+        if(boite.constructor.name === "Boite") {
           context.save();
           context.lineWidth = lineWidth;
           context.strokeStyle = colorStroke;

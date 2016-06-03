@@ -21,18 +21,15 @@ class PageDessinComponent {
 
   $onInit(){
 
-    /*
+
     //@todo a supp et verifier dans le constructor de virer http et OrderArray.
     this.$http.get('/api/effets').then(response => {
       this.effets = response.data;
 
-
-      //if (this.instanceDessin.getDessin().options.length === 0){
-      //  this.instanceDessin.setEffet(this.effets[0], this.effets[0].options[0]);
-      //  this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
-      //}
-      */
-
+      if (this.instanceDessin.getDessin().options.length === 0){
+       this.instanceDessin.setEffet(this.effets[0], this.effets[0].options[0]);
+       this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
+      }
 
       //@todo il faut garder juste c ligne et les mettre en dehors du $http.get
       this.tableArrow = this.canvasControl.getTableArrow();
@@ -50,7 +47,7 @@ class PageDessinComponent {
         this.canvasDraw.drawStuff();
       }
 
-    //});
+    });
   }
 
   mouseOnEffet(value){
@@ -77,29 +74,24 @@ class PageDessinComponent {
 
   load(){
     var i;
-    // Recupère dans le local storage.
-    var dessinStock = this.storage.get('dessin');
-
-    // Remplace l'intance dessin et le met dans instanceDessin
-    this.dessin = this.instanceDessin.setDessin(dessinStock);
-
-    /*
-    for (i = 0 ; i < this.dessin.options.length ; i++){
-      this.dessin.options[i].in_canvas = false;
-      this.canvasControl.addToCanvas(this.dessin.options[i]);
-    }
-    */
 
     // Reset all Canvas.
     this.canvasControl.resetAll();
 
+    // Recupère dans le local storage.
+    var dessinStock = this.storage.get('dessin');
+
+    // Regénère la boite.
+    this.dessin.boite = this.canvasControl.newBoite(dessinStock.boite);
+
     // Rajoute tout les effets au canvas.
-    for (i = 0 ; i < this.dessin.options.length ; i++){
-      if (this.dessin.options[i].in_canvas) {
-        this.dessin.options[i].in_canvas = false;
-        this.canvasControl.addToCanvas(this.dessin.options[i]);
-      }
+    //@todo addToCanvas with load option car on peut pas faire incanvas...
+    for (i = 0 ; i < dessinStock.options.length ; i++){
+        this.canvasControl.addToCanvas(dessinStock.options[i], true);
     }
+
+    // Passe par reference la table d'effet a l'instance dessin.
+    this.dessin.options = this.canvasControl.getTableEffet();
 
     this.toutesTables = this.canvasControl.tableState();
 
@@ -111,10 +103,14 @@ class PageDessinComponent {
     this.canvasControl.setTableActive(active);
     this.canvasControl.setTableThin(inactive);
     this.items = this.instanceDessin.getComposantItems();
+    
+    
     // Redessine les objets précédement présent.
     if (active.length > 0){
       this.canvasDraw.drawStuff();
     }
+    
+    
   }
 
   save(){

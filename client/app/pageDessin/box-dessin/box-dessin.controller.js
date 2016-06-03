@@ -14,7 +14,6 @@
 
           $scope.test = this.data.pos_box;
           $scope.getStyle = function(){
-            console.log('coool');
             var result = "top:" + $scope.item.pos_box.y + "px;left:" + $scope.item.pos_box.x + "px;position:absolute;z-index:2000;";
             return result;
           };

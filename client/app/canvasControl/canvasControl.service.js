@@ -8,7 +8,7 @@ angular.module('pedaleswitchApp')
     var ctx = {};
     var canvas = {};
     var canvas_window = {};
-    var boite = null;
+    var boite = {};
     var tableEffet = [];
     var tableComposant = [];
     var tableActive = [];
@@ -42,7 +42,7 @@ angular.module('pedaleswitchApp')
          
     
       resetAll: function(){
-        boite = null;
+        boite = {};
         tableEffet = [];
         tableComposant = [];
         tableActive = [];
@@ -72,11 +72,14 @@ angular.module('pedaleswitchApp')
        * Et l'ajoute dans tableEffet et tableComposant pour les composants correspondants.
        * 
        * @param effet : objet effet du modele dessin (entrée de la table option du panier).
+       * @para bol : si true alors rajoute l'effet meme si il est deja dans le canvas
+       *             sert au fonction de chargement depuis la db ou localstorage.
        */
-      addToCanvas: function(effet) {
+      addToCanvas: function(effet, bol) {
+        bol = bol || false;
+
         // if check si l'effet est deja dans le canvas.
-        if (!effet.in_canvas) {
-          effet.in_canvas = true;
+        if (!effet.in_canvas || bol) {
           var tmp_eff = canvasGeneration.newRect(effet);
           var tmp_comp = [];
           var compos = effet.composants;
@@ -87,7 +90,7 @@ angular.module('pedaleswitchApp')
           }
           
           // Créer le boitier de la pedale.
-          if(!boite) {
+          if(boite.constructor.name !== "Boite") {
             boite = canvasGeneration.newBoite();
             // Empeche que l'effet depasse du canvas.
             this.moveCloseBorder(tmp_eff);
@@ -105,13 +108,18 @@ angular.module('pedaleswitchApp')
             // Empeche que l'effet depasse du canvas.
             this.moveCloseBorder(tmp_eff);
             // Place bien les composants.
-            tmp_eff.resetCompPos();
+            if (!effet.in_canvas) {
+              tmp_eff.resetCompPos();
+            }
             // Redimensionne la boite si le nouvelle effet est en dehors.
             boite.checkBorderBoite(tmp_eff);
             // Repositionne les arraw.
             this.setArrowPos();
           }
+          // Rajoute la propriété in_canvas a l'effet.
+          effet.in_canvas = true;
 
+          // Rajoute l'effet a la table effet.
           tableEffet.push(tmp_eff);
 
           // Check les collisions entre tout les obj.
@@ -239,6 +247,13 @@ angular.module('pedaleswitchApp')
             tableEffet[i].resetCompPos();
           }
         }
+      },
+      
+      newBoite: function(entity){
+        boite = canvasGeneration.newBoite();
+        boite.init(entity);
+        boite.effets = tableEffet;
+        return boite;        
       },
       
       setBoite: function(bo){
