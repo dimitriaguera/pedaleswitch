@@ -114,7 +114,7 @@ angular.module('pedaleswitchApp')
       zoomChange: function(value){
         var okZoom = canvasConversion.setZoom(value);
         if (okZoom) {
-          if (dessin.boite.constructor.name !== "Boite") {
+          if (dessin.boite.constructor.name === "Boite") {
             canvasConversion.convertEffetZoom(dessin.boite);
           }
           for (var i = 0; i < dessin.options.length; i++) {
