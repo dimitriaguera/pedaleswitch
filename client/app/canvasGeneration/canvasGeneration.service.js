@@ -354,7 +354,7 @@ angular.module('pedaleswitchApp')
             };
             this.pos_box = {
               x: this.pos_start.x + (this.pos_end.x - this.pos_start.x)/2,
-              y: this.pos_start.y + 24
+              y: this.pos_start.y + 20
             };
             this.value = canvasConversion.convertToMm(this.entity.size.w);
             break;
@@ -395,7 +395,7 @@ angular.module('pedaleswitchApp')
               ctx.fillRect(this.pos_start.x, this.pos_start.y + 5, 1, this.pos_end.y - this.pos_start.y - 5);
               ctx.closePath();
               this.drawTriangle(ctx);
-              this.drawText(ctx);
+              //this.drawText(ctx);
             };
             break;
           case 'bottom':
@@ -428,7 +428,7 @@ angular.module('pedaleswitchApp')
               ctx.fillRect(this.pos_start.x + 5, this.pos_start.y, this.pos_end.x - this.pos_start.x - 5, 1);
               ctx.closePath();
               this.drawTriangle(ctx);
-              this.drawText(ctx);
+              //this.drawText(ctx);
             };
             break;
           default:
