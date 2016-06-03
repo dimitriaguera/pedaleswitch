@@ -200,6 +200,13 @@ class PageDessinComponent {
     this.zoom = this.canvasControl.getZoom();
     this.canvasDraw.drawStuff();
   }
+
+  arrowChangeValue(){
+    //@todo : implémenter verif collision box - effets.
+    this.canvasControl.setArrowPos();
+    this.canvasDraw.drawStuff();
+  }
+
 }
 
 angular.module('pedaleswitchApp')
