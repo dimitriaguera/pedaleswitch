@@ -48,6 +48,9 @@ class PageDessinComponent {
         this.canvasDraw.drawStuff();
       }
 
+
+    this.toutesTables = this.canvasControl.tableState();
+    this.dessin = this.instanceDessin.getDessin();
     //});
   }
 
@@ -82,24 +85,25 @@ class PageDessinComponent {
     // Recupère dans le local storage.
     var dessinStock = this.storage.get('dessin');
 
+    // Rajoute les options d'effets.
+    this.dessin.options = dessinStock.options;
+
     // Regénère la boite.
     this.dessin.boite = this.canvasControl.newBoite(dessinStock.boite);
 
     // Rajoute tout les effets au canvas.
     //@todo addToCanvas with load option car on peut pas faire incanvas...
-    for (i = 0 ; i < dessinStock.options.length ; i++){
-        this.canvasControl.addToCanvas(dessinStock.options[i], true);
+    for (i = 0 ; i < this.dessin.options.length ; i++){
+      if (this.dessin.options[i].in_canvas === true){
+        this.canvasControl.addToCanvas(this.dessin.options[i], true);
+      }
     }
-
-    // Passe par reference la table d'effet a l'instance dessin.
-    this.dessin.options = this.canvasControl.getTableEffet();
 
     this.toutesTables = this.canvasControl.tableState();
 
     var active = this.canvasControl.getTableEffet();
     var inactive = this.canvasControl.getTableComposant();
     this.zoom = this.canvasControl.getZoom();
-    this.canvasControl.setDeb(false);
     this.canvasControl.resetTableDashed();
     this.canvasControl.setTableActive(active);
     this.canvasControl.setTableThin(inactive);
@@ -110,13 +114,14 @@ class PageDessinComponent {
     if (active.length > 0){
       this.canvasDraw.drawStuff();
     }
-    
+
+    this.toutesTables = this.canvasControl.tableState();
     
   }
 
   save(){
+    this.dessin.debrayable = this.canvasControl.getDeb();
     this.storage.put('dessin', this.dessin);
-    
   }
 
   mouseOnCompo(value){
@@ -181,8 +186,13 @@ class PageDessinComponent {
     this.instanceDessin.setBoite(this.canvasControl.getBoite());
     // Dessine.
     this.canvasDraw.drawStuff();
+    
+    
     //@todo a sup sert au dev.
     this.toutesTables = this.canvasControl.tableState();
+    this.dessin = this.instanceDessin.getDessin();
+    
+    
   }
 
   removeToTable(effet){
@@ -202,6 +212,12 @@ class PageDessinComponent {
     //@todo : implémenter verif collision box - effets.
     this.canvasControl.setArrowPos();
     this.canvasDraw.drawStuff();
+  }
+
+  getTable(){
+    this.toutesTables = this.canvasControl.tableState();
+    this.dessin = this.instanceDessin.getDessin();
+    var x = 5;
   }
 
 }

@@ -6,7 +6,7 @@ angular.module('pedaleswitchApp')
     var composantItems = {};
     var dessin = {
       options: [],
-      boite: null
+      boite: {}
     };
 
     $http.get('/api/composants').then(response => {
@@ -21,7 +21,7 @@ angular.module('pedaleswitchApp')
 
       reset: function() {
         dessin.options = [];
-        dessin.boite = null;        
+        dessin.boite = {};
       },
       
       getDessin: function () {
@@ -29,7 +29,8 @@ angular.module('pedaleswitchApp')
       },
 
       setDessin: function(newdessin) {
-        return dessin = newdessin;
+        dessin = newdessin;
+        return dessin;
       },
       
       setBoite: function (boite) {
@@ -113,7 +114,7 @@ angular.module('pedaleswitchApp')
       zoomChange: function(value){
         var okZoom = canvasConversion.setZoom(value);
         if (okZoom) {
-          if (dessin.boite) {
+          if (dessin.boite.constructor.name !== "Boite") {
             canvasConversion.convertEffetZoom(dessin.boite);
           }
           for (var i = 0; i < dessin.options.length; i++) {
