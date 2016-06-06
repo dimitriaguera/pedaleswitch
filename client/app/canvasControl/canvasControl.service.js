@@ -3,7 +3,6 @@
 angular.module('pedaleswitchApp')
   .factory('canvasControl', function (canvasGeneration, canvasConversion, checkCollision, rulers) {
     // Service logic
-    // ...
 
     var ctx = {};
     var canvas = {};
@@ -66,11 +65,11 @@ angular.module('pedaleswitchApp')
         tableArrow:  tableArrow
         }
       },
-      
+
       /**
        * Cette fonction créé les objets du canvas à partir du modèle dessin.
        * Et l'ajoute dans tableEffet et tableComposant pour les composants correspondants.
-       * 
+       *
        * @param effet : objet effet du modele dessin (entrée de la table option du panier).
        * @para bol : si true alors rajoute l'effet meme si il est deja dans le canvas
        *             sert au fonction de chargement depuis la db ou localstorage.
@@ -137,7 +136,6 @@ angular.module('pedaleswitchApp')
        * @param dessin
        */
       restoreCanvas: function(dessin){
-
         // Regénère la boite.
         boite = canvasGeneration.newBoite();
         boite.initBoiteWithBoite(dessin.boite);
@@ -155,11 +153,13 @@ angular.module('pedaleswitchApp')
             this.addToCanvas(dessin.options[i], true);
           }
         }
-        
       },
 
 
-      // Empeche que l'effet depasse du canvas.
+      /**
+       * Empeche que l'effet depasse du canvas.
+       * @param effet
+       */
       moveCloseBorder: function(effet){
         // On deplace un effet.
         if (effet.constructor.name !== "Boite"){
@@ -171,7 +171,9 @@ angular.module('pedaleswitchApp')
         }
       },
 
-      // Si après zoom les obj déborde du canvas l'agrendie.
+      /**
+       * Agrandit le canvas pour qu'il soit au moins aussi grand que la boite.
+       */
       resizeCanvas: function(){
         if (boite.constructor.name === "Boite") {
           var realmargin = 150;
@@ -212,7 +214,7 @@ angular.module('pedaleswitchApp')
           tableEffet.splice(index,1);
         }
       },
-      
+
       searchTabByIdReturnIndex: function(tab, id, key){
         for(var i = 0; i < tab.length; i++){
           if(tab[i]._id === id && tab[i].key === key) {
