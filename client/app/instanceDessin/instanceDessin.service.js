@@ -9,6 +9,13 @@ angular.module('pedaleswitchApp')
       boite: {}
     };
 
+
+    /**
+     * @todo charger juste les composants des effets ajouter.
+     *
+     * Créer un tableau associatif composantItems de TOUS les composants existant dans la db.
+     * La clé de chq entrée du tableau est l'id de chq composant.
+     */
     $http.get('/api/composants').then(response => {
       initialCompo = response.data;
       for(var j=0; j<initialCompo.length; j++){
@@ -50,11 +57,14 @@ angular.module('pedaleswitchApp')
         return false;
       },
 
-      moveItem: function (item, x, y){
-        item.pos.x = x;
-        item.pos.y = y;
-      },
-
+      /**
+       * Ajoute un effet dans l'instance dessin.
+       * Cette fonction est appelé quand on visite la bibliothèque et que
+       * l'on ajoute l'effet au panier en cliquant sur +.
+       *
+       * @param effet
+       * @param option
+       */
       setEffet: function(effet, option) {
         var key = dessin.options.length;
         var nouv_effet = {
@@ -104,6 +114,12 @@ angular.module('pedaleswitchApp')
         dessin.options.push(nouv_effet);
       },
 
+      // @todo a supprime ?
+      moveItem: function (item, x, y){
+        item.pos.x = x;
+        item.pos.y = y;
+      },
+
       zoomInitialize: function(value){
         canvasConversion.setZoom(value);
         for (var i = 0; i < dessin.options.length; i++) {
@@ -141,5 +157,8 @@ angular.module('pedaleswitchApp')
           }
         }
       }
+
+
+
     };
   });

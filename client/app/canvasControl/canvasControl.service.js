@@ -62,7 +62,8 @@ angular.module('pedaleswitchApp')
         tableActive: tableActive,
         tableDashed:  tableDashed,
         tableThin: tableThin,
-        tableShine: tableShine
+        tableShine: tableShine,
+        tableArrow:  tableArrow
         }
       },
       
@@ -92,12 +93,14 @@ angular.module('pedaleswitchApp')
           // Créer le boitier de la pedale.
           if(boite.constructor.name !== "Boite") {
             boite = canvasGeneration.newBoite();
+            // Conver marge en px.
+            boite.convertMargin();
             // Empeche que l'effet depasse du canvas.
             this.moveCloseBorder(tmp_eff);
             // Place bien les composants.
             tmp_eff.resetCompPos();
             // Initiliase la boite.
-            boite.init(tmp_eff);
+            boite.initBoiteWithEffect(tmp_eff);
             // Lie les effets a la boite
             boite.effets = tableEffet;
             // Créer les flèches autour de la boite.
@@ -128,6 +131,34 @@ angular.module('pedaleswitchApp')
           return tmp_eff;
         }
       },
+
+      /**
+       * Fonction pour restaurer un canvas a partir d'une instance de Dessin.
+       * 
+       * @param dessin
+       */
+      restoreCanvas: function(dessin){
+
+        // Regénère la boite.
+        boite = canvasGeneration.newBoite();
+        boite.initBoiteWithBoite(dessin.boite);
+        boite.effets = tableEffet;
+        dessin.boite = boite;
+        
+        // Créer les flèches autour de la boite.
+        tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
+        tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
+
+        // Rajoute tout les effets au canvas.
+        //@todo addToCanvas with load option car on peut pas faire incanvas...
+        for (var i = 0 ; i < dessin.options.length ; i++){
+          if (dessin.options[i].in_canvas === true){
+            this.addToCanvas(dessin.options[i], true);
+          }
+        }
+        
+      },
+
 
       // Empeche que l'effet depasse du canvas.
       moveCloseBorder: function(effet){
@@ -247,13 +278,6 @@ angular.module('pedaleswitchApp')
             tableEffet[i].resetCompPos();
           }
         }
-      },
-      
-      newBoite: function(entity){
-        boite = canvasGeneration.newBoite();
-        boite.init(entity);
-        boite.effets = tableEffet;
-        return boite;        
       },
       
       setBoite: function(bo){

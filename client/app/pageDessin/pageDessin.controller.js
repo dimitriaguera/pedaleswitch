@@ -2,13 +2,18 @@
 (function(){
 
 class PageDessinComponent {
-  constructor(instanceDessin, canvasControl, canvasDraw, storage, $http) {
+  constructor(instanceDessin, canvasConversion, canvasControl, canvasDraw, storage, $http) {
     this.dessin = {};
     this.items = {};
     this.instanceDessin = instanceDessin;
     this.canvasControl = canvasControl;
+    this.canvasConversion = canvasConversion;
     this.canvasDraw = canvasDraw;
     this.storage = storage;
+
+    // @todo peut etre on init.
+    this.tableArrow = [];
+    this.zoom = 0; // Overrider par le on init
 
     //@todo a sup verifier le oninit.
     this.$http = $http; //@todo a supp et dans la declaration aussi
@@ -82,7 +87,6 @@ class PageDessinComponent {
   }
 
   load(){
-    var i;
 
     // Reset all Canvas.
     this.canvasControl.resetAll();
@@ -90,25 +94,18 @@ class PageDessinComponent {
     // Recupère dans le local storage.
     var dessinStock = this.storage.get('dessin');
 
+    this.dessin = this.instanceDessin.setDessin(dessinStock);
+
     // Remet les options de debrayable.
-    this.switchDeb(dessinStock.debrayable);
-    this.canvasControl.setDeb(dessinStock.debrayable);
+    this.debrayable = this.dessin.debrayable;
+    this.switchDeb(this.debrayable);
     this.isActive = 'effet';
-    this.debrayable = dessinStock.debrayable;
 
-    // Rajoute les options d'effets.
-    this.dessin.options = dessinStock.options;
 
-    // Regénère la boite.
-    this.dessin.boite = this.canvasControl.newBoite(dessinStock.boite);
+    this.canvasConversion.convertDessinToPixel(this.dessin);
+    this.canvasControl.restoreCanvas(this.dessin);
 
-    // Rajoute tout les effets au canvas.
-    //@todo addToCanvas with load option car on peut pas faire incanvas...
-    for (i = 0 ; i < this.dessin.options.length ; i++){
-      if (this.dessin.options[i].in_canvas === true){
-        this.canvasControl.addToCanvas(this.dessin.options[i], true);
-      }
-    }
+
     var active = this.canvasControl.getTableEffet();
     var inactive = this.canvasControl.getTableComposant();
     this.zoom = this.canvasControl.getZoom();
@@ -116,7 +113,12 @@ class PageDessinComponent {
     this.canvasControl.setTableActive(active);
     this.canvasControl.setTableThin(inactive);
     this.items = this.instanceDessin.getComposantItems();
-        
+    this.tableArrow = this.canvasControl.getTableArrow();
+
+
+    this.toutesTables = this.canvasControl.tableState();
+
+    
     // Redessine les objets précédement présent.
     if (active.length > 0){
       this.canvasDraw.drawStuff();
@@ -124,8 +126,19 @@ class PageDessinComponent {
   }
 
   save(){
-    this.dessin.debrayable = this.canvasControl.getDeb();
-    this.storage.put('dessin', this.dessin);
+
+    // Initialise dessinStock.
+    var dessinStock = JSON.parse(JSON.stringify(this.dessin));
+
+    // Conserve l'option debrayable.
+    dessinStock.debrayable = this.canvasControl.getDeb();
+
+    // Convertie en mm.
+    this.canvasConversion.convertDessinToMm(dessinStock);
+
+    // Stock.
+    this.storage.put('dessin', dessinStock);
+
   }
   
   // Appeler par menu-dessin.html

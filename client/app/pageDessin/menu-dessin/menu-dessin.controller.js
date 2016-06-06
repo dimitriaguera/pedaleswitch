@@ -18,7 +18,7 @@
         activeEffet: '&',
         activeCompo: '&'
       },
-      controller: MenuDessin,
+      controller: MenuDessin
     });
 
 })();
