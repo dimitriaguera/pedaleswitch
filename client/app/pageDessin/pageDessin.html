@@ -1,14 +1,44 @@
 <div class="container-fluid">
     <div class="col-xs-12">
-        <menu-dessin switch-deb="$ctrl.switchDeb(value)" active-effet="$ctrl.activeEffet()" active-compo="$ctrl.activeCompo()"></menu-dessin>
-        <navigation-dessin ok-zoom="$ctrl.okZoom" zoom="$ctrl.zoom" zoom-add="$ctrl.zoomAdd(value)" load="$ctrl.load()" save="$ctrl.save()"></navigation-dessin>
+
+        <menu-dessin
+                switch-deb="$ctrl.switchDeb(value)"
+                active-effet="$ctrl.activeEffet()"
+                active-compo="$ctrl.activeCompo()">
+        </menu-dessin>
+
+        <navigation-dessin
+                ok-zoom="$ctrl.okZoom"
+                zoom="$ctrl.zoom"
+                zoom-add="$ctrl.zoomAdd(value)"
+                load="$ctrl.load()"
+                save="$ctrl.save()">
+        </navigation-dessin>
+
     </div>
     <div class="row">
         <div class="col-xs-3">
-            <panier-dessin items="$ctrl.items" effets="$ctrl.dessin.options" on-compo="$ctrl.mouseOnCompo(value)" on-effet="$ctrl.mouseOnEffet(value)" leave-effet="$ctrl.mouseLeaveEffet()" chgmtitem="$ctrl.updateComposant(opt, compo, item)" add-to-table="$ctrl.addToTable(value)" remove-to-table="$ctrl.removeToTable(value)"></panier-dessin>
+
+            <panier-dessin
+                    items="$ctrl.items"
+                    effets="$ctrl.dessin.options"
+                    on-compo="$ctrl.mouseOnCompo(value)"
+                    on-effet="$ctrl.mouseOnEffet(value)"
+                    leave-effet="$ctrl.mouseLeaveEffet()"
+                    chgmtitem="$ctrl.updateComposant(opt, compo, item)"
+                    add-to-table="$ctrl.addToTable(value)"
+                    remove-to-table="$ctrl.removeToTable(value)">
+            </panier-dessin>
+
         </div>
         <div class="col-xs-3">
-            <table-dessin table-data="$ctrl.tableArrow" arrow-change="$ctrl.arrowChangeValue()"></table-dessin>
+
+            <table-dessin
+                    table-data="$ctrl.tableArrow"
+                    table-menu="$ctrl.activeItem"
+                    arrow-change="$ctrl.arrowChangeValue()">
+            </table-dessin>
+
         </div>
     </div>
 </div>

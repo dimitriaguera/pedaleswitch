@@ -29,8 +29,34 @@ angular.module('pedaleswitchApp')
       return drag;
     };
 
+    // Check si la souris est sur un obj de tabActive.
+    var checkmousemenu = function(table){
+      // Regarde si on a cliquer sur un obj contenue dans tabActive
+      var drag = checkCollision.checkmousebox({x: mouseX, y: mouseY}, table, 10);
+      // Si oui met l'id dans dans drag.id et l'objet dans activeItem.
+      if (drag !== false) {
+        table[drag.id].setSelected(true);
+        canvasControl.setActiveItem(table[drag.id]);
+        $rootScope.$emit('no-click-on-element');
+        canvasDraw.drawStuff();
+      }
+      return drag;
+    };
+
 
     return {
+
+      click: function (e) {
+        mouseX = e.layerX;
+        mouseY = e.layerY;
+
+        // Regarde si la souris est sur un effet ou un composant.
+        tabActive = canvasControl.getTableActive();
+        drag = checkmousemenu(tabActive);
+        if (drag === false) {
+          canvasControl.resetActiveItem();
+        };
+      },
 
       mousedown: function (e) {
         mouseX = e.layerX;

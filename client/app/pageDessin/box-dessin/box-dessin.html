@@ -1,7 +1,8 @@
 <div style="
-    top:{{$ctrl.data.pos_box.y}}px;
-    left:{{$ctrl.data.pos_box.x}}px;
-    position:absolute;
-    z-index:2000;";>
+    top:{{ $ctrl.data.pos_box.y }}px;
+    left:{{ $ctrl.data.pos_box.x }}px;
+    z-index:{{ ::$ctrl.zIndex }};
+    position:absolute;">
+
     <div ng-transclude></div>
 </div>

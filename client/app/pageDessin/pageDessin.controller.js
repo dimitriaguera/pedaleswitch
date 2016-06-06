@@ -5,6 +5,7 @@ class PageDessinComponent {
   constructor(instanceDessin, canvasControl, canvasDraw, storage, $http) {
     this.dessin = {};
     this.items = {};
+    this.activeItem = [];
     this.instanceDessin = instanceDessin;
     this.canvasControl = canvasControl;
     this.canvasDraw = canvasDraw;
@@ -43,6 +44,7 @@ class PageDessinComponent {
       this.canvasControl.setTableThin(inactive);
       this.dessin = this.instanceDessin.getDessin();
       this.items = this.instanceDessin.getComposantItems();
+      this.activeItem = this.canvasControl.getActiveItem();
       // Redessine les objets précédement présent.
       if (active.length > 0){
         this.canvasDraw.drawStuff();

@@ -23,5 +23,15 @@
         </div>
     </box-dessin>
 
+    <box-dessin ng-repeat="menu in tableMenu" data="menu" box-action="arrowChange()">
+        <div style="width:{{ $ctrl.data.size.w }}px;height:{{ $ctrl.data.size.h }}px;"
+             uib-popover-template="$ctrl.popUpUrl"
+             popover-append-to-body="true"
+             popover-is-open="true"
+             popover-title="{{ ::$ctrl.data.titre }}"
+             popover-placement="right">
+        </div>
+    </box-dessin>
+
     <canvas droppable id="canvas-dessin" style="position:relative;background-color:#f1f1f1;">Ooups, Votre navigateur ne supporte pas le html 5...</canvas>
 </div>
