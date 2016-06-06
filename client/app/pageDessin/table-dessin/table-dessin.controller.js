@@ -26,7 +26,6 @@ angular.module('pedaleswitchApp')
             canvasDraw.drawStuff();
           }
 
-
           canv.addEventListener("mousedown", mouseHelper.mousedown);
           canv.addEventListener("mousemove", mouseHelper.mousemovebox);
           
