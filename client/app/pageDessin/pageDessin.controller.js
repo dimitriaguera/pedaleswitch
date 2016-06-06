@@ -41,7 +41,13 @@ class PageDessinComponent {
     
     // Active les effets et les dessines.
     this.activeEffet();
-    
+
+    // Ce bout a été deplacer dans table-dessin controleur car
+    // a cet instant rien ne dis que le canvas est pret dans le dom
+    // donc inefficace.
+    // Check canvas size.
+    //this.canvasControl.resizeCanvas();
+
     //@todo a sup.
     this.toutesTables = this.canvasControl.tableState();
   }
@@ -109,6 +115,8 @@ class PageDessinComponent {
   }
   
   // Appeler par menu-dessin.html
+  // @todo activeEffet est appele dans plusieur endroit ou l'on ne veut
+  // pas dessiner.
   activeEffet(){
     this.isActive = 'effet';
     var active = this.canvasControl.getTableEffet();
@@ -118,11 +126,9 @@ class PageDessinComponent {
     this.canvasControl.resetTableDashed();
     this.canvasControl.setTableActive(active);
     this.canvasControl.setTableThin(inactive);
-
     if (active.length > 0){
       this.canvasDraw.drawStuff();
     }
-
   }
   
   // Appeler par menu-dessin.html
@@ -155,7 +161,8 @@ class PageDessinComponent {
   }
 
   zoomAdd(value){
-    this.canvasControl.resizeCanvasOnZoom();
+    this.instanceDessin.zoomChange(value);
+    this.canvasControl.resizeCanvas();
     this.canvasControl.setArrowPos();
     this.zoom = this.canvasControl.getZoom();
     this.canvasDraw.drawStuff();

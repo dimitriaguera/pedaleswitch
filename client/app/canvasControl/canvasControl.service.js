@@ -67,7 +67,51 @@ angular.module('pedaleswitchApp')
         }
       },
       
-      
+      /*
+      checkCanvasSize(){
+        var i;
+
+        var R, B, maxR = 0, maxB = 0;
+
+        // Boucle sur les effets.
+        for (i = 0 ; i < tableEffet.length ; i++ ){
+          R = tableEffet[i].getRight();
+          if (R > maxR) {
+            maxR = R;
+          }
+          B = tableEffet[i].getBottom();
+          if (B > maxB){
+            maxB = B
+          }
+        }
+
+        // Boucle sur les compo en mode Debrayable.
+        if (debrayable) {
+          for (i = 0 ; i < tableComposant.length ; i++ ){
+            R = tableComposant[i].getRight();
+            if (R > maxR) {
+              maxR = R;
+            }
+            B = tableComposant[i].getBottom();
+            if (B > maxB){
+              maxB = B
+            }
+          }
+        }
+
+        // Debordement par la droite.
+        if (maxR + boite.margin + 150 > canvas.width) {
+          canvas.width = maxR + boite.margin + 150;
+        }
+        // Debordement par le bas.
+        if (maxB + boite.margin + 150 > canvas.height) {
+          canvas.height = maxB + boite.margin + 150;
+        }
+
+      },
+      */
+
+
       /**
        * Cette fonction créé les objets du canvas à partir du modèle dessin.
        * Et l'ajoute dans tableEffet et tableComposant pour les composants correspondants.
@@ -173,7 +217,7 @@ angular.module('pedaleswitchApp')
       },
 
       // Si après zoom les obj déborde du canvas l'agrendie.
-      resizeCanvasOnZoom: function(){
+      resizeCanvas: function(){
         if (boite.constructor.name === "Boite") {
           var realmargin = 150;
           var bbot = boite.getBottom(),
