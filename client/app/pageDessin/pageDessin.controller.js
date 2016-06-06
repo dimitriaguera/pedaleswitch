@@ -2,23 +2,16 @@
 (function(){
 
 class PageDessinComponent {
-<<<<<<< HEAD
-  constructor(instanceDessin, canvasControl, canvasDraw, storage, $http) {
-    this.dessin = {};
-    this.items = {};
-    this.activeItem = [];
-=======
+
   constructor(instanceDessin, canvasConversion, canvasControl, canvasDraw, storage, $http) {
->>>>>>> e82555f87d02a5c5e46176b5fe90a963ab6d0a58
     this.instanceDessin = instanceDessin;
     this.canvasControl = canvasControl;
     this.canvasConversion = canvasConversion;
     this.canvasDraw = canvasDraw;
     this.storage = storage;
-    
+
     //@todo a sup verifier le oninit.
     this.$http = $http; //@todo a supp et dans la declaration aussi
-
   }
 
   $onInit(){
@@ -32,24 +25,6 @@ class PageDessinComponent {
       // } 
     //});
 
-<<<<<<< HEAD
-      //@todo il faut garder juste c ligne et les mettre en dehors du $http.get
-      this.tableArrow = this.canvasControl.getTableArrow();
-      var active = this.canvasControl.getTableEffet();
-      var inactive = this.canvasControl.getTableComposant();
-      this.zoom = this.canvasControl.getZoom();
-      this.canvasControl.setDeb(false);
-      this.canvasControl.resetTableDashed();
-      this.canvasControl.setTableActive(active);
-      this.canvasControl.setTableThin(inactive);
-      this.dessin = this.instanceDessin.getDessin();
-      this.items = this.instanceDessin.getComposantItems();
-      this.activeItem = this.canvasControl.getActiveItem();
-      // Redessine les objets précédement présent.
-      if (active.length > 0){
-        this.canvasDraw.drawStuff();
-      }
-=======
     this.initialisation();
   }
   
@@ -59,6 +34,7 @@ class PageDessinComponent {
     this.items = this.instanceDessin.getComposantItems();
     this.dessin = this.instanceDessin.getDessin();
     this.tableArrow = this.canvasControl.getTableArrow();
+    this.activeItem = this.canvasControl.getActiveItem();
     
     // Met les bonnes options.
     this.zoom = this.canvasControl.getZoom();
@@ -66,7 +42,6 @@ class PageDessinComponent {
     
     // Active les effets et les dessines.
     this.activeEffet();
->>>>>>> e82555f87d02a5c5e46176b5fe90a963ab6d0a58
 
     // Ce bout a été deplacer dans table-dessin controleur car
     // a cet instant rien ne dis que le canvas est pret dans le dom
