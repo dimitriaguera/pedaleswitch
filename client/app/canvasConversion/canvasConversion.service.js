@@ -3,7 +3,6 @@
 angular.module('pedaleswitchApp')
   .factory('canvasConversion', function ($window) {
     // Service logic
-    // ...
 
     var resolution = 72;
     var resoInMm = 25.4;
@@ -13,13 +12,6 @@ angular.module('pedaleswitchApp')
     var ratioH = 300;
     var oldZoom = 1;
     var zoom = 1;
-
-    //var resolution = 2;
-    //var resoInMm = 1;
-    //var ratioW = 1;
-    //var ratioH = 0;
-    //var oldZoom = 1;
-    //var zoom = 1;
 
     var convertSize = function (entity, ratio) {
       entity.pos.x = Math.round(ratio * entity.pos.x);
@@ -154,12 +146,10 @@ angular.module('pedaleswitchApp')
         // Debordement par la droite.
         if (right + realmargin + 150 > canvas.width) {
           canvas.width = right + realmargin + 150;
-          //entity.setCenterX(canvas.width - entity.size.w / 2 - margin);
         }
         // Debordement par le bas.
         if (bottom + realmargin + 150 > canvas.height) {
           canvas.height = bottom + realmargin + 150;
-          //entity.setCenterY(canvas.height - entity.size.h / 2 - margin);
         }
 
       }
