@@ -413,7 +413,7 @@ angular.module('pedaleswitchApp')
 
       getTableArrow: function(){
         return tableArrow;
-      },
+      }
       
     };
   });
