@@ -2,37 +2,37 @@
 (function(){
 
 class PageDessinComponent {
+<<<<<<< HEAD
   constructor(instanceDessin, canvasControl, canvasDraw, storage, $http) {
     this.dessin = {};
     this.items = {};
     this.activeItem = [];
+=======
+  constructor(instanceDessin, canvasConversion, canvasControl, canvasDraw, storage, $http) {
+>>>>>>> e82555f87d02a5c5e46176b5fe90a963ab6d0a58
     this.instanceDessin = instanceDessin;
     this.canvasControl = canvasControl;
+    this.canvasConversion = canvasConversion;
     this.canvasDraw = canvasDraw;
     this.storage = storage;
-    this.isActive = 'effet';
-    this.zoom = 100;
-    this.okZoom = true;
-
     
     //@todo a sup verifier le oninit.
     this.$http = $http; //@todo a supp et dans la declaration aussi
-    //this.effets = [];//@todo a supp
+
   }
 
   $onInit(){
 
-
     //@todo a supp et verifier dans le constructor de virer http et OrderArray.
     //this.$http.get('/api/effets').then(response => {
     //  this.effets = response.data;
-
-      
       // if(this.instanceDessin.getDessin().options.length === 0){
-      //  tis.instanceDessin.setEffet(this.effets[0], this.effets[0].options[0]);
-      //  tis.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
+      //  this.instanceDessin.setEffet(this.effets[0], this.effets[0].options[0]);
+      //  this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
       // } 
+    //});
 
+<<<<<<< HEAD
       //@todo il faut garder juste c ligne et les mettre en dehors du $http.get
       this.tableArrow = this.canvasControl.getTableArrow();
       var active = this.canvasControl.getTableEffet();
@@ -49,8 +49,64 @@ class PageDessinComponent {
       if (active.length > 0){
         this.canvasDraw.drawStuff();
       }
+=======
+    this.initialisation();
+  }
+  
+  initialisation() {
+    
+    // Link les tables.
+    this.items = this.instanceDessin.getComposantItems();
+    this.dessin = this.instanceDessin.getDessin();
+    this.tableArrow = this.canvasControl.getTableArrow();
+    
+    // Met les bonnes options.
+    this.zoom = this.canvasControl.getZoom();
+    this.debrayable = this.canvasControl.getDeb();
+    
+    // Active les effets et les dessines.
+    this.activeEffet();
+>>>>>>> e82555f87d02a5c5e46176b5fe90a963ab6d0a58
 
-    //});
+    // Ce bout a été deplacer dans table-dessin controleur car
+    // a cet instant rien ne dis que le canvas est pret dans le dom
+    // donc inefficace.
+    // Check canvas size.
+    //this.canvasControl.resizeCanvas();
+
+    //@todo a sup.
+    this.toutesTables = this.canvasControl.tableState();
+  }
+
+  load(){
+    // Reset all Canvas.
+    this.canvasControl.resetAll();
+    // Recupère dans le local storage.
+    var dessinStock = this.storage.get('dessin');
+    // Instancie le dessin et le stock dans this.dessin.
+    this.dessin = this.instanceDessin.setDessin(dessinStock);
+    // Convertie les mM en pixel.
+    this.canvasConversion.convertDessinToPixel(this.dessin);
+    // Rajouter les things et la boite dans le canvas.
+    this.canvasControl.restoreCanvas(this.dessin);
+    // Remet les options de debrayable.
+    this.debrayable = this.dessin.debrayable;
+    this.switchDeb(this.debrayable);
+    // Link la tableau arrow.
+    this.tableArrow = this.canvasControl.getTableArrow();
+    // Active la table effet et dessine.
+    this.activeEffet();
+  }
+
+  save(){
+    // Initialise dessinStock.
+    var dessinStock = JSON.parse(JSON.stringify(this.dessin));
+    // Conserve l'option debrayable.
+    dessinStock.debrayable = this.canvasControl.getDeb();
+    // Convertie en mm.
+    this.canvasConversion.convertDessinToMm(dessinStock);
+    // Stock.
+    this.storage.put('dessin', dessinStock);
   }
 
   mouseOnEffet(value){
@@ -74,53 +130,83 @@ class PageDessinComponent {
       this.canvasDraw.drawStuff();
     }
   }
-
-  load(){
-    var i;
-
-    // Reset all Canvas.
-    this.canvasControl.resetAll();
-
-    // Recupère dans le local storage.
-    var dessinStock = this.storage.get('dessin');
-
-    // Regénère la boite.
-    this.dessin.boite = this.canvasControl.newBoite(dessinStock.boite);
-
-    // Rajoute tout les effets au canvas.
-    //@todo addToCanvas with load option car on peut pas faire incanvas...
-    for (i = 0 ; i < dessinStock.options.length ; i++){
-        this.canvasControl.addToCanvas(dessinStock.options[i], true);
+    
+  // Appeler par menu-dessin.html
+  switchDeb(){
+    this.canvasControl.setDeb(this.debrayable);
+    this.canvasControl.resetCompPos(this.debrayable);
+    if(!this.debrayable){
+      this.activeEffet();
     }
-
-    // Passe par reference la table d'effet a l'instance dessin.
-    this.dessin.options = this.canvasControl.getTableEffet();
-
-    this.toutesTables = this.canvasControl.tableState();
-
+  }
+  
+  // Appeler par menu-dessin.html
+  // @todo activeEffet est appele dans plusieur endroit ou l'on ne veut
+  // pas dessiner.
+  activeEffet(){
+    this.isActive = 'effet';
     var active = this.canvasControl.getTableEffet();
     var inactive = this.canvasControl.getTableComposant();
-    this.zoom = this.canvasControl.getZoom();
-    this.canvasControl.setDeb(false);
+    this.canvasControl.resetIsSelected(active);
+    this.canvasControl.resetIsSelected(inactive);
     this.canvasControl.resetTableDashed();
     this.canvasControl.setTableActive(active);
     this.canvasControl.setTableThin(inactive);
-    this.items = this.instanceDessin.getComposantItems();
-    
-    
-    // Redessine les objets précédement présent.
     if (active.length > 0){
       this.canvasDraw.drawStuff();
     }
-    
-    
+  }
+  
+  // Appeler par menu-dessin.html
+  activeCompo(){
+    this.isActive = 'compo';
+    var active = this.canvasControl.getTableComposant();
+    var inactive = this.canvasControl.getTableEffet();
+    this.canvasControl.resetIsSelected(active);
+    this.canvasControl.resetIsSelected(inactive);
+    this.canvasControl.resetTableThin();
+    this.canvasControl.setTableActive(active);
+    this.canvasControl.setTableDashed(inactive);
+    if (active.length > 0){
+      this.canvasDraw.drawStuff();
+    }
+  }
+  
+  addToTable(effet){
+    // Ajouter l'effet au canvas si pas deja.
+    if (!effet.in_canvas) {this.canvasControl.addToCanvas(effet);}
+    // Initialise le boite dans l'instance de dessin.
+    this.instanceDessin.setBoite(this.canvasControl.getBoite());
+    // Dessine.
+    this.canvasDraw.drawStuff();
   }
 
-  save(){
-    this.storage.put('dessin', this.dessin);
-    
+  removeToTable(effet){
+    this.canvasControl.removeToCanvas(effet);
+    this.canvasDraw.drawStuff();
   }
 
+  zoomAdd(value){
+    this.instanceDessin.zoomChange(value);
+    this.canvasControl.resizeCanvas();
+    this.canvasControl.setArrowPos();
+    this.zoom = this.canvasControl.getZoom();
+    this.canvasDraw.drawStuff();
+  }
+
+  // Utiliser par table-dessin.
+  arrowChangeValue(){
+    //@todo : implémenter verif collision box - effets.
+    this.canvasControl.setArrowPos();
+    this.canvasDraw.drawStuff();
+  }
+
+  //Utiliser par panier-dessin.
+  updateComposant(opt, compo, item){
+    this.instanceDessin.updateComposant(opt, compo, item);
+  }
+  
+  //Utiliser par panier-dessin.
   mouseOnCompo(value){
     var compos = [];
     var compo = this.canvasControl.searchCompoById(value._id, value.key);
@@ -133,77 +219,17 @@ class PageDessinComponent {
     }
   }
 
+  //Utiliser par panier-dessin.
   mouseLeaveEffet(){
     this.canvasControl.resetTableShine();
     this.canvasDraw.drawStuff();
   }
-
-  switchDeb(value){
-    this.canvasControl.setDeb(value);
-    this.canvasControl.resetCompPos(value);
-    this.canvasDraw.drawStuff();
-    if(!value){
-      this.activeEffet();
-      this.canvasDraw.drawStuff();
-    }
-  }
   
-  activeEffet(){
-    this.isActive = 'effet';
-    var active = this.canvasControl.getTableEffet();
-    var inactive = this.canvasControl.getTableComposant();
-    this.canvasControl.resetIsSelected(active);
-    this.canvasControl.resetIsSelected(inactive);
-    this.canvasControl.resetTableDashed();
-    this.canvasControl.setTableActive(active);
-    this.canvasControl.setTableThin(inactive);
-    this.canvasDraw.drawStuff();
-  }
-
-  activeCompo(){
-    this.isActive = 'compo';
-    var active = this.canvasControl.getTableComposant();
-    var inactive = this.canvasControl.getTableEffet();
-    this.canvasControl.resetIsSelected(active);
-    this.canvasControl.resetIsSelected(inactive);
-    this.canvasControl.resetTableThin();
-    this.canvasControl.setTableActive(active);
-    this.canvasControl.setTableDashed(inactive);
-    this.canvasDraw.drawStuff();
-  }
-
-  updateComposant(opt, compo, item){
-    this.instanceDessin.updateComposant(opt, compo, item);
-  }
-
-  addToTable(effet){
-    // Ajouter l'effet au canvas si pas deja.
-    if (!effet.in_canvas) {this.canvasControl.addToCanvas(effet);}
-    // Initialise le boite dans l'instance de dessin.
-    this.instanceDessin.setBoite(this.canvasControl.getBoite());
-    // Dessine.
-    this.canvasDraw.drawStuff();
-    //@todo a sup sert au dev.
+  //@todo a supprimer.
+  getTable(){
     this.toutesTables = this.canvasControl.tableState();
-  }
-
-  removeToTable(effet){
-    this.canvasControl.removeToCanvas(effet);
-    this.canvasDraw.drawStuff();
-  }
-
-  zoomAdd(value){
-    this.okZoom = this.instanceDessin.zoomChange(value);
-    this.canvasControl.resizeCanvasOnZoom();
-    this.canvasControl.setArrowPos();
-    this.zoom = this.canvasControl.getZoom();
-    this.canvasDraw.drawStuff();
-  }
-
-  arrowChangeValue(){
-    //@todo : implémenter verif collision box - effets.
-    this.canvasControl.setArrowPos();
-    this.canvasDraw.drawStuff();
+    this.dessin = this.instanceDessin.getDessin();
+    var x = 5;
   }
 
 }

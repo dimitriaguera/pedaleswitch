@@ -3,7 +3,6 @@
 angular.module('pedaleswitchApp')
   .factory('canvasControl', function (canvasGeneration, canvasConversion, checkCollision, rulers) {
     // Service logic
-    // ...
 
     var ctx = {};
     var canvas = {};
@@ -63,15 +62,15 @@ angular.module('pedaleswitchApp')
         tableActive: tableActive,
         tableDashed:  tableDashed,
         tableThin: tableThin,
-        tableShine: tableShine
+        tableShine: tableShine,
+        tableArrow:  tableArrow
         }
       },
-      
-      
+
       /**
        * Cette fonction créé les objets du canvas à partir du modèle dessin.
        * Et l'ajoute dans tableEffet et tableComposant pour les composants correspondants.
-       * 
+       *
        * @param effet : objet effet du modele dessin (entrée de la table option du panier).
        * @para bol : si true alors rajoute l'effet meme si il est deja dans le canvas
        *             sert au fonction de chargement depuis la db ou localstorage.
@@ -93,12 +92,14 @@ angular.module('pedaleswitchApp')
           // Créer le boitier de la pedale.
           if(boite.constructor.name !== "Boite") {
             boite = canvasGeneration.newBoite();
+            // Conver marge en px.
+            boite.convertMargin();
             // Empeche que l'effet depasse du canvas.
             this.moveCloseBorder(tmp_eff);
             // Place bien les composants.
             tmp_eff.resetCompPos();
             // Initiliase la boite.
-            boite.init(tmp_eff);
+            boite.initBoiteWithEffect(tmp_eff);
             // Lie les effets a la boite
             boite.effets = tableEffet;
             // Créer les flèches autour de la boite.
@@ -130,7 +131,36 @@ angular.module('pedaleswitchApp')
         }
       },
 
-      // Empeche que l'effet depasse du canvas.
+      /**
+       * Fonction pour restaurer un canvas a partir d'une instance de Dessin.
+       * 
+       * @param dessin
+       */
+      restoreCanvas: function(dessin){
+        // Regénère la boite.
+        boite = canvasGeneration.newBoite();
+        boite.initBoiteWithBoite(dessin.boite);
+        boite.effets = tableEffet;
+        dessin.boite = boite;
+        
+        // Créer les flèches autour de la boite.
+        tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
+        tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
+
+        // Rajoute tout les effets au canvas.
+        //@todo addToCanvas with load option car on peut pas faire incanvas...
+        for (var i = 0 ; i < dessin.options.length ; i++){
+          if (dessin.options[i].in_canvas === true){
+            this.addToCanvas(dessin.options[i], true);
+          }
+        }
+      },
+
+
+      /**
+       * Empeche que l'effet depasse du canvas.
+       * @param effet
+       */
       moveCloseBorder: function(effet){
         // On deplace un effet.
         if (effet.constructor.name !== "Boite"){
@@ -142,8 +172,10 @@ angular.module('pedaleswitchApp')
         }
       },
 
-      // Si après zoom les obj déborde du canvas l'agrendie.
-      resizeCanvasOnZoom: function(){
+      /**
+       * Agrandit le canvas pour qu'il soit au moins aussi grand que la boite.
+       */
+      resizeCanvas: function(){
         if (boite.constructor.name === "Boite") {
           var realmargin = 150;
           var bbot = boite.getBottom(),
@@ -183,7 +215,7 @@ angular.module('pedaleswitchApp')
           tableEffet.splice(index,1);
         }
       },
-      
+
       searchTabByIdReturnIndex: function(tab, id, key){
         for(var i = 0; i < tab.length; i++){
           if(tab[i]._id === id && tab[i].key === key) {
@@ -250,13 +282,6 @@ angular.module('pedaleswitchApp')
         }
       },
       
-      newBoite: function(entity){
-        boite = canvasGeneration.newBoite();
-        boite.init(entity);
-        boite.effets = tableEffet;
-        return boite;        
-      },
-      
       setBoite: function(bo){
         boite = bo;
       },
@@ -318,7 +343,8 @@ angular.module('pedaleswitchApp')
       setTableActive: function(tabr){
         //@todo ne pas mettre cela ici car créer un bug lors du changement de table.
         //checkCollision.checkall(tabr);
-        return tableActive = tabr;
+        tableActive = tabr;
+        return tableActive;
       },
 
       getTableActive: function(){
@@ -404,7 +430,7 @@ angular.module('pedaleswitchApp')
 
       getTableArrow: function(){
         return tableArrow;
-      },
+      }
       
     };
   });

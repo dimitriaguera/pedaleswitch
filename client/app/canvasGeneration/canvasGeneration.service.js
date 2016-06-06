@@ -22,6 +22,7 @@ angular.module('pedaleswitchApp')
         this.size = entity.size || {w: 10, h: 10};
         this.pos = entity.pos;
         this.pos_default = entity.pos_default || null;
+        // @todo pos_parent never used.
         this.pos_parent = entity.pos_parent || {x: 0, y: 0};
         this.isSelected = false;
         this.isOverlapping = false;
@@ -157,14 +158,31 @@ angular.module('pedaleswitchApp')
 
     class Boite {
       constructor () {
-        this.margin = canvasConversion.convertToPixel(5); // En mm, converti en px juste après création de la boite dans canvasControl.
+        this.margin = 5; // En mm, converti en px juste après création de la boite dans canvasControl.
         this.isSelected = false;
         this.isOverlapping = false;
         this.titre = 'Boite';
         this.effets = [];
       }
 
-      init(entity){
+      convertMargin(){
+        this.margin = canvasConversion.convertToPixel(this.margin);
+      }
+      
+      // Tout doit etre en Pixel.
+      initBoiteWithBoite(boite){
+        this.margin = boite.margin;
+        this.size = {
+          w: boite.size.w,
+          h: boite.size.h
+        };
+        this.pos = {
+          x: boite.pos.x,
+          y: boite.pos.y
+        };
+      }
+      
+      initBoiteWithEffect(entity){
         this.size = {
           w: entity.size.w + 2 * this.margin,
           h: entity.size.h + 2 * this.margin

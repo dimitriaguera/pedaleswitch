@@ -3,23 +3,15 @@
 angular.module('pedaleswitchApp')
   .factory('canvasConversion', function ($window) {
     // Service logic
-    // ...
 
     var resolution = 72;
     var resoInMm = 25.4;
-     var resolution = 2;
-     var resoInMm = 1;
-     var ratioW = 3/4.2;
-     var ratioH = 300;
-     var oldZoom = 1;
-     var zoom = 1;
-
-    //var resolution = 2;
-    //var resoInMm = 1;
-    //var ratioW = 1;
-    //var ratioH = 0;
-    //var oldZoom = 1;
-    //var zoom = 1;
+    var resolution = 2;
+    var resoInMm = 1;
+    var ratioW = 3/4.2;
+    var ratioH = 300;
+    var oldZoom = 1;
+    var zoom = 1;
 
     var convertSize = function (entity, ratio) {
       entity.pos.x = Math.round(ratio * entity.pos.x);
@@ -77,6 +69,38 @@ angular.module('pedaleswitchApp')
         return Math.round(newValue);
       },
 
+      /**
+       * Convertie tout les dim d'une instance de Dessin en Mm.
+       * @param dessin
+       */
+      convertDessinToMm: function(dessin){
+        
+        var ratio = 1 / (resoInMm * zoom * resolution);
+
+        // Convertie la boite
+        convertSize(dessin.boite, ratio);
+        
+        // Convertie tt les options.
+        for (var i = 0 ; i < dessin.options.length; i++){
+          convertSize(dessin.options[i], ratio);
+        }
+        
+      },
+      
+      convertDessinToPixel: function(dessin){
+
+        var ratio = zoom * resolution * resoInMm;
+
+        // Convertie la boite
+        convertSize(dessin.boite, ratio);
+
+        // Convertie tt les options.
+        for (var i = 0 ; i < dessin.options.length ; i++){
+          convertSize(dessin.options[i], ratio);
+        }
+        
+      },
+
       initializeEffetZoom: function (entity) {
         convertSize(entity, zoom);
       },
@@ -112,21 +136,22 @@ angular.module('pedaleswitchApp')
         // Debordement par le haut.
         if (top - realmargin < 0) {
           entity.setCenterY(entity.size.h / 2 + realmargin);
-        }
-        // Debordement par la droite.
-        if (right + realmargin + 150 > canvas.width) {
-          canvas.width = right + realmargin + 150;
-          //entity.setCenterX(canvas.width - entity.size.w / 2 - margin);
-        }
-        // Debordement par le bas.
-        if (bottom + realmargin + 150 > canvas.height) {
-          canvas.height = bottom + realmargin + 150;
-          //entity.setCenterY(canvas.height - entity.size.h / 2 - margin);
+          bottom = entity.getBottom();
         }
         // Debordement par la gauche.
         if (left - realmargin < 0) {
           entity.setCenterX(entity.size.w / 2 + realmargin);
+          right = entity.getRight();
         }
+        // Debordement par la droite.
+        if (right + realmargin + 150 > canvas.width) {
+          canvas.width = right + realmargin + 150;
+        }
+        // Debordement par le bas.
+        if (bottom + realmargin + 150 > canvas.height) {
+          canvas.height = bottom + realmargin + 150;
+        }
+
       }
 
     };
