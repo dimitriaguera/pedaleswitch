@@ -177,8 +177,10 @@ class PageDessinComponent {
   }
 
   //Utiliser par panier-dessin.
-  updateComposant(opt, compo, item){
-    this.instanceDessin.updateComposant(opt, compo, item);
+  updateComposant(compo, value){
+    this.instanceDessin.updateComposant(compo, value);
+    this.canvasControl.updateComposantInCanvas(compo);
+    this.canvasDraw.drawStuff();
   }
   
   //Utiliser par panier-dessin.

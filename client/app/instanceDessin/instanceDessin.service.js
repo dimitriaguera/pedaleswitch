@@ -88,7 +88,6 @@ angular.module('pedaleswitchApp')
             _id: option.composants[i]._id,
             key: key,
             titre: option.composants[i].titre,
-            items: option.composants[i].available_compo_id,
             pos_parent: nouv_effet.pos,
             pos_default: {
               x: option.composants[i].pos.x,
@@ -102,10 +101,13 @@ angular.module('pedaleswitchApp')
               w: composantItems[option.composants[i].available_compo_id[0]].size.w,
               h: composantItems[option.composants[i].available_compo_id[0]].size.h
             },
-            id_item: composantItems[option.composants[i].available_compo_id[0]]._id,
-            shape: composantItems[option.composants[i].available_compo_id[0]].shape,
-            titre_item: composantItems[option.composants[i].available_compo_id[0]].titre,
-            prix_add: composantItems[option.composants[i].available_compo_id[0]].prix_additionnel
+            item_info: {
+              id_item: composantItems[option.composants[i].available_compo_id[0]]._id,
+              items: option.composants[i].available_compo_id,
+              shape: composantItems[option.composants[i].available_compo_id[0]].shape,
+              titre_item: composantItems[option.composants[i].available_compo_id[0]].titre,
+              prix_add: composantItems[option.composants[i].available_compo_id[0]].prix_additionnel
+            }
           };
           nouv_effet.composants.push(compo);
         }
@@ -140,22 +142,33 @@ angular.module('pedaleswitchApp')
         return okZoom;
       },
 
-      updateComposant: function(idOption, idCompo, idItem) {
+      //updateComposant: function(idOption, idCompo, idItem) {
+      //  var data = {
+      //    titre_item: composantItems[idItem].titre,
+      //    size: composantItems[idItem].size,
+      //    prix_add: composantItems[idItem].prix_additionnel
+      //  };
+      //  for(var i=0; i<dessin.options.length; i++){
+      //    if(dessin.options[i]._id === idOption){
+      //      for (var j = 0; j < dessin.options[i].composants.length; j++){
+      //        if (dessin.options[i].composants[j]._id === idCompo){
+      //          dessin.options[i].composants[j] = _.merge(dessin.options[i].composants[j], data);
+      //          return;
+      //        }
+      //      }
+      //    }
+      //  }
+      //}
+
+      updateComposant: function(compo, value) {
         var data = {
-          titre_item: composantItems[idItem].titre,
-          size: composantItems[idItem].size,
-          prix_add: composantItems[idItem].prix_additionnel
+            titre_item: composantItems[value].titre,
+            id_item: composantItems[value]._id,
+            size: composantItems[value].size,
+            prix_add: composantItems[value].prix_additionnel,
+            shape: composantItems[value].shape
         };
-        for(var i=0; i<dessin.options.length; i++){
-          if(dessin.options[i]._id === idOption){
-            for (var j = 0; j < dessin.options[i].composants.length; j++){
-              if (dessin.options[i].composants[j]._id === idCompo){
-                dessin.options[i].composants[j] = _.merge(dessin.options[i].composants[j], data);
-                return;
-              }
-            }
-          }
-        }
+        compo = _.merge(compo.item_info, data);
       }
 
 
