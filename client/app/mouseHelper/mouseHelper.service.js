@@ -9,72 +9,19 @@ angular.module('pedaleswitchApp')
     var drag = {};
     var tabActive = [];
     var boite = [];
-    var oldselect = false;
 
-    // Change la forme du pointeur de la souris.
+    var timea, timeb;
+
+    var olddragid = null;
+
+    /**
+     * Change la forme du pointeur de la souris.
+     */
     var update = function (handle) {
       document.body.style.cursor = handle;
     };
 
-    /**
-     * Check si la souris est sur un obj de tabActive.
-     *
-     * Si oui met l'obj dans table active,
-     * Stock l'id et la position de la souris relative à l'obj,
-     * Emet un event 'no-click-on-element' (cf. table-dessin.controler.js).
-     */
-    var checkMouse = function(table){
-      // Regarde si on a cliquer sur un obj contenue dans tabActive
-      var drag = checkCollision.checkMouseBox({x: mouseX, y: mouseY}, table, 10);
-      // Si oui met l'id dans dans drag.id et l'écart entre la souris et le baricentre de l'obj dragué.
-      if (drag !== false) {
-        table[drag.id].setSelected(true);
-        update('move');
-        $rootScope.$emit('click-on-element');
-        canvasDraw.drawStuff();
-      }
-      return drag;
-    };
-
-    /**
-     * Check si la souris est sur un obj de tabActive.
-     *
-     * Si oui met l'obj dans table active,
-     * Stock l'id et la position de la souris relative à l'obj,
-     * Emet un event 'no-click-on-element' (cf. table-dessin.controler.js).
-     */
-    var CheckMouseMenu = function(table){
-      // Regarde si on a cliquer sur un obj contenue dans tabActive
-      var drag = checkCollision.checkMouseBox({x: mouseX, y: mouseY}, table, 10);
-      // Si oui met l'id dans dans drag.id et l'objet dans activeItem.
-      if (drag !== false) {
-        table[drag.id].setSelected(true);
-        canvasControl.setActiveItem(table[drag.id]);
-        $rootScope.$emit('no-click-on-element');
-        canvasDraw.drawStuff();
-      }
-      return drag;
-    };
-
-
     return {
-
-      /**
-       * Event appeler dans le canvas pour afficher les pop dans le
-       * canvas quand on clique sur un composant ou effet.
-       */
-      click: function (e) {
-        mouseX = e.layerX;
-        mouseY = e.layerY;
-
-        // Regarde si la souris est sur un effet ou un composant.
-        tabActive = canvasControl.getTableActive();
-        drag = CheckMouseMenu(tabActive);
-        if (drag === false) {
-          canvasControl.resetActiveItem();
-        }
-      },
-
 
       /**
        * Listener quand la souris bouge mais ne clique pas.
@@ -86,61 +33,76 @@ angular.module('pedaleswitchApp')
         mouseX = e.layerX; //- mousehelper.canvas.offsetLeft,
         mouseY = e.layerY; //- mousehelper.canvas.offsetTop;
 
+
         tabActive = canvasControl.getTableActive();
         boite = canvasControl.getBoite();
+
+        // Met le bon pointeur de souris
         update('default');
-
-        if (drag.id >= 0) {
-          tabActive[drag.id].setSelected(false);
-          drag = {};
-        }
-
 
         // Si il y a des obj dans le canvas.
         if (tabActive.length > 0){
+
+          // Regarde si la souris est sur un effet ou un composant.
+          drag = checkCollision.checkMouseBox({x: mouseX, y: mouseY}, tabActive, 10);
+          if (drag) {
+            drag.type = 'thing';
+            // Met isSelect a l'objet en cours
+            // Et enlève l'ancien selectionner.
+            // Redraw si necaissaire.
+            if (olddragid !== drag.id){
+              tabActive[drag.id].setSelected(true);
+              if (olddragid !== null){
+                tabActive[olddragid].setSelected(false);
+              }
+              olddragid = drag.id;
+              canvasDraw.drawStuff();
+            }
+            return;
+          }
+          else {
+            // Si on est pas sur un obj mais
+            // qu'avant oui alors le deselectionner
+            // et redessine.
+            if (olddragid !== null){
+              tabActive[olddragid].setSelected(false);
+              canvasControl.resetActiveItem();
+              canvasDraw.drawStuff();
+            }
+            olddragid = null;
+          }
 
           // Regarde si la souris est sur les bordure de la boite.
           drag = checkCollision.checkMouseBorder({x: mouseX, y: mouseY}, [boite], 10);
           if (drag) {
             drag.type = 'borderboite';
             update(drag.pointer.type);
+            return;
           }
 
-
-          else {
-
-            // Regarde si la souris est sur un effet ou un composant.
-            drag = checkCollision.checkMouseBox({x: mouseX, y: mouseY}, tabActive, 10);
-            // Si oui met l'id dans dans drag.id et l'objet dans activeItem.
-            if (drag !== false) {
-              drag.type = 'thing';
-              tabActive[drag.id].setSelected(true);
-              oldselect = true;
-            }
-
-            // Regarde si la souris est sur la boite.
-            else {
-              drag = checkCollision.checkMouseBox({x: mouseX, y: mouseY}, [boite], 10);
-              // Oui on drague la boite.
-              if(drag !== false){
-                drag.type = 'boite';
-                oldX = boite.pos.x;
-                oldY = boite.pos.y;
-              }
-            }
+          // Regarde si la souris est la boite
+          drag = checkCollision.checkMouseBox({x: mouseX, y: mouseY}, [boite], 10);
+          if(drag){
+            drag.type = 'boite';
+            oldX = boite.pos.x;
+            oldY = boite.pos.y;
+            return;
           }
         }
-
-        canvasDraw.drawStuff();
       },
 
       /**
        * Event appeler dans le canvas lors d'un mouse down.
-       * Met l'id de l'obj draggué dans la var drag.
        */
       mouseDown: function (e) {
+
+        // Cette ligne enlève les pop-up car on commence un drag.
+        canvasControl.resetActiveItem();
+
         switch(drag.type) {
           case 'thing':
+            // Prend le temps actuel pour savoir si click ou drag.
+            timea = (new Date()).getTime();
             $rootScope.$emit('click-on-thing');
             break;
           case 'boite':
@@ -227,14 +189,14 @@ angular.module('pedaleswitchApp')
       mouseMoveThing: function(e) {
         mouseX = e.layerX;
         mouseY = e.layerY;
-        
+
         // Affecte la nouvelle position.
         tabActive[drag.id].setCenterX(mouseX - drag.dx);
         tabActive[drag.id].setCenterY(mouseY - drag.dy);
 
         // Deplace l'obj si sa nouvelle position depasse le canvas.
         canvasControl.moveCloseBorder(tabActive[drag.id]);
-        
+
         // Bouge les composants si non debraillable.
         if (!canvasControl.getDeb()) {
           tabActive[drag.id].resetCompPos();
@@ -257,12 +219,15 @@ angular.module('pedaleswitchApp')
        */
       mouseUp: function (e) {
 
+        // Verifier si on click ou si on draggue pour l'affichage des pop-up.
+        timeb = (new Date()).getTime() - timea;
+        // Si oui on click.
+        if (timeb < 300 && tabActive[drag.id]){
+          canvasControl.setActiveItem(tabActive[drag.id]);
+        }
+
         // Enlève le listener
         $rootScope.$emit('no-click-on-element');
-        update('default');
-        drag = {};
-
-        canvasControl.resetIsSelected(tabActive);
 
         // Check all collision.
         checkCollision.checkAll(tabActive);

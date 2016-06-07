@@ -29,10 +29,7 @@ angular.module('pedaleswitchApp')
             canvasDraw.drawStuff();
           }
 
-
-          // Permet d'afficher les popup dans le canvas.
-          canv.addEventListener("click", mouseHelper.click);
-
+          
           // Check les bordures de la boite
           // Puis dans la tables actives.
           canv.addEventListener("mousemove", mouseHelper.mouseMove);
