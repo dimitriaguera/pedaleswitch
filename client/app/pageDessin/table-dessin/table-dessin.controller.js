@@ -9,6 +9,8 @@ angular.module('pedaleswitchApp')
         scope: {
           tableData: '=',
           tableMenu: '=',
+          items: '<',
+          updateComposant: '&',
           arrowChange: '&'
         },
         link: function(scope, element) {

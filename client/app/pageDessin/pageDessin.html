@@ -26,7 +26,7 @@
                     on-compo="$ctrl.mouseOnCompo(value)"
                     on-effet="$ctrl.mouseOnEffet(value)"
                     leave-effet="$ctrl.mouseLeaveEffet()"
-                    chgmtitem="$ctrl.updateComposant(opt, compo, item)"
+                    update-composant="$ctrl.updateComposant(compo, value)"
                     add-to-table="$ctrl.addToTable(value)"
                     remove-to-table="$ctrl.removeToTable(value)">
             </panier-dessin>
@@ -35,8 +35,10 @@
         <div class="col-xs-3">
 
             <table-dessin
+                    items="$ctrl.items"
                     table-data="$ctrl.tableArrow"
                     table-menu="$ctrl.activeItem"
+                    update-composant="$ctrl.updateComposant(compo, value)"
                     arrow-change="$ctrl.arrowChangeValue()">
             </table-dessin>
 

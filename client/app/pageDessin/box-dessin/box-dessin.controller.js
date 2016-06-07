@@ -10,6 +10,7 @@
         templateUrl: 'app/pageDessin/box-dessin/box-dessin.html',
         bindToController: {
           data: '=',
+          items: '<',
           boxAction: '&'
         },
         controller: function ($scope) {
@@ -58,6 +59,7 @@
             this.value = this.store_value = null;
             this.boxAction();
           };
+
         },
         controllerAs: '$ctrl'
       }

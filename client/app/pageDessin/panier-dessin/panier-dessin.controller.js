@@ -13,9 +13,9 @@
       bindings: {
         items: '<',
         effets: '<',
-        chgmtitem: '&',
         addToTable: '&',
         removeToTable: '&',
+        updateComposant: '&',
         onCompo: '&',
         onEffet: '&',
         leaveEffet: '&'

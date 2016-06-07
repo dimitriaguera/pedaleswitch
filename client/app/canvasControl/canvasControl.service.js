@@ -20,7 +20,7 @@ angular.module('pedaleswitchApp')
     var debrayable = false;
 
     var thing = function(entity) {
-      switch (entity.shape){
+      switch (entity.item_info.shape){
         case 'Rect':
           return canvasGeneration.newRect(entity);
           break;
@@ -216,10 +216,29 @@ angular.module('pedaleswitchApp')
         }
       },
 
+      updateComposantInCanvas: function(compo){
+        var effet = this.searchEffetByKey(compo.key);
+        if (effet) {
+          var index_effet = this.searchTabByIdReturnIndex(tableEffet, effet._id, effet.key);
+          var index_effet_compo = this.searchTabByIdReturnIndex(tableEffet[index_effet].composants, compo._id, compo.key);
+          var index_compo = this.searchTabByIdReturnIndex(tableComposant, compo._id, compo.key);
+          tableEffet[index_effet].composants[index_effet_compo] = tableComposant[index_compo] = thing(compo);
+        }
+      },
+
       searchTabByIdReturnIndex: function(tab, id, key){
         for(var i = 0; i < tab.length; i++){
           if(tab[i]._id === id && tab[i].key === key) {
             return i;
+          }
+        }
+        return false;
+      },
+
+      searchEffetByKey: function(key){
+        for(var i = 0; i < tableEffet.length; i++){
+          if(tableEffet[i].key === key) {
+            return tableEffet[i];
           }
         }
         return false;

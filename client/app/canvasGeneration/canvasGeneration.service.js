@@ -17,8 +17,8 @@ angular.module('pedaleswitchApp')
         this.description = entity.description || null;
         this.description_option = entity.description_option || null;
         this.composants = [];
+        this.item_info = entity.item_info || null;
         this.prix = entity.prix || null;
-        this.prix_add = entity.prix_add || null;
         this.size = entity.size || {w: 10, h: 10};
         this.pos = entity.pos;
         this.pos_default = entity.pos_default || null;
