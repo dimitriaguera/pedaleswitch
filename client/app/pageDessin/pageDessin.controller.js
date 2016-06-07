@@ -2,16 +2,16 @@
 (function(){
 
 class PageDessinComponent {
+
   constructor(instanceDessin, canvasConversion, canvasControl, canvasDraw, storage, $http) {
     this.instanceDessin = instanceDessin;
     this.canvasControl = canvasControl;
     this.canvasConversion = canvasConversion;
     this.canvasDraw = canvasDraw;
     this.storage = storage;
-    
+
     //@todo a sup verifier le oninit.
     this.$http = $http; //@todo a supp et dans la declaration aussi
-
   }
 
   $onInit(){
@@ -34,6 +34,7 @@ class PageDessinComponent {
     this.items = this.instanceDessin.getComposantItems();
     this.dessin = this.instanceDessin.getDessin();
     this.tableArrow = this.canvasControl.getTableArrow();
+    this.activeItem = this.canvasControl.getActiveItem();
     
     // Met les bonnes options.
     this.zoom = this.canvasControl.getZoom();

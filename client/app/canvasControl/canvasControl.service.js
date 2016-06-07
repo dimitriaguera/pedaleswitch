@@ -10,12 +10,13 @@ angular.module('pedaleswitchApp')
     var boite = {};
     var tableEffet = [];
     var tableComposant = [];
-    var tableActive = [];
+    var tableActive = {};
     var tableDashed = [];
     var tableThin = [];
     var tableShine = [];
     var tableAlignLine = [];
     var tableArrow = [];
+    var activeItem = [];
     var debrayable = false;
 
     var thing = function(entity) {
@@ -287,6 +288,21 @@ angular.module('pedaleswitchApp')
 
       getBoite: function(){
         return boite;
+      },
+
+      setActiveItem: function(item){
+        var i = activeItem.length;
+        activeItem.splice(0, i);
+        activeItem.push(item);
+      },
+
+      getActiveItem: function(){
+        return activeItem;
+      },
+
+      resetActiveItem: function(){
+        var i = activeItem.length;
+        activeItem.splice(0, i);
       },
 
       setDeb: function(deb){

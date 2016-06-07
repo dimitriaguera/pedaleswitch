@@ -8,6 +8,7 @@ angular.module('pedaleswitchApp')
         templateUrl: 'app/pageDessin/table-dessin/table-dessin.html',
         scope: {
           tableData: '=',
+          tableMenu: '=',
           arrowChange: '&'
         },
         link: function(scope, element) {
@@ -28,6 +29,7 @@ angular.module('pedaleswitchApp')
 
           canv.addEventListener("mousedown", mouseHelper.mousedown);
           canv.addEventListener("mousemove", mouseHelper.mousemovebox);
+          canv.addEventListener("click", mouseHelper.click);
           
           var handler = $rootScope.$on('click-on-element', function(){
             canv.removeEventListener("mousemove", mouseHelper.mousemovebox);
