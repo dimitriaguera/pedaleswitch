@@ -28,7 +28,6 @@ angular.module('pedaleswitchApp')
           if (canvasControl.getTableActive().length > 0){
             canvasDraw.drawStuff();
           }
-
           
           // Check les bordures de la boite
           // Puis dans la tables actives.
@@ -39,7 +38,6 @@ angular.module('pedaleswitchApp')
           // Check la boite
           // Check les obj
           canv.addEventListener("mousedown", mouseHelper.mouseDown);
-
 
           var handler1 = $rootScope.$on('click-on-border-boite', function(){
             canv.removeEventListener("mousemove", mouseHelper.mouseMove);
@@ -58,8 +56,7 @@ angular.module('pedaleswitchApp')
             canv.addEventListener("mousemove", mouseHelper.mouseMoveThing);
             canv.addEventListener("mouseup", mouseHelper.mouseUp);
           });
-
-
+          
           var nohandler = $rootScope.$on('no-click-on-element', function(){
             canv.removeEventListener("mousemove", mouseHelper.mouseMoveBorderBoite);
             canv.removeEventListener("mousemove", mouseHelper.mouseMoveBoite);
@@ -69,16 +66,14 @@ angular.module('pedaleswitchApp')
             canv.addEventListener("mousemove", mouseHelper.mouseMove);
           });
 
-
-
-
           scope.$on('$destroy', function(){
             handler1();
             handler2();
             handler3();
             nohandler();
           });
-        },
+        }
+        
       }
     });
 
