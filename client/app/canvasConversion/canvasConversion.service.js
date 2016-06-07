@@ -113,46 +113,8 @@ angular.module('pedaleswitchApp')
       convertEffetSize: function (entity) {
         var newRatio = resolution/resoInMm;
         convertSize(entity, newRatio);
-      },
-
-      /**
-       * Permet de modifier les coordonnées d'un thing s'il depasse les bordures.
-       * @todo a reflechir.
-       * @param entity = thing
-       * @param boite
-       * @param canvas
-       */
-      moveCloseBorder: function(entity, boitemargin, canvas) {
-        var margin = this.convertToPixel(40);
-
-        // Regarde si la figure sort du canvas.
-        var top = entity.getTop(),
-          right = entity.getRight(),
-          bottom = entity.getBottom(),
-          left = entity.getLeft();
-
-        var realmargin = margin + boitemargin;
-
-        // Debordement par le haut.
-        if (top - realmargin < 0) {
-          entity.setCenterY(entity.size.h / 2 + realmargin);
-          bottom = entity.getBottom();
-        }
-        // Debordement par la gauche.
-        if (left - realmargin < 0) {
-          entity.setCenterX(entity.size.w / 2 + realmargin);
-          right = entity.getRight();
-        }
-        // Debordement par la droite.
-        if (right + realmargin + 150 > canvas.width) {
-          canvas.width = right + realmargin + 150;
-        }
-        // Debordement par le bas.
-        if (bottom + realmargin + 150 > canvas.height) {
-          canvas.height = bottom + realmargin + 150;
-        }
-
       }
+
 
     };
   });

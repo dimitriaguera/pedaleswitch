@@ -35,38 +35,11 @@ angular.module('pedaleswitchApp')
           return false;
       }      
     };
-    
-    
+        
     // Public API here
     return{
-         
-    
-      resetAll: function(){
-        boite = {};
-        tableEffet = [];
-        tableComposant = [];
-        tableActive = [];
-        tableDashed = [];
-        tableThin = [];
-        tableShine = [];
-        tableAlignLine = [];
-        tableArrow = [];
-        debrayable = false;
-      },
-
-      //@todo a supprimer
-      tableState: function(){
-        return {
-        tableEffet: tableEffet,
-        tableComposant: tableComposant,
-        tableActive: tableActive,
-        tableDashed:  tableDashed,
-        tableThin: tableThin,
-        tableShine: tableShine,
-        tableArrow:  tableArrow
-        }
-      },
-
+      
+      
       /**
        * Cette fonction créé les objets du canvas à partir du modèle dessin.
        * Et l'ajoute dans tableEffet et tableComposant pour les composants correspondants.
@@ -132,7 +105,28 @@ angular.module('pedaleswitchApp')
       },
 
       /**
-       * Fonction pour restaurer un canvas a partir d'une instance de Dessin.
+       * Enlève l'effet du canvas.
+       * @param effet
+       */
+      removeToCanvas: function(effet) {
+        var index = this.searchTabByIdReturnIndex(tableEffet, effet._id, effet.key);
+        if(index !== false){
+          effet.in_canvas = false;
+          var removeIndex = [];
+          for (var i = 0  ; i < tableComposant.length ; i++) {
+            if (effet.key === tableComposant[i].key) {
+              removeIndex.push(i);
+            }
+          }
+          for (i = removeIndex.length -1; i >= 0; i--){
+            tableComposant.splice(removeIndex[i],1);
+          }
+          tableEffet.splice(index,1);
+        }
+      },
+      
+      /**
+       * Restaure un canvas a partir d'une instance de Dessin.
        * 
        * @param dessin
        */
@@ -156,22 +150,6 @@ angular.module('pedaleswitchApp')
         }
       },
 
-
-      /**
-       * Empeche que l'effet depasse du canvas.
-       * @param effet
-       */
-      moveCloseBorder: function(effet){
-        // On deplace un effet.
-        if (effet.constructor.name !== "Boite"){
-          canvasConversion.moveCloseBorder(effet, boite.margin, canvas);
-        } 
-        // On deplace la boite.  
-        else {
-          canvasConversion.moveCloseBorder(effet, 0, canvas);
-        }
-      },
-
       /**
        * Agrandit le canvas pour qu'il soit au moins aussi grand que la boite.
        */
@@ -179,7 +157,7 @@ angular.module('pedaleswitchApp')
         if (boite.constructor.name === "Boite") {
           var realmargin = 150;
           var bbot = boite.getBottom(),
-              bright = boite.getRight();
+            bright = boite.getRight();
 
           // Debordement par la droite.
           if (bright + realmargin > canvas.width) {
@@ -191,7 +169,60 @@ angular.module('pedaleswitchApp')
           }
         }
       },
-      
+
+      /**
+       * Empeche que l'effet depasse du canvas.
+       * @param effet
+       */
+      moveCloseBorder: function(effet){
+        // On deplace un effet.
+        if (effet.constructor.name !== "Boite"){
+          this.moveCloseBorderGenerale(effet, boite.margin, canvas);
+        } 
+        // On deplace la boite.  
+        else {
+          this.moveCloseBorderGenerale(effet, 0, canvas);
+        }
+      },
+
+      /**
+       * Permet de modifier les coordonnées d'un thing s'il depasse les bordures.
+       * @todo a reflechir.
+       * @param entity = thing
+       * @param boite
+       * @param canvas
+       */
+      moveCloseBorderGenerale: function(entity, boitemargin, canvas) {
+        var margin = canvasConversion.convertToPixel(40);
+
+        // Regarde si la figure sort du canvas.
+        var top = entity.getTop(),
+          right = entity.getRight(),
+          bottom = entity.getBottom(),
+          left = entity.getLeft();
+
+        var realmargin = margin + boitemargin;
+
+        // Debordement par le haut.
+        if (top - realmargin < 0) {
+          entity.setCenterY(entity.size.h / 2 + realmargin);
+          bottom = entity.getBottom();
+        }
+        // Debordement par la gauche.
+        if (left - realmargin < 0) {
+          entity.setCenterX(entity.size.w / 2 + realmargin);
+          right = entity.getRight();
+        }
+        // Debordement par la droite.
+        if (right + realmargin + 150 > canvas.width) {
+          canvas.width = right + realmargin + 150;
+        }
+        // Debordement par le bas.
+        if (bottom + realmargin + 150 > canvas.height) {
+          canvas.height = bottom + realmargin + 150;
+        }
+      },
+            
       //@todo optimisation possible check arraw active.
       setArrowPos: function(){
         for(var i = 0; i < tableArrow.length; i++){
@@ -199,23 +230,20 @@ angular.module('pedaleswitchApp')
         }
       },
 
-      removeToCanvas: function(effet) {
-        var index = this.searchTabByIdReturnIndex(tableEffet, effet._id, effet.key);
-        if(index !== false){
-          effet.in_canvas = false;
-          var removeIndex = [];
-          for (var i = 0  ; i < tableComposant.length ; i++) {
-            if (effet.key === tableComposant[i].key) {
-              removeIndex.push(i);
-            }
+      resetCompPos: function(value){
+        if (!value) {
+          for (var i = 0; i < tableEffet.length; i++) {
+            tableEffet[i].resetCompPos();
           }
-          for (i = removeIndex.length -1; i >= 0; i--){
-            tableComposant.splice(removeIndex[i],1);
-          }
-          tableEffet.splice(index,1);
         }
       },
 
+      resetIsSelected: function(tabr) {
+        for (var i = 0; i < tabr.length; i++){
+          tabr[i].isSelected = false;
+        }
+      },
+      
       updateComposantInCanvas: function(compo){
         var effet = this.searchEffetByKey(compo.key);
         if (effet) {
@@ -265,41 +293,6 @@ angular.module('pedaleswitchApp')
       getZoom: function(){
         return canvasConversion.getZoomRatio();
       },
-
-      //zoomInitialize: function(value){
-      //  canvasConversion.setZoom(value);
-      //  for (var i = 0; i < tableEffet.length; i++) {
-      //    canvasConversion.initializeEffetZoom(tableEffet[i]);
-      //  }
-      //  this.drawStuff();
-      //},
-      //
-      //zoomChange: function(value){
-      //  var okZoom = canvasConversion.setZoom(value);
-      //  if (okZoom) {
-      //    for (var i = 0; i < tableEffet.length; i++) {
-      //      canvasConversion.convertEffetZoom(tableEffet[i]);
-      //    }
-      //    this.drawStuff();
-      //  }
-      //  return okZoom;
-      //},
-      
-      drawRulers: function() {
-        rulers.render(canvas, ctx, '#aaa', 'pixels', 100);
-      },
-      
-      drawGrid: function() {
-        rulers.drawGrid(canvas, ctx);
-      },
-
-      resetCompPos: function(value){
-        if (!value) {
-          for (var i = 0; i < tableEffet.length; i++) {
-            tableEffet[i].resetCompPos();
-          }
-        }
-      },
       
       setBoite: function(bo){
         boite = bo;
@@ -346,7 +339,6 @@ angular.module('pedaleswitchApp')
         canvas_window = canv_window;
       },
 
-
       getCanvas: function(){
         return canvas;
       },
@@ -360,8 +352,6 @@ angular.module('pedaleswitchApp')
       },
 
       setTableActive: function(tabr){
-        //@todo ne pas mettre cela ici car créer un bug lors du changement de table.
-        //checkCollision.checkall(tabr);
         tableActive = tabr;
         return tableActive;
       },
@@ -393,12 +383,6 @@ angular.module('pedaleswitchApp')
         return tableShine;
       },
       
-      resetIsSelected: function(tabr) {
-        for (var i = 0; i < tabr.length; i++){
-          tabr[i].isSelected = false;
-        }
-      },
-
       resetTableShine: function(){
         for (var i = 0; i < tableShine.length; i++){
           tableShine[i].isSelected = false;
@@ -449,6 +433,61 @@ angular.module('pedaleswitchApp')
 
       getTableArrow: function(){
         return tableArrow;
+      },
+
+      resetAll: function(){
+        boite = {};
+        tableEffet = [];
+        tableComposant = [];
+        tableActive = [];
+        tableDashed = [];
+        tableThin = [];
+        tableShine = [];
+        tableAlignLine = [];
+        tableArrow = [];
+        debrayable = false;
+      },
+      
+      //zoomInitialize: function(value){
+      //  canvasConversion.setZoom(value);
+      //  for (var i = 0; i < tableEffet.length; i++) {
+      //    canvasConversion.initializeEffetZoom(tableEffet[i]);
+      //  }
+      //  this.drawStuff();
+      //},
+      //
+      //zoomChange: function(value){
+      //  var okZoom = canvasConversion.setZoom(value);
+      //  if (okZoom) {
+      //    for (var i = 0; i < tableEffet.length; i++) {
+      //      canvasConversion.convertEffetZoom(tableEffet[i]);
+      //    }
+      //    this.drawStuff();
+      //  }
+      //  return okZoom;
+      //},
+
+      // @todo a supprimer
+      drawRulers: function() {
+        rulers.render(canvas, ctx, '#aaa', 'pixels', 100);
+      },
+
+      // @todo a supprimer
+      drawGrid: function() {
+        rulers.drawGrid(canvas, ctx);
+      },
+
+      // @todo a supprimer
+      tableState: function(){
+        return {
+          tableEffet: tableEffet,
+          tableComposant: tableComposant,
+          tableActive: tableActive,
+          tableDashed:  tableDashed,
+          tableThin: tableThin,
+          tableShine: tableShine,
+          tableArrow:  tableArrow
+        }
       }
       
     };

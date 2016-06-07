@@ -149,7 +149,7 @@ angular.module('pedaleswitchApp')
             boite.setX(mouseX);
           }
         }
-
+                
         // Recalcule les positions de fleches entourant la boite.
         canvasControl.setArrowPos();
         canvasDraw.drawStuff();
