@@ -4,8 +4,6 @@ Le drag&drop ne marche pas quand on prend directement le nom de l'effet du panie
 draggable='true' en attribut du span qui contient le titre.
 
 
-Quand on fait charger les flèches disparaissent.
-
 
 
       /*
