@@ -125,7 +125,7 @@ angular.module('pedaleswitchApp')
           tableEffet.push(tmp_eff);
 
           // Check les collisions entre tout les obj.
-          checkCollision.checkall(tableEffet);
+          checkCollision.checkAll(tableEffet);
 
           return tmp_eff;
         }
@@ -142,7 +142,7 @@ angular.module('pedaleswitchApp')
         boite.initBoiteWithBoite(dessin.boite);
         boite.effets = tableEffet;
         dessin.boite = boite;
-        
+        this.resizeCanvas();
         // Créer les flèches autour de la boite.
         tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
         tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
@@ -388,7 +388,7 @@ angular.module('pedaleswitchApp')
       },
 
       setTableThin: function(tabr){
-        checkCollision.checkall(tabr);
+        checkCollision.checkAll(tabr);
         tableThin = tabr;
       },
 

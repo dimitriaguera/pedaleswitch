@@ -59,7 +59,7 @@
             this.boxAction();
           };
         },
-        controllerAs: '$ctrl',
+        controllerAs: '$ctrl'
       }
 
     });

@@ -173,6 +173,7 @@ class PageDessinComponent {
   arrowChangeValue(){
     //@todo : implémenter verif collision box - effets.
     this.canvasControl.setArrowPos();
+    this.canvasControl.resizeCanvas();
     this.canvasDraw.drawStuff();
   }
 

@@ -193,7 +193,7 @@ angular.module('pedaleswitchApp')
         };
       }
       
-      // Redimensionne la boite si le nouvelle effet est en dehors.
+      // Redimensionne la boite si le nouvel effet est en dehors.
       checkBorderBoite(entity){
         if (entity.pos.x < (this.pos.x + this.margin)){
           var old_pos_x = this.pos.x;

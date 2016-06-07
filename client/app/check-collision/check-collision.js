@@ -37,7 +37,7 @@ angular.module('pedaleswitchApp')
        * Check la collision entre tout les things d'un tableau.
        * @param items
        */
-      checkall: function (items) {
+      checkAll: function (items) {
         var intersect = new this.intersectHelper();
         var indexCounter,
             renderCounter,
@@ -70,7 +70,7 @@ angular.module('pedaleswitchApp')
        * @param tolerance
        * @returns {*}
        */
-      checkmousebox: function(mouse, items, tolerance) {
+      checkMouseBox: function(mouse, items, tolerance) {
         var indexCounter,
           outer = items.length,
           comparitor;
@@ -84,6 +84,33 @@ angular.module('pedaleswitchApp')
         }
         return false;
       },
+
+
+      /**
+       * Check la collision entre la souris et un tableau de thing avec un tolérance en pixel donnée.
+       * @param mouse object contenant x,y
+       * @param items
+       * @param tolerance
+       * @returns {*}
+       */
+      checkMouseBorder: function(mouse, items, tolerance) {
+        var indexCounter,
+          outer = items.length,
+          test,
+          comparitor;
+
+        var intersect = new this.intersectHelper();
+        for (indexCounter = 0; indexCounter < outer; indexCounter++) {
+          comparitor = items[indexCounter];
+          test = intersect.pointOnRect(mouse.x, mouse.y, comparitor.getLeft(), comparitor.getTop(), comparitor.getRight(), comparitor.getBottom(), tolerance);
+          if (test) {
+            return {id:indexCounter, dx:mouse.x - comparitor.getCenterX(),dy:mouse.y - comparitor.getCenterY(), pointer: test} ;
+          }
+        }
+        return false;
+      },
+
+
 
       /**
        * Permet de voir si le centre de l'obj deplace est aligné avec le centre des obj actifs.
@@ -144,7 +171,7 @@ angular.module('pedaleswitchApp')
         };
 
 
-        this.betweenstrict = function (min, p, max) {
+        this.betweenStrict = function (min, p, max) {
           var result = false;
           if (min < max) {
             if (p > min && p < max) {
@@ -173,7 +200,7 @@ angular.module('pedaleswitchApp')
 
           for (i = 0; i < 3; i++) {
             for (c = 0; c < 3; c++) {
-              if (this.betweenstrict(cpos[c] - marginLine, ipos[i], cpos[c] + marginLine)) {
+              if (this.betweenStrict(cpos[c] - marginLine, ipos[i], cpos[c] + marginLine)) {
                 k = tab.push({y: cpos[c]});
                 if (ipos[i] === cpos[c]) {
                   tab[k - 1].isPile = true;
@@ -198,7 +225,7 @@ angular.module('pedaleswitchApp')
 
           for (i = 0; i < 3; i++) {
             for (c = 0; c < 3; c++) {
-              if (this.betweenstrict(cpos[c] - marginLine, ipos[i], cpos[c] + marginLine)) {
+              if (this.betweenStrict(cpos[c] - marginLine, ipos[i], cpos[c] + marginLine)) {
                 k = tab.push({x: cpos[c]});
                 if (ipos[i] === cpos[c]) {
                   tab[k - 1].isPile = true;
@@ -209,19 +236,31 @@ angular.module('pedaleswitchApp')
           return tab;
         };
 
-
-        this.pointInVertligne = function(item, comparitor){
-          return this.between(comparitor.getCenterY()-marginLine,item.getCenterY(),comparitor.getCenterY()+marginLine) ;
-        };
-
-        this.pointInHoriligne = function(item, comparitor){
-          return this.between(comparitor.getCenterX()-marginLine,item.getCenterX(),comparitor.getCenterX()+marginLine) ;
-        };
-
         this.pointInRect = function(x, y, left, top, right, bottom) {
           return (this.between(left, x, right) && this.between(top, y, bottom));
         };
 
+        this.pointOnRect = function (x, y, left, top, right, bottom, tol) {
+          tol = tol || 0;
+          if ( this.between(left - tol, x, right + tol) ) {
+            if ( this.between(top - tol, y, top + tol) ) {
+              return {pos:'top',type:'ns-resize'};
+            }
+            else if ( this.between(bottom - tol, y, bottom + tol) ) {
+              return {pos:'bottom',type:'ns-resize'};
+            }
+          }
+          if ( this.between(bottom - tol, y, top + tol) ) {
+            if ( this.between(left - tol, x, left + tol) ) {
+              return {pos:'left',type:'ew-resize'};
+            }
+            else if ( this.between(right - tol, x, right + tol) ) {
+              return {pos:'right',type:'ew-resize'};
+            }
+          }
+          return false;
+        };
+        
         this.pointInCircle = function(shape, comparitor){
           var dx = shape.pos.x - comparitor.getCenterX();
           var dy = shape.pos.y - comparitor.getCenterY();
@@ -277,6 +316,7 @@ angular.module('pedaleswitchApp')
           return (dx * dx + dy * dy <= (circle.getRadius() * circle.getRadius()));
         };
 
+          /*
         this.circleInPoly = function(shape, comparitor){
           var mecount = 0, cou=0;
           cou = 0;
@@ -291,9 +331,7 @@ angular.module('pedaleswitchApp')
             {
               var pointB = recpoints[counter+1];
             }
-
-
-
+            
             var X = pointB.pos.x - pointA.pos.x;
             var Y = pointB.pos.y - pointA.pos.y;
 
@@ -327,13 +365,9 @@ angular.module('pedaleswitchApp')
               var norm = Math.sqrt((xprim - circle.pos.x)*(xprim - circle.pos.x) + (yprim - circle.pos.y)*(yprim - circle.pos.y));
             }
           }
-          if ((mecount >=1 && cou >=1)){
-            return true;
-          }
-          return false;
+          return (mecount >=1 && cou >=1);
         };
-
-
+         */
 
         // Check si la forme que l'on déplace est dans une autre forme.
         this.check = function (shape, comparitor) {
@@ -348,12 +382,10 @@ angular.module('pedaleswitchApp')
             return this.rectInCircle(shape, comparitor);
           }
           // return this.circleInPoly(shape, comparitor);
-        }
+        };
+
 
       }
-
-
-
     };
   }
 );

@@ -27,24 +27,56 @@ angular.module('pedaleswitchApp')
             canvasDraw.drawStuff();
           }
 
-          canv.addEventListener("mousedown", mouseHelper.mousedown);
-          canv.addEventListener("mousemove", mouseHelper.mousemovebox);
+
+          // Permet d'afficher les popup dans le canvas.
           canv.addEventListener("click", mouseHelper.click);
-          
-          var handler = $rootScope.$on('click-on-element', function(){
-            canv.removeEventListener("mousemove", mouseHelper.mousemovebox);
-            canv.addEventListener("mousemove", mouseHelper.mousemove);
-            canv.addEventListener("mouseup", mouseHelper.mouseup);
+
+          // Check les bordures de la boite
+          // Puis dans la tables actives.
+          canv.addEventListener("mousemove", mouseHelper.mouseMove);
+
+          // Listener pour regarder si l'on a cliquer sur :
+          // Check les bordures de la boite
+          // Check la boite
+          // Check les obj
+          canv.addEventListener("mousedown", mouseHelper.mouseDown);
+
+
+          var handler1 = $rootScope.$on('click-on-border-boite', function(){
+            canv.removeEventListener("mousemove", mouseHelper.mouseMove);
+            canv.addEventListener("mousemove", mouseHelper.mouseMoveBorderBoite);
+            canv.addEventListener("mouseup", mouseHelper.mouseUp);
           });
+
+          var handler2 = $rootScope.$on('click-on-boite', function(){
+            canv.removeEventListener("mousemove", mouseHelper.mouseMove);
+            canv.addEventListener("mousemove", mouseHelper.mouseMoveBoite);
+            canv.addEventListener("mouseup", mouseHelper.mouseUp);
+          });
+
+          var handler3 = $rootScope.$on('click-on-thing', function(){
+            canv.removeEventListener("mousemove", mouseHelper.mouseMove);
+            canv.addEventListener("mousemove", mouseHelper.mouseMoveThing);
+            canv.addEventListener("mouseup", mouseHelper.mouseUp);
+          });
+
 
           var nohandler = $rootScope.$on('no-click-on-element', function(){
-            canv.removeEventListener("mousemove", mouseHelper.mousemove);
-            canv.removeEventListener("mouseup", mouseHelper.mouseup);
-            canv.addEventListener("mousemove", mouseHelper.mousemovebox);
+            canv.removeEventListener("mousemove", mouseHelper.mouseMoveBorderBoite);
+            canv.removeEventListener("mousemove", mouseHelper.mouseMoveBoite);
+            canv.removeEventListener("mousemove", mouseHelper.mouseMoveThing);
+            canv.removeEventListener("mouseup", mouseHelper.mouseUp);
+
+            canv.addEventListener("mousemove", mouseHelper.mouseMove);
           });
 
+
+
+
           scope.$on('$destroy', function(){
-            handler();
+            handler1();
+            handler2();
+            handler3();
             nohandler();
           });
         },
