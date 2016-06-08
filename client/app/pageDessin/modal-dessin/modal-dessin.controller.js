@@ -27,10 +27,7 @@
         size: size,
       });
       this.modalInstance.result.then(function (selected) {
-        alert(selected);
         thisOne.action({compo:thisOne.data, value:selected});
-      }, function () {
-        alert('Modal dismissed at: ' + new Date());
       });
     }
 

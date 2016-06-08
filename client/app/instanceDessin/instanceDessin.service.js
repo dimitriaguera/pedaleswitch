@@ -88,6 +88,8 @@ angular.module('pedaleswitchApp')
             _id: option.composants[i]._id,
             key: key,
             titre: option.composants[i].titre,
+            titre_parent_effet: effet.titre,
+            titre_parent_option: option.titre,
             pos_parent: nouv_effet.pos,
             pos_default: {
               x: option.composants[i].pos.x,
