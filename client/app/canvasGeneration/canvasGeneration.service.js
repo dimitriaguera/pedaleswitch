@@ -81,17 +81,18 @@ angular.module('pedaleswitchApp')
       setOverlapping(overlap) {
         this.isOverlapping = overlap;
       }
+      getMax(){
+        return {
+          top: this.getTop(),
+          right: this.getRight(),
+          bottom: this.getBottom(),
+          left: this.getLeft()
+        }
+      }
     }
 
 
     class Cercle extends Shape {
-      getBoundingBoxPoints() {
-        return ({
-          x: this.pos.x + this.size.w / 2,
-          y: this.pos.y + this.size.w / 2,
-          r: this.size.w / 2
-        });
-      }
       drawCanvas(ctx) {
         ctx.beginPath();
         ctx.arc(this.getCenterX(), this.getCenterY(), this.getRadius(), 0, 2*Math.PI);
@@ -107,29 +108,7 @@ angular.module('pedaleswitchApp')
     }
 
     class Rect extends Shape {
-      getBoundingBoxPoints() {
-        // Bords du rectangle.
-        // 0 haut gauche, 1 haut droit, 2 bas droit, 3 bas gauche.
-        return ([
-          {
-            x: this.pos.x,
-            y: this.pos.y
-          },
-          {
-            x: this.pos.x + this.size.w,
-            y: this.pos.y
-          },
-          {
-            x: this.pos.x + this.size.w,
-            y: this.pos.y + this.size.h
-          },
-          {
-            x: this.pos.x,
-            y: this.pos.y + this.size.h
-          }
-        ]);
-      }
-      drawCanvas(ctx){
+        drawCanvas(ctx){
         ctx.beginPath();
         ctx.rect(this.pos.x, this.pos.y, this.size.w, this.size.h);
 
@@ -145,16 +124,6 @@ angular.module('pedaleswitchApp')
       }
     }
 
-    //function Poly (entity) {
-    //    this._id = entity._id,
-    //    this.titre = entity.titre,
-    //    this.titre_option = entity.titre_option,
-    //    this.description = entity.description,
-    //    this.description_option = entity.description_option,
-    //    this.prix = entity.prix,
-    //    this.size = entity.size,
-    //    this.pos = entity.pos;
-    //}
 
     class Boite {
       constructor () {
@@ -270,27 +239,13 @@ angular.module('pedaleswitchApp')
       setCenterY(center){
         this.setY(center - (this.size.h / 2));
       }
-      getBoundingBoxPoints() {
-        // Bords du rectangle.
-        // 0 haut gauche, 1 haut droit, 2 bas droit, 3 bas gauche.
-        return ([
-          {
-            x: this.pos.x,
-            y: this.pos.y
-          },
-          {
-            x: this.pos.x + this.size.w,
-            y: this.pos.y
-          },
-          {
-            x: this.pos.x + this.size.w,
-            y: this.pos.y + this.size.h
-          },
-          {
-            x: this.pos.x,
-            y: this.pos.y + this.size.h
-          }
-        ]);
+      getMax(){
+        return {
+          t: this.getTop(),
+          r: this.getRight(),
+          b: this.getBottom(),
+          l: this.getLeft()
+        }
       }
       setSelected(selected) {
         this.isSelected = selected;

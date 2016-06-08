@@ -177,49 +177,88 @@ angular.module('pedaleswitchApp')
       moveCloseBorder: function(effet){
         // On deplace un effet.
         if (effet.constructor.name !== "Boite"){
-          this.moveCloseBorderGenerale(effet, boite.margin, canvas);
+          this.moveCloseBorderGenerale(effet, boite.margin);
         } 
         // On deplace la boite.  
         else {
-          this.moveCloseBorderGenerale(effet, 0, canvas);
+          this.moveCloseBorderGenerale(effet, 0);
         }
+      },
+
+      checkCloseBorder: function(entity, addmargin) {
+
+        var margin = canvasConversion.convertToPixel(40);
+        var realmargin = margin + addmargin;
+
+        var max_pos;
+
+        if (typeof entity.getMax() === 'function'){
+          // Regarde si la figure sort du canvas.
+          max_pos = entity.getMax();
+        }
+        else {
+          max_pos = {
+            t: entity.top,
+            r: entity.right,
+            b: entity.bottom,
+            l: entity.left
+          }
+        }
+
+        // Debordement par le haut.
+        if (max_pos.t - realmargin < 0) {
+          entity.setCenterY(entity.size.h / 2 + realmargin);
+          max_pos.b = entity.getBottom();
+        }
+        // Debordement par la gauche.
+        if (max_pos.l - realmargin < 0) {
+          entity.setCenterX(entity.size.w / 2 + realmargin);
+          max_pos.r = entity.getRight();
+        }
+        // Debordement par la droite.
+        if (max_pos.r + realmargin + 150 > canvas.width) {
+          canvas.width = max_pos.r + realmargin + 150;
+        }
+        // Debordement par le bas.
+        if (max_pos.b + realmargin + 150 > canvas.height) {
+          canvas.height = max_pos.b + realmargin + 150;
+        }
+
+
+
       },
 
       /**
        * Permet de modifier les coordonnées d'un thing s'il depasse les bordures.
        * @todo a reflechir.
        * @param entity = thing
-       * @param boite
-       * @param canvas
+       * @param addmargin = int
        */
-      moveCloseBorderGenerale: function(entity, boitemargin, canvas) {
+      moveCloseBorderGenerale: function(entity, addmargin) {
         var margin = canvasConversion.convertToPixel(40);
 
+        var realmargin = margin + addmargin;
+        
         // Regarde si la figure sort du canvas.
-        var top = entity.getTop(),
-          right = entity.getRight(),
-          bottom = entity.getBottom(),
-          left = entity.getLeft();
-
-        var realmargin = margin + boitemargin;
+        var max_pos = entity.getMax();
 
         // Debordement par le haut.
-        if (top - realmargin < 0) {
+        if (max_pos.t - realmargin < 0) {
           entity.setCenterY(entity.size.h / 2 + realmargin);
-          bottom = entity.getBottom();
+          max_pos.b = entity.getBottom();
         }
         // Debordement par la gauche.
-        if (left - realmargin < 0) {
+        if (max_pos.l - realmargin < 0) {
           entity.setCenterX(entity.size.w / 2 + realmargin);
-          right = entity.getRight();
+          max_pos.r = entity.getRight();
         }
         // Debordement par la droite.
-        if (right + realmargin + 150 > canvas.width) {
-          canvas.width = right + realmargin + 150;
+        if (max_pos.r + realmargin + 150 > canvas.width) {
+          canvas.width = max_pos.r + realmargin + 150;
         }
         // Debordement par le bas.
-        if (bottom + realmargin + 150 > canvas.height) {
-          canvas.height = bottom + realmargin + 150;
+        if (max_pos.b + realmargin + 150 > canvas.height) {
+          canvas.height = max_pos.b + realmargin + 150;
         }
       },
             

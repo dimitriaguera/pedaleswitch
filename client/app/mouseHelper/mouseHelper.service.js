@@ -137,14 +137,24 @@ angular.module('pedaleswitchApp')
         mouseX = e.layerX;
         mouseY = e.layerY;
 
+        var canvas = canvasControl.getCanvas();
+
         // Bord haut ou bas.
         if (drag.pointer.type === 'ns-resize'){
           //Bord bas.
           if (drag.pointer.pos === 'bottom'){
+            var w = canvas.width;
+            if (mouseY > canvas.height) {
+              console.log('sup');
+            }
+
             boite.size.h += mouseY - boite.getBottom();
           }
           //Bord haut.
           else {
+            
+            
+            
             boite.size.h += boite.getTop() - mouseY;
             boite.setY(mouseY);
           }
