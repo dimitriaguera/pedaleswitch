@@ -170,6 +170,49 @@ angular.module('pedaleswitchApp')
         }
       },
 
+            
+      findTop(){
+        
+        var saveMax = function(posmax, pos){
+          posmax.t = Math.min(posmax.t, pos.t);
+          posmax.r = Math.max(posmax.r, pos.r);
+          posmax.b = Math.max(posmax.b, pos.b);
+          posmax.l = Math.min(posmax.l, pos.l);
+        };
+        
+        
+        var i, j;
+
+        var effet;
+        var compos, compo;
+        
+        var pos = {t:10e10,r:0,b:0,l:10e10},
+            posmax = {t:10e10,r:0,b:0,l:10e10};
+
+        for (i = 0 ; i < tableEffet.length ; i++) {
+          effet = tableEffet[i];
+
+          // Recupère les bords
+          pos = effet.getMax();
+          // Garde le maximum.
+          saveMax(posmax, pos);
+          
+          if (debrayable){
+            compos = effet.composants;
+            for (j = 0; j < compos.length; j++) {
+              compo = compos[j];
+              // Recupère les bords
+              pos = compo.getMax();
+              // Garde le maximum.
+              saveMax(posmax, pos);
+            }
+          }
+        }
+        
+        return posmax;
+      },
+
+
       /**
        * Empeche que l'effet depasse du canvas.
        * @param effet
@@ -183,49 +226,6 @@ angular.module('pedaleswitchApp')
         else {
           this.moveCloseBorderGenerale(effet, 0);
         }
-      },
-
-      checkCloseBorder: function(entity, addmargin) {
-
-        var margin = canvasConversion.convertToPixel(40);
-        var realmargin = margin + addmargin;
-
-        var max_pos;
-
-        if (typeof entity.getMax() === 'function'){
-          // Regarde si la figure sort du canvas.
-          max_pos = entity.getMax();
-        }
-        else {
-          max_pos = {
-            t: entity.top,
-            r: entity.right,
-            b: entity.bottom,
-            l: entity.left
-          }
-        }
-
-        // Debordement par le haut.
-        if (max_pos.t - realmargin < 0) {
-          entity.setCenterY(entity.size.h / 2 + realmargin);
-          max_pos.b = entity.getBottom();
-        }
-        // Debordement par la gauche.
-        if (max_pos.l - realmargin < 0) {
-          entity.setCenterX(entity.size.w / 2 + realmargin);
-          max_pos.r = entity.getRight();
-        }
-        // Debordement par la droite.
-        if (max_pos.r + realmargin + 150 > canvas.width) {
-          canvas.width = max_pos.r + realmargin + 150;
-        }
-        // Debordement par le bas.
-        if (max_pos.b + realmargin + 150 > canvas.height) {
-          canvas.height = max_pos.b + realmargin + 150;
-        }
-
-
-
       },
 
       /**

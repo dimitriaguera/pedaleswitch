@@ -125,6 +125,10 @@ angular.module('pedaleswitchApp')
 
       /**
        * On agrandie la boite.
+       *
+       * @todo un bonne partie est a metre dans canvasContole
+       * car par exemple les marges ne sont pas uniforme
+       * canvasConversion.convertToPixel(40)
        */
       mouseMoveBorderBoite: function(e){
 
@@ -138,23 +142,43 @@ angular.module('pedaleswitchApp')
         mouseY = e.layerY;
 
         var canvas = canvasControl.getCanvas();
+        var pos_max = canvasControl.findTop();
+
+        var margin = canvasConversion.convertToPixel(40);
+        var marginboite = canvasControl.getBoite().margin;
 
         // Bord haut ou bas.
         if (drag.pointer.type === 'ns-resize'){
+
           //Bord bas.
           if (drag.pointer.pos === 'bottom'){
+
             // Agrendit le canvas.
             if (mouseY > canvas.height * 0.8) {
               canvas.height = mouseY * 1.2;
             }
+
+            // Regarde si pas inferieur a un composant ou a effet.
+            if (mouseY < pos_max.b + marginboite) {
+              mouseY = pos_max.b + marginboite;
+            }
+
+            // Redimensionne la boite.
             boite.size.h += mouseY - boite.getBottom();
           }
           //Bord haut.
           else {
             // La souris est plus haut que la marge.
-            if (mouseY < canvasConversion.convertToPixel(40)){
-              mouseY = canvasConversion.convertToPixel(40);
+            if (mouseY < margin){
+              mouseY = margin;
             }
+
+            // Regarde si pas inferieur a un composant ou a effet.
+            if (mouseY > pos_max.t - marginboite) {
+              mouseY = pos_max.t - marginboite;
+            }
+
+            // Redimensionne la boite.
             boite.size.h += boite.getTop() - mouseY;
             boite.setY(mouseY);
           }
@@ -167,14 +191,28 @@ angular.module('pedaleswitchApp')
             if (mouseX > canvas.width  * 0.8) {
               canvas.width = mouseX * 1.2;
             }
+
+            // Regarde si pas inferieur a un composant ou a effet.
+            if (mouseX < pos_max.r + marginboite) {
+              mouseX = pos_max.r + marginboite;
+            }
+
+            // Redimensionne la boite.
             boite.size.w += mouseX - boite.getRight();
           }
           //Bord gauche.
           else {
             // La souris est plus à gauche que la marge.
-            if (mouseX < canvasConversion.convertToPixel(40)) {
-              mouseX = canvasConversion.convertToPixel(40);
+            if (mouseX < margin) {
+              mouseX = margin;
             }
+
+            // Regarde si pas inferieur a un composant ou a effet.
+            if (mouseX > pos_max.l - marginboite) {
+              mouseX = pos_max.l - marginboite;
+            }
+
+            // Redimensionne la boite.
             boite.size.w += boite.getLeft() - mouseX;
             boite.setX(mouseX);
           }
