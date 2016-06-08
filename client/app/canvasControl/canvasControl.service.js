@@ -171,6 +171,57 @@ angular.module('pedaleswitchApp')
       },
 
       /**
+       * Donne les coordonnées d'un rectangle qui entoure tout les objs.
+       *
+       * Cette fonction retourne :
+       * t : position la plus petite de l'obj le plus en haut.
+       * r : position la plus grande de l'obj le plus à droite.
+       * b : position la plus grande de l'obj le plus en bas.
+       * l : la position la plus petite de l'obj le plus à gauche.
+       *
+       * @returns {{t: number, r: number, b: number, l: number}}
+       */
+      findGobalRect(){
+        var saveMax = function(posmax, pos){
+          posmax.t = Math.min(posmax.t, pos.t);
+          posmax.r = Math.max(posmax.r, pos.r);
+          posmax.b = Math.max(posmax.b, pos.b);
+          posmax.l = Math.min(posmax.l, pos.l);
+        };
+
+        var i, j;
+
+        var effet;
+        var compos, compo;
+        
+        var pos = {t:Infinity,r:-Infinity,b:-Infinity,l:Infinity},
+            posmax = {t:Infinity,r:-Infinity,b:-Infinity,l:Infinity};
+
+        for (i = 0 ; i < tableEffet.length ; i++) {
+          effet = tableEffet[i];
+
+          // Recupère les bords
+          pos = effet.getMax();
+          // Garde le maximum.
+          saveMax(posmax, pos);
+          
+          if (debrayable){
+            compos = effet.composants;
+            for (j = 0; j < compos.length; j++) {
+              compo = compos[j];
+              // Recupère les bords
+              pos = compo.getMax();
+              // Garde le maximum.
+              saveMax(posmax, pos);
+            }
+          }
+        }
+        
+        return posmax;
+      },
+
+
+      /**
        * Empeche que l'effet depasse du canvas.
        * @param effet
        */
@@ -183,49 +234,6 @@ angular.module('pedaleswitchApp')
         else {
           this.moveCloseBorderGenerale(effet, 0);
         }
-      },
-
-      checkCloseBorder: function(entity, addmargin) {
-
-        var margin = canvasConversion.convertToPixel(40);
-        var realmargin = margin + addmargin;
-
-        var max_pos;
-
-        if (typeof entity.getMax() === 'function'){
-          // Regarde si la figure sort du canvas.
-          max_pos = entity.getMax();
-        }
-        else {
-          max_pos = {
-            t: entity.top,
-            r: entity.right,
-            b: entity.bottom,
-            l: entity.left
-          }
-        }
-
-        // Debordement par le haut.
-        if (max_pos.t - realmargin < 0) {
-          entity.setCenterY(entity.size.h / 2 + realmargin);
-          max_pos.b = entity.getBottom();
-        }
-        // Debordement par la gauche.
-        if (max_pos.l - realmargin < 0) {
-          entity.setCenterX(entity.size.w / 2 + realmargin);
-          max_pos.r = entity.getRight();
-        }
-        // Debordement par la droite.
-        if (max_pos.r + realmargin + 150 > canvas.width) {
-          canvas.width = max_pos.r + realmargin + 150;
-        }
-        // Debordement par le bas.
-        if (max_pos.b + realmargin + 150 > canvas.height) {
-          canvas.height = max_pos.b + realmargin + 150;
-        }
-
-
-
       },
 
       /**
@@ -243,12 +251,12 @@ angular.module('pedaleswitchApp')
         var max_pos = entity.getMax();
 
         // Debordement par le haut.
-        if (max_pos.t - realmargin < 0) {
+        if (max_pos.t < realmargin) {
           entity.setCenterY(entity.size.h / 2 + realmargin);
           max_pos.b = entity.getBottom();
         }
         // Debordement par la gauche.
-        if (max_pos.l - realmargin < 0) {
+        if (max_pos.l < realmargin) {
           entity.setCenterX(entity.size.w / 2 + realmargin);
           max_pos.r = entity.getRight();
         }
