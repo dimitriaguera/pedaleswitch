@@ -11,10 +11,10 @@ angular.module('pedaleswitchApp')
     var boite = [];
 
     var timea, timeb;
-    var TOUCHDELAY = 175;
-
     var olddragid = null;
 
+    var DELAY_DRAG = 100;
+    var DELAY_CLICK = 500;
 
 
     /**
@@ -133,8 +133,8 @@ angular.module('pedaleswitchApp')
       mouseMoveBorderBoite: function(e){
 
         // Delais avant le drag
-        if (timeb < TOUCHDELAY) {
-          timeb = (new Date()).getTime() - timea;
+        timeb = (new Date()).getTime() - timea;
+        if (timeb < DELAY_DRAG) {
           return;
         }
 
@@ -230,8 +230,8 @@ angular.module('pedaleswitchApp')
       mouseMoveBoite: function(e) {
 
         // Delais avant le drag
-        if (timeb < TOUCHDELAY) {
-          timeb = (new Date()).getTime() - timea;
+        timeb = (new Date()).getTime() - timea;
+        if (timeb < DELAY_DRAG) {
           return;
         }
 
@@ -265,8 +265,8 @@ angular.module('pedaleswitchApp')
       mouseMoveThing: function(e) {
 
         // Delais avant le drag
-        if (timeb < TOUCHDELAY) {
-          timeb = (new Date()).getTime() - timea;
+        timeb = (new Date()).getTime() - timea;
+        if (timeb < DELAY_DRAG) {
           return;
         }
 
@@ -305,7 +305,7 @@ angular.module('pedaleswitchApp')
         // Verifier si on click ou si on draggue pour l'affichage des pop-up.
         timeb = (new Date()).getTime() - timea;
         // Si oui on click.
-        if (timeb < TOUCHDELAY && tabActive[drag.id]){
+        if (timeb < DELAY_CLICK && drag.type !=='boite' && tabActive[drag.id]){
           canvasControl.setActiveItem(tabActive[drag.id]);
         }
 
