@@ -102,10 +102,12 @@ angular.module('pedaleswitchApp')
         // Cette ligne enlève les pop-up car on commence un drag.
         canvasControl.resetActiveItem();
 
+        // Prend le temps actuel pour savoir si click ou drag.
+        timea = (new Date()).getTime();
+        timeb = 0;
+
         switch(drag.type) {
           case 'thing':
-            // Prend le temps actuel pour savoir si click ou drag.
-            timea = (new Date()).getTime();
             $rootScope.$emit('click-on-thing');
             break;
           case 'boite':
@@ -127,8 +129,8 @@ angular.module('pedaleswitchApp')
       mouseMoveBorderBoite: function(e){
 
         // Delais avant le drag
-        timeb = (new Date()).getTime() - timea;
         if (timeb < TOUCHDELAY) {
+          timeb = (new Date()).getTime() - timea;
           return;
         }
 
@@ -172,8 +174,8 @@ angular.module('pedaleswitchApp')
       mouseMoveBoite: function(e) {
 
         // Delais avant le drag
-        timeb = (new Date()).getTime() - timea;
         if (timeb < TOUCHDELAY) {
+          timeb = (new Date()).getTime() - timea;
           return;
         }
 
@@ -207,8 +209,8 @@ angular.module('pedaleswitchApp')
       mouseMoveThing: function(e) {
 
         // Delais avant le drag
-        timeb = (new Date()).getTime() - timea;
         if (timeb < TOUCHDELAY) {
+          timeb = (new Date()).getTime() - timea;
           return;
         }
 
