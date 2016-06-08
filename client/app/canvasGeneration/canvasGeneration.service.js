@@ -83,10 +83,10 @@ angular.module('pedaleswitchApp')
       }
       getMax(){
         return {
-          top: this.getTop(),
-          right: this.getRight(),
-          bottom: this.getBottom(),
-          left: this.getLeft()
+          t: this.getTop(),
+          r: this.getRight(),
+          b: this.getBottom(),
+          l: this.getLeft()
         }
       }
     }
@@ -426,7 +426,7 @@ angular.module('pedaleswitchApp')
 
       newArrow: function (entity, location) {
         return new Arrow(entity, location);
-      },
+      }
 
       //newPoly: function (entity) {
       //  return new Poly(entity);
