@@ -142,7 +142,7 @@ angular.module('pedaleswitchApp')
         mouseY = e.layerY;
 
         var canvas = canvasControl.getCanvas();
-        var pos_max = canvasControl.findGobalRect();
+        var pos_max = canvasControl.findGlobalRect();
 
         var margin = canvasConversion.convertToPixel(40);
         var marginboite = canvasControl.getBoite().margin;

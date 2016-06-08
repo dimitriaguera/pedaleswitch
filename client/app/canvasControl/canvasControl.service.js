@@ -181,7 +181,7 @@ angular.module('pedaleswitchApp')
        *
        * @returns {{t: number, r: number, b: number, l: number}}
        */
-      findGobalRect(){
+      findGlobalRect(){
         var saveMax = function(posmax, pos){
           posmax.t = Math.min(posmax.t, pos.t);
           posmax.r = Math.max(posmax.r, pos.r);
