@@ -19,8 +19,8 @@
             $timeout.cancel(this.mypromise);
             this.store_value = this.value;
             this.value = null;
-            var isThis = this;
-            this.mypromise = $timeout(function(){ isThis.change = false; }, 120, isThis);
+            var self = this;
+            this.mypromise = $timeout(function(){ self.change = false; }, 200, self);
           };
 
           this.$onInit = function () {

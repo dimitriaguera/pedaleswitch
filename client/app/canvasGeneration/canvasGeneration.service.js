@@ -14,6 +14,8 @@ angular.module('pedaleswitchApp')
         }
         this.titre = entity.titre || null;
         this.titre_option = entity.titre_option || null;
+        this.titre_parent_effet = entity.titre_parent_effet || null;
+        this.titre_parent_option = entity.titre_parent_option || null;
         this.description = entity.description || null;
         this.description_option = entity.description_option || null;
         this.composants = [];

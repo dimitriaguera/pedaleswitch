@@ -1,3 +1,7 @@
 <div class="list-group">
-    {{ $ctrl.items[$ctrl.op].titre }}
+    <h3 class="list-group-item">{{ $ctrl.items[$ctrl.op].titre }}</h3>
+    <div class="list-group-item">Type: {{$ctrl.items[$ctrl.op].type}}</div>
+    <div class="list-group-item">Info: {{$ctrl.items[$ctrl.op].description}}</div>
+    <div class="list-group-item">Tarif unitaire: {{$ctrl.items[$ctrl.op].prix_additionnel}}</div>
+    <div class="list-group-item">Taille: {{$ctrl.items[$ctrl.op].size.h}} x {{$ctrl.items[$ctrl.op].size.w}}</div>
 </div>
