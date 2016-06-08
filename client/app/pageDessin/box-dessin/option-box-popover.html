@@ -1,35 +1,59 @@
 <div>
 
-
     <div ng-if="$ctrl.data.item_info">
+
     <div class="row">
         <div class="col-lg-12">
             <p><span ng-bind="::$ctrl.data.titre_parent_effet"></span> - <span ng-bind="::$ctrl.data.titre_parent_option"></span> #{{::$ctrl.data.key + 1}}</p>
         </div>
     </div>
+
     <div class="row">
         <div class="col-lg-12">
             <p><label>Composant:</label> <span ng-bind="::$ctrl.data.item_info.titre_item"></span></p>
-            <p><modal-dessin action="$ctrl.boxAction({compo:compo, value:value})" items="$ctrl.items" data="$ctrl.data" selected="$ctrl.data.item_info.id_item"></modal-dessin></p>
+            <p>
+                <modal-dessin
+                    name="Changer le composant"
+                    template="modalBox"
+                    class-btn="btn btn-default btn-sm"
+                    action="$ctrl.boxAction({compo:compo, value:value})"
+                    items="$ctrl.items"
+                    data="$ctrl.data"
+                    selected="$ctrl.data.item_info.id_item">
+                </modal-dessin>
+            </p>
         </div>
     </div>
+
     </div>
 
-
     <div ng-if="$ctrl.data.titre_option">
+
         <div class="row">
             <div class="col-lg-12">
                 <p><span ng-bind="::$ctrl.data.titre"></span> - <span ng-bind="::$ctrl.data.titre_option"></span> #{{::$ctrl.data.key + 1}}</p>
             </div>
         </div>
+
         <div ng-repeat="composant in $ctrl.data.composants">
         <div class="row">
             <div class="col-lg-12">
                 <p><label>Composant:</label> <span ng-bind="::composant.item_info.titre_item"></span></p>
-                <p><modal-dessin action="$ctrl.boxAction({compo:compo, value:value})" items="$ctrl.items" data="composant" selected="composant.item_info.id_item"></modal-dessin></p>
+                <p>
+                    <modal-dessin
+                            name="Changer le composant"
+                            template="modalBox"
+                            class-btn="btn btn-default btn-sm"
+                            action="$ctrl.boxAction({compo:compo, value:value})"
+                            items="$ctrl.items"
+                            data="composant"
+                            selected="composant.item_info.id_item">
+                    </modal-dessin>
+                </p>
             </div>
         </div>
         </div>
+
     </div>
 
 </div>

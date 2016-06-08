@@ -3,7 +3,17 @@
   <uib-accordion-group ng-mouseleave="$ctrl.leaveEffet()" ng-mouseenter="$ctrl.onEffet({value:effet})" draggable heading="{{::effet.titre}} - {{::effet.titre_option}} #{{::effet.key + 1}}" ng-repeat="effet in $ctrl.effets">
     <div ng-mouseleave="$ctrl.leaveEffet()" ng-mouseenter="$ctrl.onCompo({value:compo})" ng-repeat="(k, compo) in effet.composants">
         <p><label>{{compo.titre}}</label> - {{compo.item_info.titre_item}}</p>
-        <p><modal-dessin action="$ctrl.updateComposant({compo:compo, value:value})" items="$ctrl.items" data="compo" selected="compo.item_info.id_item"></modal-dessin></p>
+        <p>
+            <modal-dessin
+                    template="modalBox"
+                    name="Changer le composant"
+                    class-btn="btn btn-default btn-sm"
+                    action="$ctrl.updateComposant({compo:compo, value:value})"
+                    items="$ctrl.items"
+                    data="compo"
+                    selected="compo.item_info.id_item">
+            </modal-dessin>
+        </p>
     </div>
     <p>{{effet.description}}</p>
     <p>{{effet.description_option}}</p>
