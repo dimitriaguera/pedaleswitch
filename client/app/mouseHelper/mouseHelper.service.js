@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('pedaleswitchApp')
-  .factory('mouseHelper', function (canvasControl, checkCollision, canvasDraw, $rootScope) {
+  .factory('mouseHelper', function (canvasControl, canvasConversion, checkCollision, canvasDraw, $rootScope) {
 
     var mouseX, mouseY;
 
@@ -143,18 +143,18 @@ angular.module('pedaleswitchApp')
         if (drag.pointer.type === 'ns-resize'){
           //Bord bas.
           if (drag.pointer.pos === 'bottom'){
-            var w = canvas.width;
-            if (mouseY > canvas.height) {
-              console.log('sup');
+            // Agrendit le canvas.
+            if (mouseY > canvas.height * 0.8) {
+              canvas.height = mouseY * 1.2;
             }
-
             boite.size.h += mouseY - boite.getBottom();
           }
           //Bord haut.
           else {
-            
-            
-            
+            // La souris est plus haut que la marge.
+            if (mouseY < canvasConversion.convertToPixel(40)){
+              mouseY = canvasConversion.convertToPixel(40);
+            }
             boite.size.h += boite.getTop() - mouseY;
             boite.setY(mouseY);
           }
@@ -163,10 +163,18 @@ angular.module('pedaleswitchApp')
         else {
           // Bord droit.
           if (drag.pointer.pos === 'right') {
+            // Agrendit le canvas.
+            if (mouseX > canvas.width  * 0.8) {
+              canvas.width = mouseX * 1.2;
+            }
             boite.size.w += mouseX - boite.getRight();
           }
           //Bord gauche.
           else {
+            // La souris est plus à gauche que la marge.
+            if (mouseX < canvasConversion.convertToPixel(40)) {
+              mouseX = canvasConversion.convertToPixel(40);
+            }
             boite.size.w += boite.getLeft() - mouseX;
             boite.setX(mouseX);
           }
@@ -262,6 +270,9 @@ angular.module('pedaleswitchApp')
         if (timeb < TOUCHDELAY && tabActive[drag.id]){
           canvasControl.setActiveItem(tabActive[drag.id]);
         }
+
+        // Met le bon pointeur de souris
+        update('default');
 
         // Enlève le listener
         $rootScope.$emit('no-click-on-element');

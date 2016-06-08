@@ -243,12 +243,12 @@ angular.module('pedaleswitchApp')
         var max_pos = entity.getMax();
 
         // Debordement par le haut.
-        if (max_pos.t - realmargin < 0) {
+        if (max_pos.t < realmargin) {
           entity.setCenterY(entity.size.h / 2 + realmargin);
           max_pos.b = entity.getBottom();
         }
         // Debordement par la gauche.
-        if (max_pos.l - realmargin < 0) {
+        if (max_pos.l < realmargin) {
           entity.setCenterX(entity.size.w / 2 + realmargin);
           max_pos.r = entity.getRight();
         }
