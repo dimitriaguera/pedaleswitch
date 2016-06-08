@@ -168,6 +168,12 @@ class PageDessinComponent {
     this.zoom = this.canvasControl.getZoom();
     this.canvasDraw.drawStuff();
   }
+  
+  rotate(value){
+    var tabact = this.canvasControl.getTableActive();
+    tabact[0].rotate(value);
+    this.canvasDraw.drawStuff();
+  }
 
   // Utiliser par table-dessin.
   arrowChangeValue(){

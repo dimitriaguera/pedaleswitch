@@ -83,6 +83,73 @@ angular.module('pedaleswitchApp')
       setOverlapping(overlap) {
         this.isOverlapping = overlap;
       }
+      getBoundingBoxPoints() {
+        // Bords du rectangle.
+        // 0 haut gauche, 1 haut droit, 2 bas droit, 3 bas gauche.
+        return ([
+          {
+            x: this.pos.x,
+            y: this.pos.y
+          },
+          {
+            x: this.pos.x + this.size.w,
+            y: this.pos.y
+          },
+          {
+            x: this.pos.x + this.size.w,
+            y: this.pos.y + this.size.h
+          },
+          {
+            x: this.pos.x,
+            y: this.pos.y + this.size.h
+          }
+        ]);
+      }
+
+
+      rotate(value){
+
+        // Générale :
+        var alpha_rad = value * (2*Math.PI)/360.0;
+        var cos = Math.cos(alpha_rad);
+        var sin = Math.sin(alpha_rad);
+
+        // Barycentre.
+        var C = { x: this.getCenterX(), y: this.getCenterY()};
+
+        // 4 angle du rect.
+        var angles = this.getBoundingBoxPoints();
+
+        // Calcul des nouvelles coordonnées des points.
+        var angle;
+        for (var i = 0; i < angles.length ; i++) {
+          angle = angles[i];
+
+          angle.pos_c = {};
+          angle.pos_new = {};
+          
+          // Calcul des coordonné de A par rapport au baricentre C.
+          angle.pos_c.x = angle.x - C.x;
+          angle.pos_c.y = angle.y - C.y;
+
+          // Calcul des coordonnées de A après rotation dans le repère d'origine.
+          angle.pos_new.x = angle.pos_c.x * cos + angle.pos_c.y * sin + C.x;
+          angle.pos_new.y = - angle.pos_c.x * sin + angle.pos_c.y * cos + C.y;
+        }
+
+        var old = this.size.w;
+        this.size.w = this.size.h;
+        this.size.h = old;
+        if (value < 0) {
+          this.setX(angles[3].pos_new.x);
+          this.setY(angles[3].pos_new.y);
+        } else {
+          this.setX(angles[1].pos_new.x);
+          this.setY(angles[1].pos_new.y);
+        }
+
+
+      }
       getMax(){
         return {
           t: this.getTop(),
