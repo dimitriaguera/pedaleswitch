@@ -170,24 +170,32 @@ angular.module('pedaleswitchApp')
         }
       },
 
-            
-      findTop(){
-        
+      /**
+       * Donne les coordonnées d'un rectangle qui entoure tout les objs.
+       *
+       * Cette fonction retourne :
+       * t : position la plus petite de l'obj le plus en haut.
+       * r : position la plus grande de l'obj le plus à droite.
+       * b : position la plus grande de l'obj le plus en bas.
+       * l : la position la plus petite de l'obj le plus à gauche.
+       *
+       * @returns {{t: number, r: number, b: number, l: number}}
+       */
+      findGobalRect(){
         var saveMax = function(posmax, pos){
           posmax.t = Math.min(posmax.t, pos.t);
           posmax.r = Math.max(posmax.r, pos.r);
           posmax.b = Math.max(posmax.b, pos.b);
           posmax.l = Math.min(posmax.l, pos.l);
         };
-        
-        
+
         var i, j;
 
         var effet;
         var compos, compo;
         
-        var pos = {t:10e10,r:0,b:0,l:10e10},
-            posmax = {t:10e10,r:0,b:0,l:10e10};
+        var pos = {t:Infinity,r:-Infinity,b:-Infinity,l:Infinity},
+            posmax = {t:Infinity,r:-Infinity,b:-Infinity,l:Infinity};
 
         for (i = 0 ; i < tableEffet.length ; i++) {
           effet = tableEffet[i];
