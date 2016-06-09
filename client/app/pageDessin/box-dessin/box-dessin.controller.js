@@ -11,7 +11,8 @@
         bindToController: {
           data: '=',
           items: '<',
-          boxAction: '&'
+          boxAction: '&',
+          rotate: '&'
         },
         controller: function ($scope) {
 

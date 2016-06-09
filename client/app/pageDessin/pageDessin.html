@@ -22,10 +22,6 @@
                            save="$ctrl.save()">
         </navigation-dessin>
 
-        <modif-dessin
-                      rotate="$ctrl.rotate(value)">
-        </modif-dessin>
-
     </div>
     <div class="row">
         <div class="col-xs-3">
@@ -49,6 +45,7 @@
                     table-data="$ctrl.tableArrow"
                     table-menu="$ctrl.activeItem"
                     update-composant="$ctrl.updateComposant(compo, value)"
+                    rotate="$ctrl.rotate(value, data)"
                     arrow-change="$ctrl.arrowChangeValue()">
             </table-dessin>
 

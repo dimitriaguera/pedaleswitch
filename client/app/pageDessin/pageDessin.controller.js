@@ -169,9 +169,8 @@ class PageDessinComponent {
     this.canvasDraw.drawStuff();
   }
   
-  rotate(value){
-    var tabact = this.canvasControl.getTableActive();
-    tabact[0].rotate(value);
+  rotate(value, data){
+    data.rotate(value, null, this.debrayable);
     this.canvasDraw.drawStuff();
   }
 
@@ -213,8 +212,8 @@ class PageDessinComponent {
   getTable(){
     this.toutesTables = this.canvasControl.tableState();
     this.dessin = this.instanceDessin.getDessin();
-    var x = 5;
   }
+
 
 }
 

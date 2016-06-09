@@ -107,49 +107,89 @@ angular.module('pedaleswitchApp')
       }
 
 
-      rotate(value){
-
-        // Générale :
-        var alpha_rad = value * (2*Math.PI)/360.0;
+      rotatepoint(point, angle, C){
+        var alpha_rad = angle * (2*Math.PI)/360.0;
         var cos = Math.cos(alpha_rad);
         var sin = Math.sin(alpha_rad);
+        var pos_c = {};
 
+        // Calcul des coordonné du point dans le repère du baricentre C.
+        pos_c.x = point.x - C.x;
+        pos_c.y = point.y - C.y;
+
+        // Calcul des coordonnées du point après rotation dans le repère d'origine.
+        return {
+          x: pos_c.x * cos + pos_c.y * sin + C.x,
+          y: - pos_c.x * sin + pos_c.y * cos + C.y
+        };
+      }
+
+      /**
+       * Rotate un element.
+       * @param angle en degre
+       * @param C : position du centre de rotation.
+       * @param debrayable : bol on est en debrayable ou pas.
+       */
+      rotate(angle, C, debrayable){
+        var i;
+        var point;
+
+        debrayable = debrayable || false;
         // Barycentre.
-        var C = { x: this.getCenterX(), y: this.getCenterY()};
+        C = C || { x: this.getCenterX(), y: this.getCenterY()};
 
         // 4 angle du rect.
-        var angles = this.getBoundingBoxPoints();
+        var points = this.getBoundingBoxPoints();
 
-        // Calcul des nouvelles coordonnées des points.
-        var angle;
-        for (var i = 0; i < angles.length ; i++) {
-          angle = angles[i];
+        // @todo cette partie marche que pour les rectangles et cercle car il sont dans des rectangles.
+        var old = {
+          w:this.size.w,
+          h:this.size.h
+        };
 
-          angle.pos_c = {};
-          angle.pos_new = {};
-          
-          // Calcul des coordonné de A par rapport au baricentre C.
-          angle.pos_c.x = angle.x - C.x;
-          angle.pos_c.y = angle.y - C.y;
-
-          // Calcul des coordonnées de A après rotation dans le repère d'origine.
-          angle.pos_new.x = angle.pos_c.x * cos + angle.pos_c.y * sin + C.x;
-          angle.pos_new.y = - angle.pos_c.x * sin + angle.pos_c.y * cos + C.y;
-        }
-
-        var old = this.size.w;
         this.size.w = this.size.h;
-        this.size.h = old;
-        if (value < 0) {
-          this.setX(angles[3].pos_new.x);
-          this.setY(angles[3].pos_new.y);
-        } else {
-          this.setX(angles[1].pos_new.x);
-          this.setY(angles[1].pos_new.y);
+        this.size.h = old.w;
+        // Rotation 90 a gauche
+        if (angle < 0) {
+          this.setX(this.rotatepoint(points[3], angle, C).x);
+          this.setY(this.rotatepoint(points[3], angle, C).y);
+          /*
+          // @todo améliorer check sur si c composant ou effets.
+          if (this.titre_option) {
+            point = {
+              x:this.pos_default.x,
+              y:this.pos_default.y + old.h
+            };
+            this.pos_default.x = this.rotatepoint(point, angle, C).x;
+            this.pos_default.y = this.rotatepoint(point, angle, C).y;
+          }
+          */
+        }
+        // Rotation 90 a droite.
+        else {
+          this.setX(this.rotatepoint(points[1], angle, C).x);
+          this.setY(this.rotatepoint(points[1], angle, C).y);
+          /*
+          // @todo améliorer check sur si c composant ou effets.
+          if (this.titre_option) {
+            point = {
+              x:this.pos_default.x + old.w,
+              y:this.pos_default.y
+            };
+            this.pos_default.x = this.rotatepoint(point, angle, C).x;
+            this.pos_default.y = this.rotatepoint(point, angle, C).y;
+          }
+          */
         }
 
+        if (this.composants.length > 0 && !debrayable){
+          for (i = 0 ; i < this.composants.length ; i++ ) {
+            this.composants[i].rotate(angle, { x: this.getCenterX(), y: this.getCenterY()}, debrayable);
+          }
+        }
 
       }
+
       getMax(){
         return {
           t: this.getTop(),
