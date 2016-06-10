@@ -170,12 +170,8 @@ class PageDessinComponent {
   }
   
   rotate(value, data){
-    this.getTable();
     data.rotate(value, null, this.debrayable);
     this.canvasDraw.drawStuff();
-    this.getTable();
-    var x = 5;
-
   }
 
   // Utiliser par table-dessin.

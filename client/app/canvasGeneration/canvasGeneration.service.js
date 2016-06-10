@@ -22,7 +22,7 @@ angular.module('pedaleswitchApp')
         this.item_info = entity.item_info || null;
         this.prix = entity.prix || null;
         this.size = entity.size || {w: 10, h: 10};
-        this.old_size = entity.old_size;
+        this.old_size = entity.old_size || {w: 5, h: 5};
         this.pos = entity.pos;
         this.pos_default = entity.pos_default || null;
         // @todo pos_parent never used.
@@ -170,16 +170,15 @@ angular.module('pedaleswitchApp')
         this.size.w = old_size.h;
         this.size.h = old_size.w;
 
-        // 
         // Rotation 90 a droite.
         if (angle < 0) {
-          point = this.rotatepoint(points[3], angle, C);
+          point = this.rotatePoint(points[3], angle, C);
           this.setX(point.x);
           this.setY(point.y);
         }
         // Rotation 90 a gauche.
         else {
-          point = this.rotatepoint(points[1], angle, C);
+          point = this.rotatePoint(points[1], angle, C);
           this.setX(point.x);
           this.setY(point.y);
         }
@@ -189,9 +188,17 @@ angular.module('pedaleswitchApp')
           // Si pas debrayable fait tourner les composants.
           if (!debrayable) {
             for (i = 0; i < this.composants.length; i++) {
-              this.composants[i].rotate(angle, C, debrayable);
+              this.composants[i].rotate(angle, { x: this.getCenterX(), y: this.getCenterY()}, debrayable);
               this.composants[i].pos_default.x = this.composants[i].pos.x - this.pos.x;
               this.composants[i].pos_default.y = this.composants[i].pos.y - this.pos.y;
+
+              old_size = {
+                w: this.composants[i].old_size.w,
+                h: this.composants[i].old_size.h
+              };
+              this.composants[i].old_size.h = old_size.w;
+              this.composants[i].old_size.w = old_size.h;
+
             }
           }
           // Si debrayable doit appliquer un rotation au composant qui serait virtuellement dans cette
@@ -221,12 +228,18 @@ angular.module('pedaleswitchApp')
               point.y = point.y + old_pos.y;
 
               // Rotation dans le repère du canvas.
-              point = this.rotatepoint(point, angle, C);
+              point = this.rotatePoint(point, angle, C);
 
               // Nouvelle coordonnées dans le repère du rect et inversion des dimensions.
               this.composants[i].pos_default.x = point.x - this.pos.x ;
               this.composants[i].pos_default.y = point.y - this.pos.y ;
-              this.composants[i].old_size = {h: this.composants[i].old_size.w, w: this.composants[i].old_size.h};
+
+              old_size = {
+                w: this.composants[i].old_size.w,
+                h: this.composants[i].old_size.h
+              };
+              this.composants[i].old_size.h = old_size.w;
+              this.composants[i].old_size.w = old_size.h;
             }
           }
         }
