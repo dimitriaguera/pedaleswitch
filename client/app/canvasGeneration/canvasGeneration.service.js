@@ -22,6 +22,7 @@ angular.module('pedaleswitchApp')
         this.item_info = entity.item_info || null;
         this.prix = entity.prix || null;
         this.size = entity.size || {w: 10, h: 10};
+        this.old_size = entity.old_size;
         this.pos = entity.pos;
         this.pos_default = entity.pos_default || null;
         // @todo pos_parent never used.
@@ -35,6 +36,9 @@ angular.module('pedaleswitchApp')
           for (var i = 0; i < compos.length; i++) {
             compos[i].setX(this.pos.x + compos[i].pos_default.x);
             compos[i].setY(this.pos.y + compos[i].pos_default.y);
+
+            compos[i].size.h = compos[i].old_size.h;
+            compos[i].size.w = compos[i].old_size.w;
           }
         }
       }
@@ -106,8 +110,18 @@ angular.module('pedaleswitchApp')
         ]);
       }
 
-
-      rotatepoint(point, angle, C){
+      /**
+       * Permet de faire une rotation d'un point, d'un angle donnée par rapport a un
+       * centre donnée dans le repère du canvas.
+       *
+       * Retourne les nouvelles coordonnées du points.
+       * 
+       * @param point
+       * @param angle
+       * @param C
+       * @returns {{x: *, y: *}}
+       */
+      rotatePoint(point, angle, C){
         var alpha_rad = angle * (2*Math.PI)/360.0;
         var cos = Math.cos(alpha_rad);
         var sin = Math.sin(alpha_rad);
@@ -128,66 +142,94 @@ angular.module('pedaleswitchApp')
        * Rotate un element.
        * @param angle en degre
        * @param C : position du centre de rotation.
-       * @param debrayable : bol on est en debrayable ou pas.
+       * @param debrayable : boolean on est en debrayable ou pas.
        */
       rotate(angle, C, debrayable){
         var i;
-        var point;
+        var points, point;
+        var old_size, old_pos;
 
         debrayable = debrayable || false;
         // Barycentre.
         C = C || { x: this.getCenterX(), y: this.getCenterY()};
 
         // 4 angle du rect.
-        var points = this.getBoundingBoxPoints();
+        points = this.getBoundingBoxPoints();
 
         // @todo cette partie marche que pour les rectangles et cercle car il sont dans des rectangles.
-        var old = {
-          w:this.size.w,
-          h:this.size.h
+        old_size = {
+          w: this.size.w,
+          h: this.size.h
+        };
+        old_pos = {
+          x: this.pos.x,
+          y: this.pos.y
         };
 
-        this.size.w = this.size.h;
-        this.size.h = old.w;
-        // Rotation 90 a gauche
-        if (angle < 0) {
-          this.setX(this.rotatepoint(points[3], angle, C).x);
-          this.setY(this.rotatepoint(points[3], angle, C).y);
-          /*
-          // @todo améliorer check sur si c composant ou effets.
-          if (this.titre_option) {
-            point = {
-              x:this.pos_default.x,
-              y:this.pos_default.y + old.h
-            };
-            this.pos_default.x = this.rotatepoint(point, angle, C).x;
-            this.pos_default.y = this.rotatepoint(point, angle, C).y;
-          }
-          */
-        }
+        // Inverse les dimensions du rect.
+        this.size.w = old_size.h;
+        this.size.h = old_size.w;
+
+        // 
         // Rotation 90 a droite.
+        if (angle < 0) {
+          point = this.rotatepoint(points[3], angle, C);
+          this.setX(point.x);
+          this.setY(point.y);
+        }
+        // Rotation 90 a gauche.
         else {
-          this.setX(this.rotatepoint(points[1], angle, C).x);
-          this.setY(this.rotatepoint(points[1], angle, C).y);
-          /*
-          // @todo améliorer check sur si c composant ou effets.
-          if (this.titre_option) {
-            point = {
-              x:this.pos_default.x + old.w,
-              y:this.pos_default.y
-            };
-            this.pos_default.x = this.rotatepoint(point, angle, C).x;
-            this.pos_default.y = this.rotatepoint(point, angle, C).y;
-          }
-          */
+          point = this.rotatepoint(points[1], angle, C);
+          this.setX(point.x);
+          this.setY(point.y);
         }
 
-        if (this.composants.length > 0 && !debrayable){
-          for (i = 0 ; i < this.composants.length ; i++ ) {
-            this.composants[i].rotate(angle, { x: this.getCenterX(), y: this.getCenterY()}, debrayable);
+        // Si l'obj a des composants.
+        if (this.composants.length > 0) {
+          // Si pas debrayable fait tourner les composants.
+          if (!debrayable) {
+            for (i = 0; i < this.composants.length; i++) {
+              this.composants[i].rotate(angle, C, debrayable);
+              this.composants[i].pos_default.x = this.composants[i].pos.x - this.pos.x;
+              this.composants[i].pos_default.y = this.composants[i].pos.y - this.pos.y;
+            }
+          }
+          // Si debrayable doit appliquer un rotation au composant qui serait virtuellement dans cette
+          // position si cela n'avait pas été débrayable afin de remettre le composant à la bonne place
+          // si l'utilisateur switch de debrayable à non.
+          else {
+            for (i = 0; i < this.composants.length; i++) {
+              // Rotation 90 a droite.
+              if (angle < 0) {
+                // Coordonnée dans le repère du rect avant rotation.
+                point = {
+                  x: this.composants[i].pos_default.x,
+                  y: this.composants[i].pos_default.y + this.composants[i].size.h
+                };
+
+              }
+              // Rotation 90 a gauche.
+              else {
+                // Coordonnée dans le repère du rect avant rotation.
+                point = {
+                  x: this.composants[i].pos_default.x + this.composants[i].size.w,
+                  y: this.composants[i].pos_default.y
+                };
+              }
+              // Coordonnée dans le repère du canvas.
+              point.x = point.x + old_pos.x;
+              point.y = point.y + old_pos.y;
+
+              // Rotation dans le repère du canvas.
+              point = this.rotatepoint(point, angle, C);
+
+              // Nouvelle coordonnées dans le repère du rect et inversion des dimensions.
+              this.composants[i].pos_default.x = point.x - this.pos.x ;
+              this.composants[i].pos_default.y = point.y - this.pos.y ;
+              this.composants[i].old_size = {h: this.composants[i].old_size.w, w: this.composants[i].old_size.h};
+            }
           }
         }
-
       }
 
       getMax(){

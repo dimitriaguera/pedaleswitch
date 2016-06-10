@@ -103,6 +103,10 @@ angular.module('pedaleswitchApp')
               w: composantItems[option.composants[i].available_compo_id[0]].size.w,
               h: composantItems[option.composants[i].available_compo_id[0]].size.h
             },
+            old_size: {
+              w: composantItems[option.composants[i].available_compo_id[0]].size.w,
+              h: composantItems[option.composants[i].available_compo_id[0]].size.h
+            },
             item_info: {
               id_item: composantItems[option.composants[i].available_compo_id[0]]._id,
               items: option.composants[i].available_compo_id,
