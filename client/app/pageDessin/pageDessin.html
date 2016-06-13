@@ -9,11 +9,14 @@
                 template="modalBiblioBox">
         </modal-dessin>
 
-        <menu-dessin switch-deb="$ctrl.switchDeb(value)"
-                     active-effet="$ctrl.activeEffet()"
-                     active-compo="$ctrl.activeCompo()"
-                     debrayable="$ctrl.debrayable"
-                     is-active="$ctrl.isActive">
+        <menu-dessin
+          deco="$ctrl.deco"
+          switch-deco="$ctrl.switchDeco()"
+          debrayable="$ctrl.debrayable"
+          switch-deb="$ctrl.switchDeb()"
+          active-effet="$ctrl.activeEffet()"
+          active-compo="$ctrl.activeCompo()"
+          is-active="$ctrl.isActive">
         </menu-dessin>
 
         <navigation-dessin zoom="$ctrl.zoom"
@@ -37,6 +40,10 @@
                     remove-to-table="$ctrl.removeToTable(value)">
             </panier-dessin>
 
+            <deco-dessin
+              add-text-to-table="$ctrl.addTextToTable(string)">
+            </deco-dessin>
+
         </div>
         <div class="col-xs-3">
 
@@ -51,6 +58,9 @@
 
         </div>
     </div>
+
+
+
 </div>
 
 

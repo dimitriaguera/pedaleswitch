@@ -18,6 +18,8 @@ angular.module('pedaleswitchApp')
     var tableArrow = [];
     var activeItem = [];
     var debrayable = false;
+    
+    var tableText = [];
 
     var thing = function(entity) {
       switch (entity.item_info.shape){
@@ -38,8 +40,7 @@ angular.module('pedaleswitchApp')
         
     // Public API here
     return{
-      
-      
+            
       /**
        * Cette fonction créé les objets du canvas à partir du modèle dessin.
        * Et l'ajoute dans tableEffet et tableComposant pour les composants correspondants.
@@ -269,7 +270,27 @@ angular.module('pedaleswitchApp')
           canvas.height = max_pos.b + realmargin + 150;
         }
       },
-            
+
+      /**
+       * Ajoute du texte au canvas.
+       * @param string
+       */
+      addTextToCanvas: function(string) {
+        var texte = canvasGeneration.newTexte(string);
+
+        // Rajoute le texte à la table texte.
+        tableText.push(texte);
+      },
+
+      getTableText: function() {
+        return tableText;
+      },
+      
+      resetTableText: function() {
+        tableText.splice(0, tableText.length);
+      },
+      
+      
       //@todo optimisation possible check arraw active.
       setArrowPos: function(){
         for(var i = 0; i < tableArrow.length; i++){

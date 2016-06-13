@@ -272,7 +272,7 @@ angular.module('pedaleswitchApp')
     }
 
     class Rect extends Shape {
-        drawCanvas(ctx){
+      drawCanvas(ctx){
         ctx.beginPath();
         ctx.rect(this.pos.x, this.pos.y, this.size.w, this.size.h);
 
@@ -288,6 +288,97 @@ angular.module('pedaleswitchApp')
       }
     }
 
+    class Texte {
+      constructor(obj){
+
+        this.font = {};
+
+        // normal, italic, oblique
+        this.font.style = obj.font.style || 'normal';
+        //normal, small-caps
+        this.font.variant = obj.font.variant || 'normal';
+        // normal, bold, bolder, lighter, 100, 200 ... 900.
+        this.font.weight = obj.font.weight || 'normal';
+        this.font.size = obj.font.size || '14';
+        this.font.family = obj.font.family || 'sans-serif';
+        //this.textAlign = obj.textAlign || 'left';
+        this.color = obj.color || 'black';
+        this.input = obj.input || 'input';
+        // fillText, strokeText
+        this.type = obj.type || 'fillText';
+
+        this.pos = obj.pos || {x:20, y:20};
+        this.size = obj.size || {w:0, h:0};
+      }
+
+      getCenterX(){
+        return this.pos.x + (this.size.w / 2);
+      }
+      getCenterY(){
+        return this.pos.y + (this.size.h / 2);
+      }
+      setX(coord){
+        this.pos.x = coord;
+      }
+      setY(coord){
+        this.pos.y = coord;
+      }
+      getX() {
+        return this.pos.x;
+      }
+      getY() {
+        return this.pos.y;
+      }
+      getLeft() {
+        return this.getX();
+      }
+      getTop() {
+        return this.getY();
+      }
+      getRight() {
+        return this.getX() + this.size.w;
+      }
+      getBottom() {
+        return this.getY() + this.size.h;
+      }
+      setCenterX(center){
+        this.pos.x = center - (this.size.w / 2);
+      }
+      setCenterY(center){
+        this.pos.y = center - (this.size.h / 2);
+      }
+
+      drawCanvas(ctx){
+        ctx.save();
+
+        ctx.font =
+          this.font.style + ' '
+          + this.font.variant + ' '
+          + this.font.weight + ' '
+          + this.font.size + 'px' + ' '
+          + this.font.family;
+
+        ctx.fillStyle = this.color;
+
+
+        switch(this.type) {
+          case 'fillText':
+          default:
+            ctx.fillText(this.input, this.getX(), this.getY());
+            break;
+          case 'strokeText':
+            ctx.strokeText(this.input, this.getX(), this.getY());
+            break;
+        }
+
+        var mes = ctx.measureText(this.input);
+        this.size.w = Math.round(mes.width);
+        this.size.h = this.font.size;
+
+        ctx.restore();
+      }
+      
+    }
 
     class Boite {
       constructor () {
@@ -590,6 +681,10 @@ angular.module('pedaleswitchApp')
 
       newArrow: function (entity, location) {
         return new Arrow(entity, location);
+      },
+
+      newTexte: function(obj) {
+        return new Texte(obj);
       }
 
       //newPoly: function (entity) {
