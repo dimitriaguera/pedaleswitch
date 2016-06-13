@@ -70,6 +70,7 @@ angular.module('pedaleswitchApp')
         var nouv_effet = {
           _id: option._id,
           key: key,
+          item_info : {shape: null},
           in_canvas: effet.in_canvas || false,
           titre: effet.titre,
           titre_option: option.titre,
@@ -77,10 +78,20 @@ angular.module('pedaleswitchApp')
           description_option: option.description,
           prix: option.prix,
           size: {
-            w: option.size.w,
-            h: option.size.h
+            w: {v: option.size.w},
+            h: {v: option.size.h},
+            d: {v: option.size.d || null}
           },
-          pos: option.pos || {x: 20,y:  20},
+          //pos: {
+          //  x: {v: option.pos.x || 20},
+          //  y: {v: option.pos.y || 20},
+          //  z: {v: option.pos.z || null}
+          //},
+          pos: {
+            x: {v:  20},
+            y: {v:  20},
+            z: {v: 20}
+          },
           composants: []
         };
         for(var i=0; i<option.composants.length; i++){
@@ -90,18 +101,20 @@ angular.module('pedaleswitchApp')
             titre: option.composants[i].titre,
             titre_parent_effet: effet.titre,
             titre_parent_option: option.titre,
-            pos_parent: nouv_effet.pos,
             pos_default: {
-              x: option.composants[i].pos.x,
-              y: option.composants[i].pos.y
+              x: {v: option.composants[i].pos.x},
+              y: {v: option.composants[i].pos.y},
+              z: {v: option.composants[i].pos.z || null}
             },
             pos: {
-              x: option.composants[i].pos.x + nouv_effet.pos.x,
-              y: option.composants[i].pos.y + nouv_effet.pos.y
+              x: {v: option.composants[i].pos.x + nouv_effet.pos.x.v},
+              y: {v: option.composants[i].pos.y + nouv_effet.pos.y.v},
+              z: {v: option.composants[i].pos.z + nouv_effet.pos.z.v}
             },
             size: {
-              w: composantItems[option.composants[i].available_compo_id[0]].size.w,
-              h: composantItems[option.composants[i].available_compo_id[0]].size.h
+              w: {v: composantItems[option.composants[i].available_compo_id[0]].size.w},
+              h: {v: composantItems[option.composants[i].available_compo_id[0]].size.h},
+              d: {v: composantItems[option.composants[i].available_compo_id[0]].size.d || null}
             },
             item_info: {
               id_item: composantItems[option.composants[i].available_compo_id[0]]._id,
@@ -119,10 +132,10 @@ angular.module('pedaleswitchApp')
       },
 
       // @todo a supprime ?
-      moveItem: function (item, x, y){
-        item.pos.x = x;
-        item.pos.y = y;
-      },
+      //moveItem: function (item, x, y){
+      //  item.pos.x = x;
+      //  item.pos.y = y;
+      //},
 
       zoomInitialize: function(value){
         canvasConversion.setZoom(value);
@@ -134,7 +147,7 @@ angular.module('pedaleswitchApp')
       zoomChange: function(value){
         var okZoom = canvasConversion.setZoom(value);
         if (okZoom) {
-          if (dessin.boite.constructor.name === "Boite") {
+          if (dessin.boite.constructor.name === "MasterBoite") {
             canvasConversion.convertEffetZoom(dessin.boite);
           }
           for (var i = 0; i < dessin.options.length; i++) {

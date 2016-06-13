@@ -91,13 +91,13 @@ class PageDessinComponent {
       switch(this.isActive) {
         case 'effet' :
           effets.push(effet);
-          this.canvasControl.setTableShine(effets);
+          this.canvasControl.setTableDrawShine(effets);
           break;
-        case 'compo' :
-          this.canvasControl.setTableShine(effet.composants);
+        case 'composant' :
+          this.canvasControl.setTableDrawShine(effet.composants);
           break;
         case 'boite' :
-          this.canvasControl.setTableShine([this.canvasControl.getBoite()]);
+          this.canvasControl.setTableDrawShine([this.canvasControl.getBoite()]);
           break;
         default:
           return console.log('Variable "isActive" not defined in pageDessin.controller.js');
@@ -120,29 +120,17 @@ class PageDessinComponent {
   // pas dessiner.
   activeEffet(){
     this.isActive = 'effet';
-    var active = this.canvasControl.getTableEffet();
-    var inactive = this.canvasControl.getTableComposant();
-    this.canvasControl.resetIsSelected(active);
-    this.canvasControl.resetIsSelected(inactive);
-    this.canvasControl.resetTableDashed();
-    this.canvasControl.setTableActive(active);
-    this.canvasControl.setTableThin(inactive);
-    if (active.length > 0){
+    var notEmpty = this.canvasControl.canvasDrawState('effet');
+    if (notEmpty) {
       this.canvasDraw.drawStuff();
     }
   }
   
   // Appeler par menu-dessin.html
   activeCompo(){
-    this.isActive = 'compo';
-    var active = this.canvasControl.getTableComposant();
-    var inactive = this.canvasControl.getTableEffet();
-    this.canvasControl.resetIsSelected(active);
-    this.canvasControl.resetIsSelected(inactive);
-    this.canvasControl.resetTableThin();
-    this.canvasControl.setTableActive(active);
-    this.canvasControl.setTableDashed(inactive);
-    if (active.length > 0){
+    this.isActive = 'composant';
+    var notEmpty = this.canvasControl.canvasDrawState('composant');
+    if (notEmpty) {
       this.canvasDraw.drawStuff();
     }
   }
@@ -151,7 +139,7 @@ class PageDessinComponent {
     // Ajouter l'effet au canvas si pas deja.
     if (!effet.in_canvas) {this.canvasControl.addToCanvas(effet);}
     // Initialise le boite dans l'instance de dessin.
-    this.instanceDessin.setBoite(this.canvasControl.getBoite());
+    this.instanceDessin.setBoite(this.canvasControl.getMasterBoite());
     // Dessine.
     this.canvasDraw.drawStuff();
   }
@@ -166,6 +154,18 @@ class PageDessinComponent {
     this.canvasControl.resizeCanvas();
     this.canvasControl.setArrowPos();
     this.zoom = this.canvasControl.getZoom();
+    this.canvasDraw.drawStuff();
+  }
+
+  up(){
+    this.canvasControl.canvasViewState('up');
+    this.canvasControl.canvasDrawState(this.isActive);
+    this.canvasDraw.drawStuff();
+  }
+
+  right(){
+    this.canvasControl.canvasViewState('right');
+    this.canvasControl.canvasDrawState(this.isActive);
     this.canvasDraw.drawStuff();
   }
 
@@ -190,16 +190,16 @@ class PageDessinComponent {
     var compo = this.canvasControl.searchCompoById(value._id, value.key);
     if(compo) {
       compos.push(compo);
-      this.canvasControl.resetTableShine();
-      this.canvasControl.setTableShine(compos);
-      this.tableShine = this.canvasControl.getTableShine();
+      this.canvasControl.resetTableDrawShine();
+      this.canvasControl.setTableDrawShine(compos);
+      this.tableDrawShine = this.canvasControl.getTableDrawShine();
       this.canvasDraw.drawStuff();
     }
   }
 
   //Utiliser par panier-dessin.
   mouseLeaveEffet(){
-    this.canvasControl.resetTableShine();
+    this.canvasControl.resetTableDrawShine();
     this.canvasDraw.drawStuff();
   }
   

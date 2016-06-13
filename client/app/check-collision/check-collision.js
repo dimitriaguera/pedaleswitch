@@ -262,8 +262,8 @@ angular.module('pedaleswitchApp')
         };
         
         this.pointInCircle = function(shape, comparitor){
-          var dx = shape.pos.x - comparitor.getCenterX();
-          var dy = shape.pos.y - comparitor.getCenterY();
+          var dx = shape.pos.x.v - comparitor.getCenterX();
+          var dy = shape.pos.y.v - comparitor.getCenterY();
           return (Math.sqrt(dx * dx + dy * dy) <= comparitor.getRadius());
         };
                 
@@ -275,10 +275,10 @@ angular.module('pedaleswitchApp')
 
         this.rectInRect = function(shape, comparitor) {
           return (
-            shape.pos.x < comparitor.pos.x + comparitor.size.w &&
-            shape.pos.x + shape.size.w > comparitor.pos.x &&
-            shape.pos.y < comparitor.pos.y + comparitor.size.h &&
-            shape.size.h + shape.pos.y > comparitor.pos.y
+            shape.pos.x.v < comparitor.pos.x.v + comparitor.size.w.v &&
+            shape.pos.x.v + shape.size.w.v > comparitor.pos.x.v &&
+            shape.pos.y.v < comparitor.pos.y.v + comparitor.size.h.v &&
+            shape.size.h.v + shape.pos.y.v > comparitor.pos.y.v
           );
         };
 
@@ -294,25 +294,25 @@ angular.module('pedaleswitchApp')
             circle = comparitor;
           }
           
-          var distX = Math.abs(circle.getCenterX() - rect.pos.x - rect.size.w / 2);
-          var distY = Math.abs(circle.getCenterY() - rect.pos.y - rect.size.h / 2);
+          var distX = Math.abs(circle.getCenterX() - rect.pos.x.v - rect.size.w.v / 2);
+          var distY = Math.abs(circle.getCenterY() - rect.pos.y.v - rect.size.h.v / 2);
 
-          if (distX > (rect.size.w / 2 + circle.getRadius())) {
+          if (distX > (rect.size.w.v / 2 + circle.getRadius())) {
             return false;
           }
-          if (distY > (rect.size.h / 2 + circle.getRadius())) {
+          if (distY > (rect.size.h.v / 2 + circle.getRadius())) {
             return false;
           }
 
-          if (distX <= (rect.size.w / 2)) {
+          if (distX <= (rect.size.w.v / 2)) {
             return true;
           }
-          if (distY <= (rect.size.h / 2)) {
+          if (distY <= (rect.size.h.v / 2)) {
             return true;
           }
 
-          var dx = distX - rect.size.w / 2;
-          var dy = distY - rect.size.h / 2;
+          var dx = distX - rect.size.w.v / 2;
+          var dy = distY - rect.size.h.v / 2;
           return (dx * dx + dy * dy <= (circle.getRadius() * circle.getRadius()));
         };
 

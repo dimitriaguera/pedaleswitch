@@ -59,14 +59,14 @@ angular.module('pedaleswitchApp')
             var effet = instanceDessin.searchEffetInDessin(obj._id, obj.key);
             
             if(effet && !effet.in_canvas) {
-              effet.pos.x = mouseX - (effet.size.w / 2);
-              effet.pos.y = mouseY - (effet.size.h / 2);
+              effet.pos.x.v = mouseX - (effet.size.w.v / 2);
+              effet.pos.y.v = mouseY - (effet.size.h.v / 2);
               
               // Le rajoute au canvas avec les bonnes positions.
               canvasControl.addToCanvas(effet);
               
               // Initialise le boite dans l'instance de dessin.
-              instanceDessin.setBoite(canvasControl.getBoite());
+              instanceDessin.setBoite(canvasControl.getMasterBoite());
               
               // Dessine.
               canvasDraw.drawStuff();

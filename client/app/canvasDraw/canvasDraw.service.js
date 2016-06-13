@@ -7,17 +7,17 @@ angular.module('pedaleswitchApp')
     var ctx = {};
     var boite = null;
     var tableActive = [];
-    var tableDashed = [];
-    var tableThin = [];
+    var tableDrawDashed = [];
+    var tableDrawThin = [];
+    var tableDrawShine = [];
     var tableArrow = [];
-    var tableShine = [];
     var selectDraw = function(context, item){
       if (item.isSelected) {
         context.font = "16px sans-serif";
         context.strokeStyle = "#00bfff";
         context.fillStyle = "#00bfff";
         context.textAlign = 'center';
-        context.fillText(item.titre, item.getCenterX(), item.pos.y - canvasConversion.convertToPixel(5));
+        context.fillText(item.titre, item.getCenterX(), item.pos.y.v - canvasConversion.convertToPixel(5));
         context.shadowColor   = "#666";
         context.shadowOffsetX = 1;
         context.shadowOffsetY = 1;
@@ -34,17 +34,17 @@ angular.module('pedaleswitchApp')
     return {
 
       drawTableDashed: function (context, colorStroke, colorFill, lineWidth, dashArray) {
-        tableDashed = canvasControl.getTableDashed();
-        if(tableDashed.length !== 0) {
+        tableDrawDashed = canvasControl.getTableDrawDashed();
+        if(tableDrawDashed.length !== 0) {
           context.save();
           context.lineWidth = lineWidth;
           context.strokeStyle = colorStroke;
           context.setLineDash(dashArray);
-          for (var k = 0; k < tableDashed.length; k++) {
+          for (var k = 0; k < tableDrawDashed.length; k++) {
             context.save();
-            selectDraw(context, tableDashed[k]);
-            //overlappingDraw(context, tableDashed[k]);
-            tableDashed[k].drawCanvas(context);
+            selectDraw(context, tableDrawDashed[k]);
+            //overlappingDraw(context, tableDrawDashed[k]);
+            tableDrawDashed[k].drawCanvas(context);
             if (colorFill){
               context.fillStyle = colorFill;
               context.fill();
@@ -56,16 +56,16 @@ angular.module('pedaleswitchApp')
       },
 
       drawTableThin: function (context, colorStroke, colorFill, lineWidth) {
-        tableThin = canvasControl.getTableThin();
-        if(tableThin.length !== 0) {
+        tableDrawThin = canvasControl.getTableDrawThin();
+        if(tableDrawThin.length !== 0) {
           context.save();
           context.lineWidth = lineWidth;
           context.strokeStyle = colorStroke;
-          for (var j = 0; j < tableThin.length; j++) {
+          for (var j = 0; j < tableDrawThin.length; j++) {
             context.save();
-            selectDraw(context, tableThin[j]);
-            //overlappingDraw(context, tableThin[j]);
-            tableThin[j].drawCanvas(context);
+            selectDraw(context, tableDrawThin[j]);
+            //overlappingDraw(context, tableDrawThin[j]);
+            tableDrawThin[j].drawCanvas(context);
             if (colorFill){
               context.fillStyle = colorFill;
               context.fill();

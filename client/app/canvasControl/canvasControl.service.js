@@ -8,16 +8,20 @@ angular.module('pedaleswitchApp')
     var canvas = {};
     var canvas_window = {};
     var boite = {};
+    var masterBoite = {};
+    var tableMasterEffet = [];
+    var tableMasterComposant = [];
     var tableEffet = [];
     var tableComposant = [];
-    var tableActive = {};
-    var tableDashed = [];
-    var tableThin = [];
-    var tableShine = [];
+    var tableActive = [];
+    var tableDrawDashed = [];
+    var tableDrawThin = [];
+    var tableDrawShine = [];
     var tableAlignLine = [];
     var tableArrow = [];
     var activeItem = [];
     var debrayable = false;
+    var viewState = 'up';
 
     var thing = function(entity) {
       switch (entity.item_info.shape){
@@ -53,54 +57,72 @@ angular.module('pedaleswitchApp')
 
         // if check si l'effet est deja dans le canvas.
         if (!effet.in_canvas || bol) {
-          var tmp_eff = canvasGeneration.newRect(effet);
-          var tmp_comp = [];
+          var tmp_master_eff = canvasGeneration.newMasterShape(effet, viewState);
+          var tmp_master_comp = [];
           var compos = effet.composants;
           for (var i = 0; i < compos.length; i++) {
-              tmp_comp = thing(compos[i]);
-              tableComposant.push(tmp_comp);
-              tmp_eff.composants.push(tmp_comp);
+            tmp_master_comp = canvasGeneration.newMasterShape(compos[i], viewState);
+            tableMasterComposant.push(tmp_master_comp);
+            tmp_master_eff.composants.push(tmp_master_comp);
+            tableComposant.push(tmp_master_comp.projections[viewState]);
+            tmp_master_eff.projections['top'].composants.push(tmp_master_comp.projections['top']);
+            tmp_master_eff.projections['bottom'].composants.push(tmp_master_comp.projections['bottom']);
+            tmp_master_eff.projections['up'].composants.push(tmp_master_comp.projections['up']);
+            tmp_master_eff.projections['down'].composants.push(tmp_master_comp.projections['down']);
+            tmp_master_eff.projections['left'].composants.push(tmp_master_comp.projections['left']);
+            tmp_master_eff.projections['right'].composants.push(tmp_master_comp.projections['right']);
           }
           
           // Créer le boitier de la pedale.
           if(boite.constructor.name !== "Boite") {
-            boite = canvasGeneration.newBoite();
-            // Conver marge en px.
-            boite.convertMargin();
+            this.setMasterBoite(canvasGeneration.newMasterBoite());
+
+            // Convert marge en px.
+            masterBoite.convertMargin();
+            masterBoite.convertInitialHeight();
+
+            // On sélectionne la bonne projection.
+            this.setBoite(masterBoite.projections[viewState]);
+
             // Empeche que l'effet depasse du canvas.
-            this.moveCloseBorder(tmp_eff);
+            this.moveCloseBorder(tmp_master_eff.projections[viewState]);
+
             // Place bien les composants.
-            tmp_eff.resetCompPos();
+            tmp_master_eff.projections[viewState].resetCompPos();
+
             // Initiliase la boite.
-            boite.initBoiteWithEffect(tmp_eff);
+            boite.initBoiteWithEffect(tmp_master_eff.projections[viewState]);
+
             // Lie les effets a la boite
             boite.effets = tableEffet;
+
             // Créer les flèches autour de la boite.
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
           }
           else {
             // Empeche que l'effet depasse du canvas.
-            this.moveCloseBorder(tmp_eff);
+            this.moveCloseBorder(tmp_master_eff.projections[viewState]);
             // Place bien les composants.
             if (!effet.in_canvas) {
-              tmp_eff.resetCompPos();
+              tmp_master_eff.projections[viewState].resetCompPos();
             }
             // Redimensionne la boite si le nouvelle effet est en dehors.
-            boite.checkBorderBoite(tmp_eff);
+            boite.checkBorderBoite(tmp_master_eff.projections[viewState]);
             // Repositionne les arraw.
             this.setArrowPos();
           }
           // Rajoute la propriété in_canvas a l'effet.
           effet.in_canvas = true;
 
-          // Rajoute l'effet a la table effet.
-          tableEffet.push(tmp_eff);
+          // Rajoute l'effet a la table effet et le master dans la table MesterEffet.
+          tableEffet.push(tmp_master_eff.projections[viewState]);
+          tableMasterEffet.push(tmp_master_eff);
 
           // Check les collisions entre tout les obj.
           checkCollision.checkAll(tableEffet);
 
-          return tmp_eff;
+          return tmp_master_eff.projections[viewState];
         }
       },
 
@@ -124,7 +146,144 @@ angular.module('pedaleswitchApp')
           tableEffet.splice(index,1);
         }
       },
-      
+
+
+      /**
+       * Réorganise les tables maîtres canvas selon l'état passé en argument.
+       *
+       * @param state : string - 'top', 'bottom', 'up', 'down', 'left', 'right'
+       */
+      canvasViewState: function (state) {
+
+        var m = tableMasterEffet.length;
+        var n = tableMasterComposant.length;
+        var i, j;
+
+        switch (state) {
+          case 'top':
+            viewState = 'top';
+            this.resetAll();
+            this.setBoite(masterBoite.projections.top);
+            tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
+            tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
+            for (i = 0; i < m; i++) {
+              tableEffet.push(tableMasterEffet[i].projections.top);
+            }
+            for (j = 0; j < n; j++) {
+              tableComposant.push(tableMasterComposant[j].projections.top);
+            }
+            break;
+          case 'bottom':
+            viewState = 'bottom';
+            this.resetAll();
+            this.setBoite(masterBoite.projections.bottom);
+            tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
+            tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
+            for (i = 0; i < m; i++) {
+              tableEffet.push(tableMasterEffet[i].projections.bottom);
+            }
+            for (j = 0; j < n; j++) {
+              tableComposant.push(tableMasterComposant[j].projections.bottom);
+            }
+            break;
+          case 'up':
+            viewState = 'up';
+            this.resetAll();
+            this.setBoite(masterBoite.projections.up);
+            tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
+            tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
+            for (i = 0; i < m; i++) {
+              tableEffet.push(tableMasterEffet[i].projections.up);
+            }
+            for (j = 0; j < n; j++) {
+              tableComposant.push(tableMasterComposant[j].projections.up);
+            }
+            break;
+          case 'down':
+            viewState = 'down';
+            this.resetAll();
+            this.setBoite(masterBoite.projections.down);
+            tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
+            tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
+            for (i = 0; i < m; i++) {
+              tableEffet.push(tableMasterEffet[i].projections.down);
+            }
+            for (j = 0; j < n; j++) {
+              tableComposant.push(tableMasterComposant[j].projections.down);
+            }
+            break;
+          case 'left':
+            viewState = 'left';
+            this.resetAll();
+            this.setBoite(masterBoite.projections.left);
+            tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
+            tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
+            for (i = 0; i < m; i++) {
+              tableEffet.push(tableMasterEffet[i].projections.left);
+            }
+            for (j = 0; j < n; j++) {
+              tableComposant.push(tableMasterComposant[j].projections.left);
+            }
+            break;
+          case 'right':
+            viewState = 'right';
+            this.resetAll();
+            this.setBoite(masterBoite.projections.right);
+            tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
+            tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
+            //for (i = 0; i < m; i++) {
+            //  tableEffet.push(tableMasterEffet[i].projections.right);
+            //}
+            //for (j = 0; j < n; j++) {
+            //  tableComposant.push(tableMasterComposant[j].projections.right);
+            //}
+            break;
+          default:
+            return console.log('ERROR ' + state + ' is not a valid state');
+        }
+      },
+
+      /**
+       * Réorganise les tables esclaves canvas selon l'état passé en argument.
+       *
+       * @param state : string - 'effet', 'composant'
+       * @return true si effet dans le canvas, false si canvas vide.
+       */
+      canvasDrawState: function (state) {
+
+        var active, inactive;
+
+        switch(state) {
+
+          case 'effet':
+            active = tableEffet;
+            inactive = tableComposant;
+            this.isActive = 'effet';
+            this.resetIsSelected(active);
+            this.resetIsSelected(inactive);
+            this.resetTableDrawDashed();
+            this.setTableActive(active);
+            this.setTableDrawThin(inactive);
+            return (active.length > 0);
+            break;
+
+          case 'composant':
+            active = tableComposant;
+            inactive = tableEffet;
+            this.isActive = 'composant';
+            this.resetIsSelected(active);
+            this.resetIsSelected(inactive);
+            this.resetTableDrawThin();
+            this.setTableActive(active);
+            this.setTableDrawDashed(inactive);
+            return (active.length > 0);
+            break;
+
+          default:
+            return console.log('ERROR ' + state + ' is not a valid state');
+        }
+      },
+
       /**
        * Restaure un canvas a partir d'une instance de Dessin.
        * 
@@ -181,7 +340,8 @@ angular.module('pedaleswitchApp')
        *
        * @returns {{t: number, r: number, b: number, l: number}}
        */
-      findGobalRect(){
+
+      findGobalRect: function (){
         var saveMax = function(posmax, pos){
           posmax.t = Math.min(posmax.t, pos.t);
           posmax.r = Math.max(posmax.r, pos.r);
@@ -228,7 +388,7 @@ angular.module('pedaleswitchApp')
       moveCloseBorder: function(effet){
         // On deplace un effet.
         if (effet.constructor.name !== "Boite"){
-          this.moveCloseBorderGenerale(effet, boite.margin);
+          this.moveCloseBorderGenerale(effet, boite.margin.v);
         } 
         // On deplace la boite.  
         else {
@@ -252,12 +412,12 @@ angular.module('pedaleswitchApp')
 
         // Debordement par le haut.
         if (max_pos.t < realmargin) {
-          entity.setCenterY(entity.size.h / 2 + realmargin);
+          entity.setCenterY(entity.size.h.v / 2 + realmargin);
           max_pos.b = entity.getBottom();
         }
         // Debordement par la gauche.
         if (max_pos.l < realmargin) {
-          entity.setCenterX(entity.size.w / 2 + realmargin);
+          entity.setCenterX(entity.size.w.v / 2 + realmargin);
           max_pos.r = entity.getRight();
         }
         // Debordement par la droite.
@@ -349,19 +509,12 @@ angular.module('pedaleswitchApp')
         return boite;
       },
 
-      setActiveItem: function(item){
-        var i = activeItem.length;
-        activeItem.splice(0, i);
-        activeItem.push(item);
+      setMasterBoite: function(bo){
+        masterBoite = bo;
       },
 
-      getActiveItem: function(){
-        return activeItem;
-      },
-
-      resetActiveItem: function(){
-        var i = activeItem.length;
-        activeItem.splice(0, i);
+      getMasterBoite: function(){
+        return masterBoite;
       },
 
       setDeb: function(deb){
@@ -398,100 +551,163 @@ angular.module('pedaleswitchApp')
         return ctx;
       },
 
-      setTableActive: function(tabr){
-        tableActive = tabr;
-        return tableActive;
-      },
-
-      getTableActive: function(){
-        return tableActive;
-      },
-
-      setTableDashed: function(tabr){
-        tableDashed = tabr;
-      },
-
-      getTableDashed: function(){
-        return tableDashed;
-      },
-
-      resetTableDashed: function(){
-        tableDashed = [];
-      },
-
-      setTableShine: function(tabr){
-        for (var i = 0; i < tabr.length; i++){
-          tabr[i].isSelected = true;
-        }
-        tableShine = tabr;
-      },
-
-      getTableShine: function(){
-        return tableShine;
-      },
-      
-      resetTableShine: function(){
-        for (var i = 0; i < tableShine.length; i++){
-          tableShine[i].isSelected = false;
-        }
-        tableShine = [];
-      },
-
-      setTableThin: function(tabr){
-        checkCollision.checkAll(tabr);
-        tableThin = tabr;
-      },
-
-      getTableThin: function(){
-        return tableThin;
-      },
-
-      resetTableThin: function(){
-        tableThin = [];
-      },
-
       setTableEffet: function(tabr) {
-        tableEffet = tabr;
+        var i = tableEffet.length;
+        var j = tabr.length;
+        tableEffet.splice(0, i);
+        for (var k = 0; k < j; k++ ) {
+          tableEffet.push(tabr[k]);
+        }
+        return tableEffet;
       },
 
       getTableEffet: function(){
         return tableEffet;
       },
 
+      resetTableEffet: function(){
+        var i = tableEffet.length;
+        tableEffet.splice(0, i);
+      },
+
       setTableComposant: function(tabr) {
-        tableComposant = tabr;
+        var i = tableComposant.length;
+        var j = tabr.length;
+        tableComposant.splice(0, i);
+        for (var k = 0; k < j; k++ ) {
+          tableComposant.push(tabr[k]);
+        }
+        return tableComposant;
       },
 
       getTableComposant: function(){
         return tableComposant;
       },
 
+      resetTableComposant: function(){
+        var i = tableComposant.length;
+        tableComposant.splice(0, i);
+      },
+
+      setActiveItem: function(item){
+        var i = activeItem.length;
+        activeItem.splice(0, i);
+        activeItem.push(item);
+        return activeItem;
+      },
+
+      getActiveItem: function(){
+        return activeItem;
+      },
+
+      resetActiveItem: function(){
+        var i = activeItem.length;
+        activeItem.splice(0, i);
+      },
+
       setTableAlignLine: function(tabr) {
-        tableAlignLine = tabr;
+        var i = tableAlignLine.length;
+        var j = tabr.length;
+        tableAlignLine.splice(0, i);
+        for (var k = 0; k < j; k++ ) {
+          tableAlignLine.push(tabr[k]);
+        }
+        return tableAlignLine;
       },
 
       getTableAlignLine: function(){
         return tableAlignLine;
       },
 
+      resetTableAlignLine: function(){
+        var i = tableAlignLine.length;
+        tableAlignLine.splice(0, i);
+      },
+
       setTableArrow: function(tabr) {
-        tableArrow = tabr;
+        var i = tableArrow.length;
+        var j = tabr.length;
+        tableArrow.splice(0, i);
+        for (var k = 0; k < j; k++ ) {
+          tableArrow.push(tabr[k]);
+        }
+        return tableArrow;
       },
 
       getTableArrow: function(){
         return tableArrow;
       },
 
+      resetTableArrow: function(){
+        var i = tableArrow.length;
+        tableArrow.splice(0, i);
+      },
+
+      setTableActive: function(tabr){
+        tableActive = tabr;
+      },
+
+      getTableActive: function(){
+        return tableActive;
+      },
+
+      resetTableActive: function(){
+        tableActive = [];
+      },
+
+      setTableDrawDashed: function(tabr){
+        tableDrawDashed = tabr;
+      },
+
+      getTableDrawDashed: function(){
+        return tableDrawDashed;
+      },
+
+      resetTableDrawDashed: function(){
+        tableDrawDashed = [];
+      },
+
+      setTableDrawShine: function(tabr){
+        for (var i = 0; i < tabr.length; i++){
+          tabr[i].isSelected = true;
+        }
+        tableDrawShine = tabr;
+      },
+
+      getTableDrawShine: function(){
+        return tableDrawShine;
+      },
+      
+      resetTableDrawShine: function(){
+        for (var i = 0; i < tableDrawShine.length; i++){
+          tableDrawShine[i].isSelected = false;
+        }
+        tableDrawShine = [];
+      },
+
+      setTableDrawThin: function(tabr){
+        checkCollision.checkAll(tabr);
+        tableDrawThin = tabr;
+      },
+
+      getTableDrawThin: function(){
+        return tableDrawThin;
+      },
+
+      resetTableDrawThin: function(){
+        tableDrawThin = [];
+      },
+
       resetAll: function(){
         boite = {};
-        tableEffet = [];
-        tableComposant = [];
-        tableActive = [];
-        tableDashed = [];
-        tableThin = [];
-        tableShine = [];
-        tableAlignLine = [];
-        tableArrow = [];
+        this.resetTableEffet();
+        this.resetTableComposant();
+        this.resetTableActive();
+        this.resetTableDrawDashed();
+        this.resetTableDrawThin();
+        this.resetTableDrawShine();
+        this.resetTableAlignLine();
+        this.resetTableArrow();
         debrayable = false;
       },
       
@@ -527,12 +743,16 @@ angular.module('pedaleswitchApp')
       // @todo a supprimer
       tableState: function(){
         return {
+          masterBoite: masterBoite,
+          boite: boite,
+          tableMasterEffet: tableMasterEffet,
+          tableMasterComposant: tableMasterComposant,
           tableEffet: tableEffet,
           tableComposant: tableComposant,
           tableActive: tableActive,
-          tableDashed:  tableDashed,
-          tableThin: tableThin,
-          tableShine: tableShine,
+          tableDrawDashed:  tableDrawDashed,
+          tableDrawThin: tableDrawThin,
+          tableDrawShine: tableDrawShine,
           tableArrow:  tableArrow
         }
       }

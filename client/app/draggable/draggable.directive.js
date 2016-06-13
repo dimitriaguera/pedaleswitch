@@ -22,8 +22,8 @@ angular.module('pedaleswitchApp')
             // L'autre methode et de l'ajouter au body mais il faut apres le cacher et le supprimer au drop.
             var canvasimg = document.createElement('canvas');
 
-            canvasimg.width = sc.effet.size.w;
-            canvasimg.height = sc.effet.size.h;
+            canvasimg.width = sc.effet.size.w.v;
+            canvasimg.height = sc.effet.size.h.v;
 
             var  ctximg = canvasimg.getContext('2d'),
               img = document.createElement("img");
@@ -31,10 +31,10 @@ angular.module('pedaleswitchApp')
             ctximg.beginPath();
             ctximg.lineWidth = 1;
             ctximg.strokeStyle= "green";
-            ctximg.rect(0, 0, sc.effet.size.w, sc.effet.size.h);
+            ctximg.rect(0, 0, sc.effet.size.w.v, sc.effet.size.h.v);
             ctximg.stroke();
             img.src = canvasimg.toDataURL("image/gif");
-            e.dataTransfer.setDragImage(img, sc.effet.size.w/2, sc.effet.size.h/2);
+            e.dataTransfer.setDragImage(img, sc.effet.size.w.v/2, sc.effet.size.h.v/2);
 
 
             e.dataTransfer.effectAllowed = 'move';

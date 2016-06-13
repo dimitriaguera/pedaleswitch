@@ -38,8 +38,8 @@
         <div ng-repeat="composant in $ctrl.data.composants">
         <div class="row">
             <div class="col-lg-12">
-                <p><label>Composant:</label> <span ng-bind="::composant.item_info.titre_item"></span></p>
-                <p>
+                <p><label ng-bind="::composant.titre"></label>
+                <div ng-bind="::composant.item_info.titre_item"></div>
                     <modal-dessin
                             name="Changer le composant"
                             template="modalBox"

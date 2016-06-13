@@ -14,7 +14,9 @@
         zoom: '<',
         zoomAdd: '&',
         load: '&',
-        save: '&'
+        save: '&',
+        up: '&',
+        right: '&'
       },
       controller: NavigationDessin
     });

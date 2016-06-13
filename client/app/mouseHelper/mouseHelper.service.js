@@ -11,7 +11,7 @@ angular.module('pedaleswitchApp')
     var boite = [];
 
     var timea, timeb;
-    var TOUCHDELAY = 175;
+    var TOUCHDELAY = 100;
 
     var olddragid = null;
 
@@ -42,9 +42,9 @@ angular.module('pedaleswitchApp')
 
         // Met le bon pointeur de souris
         update('default');
-
+        var test = boite.titre;
         // Si il y a des obj dans le canvas.
-        if (tabActive.length > 0){
+        if (tabActive.length > 0 || boite.titre !== undefined){
 
           // Regarde si la souris est sur un effet ou un composant.
           drag = checkCollision.checkMouseBox({x: mouseX, y: mouseY}, tabActive, 10);
@@ -87,8 +87,8 @@ angular.module('pedaleswitchApp')
           drag = checkCollision.checkMouseBox({x: mouseX, y: mouseY}, [boite], 10);
           if(drag){
             drag.type = 'boite';
-            oldX = boite.pos.x;
-            oldY = boite.pos.y;
+            oldX = boite.pos.x.v;
+            oldY = boite.pos.y.v;
             return;
           }
         }
@@ -164,7 +164,7 @@ angular.module('pedaleswitchApp')
             }
 
             // Redimensionne la boite.
-            boite.size.h += mouseY - boite.getBottom();
+            boite.size.h.v += mouseY - boite.getBottom();
           }
           //Bord haut.
           else {
@@ -179,7 +179,7 @@ angular.module('pedaleswitchApp')
             }
 
             // Redimensionne la boite.
-            boite.size.h += boite.getTop() - mouseY;
+            boite.size.h.v += boite.getTop() - mouseY;
             boite.setY(mouseY);
           }
         }
@@ -198,7 +198,7 @@ angular.module('pedaleswitchApp')
             }
 
             // Redimensionne la boite.
-            boite.size.w += mouseX - boite.getRight();
+            boite.size.w.v += mouseX - boite.getRight();
           }
           //Bord gauche.
           else {
@@ -213,7 +213,7 @@ angular.module('pedaleswitchApp')
             }
 
             // Redimensionne la boite.
-            boite.size.w += boite.getLeft() - mouseX;
+            boite.size.w.v += boite.getLeft() - mouseX;
             boite.setX(mouseX);
           }
         }
@@ -247,11 +247,11 @@ angular.module('pedaleswitchApp')
         
         // Bouge les effets et les compos.
         boite.moveEffetCompo({
-          deltaX: boite.pos.x - oldX,
-          deltaY: boite.pos.y - oldY
+          deltaX: boite.pos.x.v - oldX,
+          deltaY: boite.pos.y.v - oldY
         });
-        oldX = boite.pos.x;
-        oldY = boite.pos.y;
+        oldX = boite.pos.x.v;
+        oldY = boite.pos.y.v;
 
         // Recalcule les positions de fleches entourant la boite.
         canvasControl.setArrowPos();
