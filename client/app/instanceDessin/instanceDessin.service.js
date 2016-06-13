@@ -82,6 +82,11 @@ angular.module('pedaleswitchApp')
             h: {v: option.size.h},
             d: {v: option.size.d || null}
           },
+          old_size: {
+            w: {v: option.size.w},
+            h: {v: option.size.h},
+            d: {v: option.size.d || null}
+          },
           //pos: {
           //  x: {v: option.pos.x || 20},
           //  y: {v: option.pos.y || 20},

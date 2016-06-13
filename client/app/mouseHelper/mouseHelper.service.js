@@ -41,7 +41,7 @@ angular.module('pedaleswitchApp')
 
         // Met le bon pointeur de souris
         update('default');
-        var test = boite.titre;
+
         // Si il y a des obj dans le canvas.
         if (tabActive.length > 0 || boite.titre !== undefined){
 
@@ -125,7 +125,7 @@ angular.module('pedaleswitchApp')
       /**
        * On agrandie la boite.
        *
-       * @todo un bonne partie est a metre dans canvasContole
+       * @todo un bonne partie est a metre dans canvasContol
        * car par exemple les marges ne sont pas uniforme
        * canvasConversion.convertToPixel(40)
        */
@@ -144,7 +144,7 @@ angular.module('pedaleswitchApp')
         var pos_max = canvasControl.findGlobalRect();
 
         var margin = canvasConversion.convertToPixel(40);
-        var marginboite = canvasControl.getBoite().margin;
+        var marginboite = canvasControl.getBoite().margin.v;
 
         // Bord haut ou bas.
         if (drag.pointer.type === 'ns-resize'){

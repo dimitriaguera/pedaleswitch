@@ -341,7 +341,7 @@ angular.module('pedaleswitchApp')
        *
        * @returns {{t: number, r: number, b: number, l: number}}
        */
-      findGobalRect: function (){
+      findGlobalRect: function (){
         var saveMax = function(posmax, pos){
           posmax.t = Math.min(posmax.t, pos.t);
           posmax.r = Math.max(posmax.r, pos.r);
@@ -728,7 +728,6 @@ angular.module('pedaleswitchApp')
         this.resetTableDrawShine();
         this.resetTableAlignLine();
         this.resetTableArrow();
-        debrayable = false;
       },
 
       // @todo a supprimer
