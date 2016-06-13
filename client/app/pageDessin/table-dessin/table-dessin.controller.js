@@ -11,8 +11,10 @@ angular.module('pedaleswitchApp')
           tableMenu: '=',
           items: '<',
           updateComposant: '&',
+          rotate: '&',
           arrowChange: '&'
         },
+        
         link: function(scope, element) {
           var canv_window = document.getElementById('canvas-window');
           var canv = document.getElementById('canvas-dessin');

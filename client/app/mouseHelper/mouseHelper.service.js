@@ -11,11 +11,10 @@ angular.module('pedaleswitchApp')
     var boite = [];
 
     var timea, timeb;
-    var TOUCHDELAY = 100;
+    var DELAY_DRAG = 100;
+    var DELAY_CLICK = 500;
 
     var olddragid = null;
-
-
 
     /**
      * Change la forme du pointeur de la souris.
@@ -133,8 +132,8 @@ angular.module('pedaleswitchApp')
       mouseMoveBorderBoite: function(e){
 
         // Delais avant le drag
-        if (timeb < TOUCHDELAY) {
-          timeb = (new Date()).getTime() - timea;
+        timeb = (new Date()).getTime() - timea;
+        if (timeb < DELAY_DRAG) {
           return;
         }
 
@@ -142,7 +141,7 @@ angular.module('pedaleswitchApp')
         mouseY = e.layerY;
 
         var canvas = canvasControl.getCanvas();
-        var pos_max = canvasControl.findGobalRect();
+        var pos_max = canvasControl.findGlobalRect();
 
         var margin = canvasConversion.convertToPixel(40);
         var marginboite = canvasControl.getBoite().margin;
@@ -230,8 +229,8 @@ angular.module('pedaleswitchApp')
       mouseMoveBoite: function(e) {
 
         // Delais avant le drag
-        if (timeb < TOUCHDELAY) {
-          timeb = (new Date()).getTime() - timea;
+        timeb = (new Date()).getTime() - timea;
+        if (timeb < DELAY_DRAG) {
           return;
         }
 
@@ -265,8 +264,8 @@ angular.module('pedaleswitchApp')
       mouseMoveThing: function(e) {
 
         // Delais avant le drag
-        if (timeb < TOUCHDELAY) {
-          timeb = (new Date()).getTime() - timea;
+        timeb = (new Date()).getTime() - timea;
+        if (timeb < DELAY_DRAG) {
           return;
         }
 
@@ -305,7 +304,7 @@ angular.module('pedaleswitchApp')
         // Verifier si on click ou si on draggue pour l'affichage des pop-up.
         timeb = (new Date()).getTime() - timea;
         // Si oui on click.
-        if (timeb < TOUCHDELAY && tabActive[drag.id]){
+        if (timeb < DELAY_CLICK && drag.type !=='boite' && tabActive[drag.id]){
           canvasControl.setActiveItem(tabActive[drag.id]);
         }
 

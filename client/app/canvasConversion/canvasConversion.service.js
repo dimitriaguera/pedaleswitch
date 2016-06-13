@@ -29,6 +29,8 @@ angular.module('pedaleswitchApp')
           compos[i].size.w.v = Math.round(ratio * compos[i].size.w.v);
           compos[i].size.h.v = Math.round(ratio * compos[i].size.h.v);
           compos[i].size.d.v = Math.round(ratio * compos[i].size.d.v);
+          compos[i].old_size.w.v = Math.round(ratio * compos[i].old_size.w.v);
+          compos[i].old_size.h.v = Math.round(ratio * compos[i].old_size.h.v);
         }
       }
       if (entity.margin){

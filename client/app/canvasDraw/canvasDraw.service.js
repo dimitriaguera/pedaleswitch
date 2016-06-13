@@ -169,6 +169,15 @@ angular.module('pedaleswitchApp')
         }
       },
 
+      drawText: function(ctx){
+        var tableText = canvasControl.getTableText();
+        if(tableText.length !== 0) {
+          for (var i = 0; i < tableText.length; i++) {
+            tableText[i].drawCanvas(ctx);
+          }
+        }
+      },
+
       drawStuff: function() {
 
         canvas = canvasControl.getCanvas();
@@ -182,6 +191,8 @@ angular.module('pedaleswitchApp')
         this.drawTableAlignLine(canvas, ctx, "#d0d0d0", "#00bfff", [10, 3]);
         this.drawTableActive(ctx, "black", null, "1px");
         this.drawArrow(ctx, "gray");
+        
+        this.drawText(ctx);
       }
 
     };

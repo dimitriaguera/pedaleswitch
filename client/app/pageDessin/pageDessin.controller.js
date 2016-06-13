@@ -39,7 +39,8 @@ class PageDessinComponent {
     // Met les bonnes options.
     this.zoom = this.canvasControl.getZoom();
     this.debrayable = this.canvasControl.getDeb();
-    
+    this.deco = false;
+
     // Active les effets et les dessines.
     this.activeEffet();
 
@@ -114,7 +115,23 @@ class PageDessinComponent {
       this.activeEffet();
     }
   }
-  
+
+  // Appeler par menu-dessin.html
+  switchDeco(){
+    if (this.deco){
+      this.canvasControl.resetTableDashed();
+      this.canvasControl.resetTableThin();
+      this.canvasControl.setTableActive(this.canvasControl.getTableText());
+      this.canvasControl.setTableDashed(this.canvasControl.getTableEffet().concat(this.canvasControl.getTableComposant()));
+      if (active.length > 0){
+        this.canvasDraw.drawStuff();
+      }
+    } else {
+      this.activeEffet();
+    }
+    this.deco = !this.deco;
+  }
+
   // Appeler par menu-dessin.html
   // @todo activeEffet est appele dans plusieur endroit ou l'on ne veut
   // pas dessiner.
@@ -169,6 +186,23 @@ class PageDessinComponent {
     this.canvasDraw.drawStuff();
   }
 
+  // @todo : implémenter quand on tourne
+  // pret bord canvas. Les composants se deplace.
+  rotate(value, data){
+    data.rotate(value, null, this.debrayable);
+    // Empeche que l'effet depasse du canvas.
+    this.canvasControl.moveCloseBorder(data);
+    this.dessin.boite.checkBorderBoite(data);
+    this.canvasControl.setArrowPos();
+    this.canvasControl.resizeCanvas();
+    this.canvasDraw.drawStuff();
+  }
+
+  addTextToTable(string){
+    this.canvasControl.addTextToCanvas({font: {}, input:string});
+    this.canvasDraw.drawStuff();
+  }
+
   // Utiliser par table-dessin.
   arrowChangeValue(){
     //@todo : implémenter verif collision box - effets.
@@ -205,10 +239,9 @@ class PageDessinComponent {
   
   //@todo a supprimer.
   getTable(){
-    this.toutesTables = this.canvasControl.tableState();
-    this.dessin = this.instanceDessin.getDessin();
-    var x = 5;
+    this.toutesTables = [this.canvasControl.tableState() , this.instanceDessin.getDessin()];
   }
+
 
 }
 

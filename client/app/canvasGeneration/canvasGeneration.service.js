@@ -21,6 +21,7 @@ angular.module('pedaleswitchApp')
         this.item_info = entity.item_info;
         this.prix = entity.prix || null;
         this.size = entity.size;
+        this.old_size = entity.old_size;
         this.pos = entity.pos;
         this.pos_default = entity.pos_default || null;
         this.projections = {
@@ -40,36 +41,60 @@ angular.module('pedaleswitchApp')
             size: {
               w: this.size.w,
               h: this.size.d
+            },
+            old_size: {
+              w: this.old_size.w,
+              h: this.old_size.d
             }
           },
           bottom: {
             size: {
               w: this.size.w,
               h: this.size.d
+            },
+            old_size: {
+              w: this.old_size.w,
+              h: this.old_size.d
             }
           },
           up: {
             size: {
               w: this.size.w,
               h: this.size.h
+            },
+            old_size: {
+              w: this.old_size.w,
+              h: this.old_size.h
             }
           },
           down: {
             size: {
               w: this.size.w,
               h: this.size.h
+            },
+            old_size: {
+              w: this.old_size.w,
+              h: this.old_size.h
             }
           },
           left: {
             size: {
               w: this.size.h,
               h: this.size.d
+            },
+            old_size: {
+              w: this.old_size.h,
+              h: this.old_size.d
             }
           },
           right: {
             size: {
               w: this.size.h,
               h: this.size.d
+            },
+            old_size: {
+              w: this.old_size.h,
+              h: this.old_size.d
             }
           }
         };
@@ -180,6 +205,7 @@ angular.module('pedaleswitchApp')
         this.item_info = entity.item_info || null;
         this.prix = entity.prix || null;
         this.size = proj_size.size;
+        this.old_size = proj_size.old_size;
         this.pos = entity.pos;
         this.pos_default = entity.pos_default || null;
         this.isSelected = false;
@@ -191,6 +217,9 @@ angular.module('pedaleswitchApp')
           for (var i = 0; i < compos.length; i++) {
             compos[i].setX(this.pos.x.v + compos[i].pos_default.x.v);
             compos[i].setY(this.pos.y.v + compos[i].pos_default.y.v);
+
+            compos[i].size.h.v = compos[i].old_size.h.v;
+            compos[i].size.w.v = compos[i].old_size.w.v;
           }
         }
       }
@@ -239,6 +268,164 @@ angular.module('pedaleswitchApp')
       setOverlapping(overlap) {
         this.isOverlapping = overlap;
       }
+      getBoundingBoxPoints() {
+        // Bords du rectangle.
+        // 0 haut gauche, 1 haut droit, 2 bas droit, 3 bas gauche.
+        return ([
+          {
+            x: this.pos.x.v,
+            y: this.pos.y.v
+          },
+          {
+            x: this.pos.x.v + this.size.w.v,
+            y: this.pos.y.v
+          },
+          {
+            x: this.pos.x.v + this.size.w.v,
+            y: this.pos.y.v + this.size.h.v
+          },
+          {
+            x: this.pos.x.v,
+            y: this.pos.y.v + this.size.h.v
+          }
+        ]);
+      }
+
+      /**
+       * Permet de faire une rotation d'un point, d'un angle donnée par rapport a un
+       * centre donnée dans le repère du canvas.
+       *
+       * Retourne les nouvelles coordonnées du points.
+       * 
+       * @param point
+       * @param angle
+       * @param C
+       * @returns {{x: *, y: *}}
+       */
+      rotatePoint(point, angle, C) {
+        var alpha_rad = angle * (2*Math.PI)/360.0;
+        var cos = Math.cos(alpha_rad);
+        var sin = Math.sin(alpha_rad);
+        var pos_c = {};
+
+        // Calcul des coordonné du point dans le repère du baricentre C.
+        pos_c.x = point.x - C.x;
+        pos_c.y = point.y - C.y;
+
+        // Calcul des coordonnées du point après rotation dans le repère d'origine.
+        return {
+          x: pos_c.x * cos + pos_c.y * sin + C.x,
+          y: - pos_c.x * sin + pos_c.y * cos + C.y
+        };
+      }
+
+      /**
+       * Rotate un element.
+       * @param angle en degre
+       * @param C : position du centre de rotation.
+       * @param debrayable : boolean on est en debrayable ou pas.
+       */
+      rotate(angle, C, debrayable){
+        var i;
+        var points, point;
+        var old_size, old_pos;
+
+        debrayable = debrayable || false;
+        // Barycentre.
+        C = C || { x: this.getCenterX(), y: this.getCenterY()};
+
+        // 4 angle du rect.
+        points = this.getBoundingBoxPoints();
+
+        // @todo cette partie marche que pour les rectangles et cercle car il sont dans des rectangles.
+        old_size = {
+          w: this.size.w.v,
+          h: this.size.h.v
+        };
+        old_pos = {
+          x: this.pos.x.v,
+          y: this.pos.y.v
+        };
+
+        // Inverse les dimensions du rect.
+        this.size.w.v = old_size.h;
+        this.size.h.v = old_size.w;
+
+        // Rotation 90 a droite.
+        if (angle < 0) {
+          point = this.rotatePoint(points[3], angle, C);
+          this.setX(point.x);
+          this.setY(point.y);
+        }
+        // Rotation 90 a gauche.
+        else {
+          point = this.rotatePoint(points[1], angle, C);
+          this.setX(point.x);
+          this.setY(point.y);
+        }
+
+        // Si l'obj a des composants.
+        if (this.composants.length > 0) {
+          // Si pas debrayable fait tourner les composants.
+          if (!debrayable) {
+            for (i = 0; i < this.composants.length; i++) {
+              this.composants[i].rotate(angle, { x: this.getCenterX(), y: this.getCenterY()}, debrayable);
+              this.composants[i].pos_default.x.v = this.composants[i].pos.x.v - this.pos.x.v;
+              this.composants[i].pos_default.y.v = this.composants[i].pos.y.v - this.pos.y.v;
+
+              old_size = {
+                w: this.composants[i].old_size.w.v,
+                h: this.composants[i].old_size.h.v
+              };
+              this.composants[i].old_size.h.v = old_size.w;
+              this.composants[i].old_size.w.v = old_size.h;
+
+            }
+          }
+          // Si debrayable doit appliquer un rotation au composant qui serait virtuellement dans cette
+          // position si cela n'avait pas été débrayable afin de remettre le composant à la bonne place
+          // si l'utilisateur switch de debrayable à non.
+          else {
+            for (i = 0; i < this.composants.length; i++) {
+              // Rotation 90 a droite.
+              if (angle < 0) {
+                // Coordonnée dans le repère du rect avant rotation.
+                point = {
+                  x: this.composants[i].pos_default.x.v,
+                  y: this.composants[i].pos_default.y.v + this.composants[i].size.h.v
+                };
+
+              }
+              // Rotation 90 a gauche.
+              else {
+                // Coordonnée dans le repère du rect avant rotation.
+                point = {
+                  x: this.composants[i].pos_default.x.v + this.composants[i].size.w.v,
+                  y: this.composants[i].pos_default.y.v
+                };
+              }
+              // Coordonnée dans le repère du canvas.
+              point.x = point.x + old_pos.x;
+              point.y = point.y + old_pos.y;
+
+              // Rotation dans le repère du canvas.
+              point = this.rotatePoint(point, angle, C);
+
+              // Nouvelle coordonnées dans le repère du rect et inversion des dimensions.
+              this.composants[i].pos_default.x.v = point.x - this.pos.x.v ;
+              this.composants[i].pos_default.y.v = point.y - this.pos.y.v ;
+
+              old_size = {
+                w: this.composants[i].old_size.w.v,
+                h: this.composants[i].old_size.h.v
+              };
+              this.composants[i].old_size.h.v = old_size.w;
+              this.composants[i].old_size.w.v = old_size.h;
+            }
+          }
+        }
+      }
+
       getMax(){
         return {
           t: this.getTop(),
@@ -266,7 +453,7 @@ angular.module('pedaleswitchApp')
     }
 
     class Rect extends Shape {
-        drawCanvas(ctx){
+      drawCanvas(ctx){
         ctx.beginPath();
         ctx.rect(this.pos.x.v, this.pos.y.v, this.size.w.v, this.size.h.v);
 
@@ -283,7 +470,7 @@ angular.module('pedaleswitchApp')
     }
 
     class MasterBoite {
-      constructor () {
+      constructor() {
         this.margin = {v: 5};
         this.initialHeight = {v: 40};
         this.size = {
@@ -307,13 +494,16 @@ angular.module('pedaleswitchApp')
         this.createProjection();
 
       }
-      convertMargin(){
+
+      convertMargin() {
         this.margin.v = canvasConversion.convertToPixel(this.margin.v);
       }
-      convertInitialHeight(){
+
+      convertInitialHeight() {
         this.initialHeight.v = canvasConversion.convertToPixel(this.initialHeight.v);
       }
-      createProjection(){
+
+      createProjection() {
         var proj_size = {
           top: {
             size: {
@@ -359,12 +549,104 @@ angular.module('pedaleswitchApp')
         this.projections.top = new Boite(this, proj_size.top);
         this.projections.bottom = new Boite(this, proj_size.bottom);
       }
+
       //initProjectionPos(state){
       //  this.projections[state].pos = {
       //    x: {v: 40},
       //    y: {v: 40}
       //  };
       //}
+    }
+
+    class Texte {
+      constructor(obj){
+
+        this.font = {};
+
+        // normal, italic, oblique
+        this.font.style = obj.font.style || 'normal';
+        //normal, small-caps
+        this.font.variant = obj.font.variant || 'normal';
+        // normal, bold, bolder, lighter, 100, 200 ... 900.
+        this.font.weight = obj.font.weight || 'normal';
+        this.font.size = obj.font.size || '14';
+        this.font.family = obj.font.family || 'sans-serif';
+        //this.textAlign = obj.textAlign || 'left';
+        this.color = obj.color || 'black';
+        this.input = obj.input || 'input';
+        // fillText, strokeText
+        this.type = obj.type || 'fillText';
+
+        this.pos = obj.pos || {x:20, y:20};
+        this.size = obj.size || {w:0, h:0};
+      }
+
+      getCenterX(){
+        return this.pos.x + (this.size.w / 2);
+      }
+      getCenterY(){
+        return this.pos.y + (this.size.h / 2);
+      }
+      setX(coord){
+        this.pos.x = coord;
+      }
+      setY(coord){
+        this.pos.y = coord;
+      }
+      getX() {
+        return this.pos.x;
+      }
+      getY() {
+        return this.pos.y;
+      }
+      getLeft() {
+        return this.getX();
+      }
+      getTop() {
+        return this.getY();
+      }
+      getRight() {
+        return this.getX() + this.size.w;
+      }
+      getBottom() {
+        return this.getY() + this.size.h;
+      }
+      setCenterX(center){
+        this.pos.x = center - (this.size.w / 2);
+      }
+      setCenterY(center){
+        this.pos.y = center - (this.size.h / 2);
+      }
+
+      drawCanvas(ctx){
+        ctx.save();
+
+        ctx.font =
+          this.font.style + ' '
+          + this.font.variant + ' '
+          + this.font.weight + ' '
+          + this.font.size + 'px' + ' '
+          + this.font.family;
+
+        ctx.fillStyle = this.color;
+
+
+        switch(this.type) {
+          case 'fillText':
+          default:
+            ctx.fillText(this.input, this.getX(), this.getY());
+            break;
+          case 'strokeText':
+            ctx.strokeText(this.input, this.getX(), this.getY());
+            break;
+        }
+
+        var mes = ctx.measureText(this.input);
+        this.size.w = Math.round(mes.width);
+        this.size.h = this.font.size;
+
+        ctx.restore();
+      }
     }
 
     class Boite {
@@ -395,6 +677,7 @@ angular.module('pedaleswitchApp')
         this.pos.x.v = entity.pos.x.v - this.margin.v;
         this.pos.y.v = entity.pos.y.v - this.margin.v;
       }
+
       // Redimensionne la boite si le nouvel effet est en dehors.
       checkBorderBoite(entity){
         if (entity.pos.x.v < (this.pos.x.v + this.margin.v)){
@@ -667,7 +950,11 @@ angular.module('pedaleswitchApp')
 
       newMasterBoite: function () {
         return new MasterBoite();
-      }
+      },
+
+      newTexte: function(obj) {
+        return new Texte(obj);
+      },
 
       //newPoly: function (entity) {
       //  return new Poly(entity);

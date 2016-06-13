@@ -2,3 +2,7 @@ Sous Safari
 
 Le drag&drop ne marche pas quand on prend directement le nom de l'effet du panier. Pour que cela marche il faut ajouter
 draggable='true' en attribut du span qui contient le titre.
+
+Rotation :
+
+  Quand on tourne un obj trop pret du canvas l'est composant qui le compose bouge...

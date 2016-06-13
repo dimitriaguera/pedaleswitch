@@ -12,9 +12,11 @@
     .component('menuDessin', {
       templateUrl: 'app/pageDessin/menu-dessin/menu-dessin.html',
       bindings: {
-        isActive: '<',
+        deco: '=',
+        switchDeco: '&',
         debrayable: '=',
         switchDeb: '&',
+        isActive: '<',
         activeEffet: '&',
         activeCompo: '&'
       },

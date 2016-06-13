@@ -18,8 +18,10 @@ angular.module('pedaleswitchApp')
     var tableDrawThin = [];
     var tableDrawShine = [];
     var tableAlignLine = [];
+    var tableText = [];
     var tableArrow = [];
     var activeItem = [];
+
     var debrayable = false;
     var viewState = 'up';
 
@@ -42,8 +44,7 @@ angular.module('pedaleswitchApp')
         
     // Public API here
     return{
-      
-      
+            
       /**
        * Cette fonction créé les objets du canvas à partir du modèle dessin.
        * Et l'ajoute dans tableEffet et tableComposant pour les composants correspondants.
@@ -340,7 +341,6 @@ angular.module('pedaleswitchApp')
        *
        * @returns {{t: number, r: number, b: number, l: number}}
        */
-
       findGobalRect: function (){
         var saveMax = function(posmax, pos){
           posmax.t = Math.min(posmax.t, pos.t);
@@ -429,7 +429,27 @@ angular.module('pedaleswitchApp')
           canvas.height = max_pos.b + realmargin + 150;
         }
       },
-            
+
+      /**
+       * Ajoute du texte au canvas.
+       * @param string
+       */
+      addTextToCanvas: function(string) {
+        var texte = canvasGeneration.newTexte(string);
+
+        // Rajoute le texte à la table texte.
+        tableText.push(texte);
+      },
+
+      getTableText: function() {
+        return tableText;
+      },
+      
+      resetTableText: function() {
+        tableText.splice(0, tableText.length);
+      },
+      
+      
       //@todo optimisation possible check arraw active.
       setArrowPos: function(){
         for(var i = 0; i < tableArrow.length; i++){
@@ -710,25 +730,6 @@ angular.module('pedaleswitchApp')
         this.resetTableArrow();
         debrayable = false;
       },
-      
-      //zoomInitialize: function(value){
-      //  canvasConversion.setZoom(value);
-      //  for (var i = 0; i < tableEffet.length; i++) {
-      //    canvasConversion.initializeEffetZoom(tableEffet[i]);
-      //  }
-      //  this.drawStuff();
-      //},
-      //
-      //zoomChange: function(value){
-      //  var okZoom = canvasConversion.setZoom(value);
-      //  if (okZoom) {
-      //    for (var i = 0; i < tableEffet.length; i++) {
-      //      canvasConversion.convertEffetZoom(tableEffet[i]);
-      //    }
-      //    this.drawStuff();
-      //  }
-      //  return okZoom;
-      //},
 
       // @todo a supprimer
       drawRulers: function() {
