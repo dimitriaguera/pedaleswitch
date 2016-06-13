@@ -171,6 +171,12 @@ class PageDessinComponent {
   
   rotate(value, data){
     data.rotate(value, null, this.debrayable);
+
+    // Empeche que l'effet depasse du canvas.
+    this.canvasControl.moveCloseBorder(data);
+    this.dessin.boite.checkBorderBoite(data);
+    this.canvasControl.setArrowPos();
+    this.canvasControl.resizeCanvas();
     this.canvasDraw.drawStuff();
   }
 

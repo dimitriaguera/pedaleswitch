@@ -121,7 +121,7 @@ angular.module('pedaleswitchApp')
        * @param C
        * @returns {{x: *, y: *}}
        */
-      rotatePoint(point, angle, C){
+      rotatePoint(point, angle, C) {
         var alpha_rad = angle * (2*Math.PI)/360.0;
         var cos = Math.cos(alpha_rad);
         var sin = Math.sin(alpha_rad);
