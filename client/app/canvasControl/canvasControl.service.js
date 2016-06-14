@@ -46,6 +46,14 @@ angular.module('pedaleswitchApp')
     // Public API here
     return{
             
+      
+      // A SUPPRIMER
+      addpoly: function(){
+        var test = canvasGeneration.newPoly();
+        tableEffet.push(test);
+      },
+      
+      
       /**
        * Cette fonction créé les objets du canvas à partir du modèle dessin.
        * Et l'ajoute dans tableEffet et tableComposant pour les composants correspondants.

@@ -236,6 +236,8 @@ class PageDessinComponent {
   
   //@todo a supprimer.
   getTable(){
+    this.canvasControl.addpoly();
+    this.canvasDraw.drawStuff();
     this.toutesTables = [this.canvasControl.tableState() , this.instanceDessin.getDessin()];
   }
 
