@@ -469,30 +469,6 @@ angular.module('pedaleswitchApp')
       }
     }
 
-    
-    class Poly extends Shape {
-      
-      points = [
-        {x:2 , y:5},
-        {x:4 , y:3},
-        {x:7 , y:5},
-        {x:6 , y:7},
-        {x:3 , y:8}
-      ];
-      
-      drawCanvas(ctx){
-        ctx.beginPath();
-
-        ctx.moveTo(this.points.x[0], this.points.y[0]);
-        for (var item = 0, length = this.points.length; item <= length - 1; item += 1) {
-          this.ctx.lineTo(this.points[item].x, this.points[item].y);
-        }
-        ctx.stroke();
-        ctx.closePath();
-      }
-    }
-    
-    
     class MasterBoite {
       constructor() {
         this.margin = {v: 5};
@@ -580,6 +556,28 @@ angular.module('pedaleswitchApp')
       //    y: {v: 40}
       //  };
       //}
+    }
+
+
+    class Poly {
+      points = [
+        {x:20 , y:50},
+        {x:40 , y:30},
+        {x:70 , y:50},
+        {x:60 , y:70},
+        {x:30 , y:80}
+      ];
+
+      drawCanvas(ctx){
+        ctx.beginPath();
+        ctx.moveTo(this.points[0].x, this.points[0].y);
+        for (var item = 0, length = this.points.length; item < length; item += 1) {
+          ctx.lineTo(this.points[item].x, this.points[item].y);
+        }
+        ctx.closePath();
+
+        ctx.stroke();
+      }
     }
 
     class Texte {

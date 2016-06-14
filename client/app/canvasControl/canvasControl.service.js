@@ -47,9 +47,9 @@ angular.module('pedaleswitchApp')
     return{
             
       
-      // A SUPPRIMER
-      addpoly: function(){
-        var test = canvasGeneration.newPoly();
+      //@todo A SUPPRIMER
+      addpoly: function(entity){
+        var test = canvasGeneration.newPoly(entity);
         tableEffet.push(test);
       },
       

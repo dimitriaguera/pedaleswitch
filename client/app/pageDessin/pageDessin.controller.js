@@ -236,12 +236,10 @@ class PageDessinComponent {
   
   //@todo a supprimer.
   getTable(){
-    this.canvasControl.addpoly();
+    this.canvasControl.addpoly({_id: 5, size:{w:25,h:32}});
     this.canvasDraw.drawStuff();
     this.toutesTables = [this.canvasControl.tableState() , this.instanceDessin.getDessin()];
   }
-
-
 }
 
 angular.module('pedaleswitchApp')
