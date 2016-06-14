@@ -43,12 +43,17 @@ angular.module('pedaleswitchApp')
         update('default');
 
         // Si il y a des obj dans le canvas.
-        if (tabActive.length > 0 || boite.titre !== undefined){
-
+        if (tabActive.length > 0) {
           // Regarde si la souris est sur un effet ou un composant.
           drag = checkCollision.checkMouseBox({x: mouseX, y: mouseY}, tabActive, 10);
           if (drag) {
-            drag.type = 'thing';
+            
+            // On drague soit un obj soit un élément de déco.
+            if (tabActive[drag.id].input) {
+              drag.type = 'deco';
+            } else {
+              drag.type = 'thing';
+            }
             // Met isSelect a l'objet en cours
             // Et enlève l'ancien selectionner.
             // Redraw si necaissaire.
@@ -73,7 +78,9 @@ angular.module('pedaleswitchApp')
             }
             olddragid = null;
           }
+        }
 
+        if (boite.titre !== undefined){
           // Regarde si la souris est sur les bordure de la boite.
           drag = checkCollision.checkMouseBorder({x: mouseX, y: mouseY}, [boite], 10);
           if (drag) {
@@ -105,6 +112,7 @@ angular.module('pedaleswitchApp')
         timea = (new Date()).getTime();
         timeb = 0;
 
+        // Les rootScope sont définie dans table-dessin.controller.js
         switch(drag.type) {
           case 'thing':
             $rootScope.$emit('click-on-thing');
@@ -115,12 +123,37 @@ angular.module('pedaleswitchApp')
           case 'borderboite':
             $rootScope.$emit('click-on-border-boite');
             break;
+          case 'deco':
+            $rootScope.$emit('click-on-deco');
+            break;
           default:
             $rootScope.$emit('no-click-on-element');
             drag = {};
         }
       },
 
+      /**
+       * On déplace de la deco
+       */
+      mouseMoveDeco: function(e){
+        // Delais avant le drag
+        timeb = (new Date()).getTime() - timea;
+        if (timeb < DELAY_DRAG) {
+          return;
+        }
+
+        mouseX = e.layerX;
+        mouseY = e.layerY;
+
+        // Met le bon pointeur de souris
+        update('move');
+
+        // Affecte la nouvelle position.
+        tabActive[drag.id].setCenterX(mouseX - drag.dx);
+        tabActive[drag.id].setCenterY(mouseY - drag.dy);
+        // Dessine.
+        canvasDraw.drawStuff();
+      },
 
       /**
        * On agrandie la boite.
@@ -237,6 +270,9 @@ angular.module('pedaleswitchApp')
         mouseX = e.layerX;
         mouseY = e.layerY;
 
+        // Met le bon pointeur de souris
+        update('move');
+
         // Affecte la nouvelle position.
         boite.setCenterX(mouseX - drag.dx);
         boite.setCenterY(mouseY - drag.dy);
@@ -271,6 +307,9 @@ angular.module('pedaleswitchApp')
 
         mouseX = e.layerX;
         mouseY = e.layerY;
+
+        // Met le bon pointeur de souris
+        update('move');
 
         // Affecte la nouvelle position.
         tabActive[drag.id].setCenterX(mouseX - drag.dx);

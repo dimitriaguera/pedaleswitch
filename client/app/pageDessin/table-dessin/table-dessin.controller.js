@@ -58,11 +58,18 @@ angular.module('pedaleswitchApp')
             canv.addEventListener("mousemove", mouseHelper.mouseMoveThing);
             canv.addEventListener("mouseup", mouseHelper.mouseUp);
           });
-          
+
+          var handler4 = $rootScope.$on('click-on-deco', function(){
+            canv.removeEventListener("mousemove", mouseHelper.mouseMove);
+            canv.addEventListener("mousemove", mouseHelper.mouseMoveDeco);
+            canv.addEventListener("mouseup", mouseHelper.mouseUp);
+          });
+
           var nohandler = $rootScope.$on('no-click-on-element', function(){
             canv.removeEventListener("mousemove", mouseHelper.mouseMoveBorderBoite);
             canv.removeEventListener("mousemove", mouseHelper.mouseMoveBoite);
             canv.removeEventListener("mousemove", mouseHelper.mouseMoveThing);
+            canv.removeEventListener("mousemove", mouseHelper.mouseMoveDeco);
             canv.removeEventListener("mouseup", mouseHelper.mouseUp);
 
             canv.addEventListener("mousemove", mouseHelper.mouseMove);
@@ -72,6 +79,7 @@ angular.module('pedaleswitchApp')
             handler1();
             handler2();
             handler3();
+            handler4();
             nohandler();
           });
         }

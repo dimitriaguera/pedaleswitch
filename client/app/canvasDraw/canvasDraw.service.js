@@ -192,7 +192,7 @@ angular.module('pedaleswitchApp')
         this.drawTableActive(ctx, "black", null, "1px");
         this.drawArrow(ctx, "gray");
         
-        this.drawText(ctx);
+        //this.drawText(ctx);
       }
 
     };

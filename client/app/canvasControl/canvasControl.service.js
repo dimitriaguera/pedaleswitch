@@ -24,7 +24,8 @@ angular.module('pedaleswitchApp')
 
     var debrayable = false;
     var viewState = 'up';
-
+    var isActive = 'effet';
+    
     var thing = function(entity) {
       switch (entity.item_info.shape){
         case 'Rect':
@@ -259,7 +260,7 @@ angular.module('pedaleswitchApp')
           case 'effet':
             active = tableEffet;
             inactive = tableComposant;
-            this.isActive = 'effet';
+            //this.isActive = 'effet';
             this.resetIsSelected(active);
             this.resetIsSelected(inactive);
             this.resetTableDrawDashed();
@@ -271,7 +272,7 @@ angular.module('pedaleswitchApp')
           case 'composant':
             active = tableComposant;
             inactive = tableEffet;
-            this.isActive = 'composant';
+            //this.isActive = 'composant';
             this.resetIsSelected(active);
             this.resetIsSelected(inactive);
             this.resetTableDrawThin();
@@ -280,6 +281,16 @@ angular.module('pedaleswitchApp')
             return (active.length > 0);
             break;
 
+          case 'deco':
+            this.resetIsSelected(tableComposant);
+            this.resetIsSelected(tableEffet);
+            this.resetTableDrawThin();
+            this.setTableActive(tableText);
+            var mix = tableEffet.concat(tableComposant);
+            this.setTableDrawDashed(mix);
+            return (tableText.length > 0);
+            break;
+          
           default:
             return console.log('ERROR ' + state + ' is not a valid state');
         }
@@ -717,7 +728,7 @@ angular.module('pedaleswitchApp')
       resetTableDrawThin: function(){
         tableDrawThin = [];
       },
-
+      
       resetAll: function(){
         boite = {};
         this.resetTableEffet();

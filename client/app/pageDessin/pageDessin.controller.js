@@ -100,8 +100,11 @@ class PageDessinComponent {
         case 'boite' :
           this.canvasControl.setTableDrawShine([this.canvasControl.getBoite()]);
           break;
+        //@todo a implementer ?
+        case 'deco' :
+          break;
         default:
-          return console.log('Variable "isActive" not defined in pageDessin.controller.js');
+          return console.log('Variable "isActive" not defined in pageDessin.controller.js : ' + this.isActive);
       }
       this.canvasDraw.drawStuff();
     }
@@ -119,17 +122,14 @@ class PageDessinComponent {
   // Appeler par menu-dessin.html
   switchDeco(){
     if (this.deco){
-      this.canvasControl.resetTableDashed();
-      this.canvasControl.resetTableThin();
-      this.canvasControl.setTableActive(this.canvasControl.getTableText());
-      this.canvasControl.setTableDashed(this.canvasControl.getTableEffet().concat(this.canvasControl.getTableComposant()));
-      if (active.length > 0){
+      this.isActive = 'deco';
+      var notEmpty = this.canvasControl.canvasDrawState('deco');
+      if (notEmpty) {
         this.canvasDraw.drawStuff();
       }
     } else {
       this.activeEffet();
     }
-    this.deco = !this.deco;
   }
 
   // Appeler par menu-dessin.html
@@ -190,7 +190,6 @@ class PageDessinComponent {
   // pret bord canvas. Les composants se deplace.
   rotate(value, data){
     data.rotate(value, null, this.debrayable);
-    // Empeche que l'effet depasse du canvas.
     this.canvasControl.setArrowPos();
     this.canvasControl.resizeCanvas();
     this.canvasDraw.drawStuff();

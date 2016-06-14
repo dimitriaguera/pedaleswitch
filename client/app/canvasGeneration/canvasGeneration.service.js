@@ -577,27 +577,30 @@ angular.module('pedaleswitchApp')
         // fillText, strokeText
         this.type = obj.type || 'fillText';
 
-        this.pos = obj.pos || {x:20, y:20};
-        this.size = obj.size || {w:0, h:0};
+        // Angle de rotation
+        this.angle = obj.angle || 0;
+
+        this.pos = obj.pos || {x:{v:60}, y:{v:60}};
+        this.size = obj.size || {w:{v:0}, h:{v:0}};
       }
 
       getCenterX(){
-        return this.pos.x + (this.size.w / 2);
+        return this.pos.x.v + (this.size.w.v / 2);
       }
       getCenterY(){
-        return this.pos.y + (this.size.h / 2);
+        return this.pos.y.v + (this.size.h.v / 2);
       }
       setX(coord){
-        this.pos.x = coord;
+        this.pos.x.v = coord;
       }
       setY(coord){
-        this.pos.y = coord;
+        this.pos.y.v = coord;
       }
       getX() {
-        return this.pos.x;
+        return this.pos.x.v;
       }
       getY() {
-        return this.pos.y;
+        return this.pos.y.v;
       }
       getLeft() {
         return this.getX();
@@ -606,18 +609,20 @@ angular.module('pedaleswitchApp')
         return this.getY();
       }
       getRight() {
-        return this.getX() + this.size.w;
+        return this.getX() + this.size.w.v;
       }
       getBottom() {
-        return this.getY() + this.size.h;
+        return this.getY() + this.size.h.v;
       }
       setCenterX(center){
-        this.pos.x = center - (this.size.w / 2);
+        this.pos.x.v = center - (this.size.w.v / 2);
       }
       setCenterY(center){
-        this.pos.y = center - (this.size.h / 2);
+        this.pos.y.v = center - (this.size.h.v / 2);
       }
-
+      rotate(angle){
+        this.angle += angle;
+      }
       drawCanvas(ctx){
         ctx.save();
 
@@ -630,22 +635,30 @@ angular.module('pedaleswitchApp')
 
         ctx.fillStyle = this.color;
 
-
+        ctx.translate(this.getX(), this.getY());
+        ctx.rotate(this.angle * (2*Math.PI)/360.0);
+        
         switch(this.type) {
           case 'fillText':
           default:
-            ctx.fillText(this.input, this.getX(), this.getY());
+            ctx.fillText(this.input, 0, 0);
             break;
           case 'strokeText':
-            ctx.strokeText(this.input, this.getX(), this.getY());
+            ctx.strokeText(this.input, 0, 0);
             break;
         }
 
         var mes = ctx.measureText(this.input);
-        this.size.w = Math.round(mes.width);
-        this.size.h = this.font.size;
+        this.size.w.v = Math.round(mes.width);
+        this.size.h.v = parseInt(this.font.size);
 
         ctx.restore();
+      }
+      setSelected(selected) {
+        this.isSelected = false;
+      }
+      setOverlapping(selected) {
+        this.isOverlapping = false;
       }
     }
 
