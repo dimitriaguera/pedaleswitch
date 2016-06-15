@@ -72,7 +72,7 @@ angular.module('pedaleswitchApp')
 
         for (indexCounter = 0; indexCounter < outer; indexCounter++) {
           comparitor = items[indexCounter];
-          if (intersect.pointInRect(mouse.x, mouse.y, comparitor.getLeft() - tolerance, comparitor.getTop() - tolerance, comparitor.getRight() + tolerance, comparitor.getBottom() + tolerance)) {
+          if (intersect.pointInRect(mouse.x, mouse.y, comparitor.getLeft(), comparitor.getTop(), comparitor.getRight(), comparitor.getBottom(), tolerance)) {
             return {id: indexCounter, dx: mouse.x - comparitor.getCenterX(), dy: mouse.y - comparitor.getCenterY()};
           }
         }
@@ -126,8 +126,8 @@ angular.module('pedaleswitchApp')
           comparitor = items[indexCounter];
           if (!(item._id == comparitor._id && item.key == comparitor.key)) {
 
-            tab.y = tab.y.concat(intersect.pointInVertligne2(item, comparitor));
-            tab.x = tab.x.concat(intersect.pointInHoriligne2(item, comparitor));
+            tab.y = tab.y.concat(intersect.pointInVertligne(item, comparitor, 10));
+            tab.x = tab.x.concat(intersect.pointInHoriligne(item, comparitor, 10));
             /*
              if (intersect.pointInHoriligne(item, comparitor) === true) {
              k = tab.x.push({x: comparitor.getCenterX()});

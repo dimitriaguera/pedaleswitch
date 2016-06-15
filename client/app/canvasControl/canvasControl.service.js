@@ -647,12 +647,7 @@ angular.module('pedaleswitchApp')
       },
 
       setTableAlignLine: function(tabr) {
-        var i = tableAlignLine.length;
-        var j = tabr.length;
-        tableAlignLine.splice(0, i);
-        for (var k = 0; k < j; k++ ) {
-          tableAlignLine.push(tabr[k]);
-        }
+        tableAlignLine = tabr;
         return tableAlignLine;
       },
 
@@ -661,8 +656,7 @@ angular.module('pedaleswitchApp')
       },
 
       resetTableAlignLine: function(){
-        var i = tableAlignLine.length;
-        tableAlignLine.splice(0, i);
+        tableAlignLine = [];
       },
 
       setTableArrow: function(tabr) {

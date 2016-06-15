@@ -3,9 +3,6 @@
 angular.module('pedaleswitchApp')
   .factory('intersect', function () {
 
-    var marginLine = 10;
-    
-    
     return {
 
       /**
@@ -75,9 +72,11 @@ angular.module('pedaleswitchApp')
        * 
        * @param item
        * @param comparitor
+       * @param {int} tol : tolérance en pixel.
        * @returns {Array} un tableau d'objet {y: de la ligne, isPile: {boolean}}
        */
-      pointInVertligne2: function (item, comparitor) {
+      pointInVertligne: function (item, comparitor, tol) {
+        tol = tol || 0;
         var tab = [], k;
         var ipos = [], cpos = [];
         var i, c;
@@ -92,7 +91,7 @@ angular.module('pedaleswitchApp')
 
         for (i = 0; i < 3; i++) {
           for (c = 0; c < 3; c++) {
-            if (this.betweenStrict(cpos[c] - marginLine, ipos[i], cpos[c] + marginLine)) {
+            if (this.betweenStrict(cpos[c] - tol, ipos[i], cpos[c] + tol)) {
               k = tab.push({y: cpos[c]});
               if (ipos[i] === cpos[c]) {
                 tab[k - 1].isPile = true;
@@ -111,9 +110,11 @@ angular.module('pedaleswitchApp')
        *
        * @param item
        * @param comparitor
+       * @param tol : tolérance en pixel.
        * @returns {Array} un tableau d'objet {y: de la ligne, isPile: {boolean}}
        */
-      pointInHoriligne2: function (item, comparitor) {
+      pointInHoriligne: function (item, comparitor, tol) {
+        tol = tol || 0;
         var tab = [], k;
         var ipos = [], cpos = [], i, c;
 
@@ -127,7 +128,7 @@ angular.module('pedaleswitchApp')
 
         for (i = 0; i < 3; i++) {
           for (c = 0; c < 3; c++) {
-            if (this.betweenStrict(cpos[c] - marginLine, ipos[i], cpos[c] + marginLine)) {
+            if (this.betweenStrict(cpos[c] - tol, ipos[i], cpos[c] + tol)) {
               k = tab.push({x: cpos[c]});
               if (ipos[i] === cpos[c]) {
                 tab[k - 1].isPile = true;
@@ -139,7 +140,7 @@ angular.module('pedaleswitchApp')
       },
 
       /**
-       * Regarde si un point est dans un rectangle.
+       * Regarde si un point est dans un rectangle a une tolérance près en pixel donnée par tol..
        * 
        * @param x
        * @param y
@@ -147,10 +148,12 @@ angular.module('pedaleswitchApp')
        * @param top
        * @param right
        * @param bottom
+       * @param tol : tolérance en pixel.
        * @returns {boolean}
        */
-      pointInRect: function (x, y, left, top, right, bottom) {
-        return (this.between(left, x, right) && this.between(top, y, bottom));
+      pointInRect: function (x, y, left, top, right, bottom, tol) {
+        tol = tol || 0;
+        return (this.between(left-tol, x, right+tol) && this.between(top-tol, y, bottom+tol));
       },
 
       /**
@@ -163,7 +166,7 @@ angular.module('pedaleswitchApp')
        * @param right
        * @param bottom
        * @param tol : tolérance en pixel.
-       * @returns {boolean}
+       * @returns false or {pos:'top,bottom..' , type :'Type de pointeur souris'}
        */
       pointOnRect: function (x, y, left, top, right, bottom, tol) {
         tol = tol || 0;

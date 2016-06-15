@@ -577,6 +577,9 @@ angular.module('pedaleswitchApp')
 
         ctx.stroke();
       }
+      
+      
+      
     }
 
     class Texte {
