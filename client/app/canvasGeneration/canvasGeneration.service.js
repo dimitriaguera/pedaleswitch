@@ -560,13 +560,18 @@ angular.module('pedaleswitchApp')
 
     class Poly {
       points = [
-        {x:20 , y:50},
-        {x:40 , y:30},
-        {x:70 , y:50},
-        {x:60 , y:70},
-        {x:30 , y:80}
+        {x:40 , y:70},
+        {x:60 , y:50},
+        {x:90 , y:70},
+        {x:80 , y:90},
+        {x:90 , y:100}
       ];
 
+      size = {};
+      
+      resetCompPos(){
+
+      }
       drawCanvas(ctx){
         ctx.beginPath();
         ctx.moveTo(this.points[0].x, this.points[0].y);
@@ -578,7 +583,68 @@ angular.module('pedaleswitchApp')
         ctx.stroke();
       }
       
-      
+      movePoints(delta){
+        var i, length;
+        
+        for (i = 0, length = this.points.length ; i < length ; i++ ) {
+          this.points[i].x += delta.x;
+          this.points[i].y += delta.y;
+        }
+      }
+      setX(coord){
+        this.pos.x.v = coord;
+      }
+      setY(coord){
+        this.pos.y.v = coord;
+      }
+      getX() {
+        return this.points[0].x;
+      }
+      getY() {
+        return this.points[0].y;
+      }
+      getHeight() {
+        return this.size.h;
+      }
+      getWidth() {
+        return this.size.w;
+      }
+      setHeight(h) {
+        this.size.h = h;
+      }
+      setWidth(w) {
+        this.size.w = w;
+      }
+      setCenterX(center){
+        this.setX(center - (this.getWidth() / 2));
+      }
+      setCenterY(center){
+        this.setY(center - (this.getHeight() / 2));
+      }
+      getCenterX(){
+        return this.getX() + (this.getWidth() / 2);
+      }
+      getCenterY(){
+        return this.getY() + (this.getHeight() / 2);
+      }
+      getLeft() {
+        return this.getX();
+      }
+      getTop() {
+        return this.getY();
+      }
+      getRight() {
+        return this.getX() + this.getWidth();
+      }
+      getBottom() {
+        return this.getY() + this.getHeight();
+      }
+      setSelected(selected) {
+        this.isSelected = false;
+      }
+      setOverlapping(selected) {
+        this.isOverlapping = false;
+      }
       
     }
 

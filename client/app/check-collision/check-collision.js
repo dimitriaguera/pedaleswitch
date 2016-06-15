@@ -10,7 +10,7 @@ angular.module('pedaleswitchApp')
        * @param item
        * @param items
        */
-      check: function (item, items) {
+      check: function(item, items) {
         var indexCounter,
           outer = items.length,
           comparitor;
@@ -33,7 +33,7 @@ angular.module('pedaleswitchApp')
        * Check la collision entre tout les things d'un tableau.
        * @param items
        */
-      checkAll: function (items) {
+      checkAll: function(items) {
         var indexCounter,
           renderCounter,
           outer = items.length,
@@ -65,7 +65,7 @@ angular.module('pedaleswitchApp')
        * @param tolerance
        * @returns {*}
        */
-      checkMouseBox: function (mouse, items, tolerance) {
+      checkMouseBox: function(mouse, items, tolerance) {
         var indexCounter,
           outer = items.length,
           comparitor;
@@ -73,13 +73,32 @@ angular.module('pedaleswitchApp')
         for (indexCounter = 0; indexCounter < outer; indexCounter++) {
           comparitor = items[indexCounter];
           if (intersect.pointInRect(mouse.x, mouse.y, comparitor.getLeft(), comparitor.getTop(), comparitor.getRight(), comparitor.getBottom(), tolerance)) {
-            return {id: indexCounter, dx: mouse.x - comparitor.getCenterX(), dy: mouse.y - comparitor.getCenterY()};
+            return {
+              id: indexCounter, 
+              dx: mouse.x - comparitor.getCenterX(),
+              dy: mouse.y - comparitor.getCenterY()
+            };
           }
         }
         return false;
       },
 
-
+      checkPoly: function(mouse, items) {
+        var indexCounter,
+          outer = items.length,
+          comparitor;
+        for (indexCounter = 0; indexCounter < outer; indexCounter++) {
+          comparitor = items[indexCounter];
+          if (intersect.pointInPoly(mouse, comparitor.points)) {
+            return {id: indexCounter, dx: mouse.x - comparitor.getX(), dy: mouse.y - comparitor.getY()};
+          }
+        }
+        return false;
+        
+      },
+      
+      
+      
       /**
        * Check la collision entre la souris et un tableau de thing avec un tolérance en pixel donnée.
        * @param mouse object contenant x,y
@@ -87,7 +106,7 @@ angular.module('pedaleswitchApp')
        * @param tolerance
        * @returns {*}
        */
-      checkMouseBorder: function (mouse, items, tolerance) {
+      checkMouseBorder: function(mouse, items, tolerance) {
         var indexCounter,
           outer = items.length,
           test,
@@ -116,7 +135,7 @@ angular.module('pedaleswitchApp')
        * @param items
        * @returns {{x: Array, y: Array, isPile: Bool}}
        */
-      checkLine: function (item, items) {
+      checkLine: function(item, items) {
         var indexCounter,
           outer = items.length,
           comparitor;

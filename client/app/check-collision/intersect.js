@@ -1,3 +1,18 @@
+/**
+ * Marc Foletto et Dimitri Aguera.
+ *
+ *
+ * The 3 functions (isLeft(), cn_PnPoly(), wn_PnPoly()) have this Copyright :
+ *
+ * Copyright 2000 softSurfer, 2012 Dan Sunday
+ * This code may be freely used and modified for any purpose
+ * providing that this copyright notice is included with it.
+ * SoftSurfer makes no warranty for this code, and cannot be held
+ * liable for any real or imagined damage resulting from its use.
+ * Users of this code must verify correctness for their application.
+ *
+ */
+
 'use strict';
 
 angular.module('pedaleswitchApp')
@@ -65,9 +80,7 @@ angular.module('pedaleswitchApp')
       },
 
       /**
-       * @todo supprimer marginLine et lui donnée comme argument.
-       * 
-       * Regarde si un point est sur une ligne verticale avec une marge (marginLine = 10).
+       * Regarde si un point est sur une ligne verticale avec une tolérance.
        * S'il est exactement sur la ligne alors met la propriété isPile a true.
        * 
        * @param item
@@ -103,9 +116,7 @@ angular.module('pedaleswitchApp')
       },
 
       /**
-       * @todo supprimer marginLine et lui donnée comme argument.
-       *
-       * Regarde si un point est sur une ligne horizontale avec une marge (marginLine = 10).
+       * Regarde si un point est sur une ligne horizontale avec une tolérance.
        * S'il est exactement sur la ligne alors met la propriété isPile a true.
        *
        * @param item
@@ -188,6 +199,66 @@ angular.module('pedaleswitchApp')
         }
         return false;
       },
+      
+      /**
+       * Tests if a point is Left|On|Right of an infinite line.
+       * See: Algorithm 1 "Area of Triangles and Polygons"
+       *
+       * @param P0 {x: , y:} point 0 defining the infinite line
+       * @param P1 {x: , y:} point 1 defining the infinite line
+       * @param P2 {x: , y:} point 2 TESTING POINT
+       * @return {int} : >0 for P2 left of the line through P0 and P1
+       *                 =0 for P2  on the line
+       *                 <0 for P2  right of the line
+       */
+      isLeft(P0, P1, P2 ) {
+        return ( (P1.x - P0.x) * (P2.y - P0.y)  - (P2.x -  P0.x) * (P1.y - P0.y) );
+      },
+
+      /**
+       * Test if a point is inside a polygon with the Winding number test
+       *  wn The winding number (=0 only when P is outside).
+       *
+       * @param P : {x: ,y:} testing point.
+       * @param V : [] = vertex points of a polygon V[n+1] with V[n]=V[0]
+       * @return {boolean}
+       */
+      pointInPoly(P, V) {
+        // the  winding number counter
+        var wn = 0;
+
+        var n = V.length - 1;
+        
+        // loop through all edges of the polygon
+        // edge from V[i] to  V[i+1]
+        for (var i=0 ; i<n ; i++) {
+          // start y <= P.y
+          if (V[i].y <= P.y) {
+            // an upward crossing
+            if (V[i+1].y  > P.y) {
+              // P left of  edge
+              if (this.isLeft( V[i], V[i+1], P) > 0) {
+                // have  a valid up intersect
+                ++wn;
+              }
+            }
+          }
+          // start y > P.y (no test needed)
+          else {
+            // a downward crossing
+            if (V[i+1].y  <= P.y) {
+              // P right of  edge
+              if (this.isLeft( V[i], V[i+1], P) < 0) {
+                // have  a valid down intersect
+                --wn;
+              }
+            }
+          }
+        }
+        return (wn !== 0);
+      },
+
+
 
       /**
        * Point dans cercle ?
@@ -237,13 +308,17 @@ angular.module('pedaleswitchApp')
       rectInCircle: function (shape, comparitor) {
         var circle, rect;
 
-        if (shape.constructor.name === "Cercle") {
+        if (shape.constructor.name === "Cercle" && comparitor.constructor.name === 'Rect') {
           circle = shape;
           rect = comparitor;
         }
-        else {
+        else if (shape.constructor.name === "Rect" && comparitor.constructor.name === 'Cercle') {
           rect = shape;
           circle = comparitor;
+        }
+        else {
+          console.log('intersect shape of item and comparitor not circle or rect. item : ' + shape.constructor.name + ', comparitor : ' + comparitor.constructor.name)
+          return false;
         }
 
         var distX = Math.abs(circle.getCenterX() - rect.getX() - rect.size.w.v / 2);
