@@ -69,21 +69,9 @@ angular.module('pedaleswitchApp')
 
         // if check si l'effet est deja dans le canvas.
         if (!effet.in_canvas || bol) {
-          var tmp_master_eff = canvasGeneration.newMasterShape(effet, viewState);
-          var tmp_master_comp = [];
+          var tmp_eff = canvasGeneration.newRect(effet);
           var compos = effet.composants;
-          for (var i = 0; i < compos.length; i++) {
-            tmp_master_comp = canvasGeneration.newMasterShape(compos[i], viewState);
-            tableMasterComposant.push(tmp_master_comp);
-            tmp_master_eff.composants.push(tmp_master_comp);
-            tableComposant.push(tmp_master_comp.projections[viewState]);
-            tmp_master_eff.projections['top'].composants.push(tmp_master_comp.projections['top']);
-            tmp_master_eff.projections['bottom'].composants.push(tmp_master_comp.projections['bottom']);
-            tmp_master_eff.projections['up'].composants.push(tmp_master_comp.projections['up']);
-            tmp_master_eff.projections['down'].composants.push(tmp_master_comp.projections['down']);
-            tmp_master_eff.projections['left'].composants.push(tmp_master_comp.projections['left']);
-            tmp_master_eff.projections['right'].composants.push(tmp_master_comp.projections['right']);
-          }
+          var tmp_comp;
           
           // Créer le boitier de la pedale.
           if(boite.constructor.name !== "Boite") {
@@ -97,16 +85,10 @@ angular.module('pedaleswitchApp')
             this.setBoite(masterBoite.projections[viewState]);
 
             // Empeche que l'effet depasse du canvas.
-            this.moveCloseBorder(tmp_master_eff.projections[viewState]);
-
-            // Place bien les composants.
-            tmp_master_eff.projections[viewState].resetCompPos();
+            this.moveCloseBorder(tmp_eff);
 
             // Initiliase la boite.
-            boite.initBoiteWithEffect(tmp_master_eff.projections[viewState]);
-
-            // Lie les effets a la boite
-            boite.effets = tableEffet;
+            boite.initBoiteWithEffect(tmp_eff);
 
             // Créer les flèches autour de la boite.
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
@@ -114,27 +96,41 @@ angular.module('pedaleswitchApp')
           }
           else {
             // Empeche que l'effet depasse du canvas.
-            this.moveCloseBorder(tmp_master_eff.projections[viewState]);
-            // Place bien les composants.
-            if (!effet.in_canvas) {
-              tmp_master_eff.projections[viewState].resetCompPos();
-            }
+            this.moveCloseBorder(tmp_eff);
+
             // Redimensionne la boite si le nouvelle effet est en dehors.
-            boite.checkBorderBoite(tmp_master_eff.projections[viewState]);
+            boite.checkBorderBoite(tmp_eff);
+
             // Repositionne les arraw.
             this.setArrowPos();
           }
+
+          // Lie les effets et composants a la bonne projection de la boite.
+          masterBoite.projections[viewState].effets.push(tmp_eff);
+
+          // On créé les composants.
+          for (var i = 0; i < compos.length; i++) {
+            tmp_comp = thing(compos[i]);
+            tableComposant.push(tmp_comp);
+            tmp_eff.composants.push(tmp_comp);
+            masterBoite.projections[viewState].composants.push(tmp_comp);
+          }
+
+          // Place bien les composants.
+          if (!effet.in_canvas) {
+            tmp_eff.resetCompPos();
+          }
+
           // Rajoute la propriété in_canvas a l'effet.
           effet.in_canvas = true;
 
           // Rajoute l'effet a la table effet et le master dans la table MesterEffet.
-          tableEffet.push(tmp_master_eff.projections[viewState]);
-          tableMasterEffet.push(tmp_master_eff);
+          tableEffet.push(tmp_eff);
 
           // Check les collisions entre tout les obj.
           checkCollision.checkAll(tableEffet);
 
-          return tmp_master_eff.projections[viewState];
+          return tmp_eff;
         }
       },
 
@@ -167,88 +163,60 @@ angular.module('pedaleswitchApp')
        */
       canvasViewState: function (state) {
 
-        var m = tableMasterEffet.length;
-        var n = tableMasterComposant.length;
-        var i, j;
-
         switch (state) {
           case 'top':
             viewState = 'top';
             this.resetAll();
             this.setBoite(masterBoite.projections.top);
+            this.setTableEffet(masterBoite.projections.top.effets);
+            this.setTableComposant(masterBoite.projections.top.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
-            for (i = 0; i < m; i++) {
-              tableEffet.push(tableMasterEffet[i].projections.top);
-            }
-            for (j = 0; j < n; j++) {
-              tableComposant.push(tableMasterComposant[j].projections.top);
-            }
             break;
           case 'bottom':
             viewState = 'bottom';
             this.resetAll();
             this.setBoite(masterBoite.projections.bottom);
+            this.setTableEffet(masterBoite.projections.bottom.effets);
+            this.setTableComposant(masterBoite.projections.bottom.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
-            for (i = 0; i < m; i++) {
-              tableEffet.push(tableMasterEffet[i].projections.bottom);
-            }
-            for (j = 0; j < n; j++) {
-              tableComposant.push(tableMasterComposant[j].projections.bottom);
-            }
             break;
           case 'up':
             viewState = 'up';
             this.resetAll();
             this.setBoite(masterBoite.projections.up);
+            this.setTableEffet(masterBoite.projections.up.effets);
+            this.setTableComposant(masterBoite.projections.up.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
-            for (i = 0; i < m; i++) {
-              tableEffet.push(tableMasterEffet[i].projections.up);
-            }
-            for (j = 0; j < n; j++) {
-              tableComposant.push(tableMasterComposant[j].projections.up);
-            }
             break;
           case 'down':
             viewState = 'down';
             this.resetAll();
             this.setBoite(masterBoite.projections.down);
+            this.setTableEffet(masterBoite.projections.down.effets);
+            this.setTableComposant(masterBoite.projections.down.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
-            for (i = 0; i < m; i++) {
-              tableEffet.push(tableMasterEffet[i].projections.down);
-            }
-            for (j = 0; j < n; j++) {
-              tableComposant.push(tableMasterComposant[j].projections.down);
-            }
             break;
           case 'left':
             viewState = 'left';
             this.resetAll();
             this.setBoite(masterBoite.projections.left);
+            this.setTableEffet(masterBoite.projections.left.effets);
+            this.setTableComposant(masterBoite.projections.left.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
-            for (i = 0; i < m; i++) {
-              tableEffet.push(tableMasterEffet[i].projections.left);
-            }
-            for (j = 0; j < n; j++) {
-              tableComposant.push(tableMasterComposant[j].projections.left);
-            }
             break;
           case 'right':
             viewState = 'right';
             this.resetAll();
             this.setBoite(masterBoite.projections.right);
+            this.setTableEffet(masterBoite.projections.right.effets);
+            this.setTableComposant(masterBoite.projections.right.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
-            //for (i = 0; i < m; i++) {
-            //  tableEffet.push(tableMasterEffet[i].projections.right);
-            //}
-            //for (j = 0; j < n; j++) {
-            //  tableComposant.push(tableMasterComposant[j].projections.right);
-            //}
             break;
           default:
             return console.log('ERROR ' + state + ' is not a valid state');

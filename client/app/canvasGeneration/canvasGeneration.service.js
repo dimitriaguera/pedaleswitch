@@ -3,191 +3,8 @@
 angular.module('pedaleswitchApp')
   .factory('canvasGeneration', function (canvasConversion) {
 
-    class MasterShape {
-      constructor (entity, viewState) {
-        this._id = entity._id || null;
-        if (Number.isInteger(entity.key)) {
-          this.key = entity.key;
-        } else {
-          this.key = null;
-        }
-        this.titre = entity.titre || null;
-        this.titre_option = entity.titre_option || null;
-        this.titre_parent_effet = entity.titre_parent_effet || null;
-        this.titre_parent_option = entity.titre_parent_option || null;
-        this.description = entity.description || null;
-        this.description_option = entity.description_option || null;
-        this.composants = [];
-        this.item_info = entity.item_info;
-        this.prix = entity.prix || null;
-        this.size = entity.size;
-        this.old_size = entity.old_size;
-        this.pos = entity.pos;
-        this.pos_default = entity.pos_default || null;
-        this.projections = {
-          up: null,
-          down: null,
-          left: null,
-          right: null,
-          top: null,
-          bottom: null
-        };
-        this.createProjection(viewState);
-      }
-
-      createProjection(viewState){
-        var proj_size = {
-          top: {
-            size: {
-              w: this.size.w,
-              h: this.size.d
-            },
-            old_size: {
-              w: this.old_size.w,
-              h: this.old_size.d
-            }
-          },
-          bottom: {
-            size: {
-              w: this.size.w,
-              h: this.size.d
-            },
-            old_size: {
-              w: this.old_size.w,
-              h: this.old_size.d
-            }
-          },
-          up: {
-            size: {
-              w: this.size.w,
-              h: this.size.h
-            },
-            old_size: {
-              w: this.old_size.w,
-              h: this.old_size.h
-            }
-          },
-          down: {
-            size: {
-              w: this.size.w,
-              h: this.size.h
-            },
-            old_size: {
-              w: this.old_size.w,
-              h: this.old_size.h
-            }
-          },
-          left: {
-            size: {
-              w: this.size.h,
-              h: this.size.d
-            },
-            old_size: {
-              w: this.old_size.h,
-              h: this.old_size.d
-            }
-          },
-          right: {
-            size: {
-              w: this.size.h,
-              h: this.size.d
-            },
-            old_size: {
-              w: this.old_size.h,
-              h: this.old_size.d
-            }
-          }
-        };
-        switch (viewState) {
-          case 'top':
-            this.newProjectionTop(proj_size);
-            break;
-          case 'bottom':
-            this.newProjectionTop(proj_size);
-            break;
-          case 'up':
-            this.newProjectionUp(proj_size);
-            break;
-          case 'down':
-            this.newProjectionUp(proj_size);
-            break;
-          case 'left':
-            this.newProjectionLeft(proj_size);
-            break;
-          case 'right':
-            this.newProjectionLeft(proj_size);
-            break;
-          default:
-            return console.log('ERROR ' + viewState + ' is not a valid state');
-        }
-      }
-      newProjectionUp(proj_size){
-
-        switch (this.item_info.shape) {
-          case 'Cercle':
-            this.projections.up = new Cercle(this, proj_size.up);
-            this.projections.down = new Cercle(this, proj_size.down);
-            this.projections.left = new Rect(this, proj_size.left);
-            this.projections.right = new Rect(this, proj_size.right);
-            this.projections.top = new Rect(this, proj_size.top);
-            this.projections.bottom = new Rect(this, proj_size.bottom);
-            break;
-          default:
-            this.projections.up = new Rect(this, proj_size.up);
-            this.projections.down = new Rect(this, proj_size.down);
-            this.projections.left = new Rect(this, proj_size.left);
-            this.projections.right = new Rect(this, proj_size.right);
-            this.projections.top = new Rect(this, proj_size.top);
-            this.projections.bottom = new Rect(this, proj_size.bottom);
-            break;
-        }
-      }
-      newProjectionTop(proj_size){
-
-        switch (this.item_info.shape) {
-          case 'Cercle':
-            this.projections.up = new Rect(this, proj_size.up);
-            this.projections.down = new Rect(this, proj_size.down);
-            this.projections.left = new Rect(this, proj_size.left);
-            this.projections.right = new Rect(this, proj_size.right);
-            this.projections.top = new Cercle(this, proj_size.top);
-            this.projections.bottom = new Cercle(this, proj_size.bottom);
-            break;
-          default:
-            this.projections.up = new Rect(this, proj_size.up);
-            this.projections.down = new Rect(this, proj_size.down);
-            this.projections.left = new Rect(this, proj_size.left);
-            this.projections.right = new Rect(this, proj_size.right);
-            this.projections.top = new Rect(this, proj_size.top);
-            this.projections.bottom = new Rect(this, proj_size.bottom);
-            break;
-        }
-      }
-      newProjectionLeft(proj_size){
-
-        switch (this.item_info.shape) {
-          case 'Cercle':
-            this.projections.up = new Rect(this, proj_size.up);
-            this.projections.down = new Rect(this, proj_size.down);
-            this.projections.left = new Cercle(this, proj_size.left);
-            this.projections.right = new Cercle(this, proj_size.right);
-            this.projections.top = new Rect(this, proj_size.top);
-            this.projections.bottom = new Rect(this, proj_size.bottom);
-            break;
-          default:
-            this.projections.up = new Rect(this, proj_size.up);
-            this.projections.down = new Rect(this, proj_size.down);
-            this.projections.left = new Rect(this, proj_size.left);
-            this.projections.right = new Rect(this, proj_size.right);
-            this.projections.top = new Rect(this, proj_size.top);
-            this.projections.bottom = new Rect(this, proj_size.bottom);
-            break;
-        }
-      }
-    }
-
     class Shape {
-      constructor (entity, proj_size) {
+      constructor (entity) {
         this._id = entity._id || null;
 
         if (Number.isInteger(entity.key)) {
@@ -204,8 +21,8 @@ angular.module('pedaleswitchApp')
         this.composants = [];
         this.item_info = entity.item_info || null;
         this.prix = entity.prix || null;
-        this.size = proj_size.size;
-        this.old_size = proj_size.old_size;
+        this.size = entity.size;
+        this.old_size = entity.old_size;
         this.pos = entity.pos;
         this.pos_default = entity.pos_default || null;
         this.isSelected = false;
@@ -772,6 +589,7 @@ angular.module('pedaleswitchApp')
         this.isOverlapping = false;
         this.titre = 'Boite';
         this.effets = [];
+        this.composants = [];
       }
       // Tout doit etre en Pixel.
       //initBoiteWithBoite(boite){

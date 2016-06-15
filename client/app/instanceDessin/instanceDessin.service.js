@@ -11,6 +11,32 @@ angular.module('pedaleswitchApp')
 
 
     /**
+     * Retour les coordonnées des quatres sommet de la forme.
+     * @param size
+     * @param pos
+     */
+    function getPoints (size, pos) {
+      return {
+        p0: {
+          x: {v: pos.x - size.w/2},
+          y: {v: pos.y - size.h/2}
+        },
+        p1: {
+          x: {v: pos.x + size.w/2},
+          y: {v: pos.y - size.h/2}
+        },
+        p2: {
+          x: {v: pos.x + size.w/2},
+          y: {v: pos.y + size.h/2}
+        },
+        p3: {
+          x: {v: pos.x - size.w/2},
+          y: {v: pos.y + size.h/2}
+        }
+      };
+    }
+
+    /**
      * @todo charger juste les composants des effets ajouter.
      *
      * Créer un tableau associatif composantItems de TOUS les composants existant dans la db.
@@ -97,6 +123,7 @@ angular.module('pedaleswitchApp')
             y: {v:  20},
             z: {v: 20}
           },
+          points: getPoints(option.size, {x: 20 + option.size.w/2, y: 20 + option.size.h/2}),
           composants: []
         };
         for(var i=0; i<option.composants.length; i++){
@@ -126,6 +153,8 @@ angular.module('pedaleswitchApp')
               h: {v: composantItems[option.composants[i].available_compo_id[0]].size.h},
               d: {v: composantItems[option.composants[i].available_compo_id[0]].size.d || null}
             },
+            points_default: getPoints(composantItems[option.composants[i].available_compo_id[0]].size, option.composants[i].pos),
+            points: getPoints(composantItems[option.composants[i].available_compo_id[0]].size, option.composants[i].pos),
             item_info: {
               id_item: composantItems[option.composants[i].available_compo_id[0]]._id,
               items: option.composants[i].available_compo_id,
