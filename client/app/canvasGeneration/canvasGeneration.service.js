@@ -3,6 +3,17 @@
 angular.module('pedaleswitchApp')
   .factory('canvasGeneration', function (canvasConversion) {
 
+    class Point {
+      constructor(point){
+        this.x = {v: point.x.v};
+        this.y = {v: point.y.v};
+      }
+      translate(vector){
+        this.x.v += vector.x;
+        this.y.v += vector.y;
+      }
+    }
+
     class Shape {
       constructor (entity) {
         this._id = entity._id || null;
@@ -25,8 +36,26 @@ angular.module('pedaleswitchApp')
         this.old_size = entity.old_size;
         this.pos = entity.pos;
         this.pos_default = entity.pos_default || null;
+        this.points = entity.points;
+        this.points_default = entity.points_default || null;
         this.isSelected = false;
         this.isOverlapping = false;
+        this.initPoints(entity.points, this.points);
+        this.initPoints(entity.points_default, this.points_default);
+      }
+      initPoints(points, tab){
+        if (points) {
+          var i;
+          var l = this.points.length;
+          var table = [];
+          for (i = 0; i < l; i++) {
+            table.push(new Point(this.points[i]));
+          }
+          tab.splice(0, tab.length);
+          for (i = 0; i < l; i++) {
+            tab.push(table[i]);
+          }
+        }
       }
       resetCompPos(){
         var compos = this.composants;
@@ -38,6 +67,31 @@ angular.module('pedaleswitchApp')
             compos[i].setHeight(compos[i].old_size.h.v);
             compos[i].setWidth(compos[i].old_size.w.v);
           }
+        }
+      }
+
+      getArea() {
+        var area = 0;
+        var i;
+        var l = this.points.length;
+        for (i = 0; i < l; i++){
+            area += 0
+        }
+
+      }
+      getCenter(){
+        return {
+          x: (this.points[1].x.v - this.points[0].x.v)/2,
+          y: (this.points[3].y.v - this.points[0].y.v)/2
+        }
+      }
+      moveTo(pos){
+        var bary = this.getCenter();
+        var vect = {x: pos.x - bary.x, y: pos.y - bary.y};
+        var i;
+        var l = this.points.length;
+        for (i = 0; i < l; i++){
+          this.points[i].translate(vect);
         }
       }
       setX(coord){
@@ -270,18 +324,19 @@ angular.module('pedaleswitchApp')
 
     class Rect extends Shape {
       drawCanvas(ctx){
-        ctx.beginPath();
-        ctx.rect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
-        // Draw center.
-        ctx.fillRect(this.getCenterX(),this.getCenterY(),1,1);
+        ctx.beginPath();
+        ctx.moveTo(this.points[0].x.v, this.points[0].y.v);
+        for (var item = 0, length = this.points.length; item < length; item += 1) {
+          ctx.lineTo(this.points[item].x.v, this.points[item].y.v);
+        }
+        ctx.closePath();
+        ctx.stroke();
 
         if (this.isOverlapping) {
           ctx.fillStyle = "rgba(255, 00, 00, 0.2)";
           ctx.fill();
         }
-        ctx.stroke();
-        ctx.closePath();
       }
     }
 

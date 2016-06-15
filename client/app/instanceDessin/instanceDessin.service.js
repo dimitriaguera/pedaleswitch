@@ -16,24 +16,24 @@ angular.module('pedaleswitchApp')
      * @param pos
      */
     function getPoints (size, pos) {
-      return {
-        p0: {
+      return [
+        {
           x: {v: pos.x - size.w/2},
           y: {v: pos.y - size.h/2}
         },
-        p1: {
+        {
           x: {v: pos.x + size.w/2},
           y: {v: pos.y - size.h/2}
         },
-        p2: {
+        {
           x: {v: pos.x + size.w/2},
           y: {v: pos.y + size.h/2}
         },
-        p3: {
+        {
           x: {v: pos.x - size.w/2},
           y: {v: pos.y + size.h/2}
         }
-      };
+      ];
     }
 
     /**
