@@ -1,3 +1,11 @@
+
+getX()
+getY()
+getHeight()
+getWidth()
+
+
+
 /**
  * Created by narcozy on 14/06/2016.
  */

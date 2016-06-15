@@ -7,8 +7,10 @@ angular.module('pedaleswitchApp')
     var ctx = {};
     var canvas = {};
     var canvas_window = {};
+
     var boite = {};
     var masterBoite = {};
+
     var tableMasterEffet = [];
     var tableMasterComposant = [];
     var tableEffet = [];

@@ -215,22 +215,13 @@ angular.module('pedaleswitchApp')
         var compos = this.composants;
         if(compos.length !== 0) {
           for (var i = 0; i < compos.length; i++) {
-            compos[i].setX(this.pos.x.v + compos[i].pos_default.x.v);
-            compos[i].setY(this.pos.y.v + compos[i].pos_default.y.v);
+            compos[i].setX(this.getX() + compos[i].pos_default.x.v);
+            compos[i].setY(this.getY() + compos[i].pos_default.y.v);
 
-            compos[i].size.h.v = compos[i].old_size.h.v;
-            compos[i].size.w.v = compos[i].old_size.w.v;
+            compos[i].setHeight(compos[i].old_size.h.v);
+            compos[i].setWidth(compos[i].old_size.w.v);
           }
         }
-      }
-      getCenterX(){
-        return this.pos.x.v + (this.size.w.v / 2);
-      }
-      getCenterY(){
-        return this.pos.y.v + (this.size.h.v / 2);
-      }
-      getRadius(){
-        return this.size.w.v / 2;
       }
       setX(coord){
         this.pos.x.v = coord;
@@ -244,6 +235,34 @@ angular.module('pedaleswitchApp')
       getY() {
         return this.pos.y.v;
       }
+      getHeight() {
+        return this.size.h.v;
+      }
+      getWidth() {
+        return this.size.w.v;
+      }
+      setHeight(h) {
+        this.size.h.v = h;
+      }
+      setWidth(w) {
+        this.size.w.v = w;
+      }
+      getCenterX(){
+        return this.getX() + (this.getWidth() / 2);
+      }
+      getCenterY(){
+        return this.getY() + (this.getHeight() / 2);
+      }
+      setCenterX(center){
+        this.setX(center - (this.getWidth() / 2));
+      }
+      setCenterY(center){
+        this.setY(center - (this.getHeight() / 2));
+      }
+      // @todo a check get radius pour rectangle ?
+      getRadius(){
+        return this.getWidth() / 2;
+      }
       getLeft() {
         return this.getX();
       }
@@ -251,16 +270,28 @@ angular.module('pedaleswitchApp')
         return this.getY();
       }
       getRight() {
-        return this.getX() + this.size.w.v;
+        return this.getX() + this.getWidth();
       }
       getBottom() {
-        return this.getY() + this.size.h.v;
+        return this.getY() + this.getHeight();
       }
-      setCenterX(center){
-        this.pos.x.v = center - (this.size.w.v / 2);
+      getMax(){
+        return {
+          t: this.getTop(),
+          r: this.getRight(),
+          b: this.getBottom(),
+          l: this.getLeft()
+        }
       }
-      setCenterY(center){
-        this.pos.y.v = center - (this.size.h.v / 2);
+      getBoundingBoxPoints() {
+        // Bords du rectangle.
+        // 0 haut gauche, 1 haut droit, 2 bas droit, 3 bas gauche.
+        return ([
+          { x: this.getX(),  y: this.getY() },
+          { x: this.getX() + this.getWidth(), y: this.getY() },
+          { x: this.getX() + this.getWidth(), y: this.getY() + this.getHeight() },
+          { x: this.getX(), y: this.getY() + this.getHeight() }
+        ]);
       }
       setSelected(selected) {
         this.isSelected = selected;
@@ -268,29 +299,6 @@ angular.module('pedaleswitchApp')
       setOverlapping(overlap) {
         this.isOverlapping = overlap;
       }
-      getBoundingBoxPoints() {
-        // Bords du rectangle.
-        // 0 haut gauche, 1 haut droit, 2 bas droit, 3 bas gauche.
-        return ([
-          {
-            x: this.pos.x.v,
-            y: this.pos.y.v
-          },
-          {
-            x: this.pos.x.v + this.size.w.v,
-            y: this.pos.y.v
-          },
-          {
-            x: this.pos.x.v + this.size.w.v,
-            y: this.pos.y.v + this.size.h.v
-          },
-          {
-            x: this.pos.x.v,
-            y: this.pos.y.v + this.size.h.v
-          }
-        ]);
-      }
-
       /**
        * Permet de faire une rotation d'un point, d'un angle donnée par rapport a un
        * centre donnée dans le repère du canvas.
@@ -339,17 +347,17 @@ angular.module('pedaleswitchApp')
 
         // @todo cette partie marche que pour les rectangles et cercle car il sont dans des rectangles.
         old_size = {
-          w: this.size.w.v,
-          h: this.size.h.v
+          w: this.getWidth(),
+          h: this.getHeight()
         };
         old_pos = {
-          x: this.pos.x.v,
-          y: this.pos.y.v
+          x: this.getX(),
+          y: this.getY()
         };
 
         // Inverse les dimensions du rect.
-        this.size.w.v = old_size.h;
-        this.size.h.v = old_size.w;
+        this.setWidth(old_size.h);
+        this.setHeight(old_size.w);
 
         // Rotation 90 a droite.
         if (angle < 0) {
@@ -370,8 +378,8 @@ angular.module('pedaleswitchApp')
           if (!debrayable) {
             for (i = 0; i < this.composants.length; i++) {
               this.composants[i].rotate(angle, { x: this.getCenterX(), y: this.getCenterY()}, debrayable);
-              this.composants[i].pos_default.x.v = this.composants[i].pos.x.v - this.pos.x.v;
-              this.composants[i].pos_default.y.v = this.composants[i].pos.y.v - this.pos.y.v;
+              this.composants[i].pos_default.x.v = this.composants[i].getX() - this.getX();
+              this.composants[i].pos_default.y.v = this.composants[i].getY() - this.getY();
 
               old_size = {
                 w: this.composants[i].old_size.w.v,
@@ -392,7 +400,7 @@ angular.module('pedaleswitchApp')
                 // Coordonnée dans le repère du rect avant rotation.
                 point = {
                   x: this.composants[i].pos_default.x.v,
-                  y: this.composants[i].pos_default.y.v + this.composants[i].size.h.v
+                  y: this.composants[i].pos_default.y.v + this.composants[i].getHeight()
                 };
 
               }
@@ -400,7 +408,7 @@ angular.module('pedaleswitchApp')
               else {
                 // Coordonnée dans le repère du rect avant rotation.
                 point = {
-                  x: this.composants[i].pos_default.x.v + this.composants[i].size.w.v,
+                  x: this.composants[i].pos_default.x.v + this.composants[i].getWidth(),
                   y: this.composants[i].pos_default.y.v
                 };
               }
@@ -412,8 +420,8 @@ angular.module('pedaleswitchApp')
               point = this.rotatePoint(point, angle, C);
 
               // Nouvelle coordonnées dans le repère du rect et inversion des dimensions.
-              this.composants[i].pos_default.x.v = point.x - this.pos.x.v ;
-              this.composants[i].pos_default.y.v = point.y - this.pos.y.v ;
+              this.composants[i].pos_default.x.v = point.x - this.getX();
+              this.composants[i].pos_default.y.v = point.y - this.getY();
 
               old_size = {
                 w: this.composants[i].old_size.w.v,
@@ -423,15 +431,6 @@ angular.module('pedaleswitchApp')
               this.composants[i].old_size.w.v = old_size.h;
             }
           }
-        }
-      }
-
-      getMax(){
-        return {
-          t: this.getTop(),
-          r: this.getRight(),
-          b: this.getBottom(),
-          l: this.getLeft()
         }
       }
     }
@@ -455,7 +454,7 @@ angular.module('pedaleswitchApp')
     class Rect extends Shape {
       drawCanvas(ctx){
         ctx.beginPath();
-        ctx.rect(this.pos.x.v, this.pos.y.v, this.size.w.v, this.size.h.v);
+        ctx.rect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
 
         // Draw center.
         ctx.fillRect(this.getCenterX(),this.getCenterY(),1,1);
@@ -605,13 +604,6 @@ angular.module('pedaleswitchApp')
         this.pos = obj.pos || {x:{v:60}, y:{v:60}};
         this.size = obj.size || {w:{v:0}, h:{v:0}};
       }
-
-      getCenterX(){
-        return this.pos.x.v + (this.size.w.v / 2);
-      }
-      getCenterY(){
-        return this.pos.y.v + (this.size.h.v / 2);
-      }
       setX(coord){
         this.pos.x.v = coord;
       }
@@ -624,6 +616,30 @@ angular.module('pedaleswitchApp')
       getY() {
         return this.pos.y.v;
       }
+      getHeight() {
+        return this.size.h.v;
+      }
+      getWidth() {
+        return this.size.w.v;
+      }
+      setHeight(h) {
+        this.size.h.v = h;
+      }
+      setWidth(w) {
+        this.size.w.v = w;
+      }
+      setCenterX(center){
+        this.setX(center - (this.getWidth() / 2));
+      }
+      setCenterY(center){
+        this.setY(center - (this.getHeight() / 2));
+      }
+      getCenterX(){
+        return this.getX() + (this.getWidth() / 2);
+      }
+      getCenterY(){
+        return this.getY() + (this.getHeight() / 2);
+      }
       getLeft() {
         return this.getX();
       }
@@ -631,16 +647,10 @@ angular.module('pedaleswitchApp')
         return this.getY();
       }
       getRight() {
-        return this.getX() + this.size.w.v;
+        return this.getX() + this.getWidth();
       }
       getBottom() {
-        return this.getY() + this.size.h.v;
-      }
-      setCenterX(center){
-        this.pos.x.v = center - (this.size.w.v / 2);
-      }
-      setCenterY(center){
-        this.pos.y.v = center - (this.size.h.v / 2);
+        return this.getY() + this.getHeight();
       }
       rotate(angle){
         this.angle += angle;
@@ -671,8 +681,8 @@ angular.module('pedaleswitchApp')
         }
 
         var mes = ctx.measureText(this.input);
-        this.size.w.v = Math.round(mes.width);
-        this.size.h.v = parseInt(this.font.size);
+        this.setWidth(Math.round(mes.width));
+        this.setHeight(parseInt(this.font.size));
 
         ctx.restore();
       }
@@ -707,29 +717,29 @@ angular.module('pedaleswitchApp')
       //  };
       //}
       initBoiteWithEffect(entity){
-        this.size.w.v = entity.size.w.v + 2 * this.margin.v;
-        this.size.h.v = entity.size.h.v + 2 * this.margin.v;
-        this.pos.x.v = entity.pos.x.v - this.margin.v;
-        this.pos.y.v = entity.pos.y.v - this.margin.v;
+        this.setWidth(entity.size.w.v + 2 * this.margin.v);
+        this.setHeight(entity.size.h.v + 2 * this.margin.v);
+        this.setX(entity.pos.x.v - this.margin.v);
+        this.setY(entity.pos.y.v - this.margin.v);
       }
 
       // Redimensionne la boite si le nouvel effet est en dehors.
       checkBorderBoite(entity){
-        if (entity.pos.x.v < (this.pos.x.v + this.margin.v)){
-          var old_pos_x = this.pos.x.v;
-          this.pos.x.v = entity.pos.x.v - this.margin.v;
-          this.size.w.v =  this.size.w.v + (old_pos_x - entity.pos.x.v) + this.margin.v;
+        if (entity.getX() < (this.getX() + this.margin.v)){
+          var old_pos_x = this.getX();
+          this.setX(entity.getX() - this.margin.v);
+          this.setWidth(this.getWidth() + (old_pos_x - entity.getX()) + this.margin.v);
         }
-        if (entity.pos.y.v < (this.pos.y.v + this.margin.v)){
-          var old_pos_y = this.pos.y.v;
-          this.pos.y.v = entity.pos.y.v - this.margin.v;
-          this.size.h.v =  this.size.h.v + (old_pos_y - entity.pos.y.v) + this.margin.v;
+        if (entity.getY() < (this.getY() + this.margin.v)){
+          var old_pos_y = this.getY();
+          this.setY(entity.getY() - this.margin.v);
+          this.setHeight(this.getHeight() + (old_pos_y - entity.getY()) + this.margin.v);
         }
-        if ((entity.pos.x.v + entity.size.w.v) > (this.pos.x.v + this.size.w.v - this.margin.v)){
-          this.size.w.v = (entity.pos.x.v + entity.size.w.v) - this.pos.x.v + this.margin.v;
+        if ((entity.getX() + entity.getWidth()) > (this.getX() + this.getWidth() - this.margin.v)){
+          this.setWidth((entity.getX() + entity.getWidth()) - this.getX() + this.margin.v);
         }
-        if ((entity.pos.y.v + entity.size.h.v) > (this.pos.y.v + this.size.h.v - this.margin.v)){
-          this.size.h.v = (entity.pos.y.v + entity.size.h.v) - this.pos.y.v + this.margin.v;
+        if ((entity.getY() + entity.getHeight()) > (this.getY() + this.getHeight() - this.margin.v)){
+          this.setHeight((entity.getY() + entity.getHeight()) - this.getY() + this.margin.v);
         }
       }
 
@@ -737,28 +747,18 @@ angular.module('pedaleswitchApp')
         var effets = this.effets, compos, i, j;
         if(effets.length !== 0) {
           for (i = 0; i < effets.length; i++) {
-            effets[i].setX(delta.deltaX + effets[i].pos.x.v);
-            effets[i].setY(delta.deltaY + effets[i].pos.y.v);
+            effets[i].setX(delta.deltaX + effets[i].getX());
+            effets[i].setY(delta.deltaY + effets[i].getY());
             
             compos = effets[i].composants;
             if(compos.length !== 0) {
               for (j = 0; j < compos.length; j++) {
-                compos[j].setX(delta.deltaX + compos[j].pos.x.v);
-                compos[j].setY(delta.deltaY + compos[j].pos.y.v);
+                compos[j].setX(delta.deltaX + compos[j].getX());
+                compos[j].setY(delta.deltaY + compos[j].getY());
               }
             }
           }
         }
-      }
-      
-      getCenterX(){
-        return this.pos.x.v + (this.size.w.v / 2);
-      }
-      getCenterY(){
-        return this.pos.y.v + (this.size.h.v / 2);
-      }
-      getRadius(){
-        return this.size.w.v / 2;
       }
       setX(coord){
         this.pos.x.v = coord;
@@ -772,6 +772,33 @@ angular.module('pedaleswitchApp')
       getY() {
         return this.pos.y.v;
       }
+      getHeight() {
+        return this.size.h.v;
+      }
+      getWidth() {
+        return this.size.w.v;
+      }
+      setHeight(h) {
+        this.size.h.v = h;
+      }
+      setWidth(w) {
+        this.size.w.v = w;
+      }
+      getCenterX(){
+        return this.getX() + (this.getWidth() / 2);
+      }
+      getCenterY(){
+        return this.getY() + (this.getHeight() / 2);
+      }
+      setCenterX(center){
+        this.setX(center - (this.getWidth() / 2));
+      }
+      setCenterY(center){
+        this.setY(center - (this.getHeight() / 2));
+      }
+      getRadius(){
+        return this.getWidth() / 2;
+      }
       getLeft() {
         return this.getX();
       }
@@ -779,16 +806,10 @@ angular.module('pedaleswitchApp')
         return this.getY();
       }
       getRight() {
-        return this.getX() + this.size.w.v;
+        return this.getX() + this.getWidth();
       }
       getBottom() {
-        return this.getY() + this.size.h.v;
-      }
-      setCenterX(center){
-        this.setX(center - (this.size.w.v / 2));
-      }
-      setCenterY(center){
-        this.setY(center - (this.size.h.v / 2));
+        return this.getY() + this.getHeight();
       }
       getMax(){
         return {
@@ -806,7 +827,7 @@ angular.module('pedaleswitchApp')
       }
       drawCanvas(ctx){
         ctx.beginPath();
-        ctx.rect(this.pos.x.v, this.pos.y.v, this.size.w.v, this.size.h.v);
+        ctx.rect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
         ctx.stroke();
         ctx.closePath();
       }
