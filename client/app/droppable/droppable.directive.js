@@ -62,18 +62,7 @@ angular.module('pedaleswitchApp')
 
               // Le rajoute au canvas avec les bonnes positions.
               canvasControl.addToCanvas(effet, false, mousePos);
-
-              /* Old style
-               //effet.pos.x.v = mousePos.x - (effet.size.w.v / 2);
-               //effet.pos.y.v = mousePos.y - (effet.size.h.v / 2);
-
-               // Le rajoute au canvas avec les bonnes positions.
-               //canvasControl.addToCanvas(effet);
-
-               */
-
-
-
+              
               // Initialise le boite dans l'instance de dessin.
               instanceDessin.setBoite(canvasControl.getMasterBoite());
 

@@ -89,7 +89,7 @@ angular.module('pedaleswitchApp')
             return;
           }
 
-          // Regarde si la souris est la boite
+          // Regarde si la souris est sur la boite
           drag = checkCollision.checkMouseBox(mousePos, [boite], 10);
           if(drag){
             drag.type = 'boite';

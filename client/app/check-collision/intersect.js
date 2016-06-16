@@ -162,38 +162,34 @@ angular.module('pedaleswitchApp')
        * @param tol : tolérance en pixel.
        * @returns {boolean}
        */
-      pointInRect: function (x, y, left, top, right, bottom, tol) {
+      pointInRect: function (pos, posExtreme, tol) {
         tol = tol || 0;
-        return (this.between(left-tol, x, right+tol) && this.between(top-tol, y, bottom+tol));
+        return (this.between(posExtreme.l-tol, pos.x, posExtreme.r+tol) && this.between(posExtreme.t-tol, pos.y, posExtreme.b+tol));
       },
 
       /**
        * Regarde si un point est sur les bords d'un rectangle a une tolérance près en pixel donnée par tol.
        *
-       * @param x
-       * @param y
-       * @param left
-       * @param top
-       * @param right
-       * @param bottom
+       * @param pos : pos.x pos.y
+       * @param posExtreme : .t, .r, .b, .l
        * @param tol : tolérance en pixel.
        * @returns false or {pos:'top,bottom..' , type :'Type de pointeur souris'}
        */
-      pointOnRect: function (x, y, left, top, right, bottom, tol) {
+      pointOnRect: function (pos, posExtreme, tol) {
         tol = tol || 0;
-        if (this.between(left - tol, x, right + tol)) {
-          if (this.between(top - tol, y, top + tol)) {
+        if (this.between(posExtreme.l - tol, pos.x, posExtreme.r + tol)) {
+          if (this.between(posExtreme.t - tol, pos.y, posExtreme.t + tol)) {
             return {pos: 'top', type: 'ns-resize'};
           }
-          else if (this.between(bottom - tol, y, bottom + tol)) {
+          else if (this.between(posExtreme.b - tol, pos.y, posExtreme.b + tol)) {
             return {pos: 'bottom', type: 'ns-resize'};
           }
         }
-        if (this.between(bottom - tol, y, top + tol)) {
-          if (this.between(left - tol, x, left + tol)) {
+        if (this.between(posExtreme.b - tol, pos.y, posExtreme.t + tol)) {
+          if (this.between(posExtreme.l - tol, pos.x, posExtreme.l + tol)) {
             return {pos: 'left', type: 'ew-resize'};
           }
-          else if (this.between(right - tol, x, right + tol)) {
+          else if (this.between(posExtreme.r - tol, pos.x, posExtreme.r + tol)) {
             return {pos: 'right', type: 'ew-resize'};
           }
         }
@@ -212,7 +208,7 @@ angular.module('pedaleswitchApp')
        *                 <0 for P2  right of the line
        */
       isLeft(P0, P1, P2 ) {
-        return ( (P1.x - P0.x) * (P2.y - P0.y)  - (P2.x -  P0.x) * (P1.y - P0.y) );
+        return ( (P1.x.v - P0.x.v) * (P2.y - P0.y.v)  - (P2.x -  P0.x.v) * (P1.y.v - P0.y.v) );
       },
 
       /**
@@ -227,15 +223,17 @@ angular.module('pedaleswitchApp')
         // the  winding number counter
         var wn = 0;
 
-        var n = V.length - 1;
-        
+        var n = V.length;
+
+        V.push(V[0]);
+
         // loop through all edges of the polygon
         // edge from V[i] to  V[i+1]
         for (var i=0 ; i<n ; i++) {
           // start y <= P.y
-          if (V[i].y <= P.y) {
+          if (V[i].y.v <= P.y) {
             // an upward crossing
-            if (V[i+1].y  > P.y) {
+            if (V[i+1].y.v  > P.y) {
               // P left of  edge
               if (this.isLeft( V[i], V[i+1], P) > 0) {
                 // have  a valid up intersect
@@ -246,7 +244,7 @@ angular.module('pedaleswitchApp')
           // start y > P.y (no test needed)
           else {
             // a downward crossing
-            if (V[i+1].y  <= P.y) {
+            if (V[i+1].y.v  <= P.y) {
               // P right of  edge
               if (this.isLeft( V[i], V[i+1], P) < 0) {
                 // have  a valid down intersect
@@ -255,6 +253,8 @@ angular.module('pedaleswitchApp')
             }
           }
         }
+
+        V.pop();
         return (wn !== 0);
       },
 

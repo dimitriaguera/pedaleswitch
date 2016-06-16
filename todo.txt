@@ -6,3 +6,5 @@ draggable='true' en attribut du span qui contient le titre.
 Rotation :
 
   Quand on tourne un obj trop pret du canvas l'est composant qui le compose bouge...
+
+  Attention pointInPoly & isLeft a un .v dans intersect

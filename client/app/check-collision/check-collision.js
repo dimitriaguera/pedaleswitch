@@ -72,7 +72,7 @@ angular.module('pedaleswitchApp')
 
         for (indexCounter = 0; indexCounter < outer; indexCounter++) {
           comparitor = items[indexCounter];
-          if (intersect.pointInRect(mouse.x, mouse.y, comparitor.getLeft(), comparitor.getTop(), comparitor.getRight(), comparitor.getBottom(), tolerance)) {
+          if (intersect.pointInRect(mouse, comparitor.findExtreme(), tolerance)) {
             return {
               id: indexCounter, 
               dx: mouse.x - comparitor.getCenterX(),
@@ -90,7 +90,7 @@ angular.module('pedaleswitchApp')
         for (indexCounter = 0; indexCounter < outer; indexCounter++) {
           comparitor = items[indexCounter];
           if (intersect.pointInPoly(mouse, comparitor.points)) {
-            return {id: indexCounter, dx: mouse.x - comparitor.getX(), dy: mouse.y - comparitor.getY()};
+            return {id: indexCounter, dx: mouse.x - comparitor.getCenterX(), dy: mouse.y - comparitor.getCenterY()};
           }
         }
         return false;
@@ -114,7 +114,7 @@ angular.module('pedaleswitchApp')
 
         for (indexCounter = 0; indexCounter < outer; indexCounter++) {
           comparitor = items[indexCounter];
-          test = intersect.pointOnRect(mouse.x, mouse.y, comparitor.getLeft(), comparitor.getTop(), comparitor.getRight(), comparitor.getBottom(), tolerance);
+          test = intersect.pointOnRect(mouse, comparitor.findExtreme(), tolerance);
           if (test) {
             return {
               id: indexCounter,
