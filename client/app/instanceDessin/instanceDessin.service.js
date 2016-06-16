@@ -119,13 +119,14 @@ angular.module('pedaleswitchApp')
           //  z: {v: option.pos.z || null}
           //},
           pos: {
-            x: {v:  20},
-            y: {v:  20},
+            x: {v: 20},
+            y: {v: 20},
             z: {v: 20}
           },
-          points: getPoints(option.size, {x: 20 + option.size.w/2, y: 20 + option.size.h/2}),
+          points: {},
           composants: []
         };
+        nouv_effet.points = getPoints(option.size, {x: nouv_effet.pos.x.v + option.size.w/2, y: nouv_effet.pos.y.v + option.size.h/2});
         for(var i=0; i<option.composants.length; i++){
           var compo = {
             _id: option.composants[i]._id,

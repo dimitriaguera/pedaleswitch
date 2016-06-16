@@ -5,12 +5,20 @@ angular.module('pedaleswitchApp')
 
     class Point {
       constructor(point){
-        this.x = {v: point.x};
-        this.y = {v: point.y};
+        this.x = {v: point.x.v};
+        this.y = {v: point.y.v};
       }
       translate(vector){
-        this.x.v += vector.x.v;
-        this.y.v += vector.y.v;
+
+        //@todo a virer.
+        if (vector.x.v){
+          this.x.v += vector.x.v;
+          this.y.v += vector.y.v;
+        } else {
+          this.x.v += vector.x;
+          this.y.v += vector.y;
+        }
+
       }
       getX(){
         return this.x.v;
@@ -44,14 +52,17 @@ angular.module('pedaleswitchApp')
         this.composants = [];
         this.item_info = entity.item_info || null;
         this.prix = entity.prix || null;
+        
+        this.isSelected = false;
+        this.isOverlapping = false;
+        
+        this.pos = entity.pos;
         this.size = entity.size;
         this.old_size = entity.old_size;
-        this.pos = entity.pos;
+
         this.pos_default = entity.pos_default || null;
         this.points = entity.points;
         this.points_default = entity.points_default || null;
-        this.isSelected = false;
-        this.isOverlapping = false;
         this.initPoints(entity.points, this.points);
         this.initPoints(entity.points_default, this.points_default);
       }
@@ -71,6 +82,24 @@ angular.module('pedaleswitchApp')
       }
       resetCompPos(){
         var compos = this.composants;
+        if (compos.length !== 0) {
+
+          // Pour chaque composants.
+          for (var i = 0; i < compos.length ; i++) {
+            // Pour chaque points j du composants i.
+            for (var j = 0 ; j < compos[i].points.length ; j++){
+              compos[i].points[j].x.v = this.points[0].x.v + compos[i].points_default[j].x.v ;
+              compos[i].points[j].y.v = this.points[0].y.v + compos[i].points_default[j].y.v ;
+            }
+
+            // @todo a supprimer car cohabition de deux methodes.
+            compos[i].pos.x.v = compos[i].points[0].x.v;
+            compos[i].pos.y.v = compos[i].points[0].y.v;
+          }
+        }
+
+        /*
+        var compos = this.composants;
         if(compos.length !== 0) {
           for (var i = 0; i < compos.length; i++) {
             compos[i].setX(this.getX() + compos[i].pos_default.x.v);
@@ -80,6 +109,7 @@ angular.module('pedaleswitchApp')
             compos[i].setWidth(compos[i].old_size.w.v);
           }
         }
+        */
       }
 
       /**
@@ -138,6 +168,18 @@ angular.module('pedaleswitchApp')
         this.pos.y.v = this.points[0].y.v;
       }
 
+      /**
+       * Deplace l'obj d'un delta
+       * @param vec
+       */
+      move(vect){
+        for (var i = 0, l = this.points.length; i < l; i++){
+          this.points[i].translate(vect);
+        }
+        //@todo a supprimer car cohabitation de deux coordonnée.
+        this.pos.x.v = this.points[0].x.v;
+        this.pos.y.v = this.points[0].y.v;
+      }
       setX(coord){
         this.pos.x.v = coord;
       }
@@ -163,10 +205,12 @@ angular.module('pedaleswitchApp')
         this.size.w.v = w;
       }
       getCenterX(){
-        return this.getX() + (this.getWidth() / 2);
+        return this.getCenter().x;
+        //return this.getX() + (this.getWidth() / 2);
       }
       getCenterY(){
-        return this.getY() + (this.getHeight() / 2);
+        return this.getCenter().y;
+        //return this.getY() + (this.getHeight() / 2);
       }
       setCenterX(center){
         this.setX(center - (this.getWidth() / 2));
@@ -232,8 +276,8 @@ angular.module('pedaleswitchApp')
         var pos_c = {};
 
         // Calcul des coordonné du point dans le repère du baricentre C.
-        pos_c.x = point.x - C.x;
-        pos_c.y = point.y - C.y;
+        pos_c.x = point.x.v - C.x;
+        pos_c.y = point.y.v - C.y;
 
         // Calcul des coordonnées du point après rotation dans le repère d'origine.
         return {
@@ -249,7 +293,8 @@ angular.module('pedaleswitchApp')
        * @param debrayable : boolean on est en debrayable ou pas.
        */
       rotate(angle, C, debrayable){
-        var i;
+        var i, l, j, l2;
+        var newpoint;
         var points, point;
         var old_size, old_pos;
 
@@ -257,10 +302,48 @@ angular.module('pedaleswitchApp')
         // Barycentre.
         C = C || { x: this.getCenterX(), y: this.getCenterY()};
 
+        // Tourne l'effet
+        for (i = 0, l = this.points.length; i < l; i++){
+          newpoint = this.rotatePoint(this.points[i], angle, C);
+          this.points[i].x.v = newpoint.x;
+          this.points[i].y.v = newpoint.y;
+        }
+
+        // Tourne les composants
+        if (this.composants.length > 0) {
+          // Si pas debrayable fait tourner les composants.
+          if (!debrayable) {
+            for (i = 0, l = this.composants.length; i < l; i++) {
+              for (j = 0, l2 = this.composants.points.length; j < l; j++) {
+                newpoint = this.rotatePoint(this.composants.points[i], angle, C);
+                this.composants.points[i].x.v = newpoint.x;
+                this.composants.points[i].y.v = newpoint.y;
+              }
+            }
+          }
+          // Si debrayable doit appliquer un rotation au composant qui serait virtuellement dans cette
+          // position si cela n'avait pas été débrayable afin de remettre le composant à la bonne place
+          // si l'utilisateur switch de debrayable à non.
+          else {
+            for (i = 0; i < this.composants.length; i++) {
+              // Rotation 90 a droite.
+              if (angle < 0) {
+                // Coordonnée dans le repère du rect avant rotation.
+                point = {
+                  x: this.composants[i].pos_default.x.v,
+                  y: this.composants[i].pos_default.y.v + this.composants[i].getHeight()
+                };
+              }
+            }
+          }
+        }
+
+        /*
+        // @todo cette partie marche que pour les rectangles et cercle car il sont dans des rectangles.
+
         // 4 angle du rect.
         points = this.getBoundingBoxPoints();
 
-        // @todo cette partie marche que pour les rectangles et cercle car il sont dans des rectangles.
         old_size = {
           w: this.getWidth(),
           h: this.getHeight()
@@ -347,6 +430,7 @@ angular.module('pedaleswitchApp')
             }
           }
         }
+      */
       }
     }
 
@@ -369,6 +453,7 @@ angular.module('pedaleswitchApp')
     class Rect extends Shape {
       drawCanvas(ctx){
 
+
         ctx.beginPath();
         ctx.moveTo(this.points[0].x.v, this.points[0].y.v);
         for (var item = 0, length = this.points.length; item < length; item += 1) {
@@ -376,7 +461,16 @@ angular.module('pedaleswitchApp')
         }
         ctx.closePath();
         ctx.stroke();
-
+        /*
+        var points = this.getBoundingBoxPoints();
+        ctx.beginPath();
+        ctx.moveTo(points[0].x, points[0].y);
+        for (var item = 0, length = points.length; item < length; item += 1) {
+          ctx.lineTo(points[item].x, points[item].y);
+        }
+        ctx.closePath();
+        ctx.stroke();
+        */
         if (this.isOverlapping) {
           ctx.fillStyle = "rgba(255, 00, 00, 0.2)";
           ctx.fill();
@@ -439,120 +533,120 @@ angular.module('pedaleswitchApp')
           top: {
             points: {
               p0: {
-                x: 0,
-                y: 0
+                x: {v: 0},
+                y: {v: 0}
               },
               p1: {
-                x: this.getSide('w'),
-                y: 0
+                x: {v: this.getSide('w')},
+                y: {v: 0}
               },
               p2: {
-                x: this.getSide('w'),
-                y: this.getSide('d2')
+                x: {v: this.getSide('w')},
+                y: {v: this.getSide('d2')}
               },
               p3: {
-                x: 0,
-                y: this.getSide('d2')
+                x: {v: 0},
+                y: {v: this.getSide('d2')}
               }
             }
           },
           bottom: {
             points: {
               p0: {
-                x: 0,
-                y: 0
+                x: {v: 0},
+                y: {v: 0}
               },
               p1: {
-                x: this.getSide('w'),
-                y: 0
+                x: {v: this.getSide('w')},
+                y: {v: 0}
               },
               p2: {
-                x: this.getSide('w'),
-                y: this.getSide('d1')
+                x: {v: this.getSide('w')},
+                y: {v: this.getSide('d1')}
               },
               p3: {
-                x: 0,
-                y: this.getSide('d1')
+                x: {v: 0},
+                y: {v: this.getSide('d1')}
               }
             }
           },
           up: {
             points: {
               p0: {
-                x: 0,
-                y: 0
+                x: {v: 0},
+                y: {v: 0}
               },
               p1: {
-                x: this.getSide('w'),
-                y: 0
+                x: {v: this.getSide('w')},
+                y: {v: 0}
               },
               p2: {
-                x: this.getSide('w'),
-                y: this.getSide('d')
+                x: {v: this.getSide('w')},
+                y: {v: this.getSide('d')}
               },
               p3: {
-                x: 0,
-                y: this.getSide('d')
+                x: {v: 0},
+                y: {v: this.getSide('d')}
               }
             }
           },
           down: {
             points: {
               p0: {
-                x: 0,
-                y: 0
+                x: {v: 0},
+                y: {v: 0}
               },
               p1: {
-                x: this.getSide('w'),
-                y: 0
+                x: {v: this.getSide('w')},
+                y: {v: 0}
               },
               p2: {
-                x: this.getSide('w'),
-                y: this.getSide('h')
+                x: {v: this.getSide('w')},
+                y: {v: this.getSide('h')}
               },
               p3: {
-                x: 0,
-                y: this.getSide('h')
+                x: {v: 0},
+                y: {v: this.getSide('h')}
               }
             }
           },
           left: {
             points: {
               p0: {
-                x: 0,
-                y: 0
+                x: {v: 0},
+                y: {v: 0}
               },
               p1: {
-                x: this.getSide('h'),
-                y: this.getSide('d2') - this.getSide('d1')
+                x: {v: this.getSide('h')},
+                y: {v: this.getSide('d2') - this.getSide('d1')}
               },
               p2: {
-                x: this.getSide('h'),
-                y: this.getSide('d2')
+                x: {v: this.getSide('h')},
+                y: {v: this.getSide('d2')}
               },
               p3: {
-                x: 0,
-                y: this.getSide('d2')
+                x: {v: 0},
+                y: {v: this.getSide('d2')}
               }
             }
           },
           right: {
             points: {
               p0: {
-                x: 0,
-                y: 0
+                x: {v: 0},
+                y: {v: 0}
               },
               p1: {
-                x: this.getSide('h'),
-                y: this.getSide('d1') - this.getSide('d2')
+                x: {v: this.getSide('h')},
+                y: {v: this.getSide('d1') - this.getSide('d2')}
               },
               p2: {
-                x: this.getSide('h'),
-                y: this.getSide('d1')
+                x: {v: this.getSide('h')},
+                y: {v: this.getSide('d1')}
               },
               p3: {
-                x: 0,
-                y: this.getSide('d1')
+                x: {v: 0},
+                y: {v: this.getSide('d1')}
               }
             }
           }
@@ -593,47 +687,47 @@ angular.module('pedaleswitchApp')
         this.projections.bottom = new Boite(this, proj_points.bottom);
       }
       updateProjection(state){
-        var coords = this.createProjectionsCoords(state);
+        var coords = this.createProjectionsCoords(state).points;
         var points = this.projections[state].points;
 
-        points.p0.setX(coords.p0.x);
-        points.p1.setX(coords.p1.x);
-        points.p2.setX(coords.p2.x);
-        points.p3.setX(coords.p3.x);
+        points.p0.setX(coords.p0.x.v);
+        points.p1.setX(coords.p1.x.v);
+        points.p2.setX(coords.p2.x.v);
+        points.p3.setX(coords.p3.x.v);
 
-        points.p0.setY(coords.p0.y);
-        points.p1.setY(coords.p1.y);
-        points.p2.setY(coords.p2.y);
-        points.p3.setY(coords.p3.y);
+        points.p0.setY(coords.p0.y.v);
+        points.p1.setY(coords.p1.y.v);
+        points.p2.setY(coords.p2.y.v);
+        points.p3.setY(coords.p3.y.v);
       }
       updateMaster(state){
         var proj, h, d1, d2, d3;
         switch (state) {
           case 'top':
-            proj = proj_points.top;
-            this.setSide('w', proj.points.p1.getX() - proj.points.p0.getX());
-            this.setSide('d2', proj.points.p3.getY() - proj.points.p0.getY());
+            proj = this.createProjectionsCoords(state);
+            this.setSide('w', proj.points.p1.x.v - proj.points.p0.x.v);
+            this.setSide('d2', proj.points.p3.y.v - proj.points.p0.y.v);
             break;
           case 'bottom':
-            proj = proj_points.bottom;
-            this.setSide('w', proj.points.p1.getX() - proj.points.p0.getX());
-            this.setSide('d1', proj.points.p3.getY() - proj.points.p0.getY());
+            proj = this.createProjectionsCoords(state);
+            this.setSide('w', proj.points.p1.x.v - proj.points.p0.x.v);
+            this.setSide('d1', proj.points.p3.y.v - proj.points.p0.y.v);
             break;
           case 'up':
-            proj = proj_points.up;
-            this.setSide('w', proj.points.p1.getX() - proj.points.p0.getX());
-            this.setSide('d', proj.points.p3.getY() - proj.points.p0.getY());
+            proj = this.createProjectionsCoords(state);
+            this.setSide('w', proj.points.p1.x.v - proj.points.p0.x.v);
+            this.setSide('d', proj.points.p3.y.v - proj.points.p0.y.v);
             break;
           case 'down':
-            proj = proj_points.down;
-            this.setSide('w', proj.points.p1.getX() - proj.points.p0.getX());
-            this.setSide('h', proj.points.p3.getY() - proj.points.p0.getY());
+            proj = this.createProjectionsCoords(state);
+            this.setSide('w', proj.points.p1.x.v - proj.points.p0.x.v);
+            this.setSide('h', proj.points.p3.y.v - proj.points.p0.y.v);
             break;
           case 'left':
-            proj = proj_points.left;
-            h = proj.points.p2.getX() - proj.points.p3.getX();
-            d2 = proj.points.p3.getY() - proj.points.p0.getY();
-            d1 = proj.points.p2.getY() - proj.points.p1.getY();
+            proj = this.createProjectionsCoords(state);
+            h = proj.points.p2.x.v - proj.points.p3.x.v;
+            d2 = proj.points.p3.y.v - proj.points.p0.y.v;
+            d1 = proj.points.p2.y.v - proj.points.p1.y.v;
             d3 = d2 - d1;
             this.setSide('h', h);
             this.setSide('d', Math.sqrt(h*h + d3*d3));
@@ -641,10 +735,10 @@ angular.module('pedaleswitchApp')
             this.setSide('d2', d2);
             break;
           case 'right':
-            proj = proj_points.right;
-            h = proj.points.p2.getX() - proj.points.p3.getX();
-            d1 = proj.points.p3.getY() - proj.points.p0.getY();
-            d2 = proj.points.p2.getY() - proj.points.p1.getY();
+            proj = this.createProjectionsCoords(state);
+            h = proj.points.p2.x.v - proj.points.p3.x.v;
+            d1 = proj.points.p3.y.v - proj.points.p0.y.v;
+            d2 = proj.points.p2.y.v - proj.points.p1.y.v;
             d3 = d2 - d1;
             this.setSide('h', h);
             this.setSide('d', Math.sqrt(h*h + d3*d3));
@@ -672,8 +766,8 @@ angular.module('pedaleswitchApp')
           h: {v: null}
         };
         this.pos = {
-          x: {v: null},
-          y: {v: null}
+          x: {v: 200},
+          y: {v: 200}
         };
         this.isSelected = false;
         this.isOverlapping = false;
@@ -694,6 +788,12 @@ angular.module('pedaleswitchApp')
       initMoveBox(entity){
         this.pos.x.v = entity.pos.x.v;
         this.pos.y.v = entity.pos.y.v;
+        this.points.p0.translate(this.pos);
+        this.points.p1.translate(this.pos);
+        this.points.p2.translate(this.pos);
+        this.points.p3.translate(this.pos);
+      }
+      moveBox(){
         this.points.p0.translate(this.pos);
         this.points.p1.translate(this.pos);
         this.points.p2.translate(this.pos);
@@ -837,15 +937,7 @@ angular.module('pedaleswitchApp')
 
         ctx.stroke();
       }
-      
-      movePoints(delta){
-        var i, length;
-        
-        for (i = 0, length = this.points.length ; i < length ; i++ ) {
-          this.points[i].x += delta.x;
-          this.points[i].y += delta.y;
-        }
-      }
+
       setX(coord){
         this.pos.x.v = coord;
       }
@@ -928,6 +1020,20 @@ angular.module('pedaleswitchApp')
         this.pos = obj.pos || {x:{v:60}, y:{v:60}};
         this.size = obj.size || {w:{v:0}, h:{v:0}};
       }
+
+      /**
+       * Deplace l'obj d'un delta
+       * @param vec
+       */
+      move(vect){
+        for (var i = 0, l = this.points.length; i < l; i++){
+          this.points[i].translate(vect);
+        }
+        //@todo a supprimer car cohabitation de deux coordonnée.
+        this.pos.x.v = this.points[0].x.v;
+        this.pos.y.v = this.points[0].y.v;
+      }
+
       setX(coord){
         this.pos.x.v = coord;
       }

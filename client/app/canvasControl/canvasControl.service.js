@@ -82,7 +82,6 @@ angular.module('pedaleswitchApp')
             }
           }
 
-
           // Créer le boitier de la pedale.
           if(boite.constructor.name !== "Boite") {
             this.setMasterBoite(canvasGeneration.newMasterBoite(tmp_eff));
@@ -179,7 +178,7 @@ angular.module('pedaleswitchApp')
             viewState = 'top';
             masterBoite.updateProjection(viewState);
             this.resetAll();
-            this.setBoite(masterBoite.projections.top).initMoveBox();
+            this.setBoite(masterBoite.projections.top).moveBox();
             this.setTableEffet(masterBoite.projections.top.effets);
             this.setTableComposant(masterBoite.projections.top.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
@@ -189,7 +188,7 @@ angular.module('pedaleswitchApp')
             viewState = 'bottom';
             masterBoite.updateProjection(viewState);
             this.resetAll();
-            this.setBoite(masterBoite.projections.bottom).initMoveBox();
+            this.setBoite(masterBoite.projections.bottom).moveBox();
             this.setTableEffet(masterBoite.projections.bottom.effets);
             this.setTableComposant(masterBoite.projections.bottom.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
@@ -199,7 +198,7 @@ angular.module('pedaleswitchApp')
             viewState = 'up';
             masterBoite.updateProjection(viewState);
             this.resetAll();
-            this.setBoite(masterBoite.projections.up).initMoveBox();
+            this.setBoite(masterBoite.projections.up).moveBox();
             this.setTableEffet(masterBoite.projections.up.effets);
             this.setTableComposant(masterBoite.projections.up.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
@@ -209,7 +208,7 @@ angular.module('pedaleswitchApp')
             viewState = 'down';
             masterBoite.updateProjection(viewState);
             this.resetAll();
-            this.setBoite(masterBoite.projections.down).initMoveBox();
+            this.setBoite(masterBoite.projections.down).moveBox();
             this.setTableEffet(masterBoite.projections.down.effets);
             this.setTableComposant(masterBoite.projections.down.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
@@ -219,7 +218,7 @@ angular.module('pedaleswitchApp')
             viewState = 'left';
             masterBoite.updateProjection(viewState);
             this.resetAll();
-            this.setBoite(masterBoite.projections.left).initMoveBox();
+            this.setBoite(masterBoite.projections.left).moveBox();
             this.setTableEffet(masterBoite.projections.left.effets);
             this.setTableComposant(masterBoite.projections.left.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
@@ -229,7 +228,7 @@ angular.module('pedaleswitchApp')
             viewState = 'right';
             masterBoite.updateProjection(viewState);
             this.resetAll();
-            this.setBoite(masterBoite.projections.right).initMoveBox();
+            this.setBoite(masterBoite.projections.right).moveBox();
             this.setTableEffet(masterBoite.projections.right.effets);
             this.setTableComposant(masterBoite.projections.right.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
@@ -394,11 +393,11 @@ angular.module('pedaleswitchApp')
       moveCloseBorder: function(effet){
         // On deplace un effet.
         if (effet.constructor.name !== "Boite"){
-          this.moveCloseBorderGenerale(effet, boite.margin.v);
+          //this.moveCloseBorderGenerale(effet, boite.margin.v);
         } 
         // On deplace la boite.  
         else {
-          this.moveCloseBorderGenerale(effet, 0);
+          //this.moveCloseBorderGenerale(effet, 0);
         }
       },
 
