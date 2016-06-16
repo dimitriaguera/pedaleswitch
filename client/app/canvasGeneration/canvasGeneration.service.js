@@ -371,6 +371,7 @@ angular.module('pedaleswitchApp')
           top: null,
           bottom: null
         };
+        this.convertMargin();
         this.initBoiteWithEffect(entity);
       }
 
@@ -645,10 +646,10 @@ angular.module('pedaleswitchApp')
         this.titre = 'Boite';
         this.effets = [];
         this.composants = [];
-        this.initPointsPosition(proj_points.points);
+        this.initPoints(proj_points.points);
       }
 
-      initPointsPosition(points){
+      initPoints(points){
         this.points = {
           p0: new Point(points.p0),
           p1: new Point(points.p1),
@@ -657,8 +658,8 @@ angular.module('pedaleswitchApp')
         }
       }
       initMoveBox(entity){
-        this.pos.x.v = entity.pos.x.v;
-        this.pos.y.v = entity.pos.y.v;
+        this.pos.x.v = entity.pos.x.v - this.margin.v;
+        this.pos.y.v = entity.pos.y.v - this.margin.v;
         this.points.p0.translate(this.pos);
         this.points.p1.translate(this.pos);
         this.points.p2.translate(this.pos);
@@ -669,6 +670,12 @@ angular.module('pedaleswitchApp')
         this.points.p1.translate(this.pos);
         this.points.p2.translate(this.pos);
         this.points.p3.translate(this.pos);
+      }
+      moveBoxTo(vector){
+        this.points.p0.translate(vector);
+        this.points.p1.translate(vector);
+        this.points.p2.translate(vector);
+        this.points.p3.translate(vector);
       }
 
       // Redimensionne la boite si le nouvel effet est en dehors.
@@ -1034,40 +1041,77 @@ angular.module('pedaleswitchApp')
         }
       }
 
+      //setPos(loc){
+      //  switch(loc) {
+      //    case 'right':
+      //      this.pos_start = {
+      //        x: {v: this.entity.pos.x.v + this.entity.size.w.v + this.margin},
+      //        y: {v: this.entity.pos.y.v}
+      //      };
+      //      this.pos_end = {
+      //        x: {v: this.entity.pos.x.v + this.entity.size.w.v + this.margin},
+      //        y: {v: this.entity.pos.y.v + this.entity.size.h.v}
+      //      };
+      //      this.pos_box = {
+      //        x: {v: this.pos_start.x.v + 10},
+      //        y: {v: this.pos_start.y.v + (this.pos_end.y.v - this.pos_start.y.v)/2}
+      //      };
+      //      this.value = canvasConversion.convertToMm(this.entity.size.h.v);
+      //      break;
+      //    case 'bottom':
+      //      this.pos_start = {
+      //        x: {v: this.entity.pos.x.v},
+      //        y: {v: this.entity.pos.y.v + this.entity.size.h.v + this.margin}
+      //      };
+      //      this.pos_end = {
+      //        x: {v: this.entity.pos.x.v + this.entity.size.w.v},
+      //        y: {v: this.entity.pos.y.v + this.entity.size.h.v + this.margin}
+      //      };
+      //      this.pos_box = {
+      //        x: {v: this.pos_start.x.v + (this.pos_end.x.v - this.pos_start.x.v)/2},
+      //        y: {v: this.pos_start.y.v + 20}
+      //      };
+      //      this.value = canvasConversion.convertToMm(this.entity.size.w.v);
+      //      break;
+      //    default:
+      //    console.log(loc + '--> terme non reconnu par le constructeur Arrow');
+      //  }
+      //}
+
       setPos(loc){
         switch(loc) {
           case 'right':
             this.pos_start = {
-              x: {v: this.entity.pos.x.v + this.entity.size.w.v + this.margin},
-              y: {v: this.entity.pos.y.v}
+              x: {v: this.entity.points.p1.x.v + this.margin},
+              y: this.entity.points.p1.y
             };
             this.pos_end = {
-              x: {v: this.entity.pos.x.v + this.entity.size.w.v + this.margin},
-              y: {v: this.entity.pos.y.v + this.entity.size.h.v}
+              x: {v: this.entity.points.p2.x.v + this.margin},
+              y: this.entity.points.p2.y
             };
             this.pos_box = {
               x: {v: this.pos_start.x.v + 10},
               y: {v: this.pos_start.y.v + (this.pos_end.y.v - this.pos_start.y.v)/2}
             };
-            this.value = canvasConversion.convertToMm(this.entity.size.h.v);
+            this.value = canvasConversion.convertToMm(this.entity.points.p2.y.v - this.entity.points.p1.y.v);
             break;
           case 'bottom':
             this.pos_start = {
-              x: {v: this.entity.pos.x.v},
-              y: {v: this.entity.pos.y.v + this.entity.size.h.v + this.margin}
+              x: this.entity.points.p3.x,
+              y: {v: this.entity.points.p3.y.v + this.margin}
             };
             this.pos_end = {
-              x: {v: this.entity.pos.x.v + this.entity.size.w.v},
-              y: {v: this.entity.pos.y.v + this.entity.size.h.v + this.margin}
+              x: this.entity.points.p2.x,
+              y: {v: this.entity.points.p2.y.v + this.margin}
             };
             this.pos_box = {
               x: {v: this.pos_start.x.v + (this.pos_end.x.v - this.pos_start.x.v)/2},
               y: {v: this.pos_start.y.v + 20}
             };
-            this.value = canvasConversion.convertToMm(this.entity.size.w.v);
+            this.value = canvasConversion.convertToMm(this.entity.points.p2.x.v - this.entity.points.p3.x.v);
             break;
           default:
-          console.log(loc + '--> terme non reconnu par le constructeur Arrow');
+            console.log(loc + '--> terme non reconnu par le constructeur Arrow');
         }
       }
 
