@@ -14,6 +14,53 @@ angular.module('pedaleswitchApp')
     var zoom = 1;
 
     var convertSize = function (entity, ratio) {
+      var i, j, l , l2;
+
+      // @todo prise en compte de la boite.
+      if (entity.constructor.name !== 'MasterBoite'){
+        for (i = 0, l = entity.points.length; i < l ; i++){
+          entity.points[i].x.v = Math.round(ratio * entity.points[i].x.v);
+          entity.points[i].y.v = Math.round(ratio * entity.points[i].y.v);
+        }
+
+        //@todo a améliorer car cohabitation de deux coordonnées.
+        entity.pos.x.v = entity.points[0].x.v;
+        entity.pos.y.v = entity.points[0].y.v;
+        entity.size.w.v = Math.round(ratio * entity.size.w.v);
+        entity.size.h.v = Math.round(ratio * entity.size.h.v);
+        entity.size.d.v = Math.round(ratio * entity.size.d.v);
+
+
+        if (entity.composants) {
+          var compos = entity.composants;
+          for (i = 0, l = compos.length ; i < l ; i++) {
+            for (j = 0, l2 = compos[i].points.length; j < l2 ; j++){
+              compos[i].points[j].x.v = Math.round(ratio * compos[i].points[j].x.v);
+              compos[i].points[j].y.v = Math.round(ratio * compos[i].points[j].y.v);
+              compos[i].points_default[j].x.v = Math.round(ratio * compos[i].points_default[j].x.v);
+              compos[i].points_default[j].y.v = Math.round(ratio * compos[i].points_default[j].y.v);
+            }
+
+            //@todo a améliorer car cohabitation de deux coordonnées.
+            compos[i].pos.x.v = compos[i].points[0].x.v;
+            compos[i].pos.y.v = compos[i].points[0].y.v;
+            compos[i].pos_default.x.v = compos[i].points_default[0].x.v;
+            compos[i].pos_default.y.v = compos[i].points_default[0].y.v;
+            compos[i].size.w.v = Math.round(ratio * compos[i].size.w.v);
+            compos[i].size.h.v = Math.round(ratio * compos[i].size.h.v);
+            compos[i].size.d.v = Math.round(ratio * compos[i].size.d.v);
+            compos[i].old_size.w.v = Math.round(ratio * compos[i].old_size.w.v);
+            compos[i].old_size.h.v = Math.round(ratio * compos[i].old_size.h.v);
+          }
+        }
+        if (entity.margin){
+          entity.margin.v = Math.round(ratio * entity.margin.v);
+        }
+
+
+      }
+
+      /*
       entity.pos.x.v = Math.round(ratio * entity.pos.x.v);
       entity.pos.y.v = Math.round(ratio * entity.pos.y.v);
       entity.size.w.v = Math.round(ratio * entity.size.w.v);
@@ -21,11 +68,11 @@ angular.module('pedaleswitchApp')
       entity.size.d.v = Math.round(ratio * entity.size.d.v);
       if (entity.composants) {
         var compos = entity.composants;
-        for (var i = 0; i < compos.length; i++) {
+        for (i = 0; i < compos.length; i++) {
           compos[i].pos.x.v = Math.round(ratio * compos[i].pos.x.v);
           compos[i].pos.y.v = Math.round(ratio * compos[i].pos.y.v);
-          compos[i].pos_default.x.v = Math.round(ratio * compos[i].pos_default.x.v);
-          compos[i].pos_default.y.v = Math.round(ratio * compos[i].pos_default.y.v);
+           = Math.round(ratio * compos[i].pos_default.x.v);
+           = Math.round(ratio * compos[i].pos_default.y.v);
           compos[i].size.w.v = Math.round(ratio * compos[i].size.w.v);
           compos[i].size.h.v = Math.round(ratio * compos[i].size.h.v);
           compos[i].size.d.v = Math.round(ratio * compos[i].size.d.v);
@@ -36,6 +83,7 @@ angular.module('pedaleswitchApp')
       if (entity.margin){
         entity.margin.v = Math.round(ratio * entity.margin.v);
       }
+      */
     };
 
     // Public API here

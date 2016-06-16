@@ -63,16 +63,24 @@ angular.module('pedaleswitchApp')
        * @param effet : objet effet du modele dessin (entrée de la table option du panier).
        * @para bol : si true alors rajoute l'effet meme si il est deja dans le canvas
        *             sert au fonction de chargement depuis la db ou localstorage.
+       * @para pos : met l'effet à la position donnée par pos.
        */
-      addToCanvas: function(effet, bol) {
+      addToCanvas: function(effet, bol, pos) {
         bol = bol || false;
-
+        pos = pos || null;
         // if check si l'effet est deja dans le canvas.
         if (!effet.in_canvas || bol) {
           var tmp_eff = canvasGeneration.newRect(effet);
           var compos = effet.composants;
           var tmp_comp;
-          
+
+          if (pos){
+            tmp_eff.moveTo(pos);
+            if (debrayable){
+              tmp_eff.resetCompPos();
+            }
+          }
+
           // Créer le boitier de la pedale.
           if(boite.constructor.name !== "Boite") {
             this.setMasterBoite(canvasGeneration.newMasterBoite());
@@ -377,11 +385,11 @@ angular.module('pedaleswitchApp')
       moveCloseBorder: function(effet){
         // On deplace un effet.
         if (effet.constructor.name !== "Boite"){
-          this.moveCloseBorderGenerale(effet, boite.margin.v);
+          //this.moveCloseBorderGenerale(effet, boite.margin.v);
         } 
         // On deplace la boite.  
         else {
-          this.moveCloseBorderGenerale(effet, 0);
+          //this.moveCloseBorderGenerale(effet, 0);
         }
       },
 

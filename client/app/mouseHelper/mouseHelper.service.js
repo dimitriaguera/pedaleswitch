@@ -3,8 +3,6 @@
 angular.module('pedaleswitchApp')
   .factory('mouseHelper', function (canvasControl, canvasConversion, checkCollision, canvasDraw, $rootScope) {
 
-    var mouseX, mouseY;
-
     var oldX, oldY;
     var drag = {};
     var tabActive = [];
@@ -145,15 +143,15 @@ angular.module('pedaleswitchApp')
         if (timeb < DELAY_DRAG) {
           return;
         }
-
+        
+        // Affecte la nouvelle position.
+        tabActive[drag.id].move({x: e.layerX - mousePos.x, y: e.layerY - mousePos.y});
         mousePos = {x: e.layerX, y: e.layerY};
 
         // Met le bon pointeur de souris
         update('move');
 
-        // Affecte la nouvelle position.
-        tabActive[drag.id].setCenterX(mousePos.x - drag.dx);
-        tabActive[drag.id].setCenterY(mousePos.y - drag.dy);
+        
         // Dessine.
         canvasDraw.drawStuff();
       },
@@ -188,12 +186,12 @@ angular.module('pedaleswitchApp')
           if (drag.pointer.pos === 'bottom'){
 
             // Agrendit le canvas.
-            if (mouseY > canvas.height * 0.8) {
+            if (mousePos.y > canvas.height * 0.8) {
               canvas.height = mousePos.y * 1.2;
             }
 
             // Regarde si pas inferieur a un composant ou a effet.
-            if (mouseY < pos_max.b + marginboite) {
+            if (mousePos.y < pos_max.b + marginboite) {
               mousePos.y = pos_max.b + marginboite;
             }
 
@@ -269,8 +267,10 @@ angular.module('pedaleswitchApp')
           return;
         }
 
-        mousePos = {x: e.layerX, y: e.layerY};
+        // Bouge les effets et les compos.
+        boite.moveEffetCompo({x: e.layerX - mousePos.x, y: e.layerY - mousePos.y});
 
+        mousePos = {x: e.layerX, y: e.layerY};
         // Met le bon pointeur de souris
         update('move');
 
@@ -280,14 +280,17 @@ angular.module('pedaleswitchApp')
 
         // Deplace l'obj si sa nouvelle position depasse le canvas.
         canvasControl.moveCloseBorder(boite);
-        
+
         // Bouge les effets et les compos.
+        /*
         boite.moveEffetCompo({
           deltaX: boite.pos.x.v - oldX,
           deltaY: boite.pos.y.v - oldY
         });
         oldX = boite.pos.x.v;
         oldY = boite.pos.y.v;
+        */
+
 
         // Recalcule les positions de fleches entourant la boite.
         canvasControl.setArrowPos();
@@ -306,20 +309,12 @@ angular.module('pedaleswitchApp')
           return;
         }
 
+        // Deplace le thing.
+        tabActive[drag.id].move({x: e.layerX - mousePos.x, y: e.layerY - mousePos.y});
         mousePos = {x: e.layerX, y: e.layerY};
 
         // Met le bon pointeur de souris
         update('move');
-
-        /*
-        deltaPos = {x: e.layerX - deltaPos.x, y: e.layerY - deltaPos.y};
-        tabActive[drag.id].movePoints(deltaPos);
-        deltaPos = {x: e.layerX , y: e.layerY};
-        */
-
-        // Affecte la nouvelle position.
-        tabActive[drag.id].setCenterX(mousePos.x - drag.dx);
-        tabActive[drag.id].setCenterY(mousePos.y - drag.dy);
 
         // Deplace l'obj si sa nouvelle position depasse le canvas.
         canvasControl.moveCloseBorder(tabActive[drag.id]);

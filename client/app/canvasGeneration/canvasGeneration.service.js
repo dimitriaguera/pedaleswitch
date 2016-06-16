@@ -32,14 +32,17 @@ angular.module('pedaleswitchApp')
         this.composants = [];
         this.item_info = entity.item_info || null;
         this.prix = entity.prix || null;
+        
+        this.isSelected = false;
+        this.isOverlapping = false;
+        
+        this.pos = entity.pos;
         this.size = entity.size;
         this.old_size = entity.old_size;
-        this.pos = entity.pos;
+
         this.pos_default = entity.pos_default || null;
         this.points = entity.points;
         this.points_default = entity.points_default || null;
-        this.isSelected = false;
-        this.isOverlapping = false;
         this.initPoints(entity.points, this.points);
         this.initPoints(entity.points_default, this.points_default);
       }
@@ -59,6 +62,24 @@ angular.module('pedaleswitchApp')
       }
       resetCompPos(){
         var compos = this.composants;
+        if (compos.length !== 0) {
+
+          // Pour chaque composants.
+          for (var i = 0; i < compos.length ; i++) {
+            // Pour chaque points j du composants i.
+            for (var j = 0 ; j < compos[i].points.length ; j++){
+              compos[i].points[j].x.v = this.points[0].x.v + compos[i].points_default[j].x.v ;
+              compos[i].points[j].y.v = this.points[0].y.v + compos[i].points_default[j].y.v ;
+            }
+
+            // @todo a supprimer car cohabition de deux methodes.
+            compos[i].pos.x.v = compos[i].points[0].x.v;
+            compos[i].pos.y.v = compos[i].points[0].y.v;
+          }
+        }
+
+        /*
+        var compos = this.composants;
         if(compos.length !== 0) {
           for (var i = 0; i < compos.length; i++) {
             compos[i].setX(this.getX() + compos[i].pos_default.x.v);
@@ -68,32 +89,79 @@ angular.module('pedaleswitchApp')
             compos[i].setWidth(compos[i].old_size.w.v);
           }
         }
+        */
       }
 
+      /**
+       * Aire d'un poly tester et c OK
+       * @returns {number}
+       */
       getArea() {
         var area = 0;
-        var i;
-        var l = this.points.length;
-        for (i = 0; i < l; i++){
-            area += 0
+        for (var i = 0, l = this.points.length; i < l - 1 ; i++){
+            area += this.points[i].x.v * this.points[i+1].y.v - this.points[i+1].x.v * this.points[i].y.v;
         }
+        area += this.points[l-1].x.v * this.points[0].y.v - this.points[0].x.v * this.points[l-1].y.v;
+        area /= 2;
+        return area;
+      }
 
-      }
+      /**
+       * Centre de masse d'un poly OK
+       * @returns {{x: number, y: number}}
+       */
       getCenter(){
+        var area = this.getArea();
+
+        var xg = 0, yg = 0, coef;
+
+        for (var i = 0, l = this.points.length; i < l - 1 ; i++){
+          coef = this.points[i].x.v * this.points[i+1].y.v - this.points[i+1].x.v * this.points[i].y.v;
+          xg += (this.points[i].x.v + this.points[i+1].x.v) * coef;
+          yg += (this.points[i].y.v + this.points[i+1].y.v) * coef;
+        }
+        coef = this.points[l-1].x.v * this.points[0].y.v - this.points[0].x.v * this.points[l-1].y.v;
+        xg += (this.points[l-1].x.v + this.points[0].x.v) * coef;
+        yg += (this.points[l-1].y.v + this.points[0].y.v) * coef;
+
+        xg /= 6 * area;
+        yg /= 6 * area;
+
         return {
-          x: (this.points[1].x.v - this.points[0].x.v)/2,
-          y: (this.points[3].y.v - this.points[0].y.v)/2
+          x: xg,
+          y: yg
         }
       }
+
+      /**
+       * Deplace l'objet a la position donnée par le nouveau barycentre OK.
+       * @param pos
+       */
       moveTo(pos){
         var bary = this.getCenter();
         var vect = {x: pos.x - bary.x, y: pos.y - bary.y};
-        var i;
-        var l = this.points.length;
-        for (i = 0; i < l; i++){
+        for (var i = 0, l = this.points.length; i < l; i++){
           this.points[i].translate(vect);
         }
+        //@todo a supprimer car cohabitation de deux coordonnée.
+        this.pos.x.v = this.points[0].x.v;
+        this.pos.y.v = this.points[0].y.v;
       }
+
+      /**
+       * Deplace l'obj d'un delta
+       * @param vec
+       */
+      move(vect){
+        for (var i = 0, l = this.points.length; i < l; i++){
+          this.points[i].translate(vect);
+        }
+        //@todo a supprimer car cohabitation de deux coordonnée.
+        this.pos.x.v = this.points[0].x.v;
+        this.pos.y.v = this.points[0].y.v;
+      }
+      
+      
       setX(coord){
         this.pos.x.v = coord;
       }
@@ -119,10 +187,12 @@ angular.module('pedaleswitchApp')
         this.size.w.v = w;
       }
       getCenterX(){
-        return this.getX() + (this.getWidth() / 2);
+        return this.getCenter().x;
+        //return this.getX() + (this.getWidth() / 2);
       }
       getCenterY(){
-        return this.getY() + (this.getHeight() / 2);
+        return this.getCenter().y;
+        //return this.getY() + (this.getHeight() / 2);
       }
       setCenterX(center){
         this.setX(center - (this.getWidth() / 2));
@@ -188,8 +258,8 @@ angular.module('pedaleswitchApp')
         var pos_c = {};
 
         // Calcul des coordonné du point dans le repère du baricentre C.
-        pos_c.x = point.x - C.x;
-        pos_c.y = point.y - C.y;
+        pos_c.x = point.x.v - C.x;
+        pos_c.y = point.y.v - C.y;
 
         // Calcul des coordonnées du point après rotation dans le repère d'origine.
         return {
@@ -205,7 +275,8 @@ angular.module('pedaleswitchApp')
        * @param debrayable : boolean on est en debrayable ou pas.
        */
       rotate(angle, C, debrayable){
-        var i;
+        var i, l, j, l2;
+        var newpoint;
         var points, point;
         var old_size, old_pos;
 
@@ -213,10 +284,48 @@ angular.module('pedaleswitchApp')
         // Barycentre.
         C = C || { x: this.getCenterX(), y: this.getCenterY()};
 
+        // Tourne l'effet
+        for (i = 0, l = this.points.length; i < l; i++){
+          newpoint = this.rotatePoint(this.points[i], angle, C);
+          this.points[i].x.v = newpoint.x;
+          this.points[i].y.v = newpoint.y;
+        }
+
+        // Tourne les composants
+        if (this.composants.length > 0) {
+          // Si pas debrayable fait tourner les composants.
+          if (!debrayable) {
+            for (i = 0, l = this.composants.length; i < l; i++) {
+              for (j = 0, l2 = this.composants.points.length; j < l; j++) {
+                newpoint = this.rotatePoint(this.composants.points[i], angle, C);
+                this.composants.points[i].x.v = newpoint.x;
+                this.composants.points[i].y.v = newpoint.y;
+              }
+            }
+          }
+          // Si debrayable doit appliquer un rotation au composant qui serait virtuellement dans cette
+          // position si cela n'avait pas été débrayable afin de remettre le composant à la bonne place
+          // si l'utilisateur switch de debrayable à non.
+          else {
+            for (i = 0; i < this.composants.length; i++) {
+              // Rotation 90 a droite.
+              if (angle < 0) {
+                // Coordonnée dans le repère du rect avant rotation.
+                point = {
+                  x: this.composants[i].pos_default.x.v,
+                  y: this.composants[i].pos_default.y.v + this.composants[i].getHeight()
+                };
+              }
+            }
+          }
+        }
+
+        /*
+        // @todo cette partie marche que pour les rectangles et cercle car il sont dans des rectangles.
+
         // 4 angle du rect.
         points = this.getBoundingBoxPoints();
 
-        // @todo cette partie marche que pour les rectangles et cercle car il sont dans des rectangles.
         old_size = {
           w: this.getWidth(),
           h: this.getHeight()
@@ -303,6 +412,7 @@ angular.module('pedaleswitchApp')
             }
           }
         }
+      */
       }
     }
 
@@ -325,6 +435,7 @@ angular.module('pedaleswitchApp')
     class Rect extends Shape {
       drawCanvas(ctx){
 
+
         ctx.beginPath();
         ctx.moveTo(this.points[0].x.v, this.points[0].y.v);
         for (var item = 0, length = this.points.length; item < length; item += 1) {
@@ -332,7 +443,16 @@ angular.module('pedaleswitchApp')
         }
         ctx.closePath();
         ctx.stroke();
-
+        /*
+        var points = this.getBoundingBoxPoints();
+        ctx.beginPath();
+        ctx.moveTo(points[0].x, points[0].y);
+        for (var item = 0, length = points.length; item < length; item += 1) {
+          ctx.lineTo(points[item].x, points[item].y);
+        }
+        ctx.closePath();
+        ctx.stroke();
+        */
         if (this.isOverlapping) {
           ctx.fillStyle = "rgba(255, 00, 00, 0.2)";
           ctx.fill();
@@ -454,15 +574,7 @@ angular.module('pedaleswitchApp')
 
         ctx.stroke();
       }
-      
-      movePoints(delta){
-        var i, length;
-        
-        for (i = 0, length = this.points.length ; i < length ; i++ ) {
-          this.points[i].x += delta.x;
-          this.points[i].y += delta.y;
-        }
-      }
+
       setX(coord){
         this.pos.x.v = coord;
       }
@@ -545,6 +657,20 @@ angular.module('pedaleswitchApp')
         this.pos = obj.pos || {x:{v:60}, y:{v:60}};
         this.size = obj.size || {w:{v:0}, h:{v:0}};
       }
+
+      /**
+       * Deplace l'obj d'un delta
+       * @param vec
+       */
+      move(vect){
+        for (var i = 0, l = this.points.length; i < l; i++){
+          this.points[i].translate(vect);
+        }
+        //@todo a supprimer car cohabitation de deux coordonnée.
+        this.pos.x.v = this.points[0].x.v;
+        this.pos.y.v = this.points[0].y.v;
+      }
+
       setX(coord){
         this.pos.x.v = coord;
       }
@@ -685,18 +811,29 @@ angular.module('pedaleswitchApp')
         }
       }
 
+
       moveEffetCompo(delta){
         var effets = this.effets, compos, i, j;
+
         if(effets.length !== 0) {
+
           for (i = 0; i < effets.length; i++) {
+
+            effets[i].move(delta);
+
+            /*
             effets[i].setX(delta.deltaX + effets[i].getX());
             effets[i].setY(delta.deltaY + effets[i].getY());
-            
+            */
+
             compos = effets[i].composants;
             if(compos.length !== 0) {
               for (j = 0; j < compos.length; j++) {
+                compos[j].move(delta);
+                /*
                 compos[j].setX(delta.deltaX + compos[j].getX());
                 compos[j].setY(delta.deltaY + compos[j].getY());
+                */
               }
             }
           }
