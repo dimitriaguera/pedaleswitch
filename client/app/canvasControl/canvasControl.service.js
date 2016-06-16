@@ -54,8 +54,8 @@ angular.module('pedaleswitchApp')
         var test = canvasGeneration.newPoly(entity);
         tableEffet.push(test);
       },
-      
-      
+
+
       /**
        * Cette fonction créé les objets du canvas à partir du modèle dessin.
        * Et l'ajoute dans tableEffet et tableComposant pour les composants correspondants.
@@ -68,6 +68,7 @@ angular.module('pedaleswitchApp')
       addToCanvas: function(effet, bol, pos) {
         bol = bol || false;
         pos = pos || null;
+
         // if check si l'effet est deja dans le canvas.
         if (!effet.in_canvas || bol) {
           var tmp_eff = canvasGeneration.newRect(effet);
@@ -83,11 +84,12 @@ angular.module('pedaleswitchApp')
 
           // Créer le boitier de la pedale.
           if(boite.constructor.name !== "Boite") {
-            this.setMasterBoite(canvasGeneration.newMasterBoite());
+            this.setMasterBoite(canvasGeneration.newMasterBoite(tmp_eff));
 
-            // Convert marge en px.
+            // Convert marge en px, créer les projections de la boite.
             masterBoite.convertMargin();
             masterBoite.convertInitialHeight();
+            masterBoite.createProjection();
 
             // On sélectionne la bonne projection.
             this.setBoite(masterBoite.projections[viewState]);
@@ -95,19 +97,19 @@ angular.module('pedaleswitchApp')
             // Empeche que l'effet depasse du canvas.
             this.moveCloseBorder(tmp_eff);
 
-            // Initiliase la boite.
-            boite.initBoiteWithEffect(tmp_eff);
+            // Initialise la position de la boite.
+            boite.initMoveBox(tmp_eff);
 
             // Créer les flèches autour de la boite.
-            tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
-            tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
+            //tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
+            //tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
           }
           else {
             // Empeche que l'effet depasse du canvas.
             this.moveCloseBorder(tmp_eff);
 
             // Redimensionne la boite si le nouvelle effet est en dehors.
-            boite.checkBorderBoite(tmp_eff);
+            //boite.checkBorderBoite(tmp_eff);
 
             // Repositionne les arraw.
             this.setArrowPos();
@@ -170,12 +172,13 @@ angular.module('pedaleswitchApp')
        * @param state : string - 'top', 'bottom', 'up', 'down', 'left', 'right'
        */
       canvasViewState: function (state) {
-
+        masterBoite.updateMaster(viewState);
         switch (state) {
           case 'top':
             viewState = 'top';
+            masterBoite.updateProjection(viewState);
             this.resetAll();
-            this.setBoite(masterBoite.projections.top);
+            this.setBoite(masterBoite.projections.top).moveBox();
             this.setTableEffet(masterBoite.projections.top.effets);
             this.setTableComposant(masterBoite.projections.top.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
@@ -183,8 +186,9 @@ angular.module('pedaleswitchApp')
             break;
           case 'bottom':
             viewState = 'bottom';
+            masterBoite.updateProjection(viewState);
             this.resetAll();
-            this.setBoite(masterBoite.projections.bottom);
+            this.setBoite(masterBoite.projections.bottom).moveBox();
             this.setTableEffet(masterBoite.projections.bottom.effets);
             this.setTableComposant(masterBoite.projections.bottom.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
@@ -192,8 +196,9 @@ angular.module('pedaleswitchApp')
             break;
           case 'up':
             viewState = 'up';
+            masterBoite.updateProjection(viewState);
             this.resetAll();
-            this.setBoite(masterBoite.projections.up);
+            this.setBoite(masterBoite.projections.up).moveBox();
             this.setTableEffet(masterBoite.projections.up.effets);
             this.setTableComposant(masterBoite.projections.up.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
@@ -201,8 +206,9 @@ angular.module('pedaleswitchApp')
             break;
           case 'down':
             viewState = 'down';
+            masterBoite.updateProjection(viewState);
             this.resetAll();
-            this.setBoite(masterBoite.projections.down);
+            this.setBoite(masterBoite.projections.down).moveBox();
             this.setTableEffet(masterBoite.projections.down.effets);
             this.setTableComposant(masterBoite.projections.down.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
@@ -210,8 +216,9 @@ angular.module('pedaleswitchApp')
             break;
           case 'left':
             viewState = 'left';
+            masterBoite.updateProjection(viewState);
             this.resetAll();
-            this.setBoite(masterBoite.projections.left);
+            this.setBoite(masterBoite.projections.left).moveBox();
             this.setTableEffet(masterBoite.projections.left.effets);
             this.setTableComposant(masterBoite.projections.left.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
@@ -219,8 +226,9 @@ angular.module('pedaleswitchApp')
             break;
           case 'right':
             viewState = 'right';
+            masterBoite.updateProjection(viewState);
             this.resetAll();
-            this.setBoite(masterBoite.projections.right);
+            this.setBoite(masterBoite.projections.right).moveBox();
             this.setTableEffet(masterBoite.projections.right.effets);
             this.setTableComposant(masterBoite.projections.right.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
@@ -520,6 +528,7 @@ angular.module('pedaleswitchApp')
       
       setBoite: function(bo){
         boite = bo;
+        return boite;
       },
 
       getBoite: function(){
@@ -528,6 +537,7 @@ angular.module('pedaleswitchApp')
 
       setMasterBoite: function(bo){
         masterBoite = bo;
+        return masterBoite;
       },
 
       getMasterBoite: function(){

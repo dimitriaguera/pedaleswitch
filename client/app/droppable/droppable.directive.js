@@ -47,7 +47,7 @@ angular.module('pedaleswitchApp')
             // Remove class over.
             this.classList.remove('over');
 
-            
+
             //@todo modifier architecture panier et binder addEffet du controleur page dessin.
             var obj = JSON.parse(e.dataTransfer.getData('data'));
 
@@ -55,11 +55,11 @@ angular.module('pedaleswitchApp')
             // Lors du drop transmet l'id et le key de l'effet qui est draggé.
             // Puis va chercher l'effet correspondant dans le modèle dessin.
             var effet = instanceDessin.searchEffetInDessin(obj._id, obj.key);
-            
+
             if(effet && !effet.in_canvas) {
 
               var  mousePos = {x: e.layerX, y: e.layerY};
-              
+
               // Le rajoute au canvas avec les bonnes positions.
               canvasControl.addToCanvas(effet, false, mousePos);
 
@@ -69,14 +69,14 @@ angular.module('pedaleswitchApp')
 
                // Le rajoute au canvas avec les bonnes positions.
                //canvasControl.addToCanvas(effet);
-              
+
                */
 
-              
-              
+
+
               // Initialise le boite dans l'instance de dessin.
               instanceDessin.setBoite(canvasControl.getMasterBoite());
-              
+
               // Dessine.
               canvasDraw.drawStuff();
             }
