@@ -5,12 +5,24 @@ angular.module('pedaleswitchApp')
 
     class Point {
       constructor(point){
-        this.x = {v: point.x.v};
-        this.y = {v: point.y.v};
+        this.x = {v: point.x};
+        this.y = {v: point.y};
       }
       translate(vector){
-        this.x.v += vector.x;
-        this.y.v += vector.y;
+        this.x.v += vector.x.v;
+        this.y.v += vector.y.v;
+      }
+      getX(){
+        return this.x.v;
+      }
+      getY(){
+        return this.y.v;
+      }
+      setX(value){
+        this.x.v = value;
+      }
+      setY(value){
+        this.y.v = value;
       }
     }
 
@@ -70,30 +82,62 @@ angular.module('pedaleswitchApp')
         }
       }
 
+      /**
+       * Aire d'un poly tester et c OK
+       * @returns {number}
+       */
       getArea() {
         var area = 0;
-        var i;
-        var l = this.points.length;
-        for (i = 0; i < l; i++){
-            area += 0
+        for (var i = 0, l = this.points.length; i < l - 1 ; i++){
+          area += this.points[i].x.v * this.points[i+1].y.v - this.points[i+1].x.v * this.points[i].y.v;
         }
+        area += this.points[l-1].x.v * this.points[0].y.v - this.points[0].x.v * this.points[l-1].y.v;
+        area /= 2;
+        return area;
+      }
 
-      }
+      /**
+       * Centre de masse d'un poly OK
+       * @returns {{x: number, y: number}}
+       */
       getCenter(){
+        var area = this.getArea();
+
+        var xg = 0, yg = 0, coef;
+
+        for (var i = 0, l = this.points.length; i < l - 1 ; i++){
+          coef = this.points[i].x.v * this.points[i+1].y.v - this.points[i+1].x.v * this.points[i].y.v;
+          xg += (this.points[i].x.v + this.points[i+1].x.v) * coef;
+          yg += (this.points[i].y.v + this.points[i+1].y.v) * coef;
+        }
+        coef = this.points[l-1].x.v * this.points[0].y.v - this.points[0].x.v * this.points[l-1].y.v;
+        xg += (this.points[l-1].x.v + this.points[0].x.v) * coef;
+        yg += (this.points[l-1].y.v + this.points[0].y.v) * coef;
+
+        xg /= 6 * area;
+        yg /= 6 * area;
+
         return {
-          x: (this.points[1].x.v - this.points[0].x.v)/2,
-          y: (this.points[3].y.v - this.points[0].y.v)/2
+          x: xg,
+          y: yg
         }
       }
+
+      /**
+       * Deplace l'objet a la position donnée par le nouveau barycentre OK.
+       * @param pos
+       */
       moveTo(pos){
         var bary = this.getCenter();
         var vect = {x: pos.x - bary.x, y: pos.y - bary.y};
-        var i;
-        var l = this.points.length;
-        for (i = 0; i < l; i++){
+        for (var i = 0, l = this.points.length; i < l; i++){
           this.points[i].translate(vect);
         }
+        //@todo a supprimer car cohabitation de deux coordonnée.
+        this.pos.x.v = this.points[0].x.v;
+        this.pos.y.v = this.points[0].y.v;
       }
+
       setX(coord){
         this.pos.x.v = coord;
       }
@@ -340,19 +384,19 @@ angular.module('pedaleswitchApp')
       }
     }
 
+    /**
+     * Constructeur de la classe MasterBoite.
+     */
     class MasterBoite {
-      constructor() {
+      constructor(entity) {
         this.margin = {v: 5};
         this.initialHeight = {v: 40};
         this.size = {
           w: {v: null},
           h: {v: null},
-          d: this.initialHeight
-        };
-        this.pos = {
-          x: {v: 40},
-          y: {v: 40},
-          z: {v: 40}
+          d: {v: null},
+          d1: {v: 200},
+          d2: {v: 300}
         };
         this.projections = {
           up: null,
@@ -362,8 +406,24 @@ angular.module('pedaleswitchApp')
           top: null,
           bottom: null
         };
-        this.createProjection();
+        this.initBoiteWithEffect(entity);
+      }
 
+      setSide(side, value){
+        this.size[side].v = value;
+      }
+
+      getSide(side){
+        return this.size[side].v;
+      }
+
+      initBoiteWithEffect(entity){
+        var d = entity.size.h.v + 2 * this.margin.v;
+        var w = entity.size.w.v + 2 * this.margin.v;
+        var d3 = this.getSide('d2') - this.getSide('d1');
+        this.setSide('w', w);
+        this.setSide('d', d);
+        this.setSide('h', Math.sqrt(d*d - d3*d3));
       }
 
       convertMargin() {
@@ -374,61 +434,384 @@ angular.module('pedaleswitchApp')
         this.initialHeight.v = canvasConversion.convertToPixel(this.initialHeight.v);
       }
 
-      createProjection() {
-        var proj_size = {
+      createProjectionsCoords(state) {
+        var proj_points = {
           top: {
-            size: {
-              w: this.size.w,
-              h: this.size.d
+            points: {
+              p0: {
+                x: 0,
+                y: 0
+              },
+              p1: {
+                x: this.getSide('w'),
+                y: 0
+              },
+              p2: {
+                x: this.getSide('w'),
+                y: this.getSide('d2')
+              },
+              p3: {
+                x: 0,
+                y: this.getSide('d2')
+              }
             }
           },
           bottom: {
-            size: {
-              w: this.size.w,
-              h: this.size.d
+            points: {
+              p0: {
+                x: 0,
+                y: 0
+              },
+              p1: {
+                x: this.getSide('w'),
+                y: 0
+              },
+              p2: {
+                x: this.getSide('w'),
+                y: this.getSide('d1')
+              },
+              p3: {
+                x: 0,
+                y: this.getSide('d1')
+              }
             }
           },
           up: {
-            size: {
-              w: this.size.w,
-              h: this.size.h
+            points: {
+              p0: {
+                x: 0,
+                y: 0
+              },
+              p1: {
+                x: this.getSide('w'),
+                y: 0
+              },
+              p2: {
+                x: this.getSide('w'),
+                y: this.getSide('d')
+              },
+              p3: {
+                x: 0,
+                y: this.getSide('d')
+              }
             }
           },
           down: {
-            size: {
-              w: this.size.w,
-              h: this.size.h
+            points: {
+              p0: {
+                x: 0,
+                y: 0
+              },
+              p1: {
+                x: this.getSide('w'),
+                y: 0
+              },
+              p2: {
+                x: this.getSide('w'),
+                y: this.getSide('h')
+              },
+              p3: {
+                x: 0,
+                y: this.getSide('h')
+              }
             }
           },
           left: {
-            size: {
-              w: this.size.h,
-              h: this.size.d
+            points: {
+              p0: {
+                x: 0,
+                y: 0
+              },
+              p1: {
+                x: this.getSide('h'),
+                y: this.getSide('d2') - this.getSide('d1')
+              },
+              p2: {
+                x: this.getSide('h'),
+                y: this.getSide('d2')
+              },
+              p3: {
+                x: 0,
+                y: this.getSide('d2')
+              }
             }
           },
           right: {
-            size: {
-              w: this.size.h,
-              h: this.size.d
+            points: {
+              p0: {
+                x: 0,
+                y: 0
+              },
+              p1: {
+                x: this.getSide('h'),
+                y: this.getSide('d1') - this.getSide('d2')
+              },
+              p2: {
+                x: this.getSide('h'),
+                y: this.getSide('d1')
+              },
+              p3: {
+                x: 0,
+                y: this.getSide('d1')
+              }
             }
           }
         };
-        this.projections.up = new Boite(this, proj_size.up);
-        this.projections.down = new Boite(this, proj_size.down);
-        this.projections.left = new Boite(this, proj_size.left);
-        this.projections.right = new Boite(this, proj_size.right);
-        this.projections.top = new Boite(this, proj_size.top);
-        this.projections.bottom = new Boite(this, proj_size.bottom);
+        switch (state) {
+          case 'top':
+            return proj_points.top;
+            break;
+          case 'bottom':
+            return proj_points.bottom;
+            break;
+          case 'up':
+            return proj_points.up;
+            break;
+          case 'down':
+            return proj_points.down;
+            break;
+          case 'left':
+            return proj_points.left;
+            break;
+          case 'right':
+            return proj_points.right;
+            break;
+          case 'all':
+            return proj_points;
+            break;
+          default:
+            return console.log('ERROR ' + state + ' is not a valid state');
+        }
       }
+      createProjection() {
+        var proj_points = this.createProjectionsCoords('all');
+        this.projections.up = new Boite(this, proj_points.up);
+        this.projections.down = new Boite(this, proj_points.down);
+        this.projections.left = new Boite(this, proj_points.left);
+        this.projections.right = new Boite(this, proj_points.right);
+        this.projections.top = new Boite(this, proj_points.top);
+        this.projections.bottom = new Boite(this, proj_points.bottom);
+      }
+      updateProjection(state){
+        var coords = this.createProjectionsCoords(state);
+        var points = this.projections[state].points;
 
-      //initProjectionPos(state){
-      //  this.projections[state].pos = {
-      //    x: {v: 40},
-      //    y: {v: 40}
-      //  };
-      //}
+        points.p0.setX(coords.p0.x);
+        points.p1.setX(coords.p1.x);
+        points.p2.setX(coords.p2.x);
+        points.p3.setX(coords.p3.x);
+
+        points.p0.setY(coords.p0.y);
+        points.p1.setY(coords.p1.y);
+        points.p2.setY(coords.p2.y);
+        points.p3.setY(coords.p3.y);
+      }
+      updateMaster(state){
+        var proj, h, d1, d2, d3;
+        switch (state) {
+          case 'top':
+            proj = proj_points.top;
+            this.setSide('w', proj.points.p1.getX() - proj.points.p0.getX());
+            this.setSide('d2', proj.points.p3.getY() - proj.points.p0.getY());
+            break;
+          case 'bottom':
+            proj = proj_points.bottom;
+            this.setSide('w', proj.points.p1.getX() - proj.points.p0.getX());
+            this.setSide('d1', proj.points.p3.getY() - proj.points.p0.getY());
+            break;
+          case 'up':
+            proj = proj_points.up;
+            this.setSide('w', proj.points.p1.getX() - proj.points.p0.getX());
+            this.setSide('d', proj.points.p3.getY() - proj.points.p0.getY());
+            break;
+          case 'down':
+            proj = proj_points.down;
+            this.setSide('w', proj.points.p1.getX() - proj.points.p0.getX());
+            this.setSide('h', proj.points.p3.getY() - proj.points.p0.getY());
+            break;
+          case 'left':
+            proj = proj_points.left;
+            h = proj.points.p2.getX() - proj.points.p3.getX();
+            d2 = proj.points.p3.getY() - proj.points.p0.getY();
+            d1 = proj.points.p2.getY() - proj.points.p1.getY();
+            d3 = d2 - d1;
+            this.setSide('h', h);
+            this.setSide('d', Math.sqrt(h*h + d3*d3));
+            this.setSide('d1', d1);
+            this.setSide('d2', d2);
+            break;
+          case 'right':
+            proj = proj_points.right;
+            h = proj.points.p2.getX() - proj.points.p3.getX();
+            d1 = proj.points.p3.getY() - proj.points.p0.getY();
+            d2 = proj.points.p2.getY() - proj.points.p1.getY();
+            d3 = d2 - d1;
+            this.setSide('h', h);
+            this.setSide('d', Math.sqrt(h*h + d3*d3));
+            this.setSide('d1', d1);
+            this.setSide('d2', d2);
+            break;
+          case 'all':
+            return false;
+            break;
+          default:
+            return console.log('ERROR ' + state + ' is not a valid state');
+        }
+      }
     }
 
+    /**
+     * Constructeur de la classe Boite.
+     */
+    class Boite {
+      constructor (masterBoite, proj_points) {
+        this.margin = masterBoite.margin;
+        // @todo : size a supprimer.
+        this.size = {
+          w: {v: null},
+          h: {v: null}
+        };
+        this.pos = {
+          x: {v: null},
+          y: {v: null}
+        };
+        this.isSelected = false;
+        this.isOverlapping = false;
+        this.titre = 'Boite';
+        this.effets = [];
+        this.composants = [];
+        this.initPointsPosition(proj_points.points);
+      }
+
+      initPointsPosition(points){
+        this.points = {
+          p0: new Point(points.p0),
+          p1: new Point(points.p1),
+          p2: new Point(points.p2),
+          p3: new Point(points.p3)
+        }
+      }
+      initMoveBox(entity){
+        this.pos.x.v = entity.pos.x.v;
+        this.pos.y.v = entity.pos.y.v;
+        this.points.p0.translate(this.pos);
+        this.points.p1.translate(this.pos);
+        this.points.p2.translate(this.pos);
+        this.points.p3.translate(this.pos);
+      }
+
+      // Redimensionne la boite si le nouvel effet est en dehors.
+      checkBorderBoite(entity){
+        if (entity.getX() < (this.getX() + this.margin.v)){
+          var old_pos_x = this.getX();
+          this.setX(entity.getX() - this.margin.v);
+          this.setWidth(this.getWidth() + (old_pos_x - entity.getX()) + this.margin.v);
+        }
+        if (entity.getY() < (this.getY() + this.margin.v)){
+          var old_pos_y = this.getY();
+          this.setY(entity.getY() - this.margin.v);
+          this.setHeight(this.getHeight() + (old_pos_y - entity.getY()) + this.margin.v);
+        }
+        if ((entity.getX() + entity.getWidth()) > (this.getX() + this.getWidth() - this.margin.v)){
+          this.setWidth((entity.getX() + entity.getWidth()) - this.getX() + this.margin.v);
+        }
+        if ((entity.getY() + entity.getHeight()) > (this.getY() + this.getHeight() - this.margin.v)){
+          this.setHeight((entity.getY() + entity.getHeight()) - this.getY() + this.margin.v);
+        }
+      }
+
+      moveEffetCompo(delta){
+        var effets = this.effets, compos, i, j;
+        if(effets.length !== 0) {
+          for (i = 0; i < effets.length; i++) {
+            effets[i].setX(delta.deltaX + effets[i].getX());
+            effets[i].setY(delta.deltaY + effets[i].getY());
+
+            compos = effets[i].composants;
+            if(compos.length !== 0) {
+              for (j = 0; j < compos.length; j++) {
+                compos[j].setX(delta.deltaX + compos[j].getX());
+                compos[j].setY(delta.deltaY + compos[j].getY());
+              }
+            }
+          }
+        }
+      }
+      setX(coord){
+        this.pos.x.v = coord;
+      }
+      setY(coord){
+        this.pos.y.v = coord;
+      }
+      getX() {
+        return this.pos.x.v;
+      }
+      getY() {
+        return this.pos.y.v;
+      }
+      getHeight() {
+        return this.size.h.v;
+      }
+      getWidth() {
+        return this.size.w.v;
+      }
+      setHeight(h) {
+        this.size.h.v = h;
+      }
+      setWidth(w) {
+        this.size.w.v = w;
+      }
+      getCenterX(){
+        return this.getX() + (this.getWidth() / 2);
+      }
+      getCenterY(){
+        return this.getY() + (this.getHeight() / 2);
+      }
+      setCenterX(center){
+        this.setX(center - (this.getWidth() / 2));
+      }
+      setCenterY(center){
+        this.setY(center - (this.getHeight() / 2));
+      }
+      getRadius(){
+        return this.getWidth() / 2;
+      }
+      getLeft() {
+        return this.getX();
+      }
+      getTop() {
+        return this.getY();
+      }
+      getRight() {
+        return this.getX() + this.getWidth();
+      }
+      getBottom() {
+        return this.getY() + this.getHeight();
+      }
+      getMax(){
+        return {
+          t: this.getTop(),
+          r: this.getRight(),
+          b: this.getBottom(),
+          l: this.getLeft()
+        }
+      }
+      setSelected(selected) {
+        this.isSelected = selected;
+      }
+      setOverlapping(overlap) {
+        this.isOverlapping = overlap;
+      }
+      drawCanvas(ctx){
+        ctx.beginPath();
+        ctx.moveTo(this.points.p0.getX(), this.points.p0.getY());
+        ctx.lineTo(this.points.p1.getX(), this.points.p1.getY());
+        ctx.lineTo(this.points.p2.getX(), this.points.p2.getY());
+        ctx.lineTo(this.points.p3.getX(), this.points.p3.getY());
+        ctx.closePath();
+        ctx.stroke();
+      }
+    }
 
     class Poly {
       points = [
@@ -635,145 +1018,6 @@ angular.module('pedaleswitchApp')
       }
     }
 
-    class Boite {
-      constructor (masterBoite, proj_size) {
-        this.margin = masterBoite.margin;
-        this.size = proj_size.size;// En mm, converti en px juste après création de la boite dans canvasControl.
-        this.pos = masterBoite.pos;
-        this.isSelected = false;
-        this.isOverlapping = false;
-        this.titre = 'Boite';
-        this.effets = [];
-        this.composants = [];
-      }
-      // Tout doit etre en Pixel.
-      //initBoiteWithBoite(boite){
-      //  this.margin = boite.margin;
-      //  this.size = {
-      //    w: {v: boite.size.w.v},
-      //    h: {v: boite.size.h.v}
-      //  };
-      //  this.pos = {
-      //    x: {v: boite.pos.x.v},
-      //    y: {v: boite.pos.y.v}
-      //  };
-      //}
-      initBoiteWithEffect(entity){
-        this.setWidth(entity.size.w.v + 2 * this.margin.v);
-        this.setHeight(entity.size.h.v + 2 * this.margin.v);
-        this.setX(entity.pos.x.v - this.margin.v);
-        this.setY(entity.pos.y.v - this.margin.v);
-      }
-
-      // Redimensionne la boite si le nouvel effet est en dehors.
-      checkBorderBoite(entity){
-        if (entity.getX() < (this.getX() + this.margin.v)){
-          var old_pos_x = this.getX();
-          this.setX(entity.getX() - this.margin.v);
-          this.setWidth(this.getWidth() + (old_pos_x - entity.getX()) + this.margin.v);
-        }
-        if (entity.getY() < (this.getY() + this.margin.v)){
-          var old_pos_y = this.getY();
-          this.setY(entity.getY() - this.margin.v);
-          this.setHeight(this.getHeight() + (old_pos_y - entity.getY()) + this.margin.v);
-        }
-        if ((entity.getX() + entity.getWidth()) > (this.getX() + this.getWidth() - this.margin.v)){
-          this.setWidth((entity.getX() + entity.getWidth()) - this.getX() + this.margin.v);
-        }
-        if ((entity.getY() + entity.getHeight()) > (this.getY() + this.getHeight() - this.margin.v)){
-          this.setHeight((entity.getY() + entity.getHeight()) - this.getY() + this.margin.v);
-        }
-      }
-
-      moveEffetCompo(delta){
-        var effets = this.effets, compos, i, j;
-        if(effets.length !== 0) {
-          for (i = 0; i < effets.length; i++) {
-            effets[i].setX(delta.deltaX + effets[i].getX());
-            effets[i].setY(delta.deltaY + effets[i].getY());
-            
-            compos = effets[i].composants;
-            if(compos.length !== 0) {
-              for (j = 0; j < compos.length; j++) {
-                compos[j].setX(delta.deltaX + compos[j].getX());
-                compos[j].setY(delta.deltaY + compos[j].getY());
-              }
-            }
-          }
-        }
-      }
-      setX(coord){
-        this.pos.x.v = coord;
-      }
-      setY(coord){
-        this.pos.y.v = coord;
-      }
-      getX() {
-        return this.pos.x.v;
-      }
-      getY() {
-        return this.pos.y.v;
-      }
-      getHeight() {
-        return this.size.h.v;
-      }
-      getWidth() {
-        return this.size.w.v;
-      }
-      setHeight(h) {
-        this.size.h.v = h;
-      }
-      setWidth(w) {
-        this.size.w.v = w;
-      }
-      getCenterX(){
-        return this.getX() + (this.getWidth() / 2);
-      }
-      getCenterY(){
-        return this.getY() + (this.getHeight() / 2);
-      }
-      setCenterX(center){
-        this.setX(center - (this.getWidth() / 2));
-      }
-      setCenterY(center){
-        this.setY(center - (this.getHeight() / 2));
-      }
-      getRadius(){
-        return this.getWidth() / 2;
-      }
-      getLeft() {
-        return this.getX();
-      }
-      getTop() {
-        return this.getY();
-      }
-      getRight() {
-        return this.getX() + this.getWidth();
-      }
-      getBottom() {
-        return this.getY() + this.getHeight();
-      }
-      getMax(){
-        return {
-          t: this.getTop(),
-          r: this.getRight(),
-          b: this.getBottom(),
-          l: this.getLeft()
-        }
-      }
-      setSelected(selected) {
-        this.isSelected = selected;
-      }
-      setOverlapping(overlap) {
-        this.isOverlapping = overlap;
-      }
-      drawCanvas(ctx){
-        ctx.beginPath();
-        ctx.rect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
-        ctx.stroke();
-        ctx.closePath();
-      }
-    }
 
     /**
      * Constructeur de classe Arrow.
@@ -942,12 +1186,8 @@ angular.module('pedaleswitchApp')
         return new Arrow(entity, location);
       },
 
-      newMasterShape: function (entity, viewState) {
-        return new MasterShape(entity, viewState);
-      },
-
-      newMasterBoite: function () {
-        return new MasterBoite();
+      newMasterBoite: function (entity) {
+        return new MasterBoite(entity);
       },
 
       newTexte: function(obj) {
