@@ -105,7 +105,7 @@ angular.module('pedaleswitchApp')
         area /= 2;
         return area;
       }
-
+      
       /**
        * Centre de masse d'un poly OK
        * @returns {{x: number, y: number}}
@@ -132,7 +132,7 @@ angular.module('pedaleswitchApp')
           y: yg
         }
       }
-
+      
       /**
        * Deplace l'objet a la position donnée par le nouveau barycentre OK.
        * @param pos
