@@ -18,7 +18,23 @@ angular.module('pedaleswitchApp')
           this.x.v += vector.x;
           this.y.v += vector.y;
         }
+      }
+      /**
+       * Rotation d'un point par rapport à C
+       */
+      rotate(angle, C) {
+        var alpha_rad = angle * (2*Math.PI)/360.0;
+        var cos = Math.cos(alpha_rad);
+        var sin = Math.sin(alpha_rad);
+        var pos_c = {};
 
+        // Calcul des coordonné du point dans le repère du baricentre C.
+        pos_c.x = this.getX() - C.x;
+        pos_c.y = this.getY() - C.y;
+
+        // Calcul des coordonnées du point après rotation dans le repère d'origine.
+        this.setX(pos_c.x * cos + pos_c.y * sin + C.x);
+        this.setY(- pos_c.x * sin + pos_c.y * cos + C.y);
       }
       getX(){
         return this.x.v;
@@ -97,19 +113,6 @@ angular.module('pedaleswitchApp')
             compos[i].pos.y.v = compos[i].points[0].y.v;
           }
         }
-
-        /*
-        var compos = this.composants;
-        if(compos.length !== 0) {
-          for (var i = 0; i < compos.length; i++) {
-            compos[i].setX(this.getX() + compos[i].pos_default.x.v);
-            compos[i].setY(this.getY() + compos[i].pos_default.y.v);
-
-            compos[i].setHeight(compos[i].old_size.h.v);
-            compos[i].setWidth(compos[i].old_size.w.v);
-          }
-        }
-        */
       }
 
       /**
@@ -181,16 +184,16 @@ angular.module('pedaleswitchApp')
         this.pos.y.v = this.points[0].y.v;
       }
       setX(coord){
-        this.pos.x.v = coord;
+        this.points[0].x.v = coord;
       }
       setY(coord){
-        this.pos.y.v = coord;
+        this.points[0].x.v = coord;
       }
       getX() {
-        return this.pos.x.v;
+        return this.points[0].x.v;
       }
       getY() {
-        return this.pos.y.v;
+        return this.points[0].y.v;
       }
       getHeight() {
         return this.size.h.v;
@@ -258,33 +261,6 @@ angular.module('pedaleswitchApp')
       setOverlapping(overlap) {
         this.isOverlapping = overlap;
       }
-      /**
-       * Permet de faire une rotation d'un point, d'un angle donnée par rapport a un
-       * centre donnée dans le repère du canvas.
-       *
-       * Retourne les nouvelles coordonnées du points.
-       * 
-       * @param point
-       * @param angle
-       * @param C
-       * @returns {{x: *, y: *}}
-       */
-      rotatePoint(point, angle, C) {
-        var alpha_rad = angle * (2*Math.PI)/360.0;
-        var cos = Math.cos(alpha_rad);
-        var sin = Math.sin(alpha_rad);
-        var pos_c = {};
-
-        // Calcul des coordonné du point dans le repère du baricentre C.
-        pos_c.x = point.x.v - C.x;
-        pos_c.y = point.y.v - C.y;
-
-        // Calcul des coordonnées du point après rotation dans le repère d'origine.
-        return {
-          x: pos_c.x * cos + pos_c.y * sin + C.x,
-          y: - pos_c.x * sin + pos_c.y * cos + C.y
-        };
-      }
 
       /**
        * Rotate un element.
@@ -304,9 +280,7 @@ angular.module('pedaleswitchApp')
 
         // Tourne l'effet
         for (i = 0, l = this.points.length; i < l; i++){
-          newpoint = this.rotatePoint(this.points[i], angle, C);
-          this.points[i].x.v = newpoint.x;
-          this.points[i].y.v = newpoint.y;
+          this.points[i].rotate(angle, C);
         }
 
         // Tourne les composants
@@ -314,10 +288,11 @@ angular.module('pedaleswitchApp')
           // Si pas debrayable fait tourner les composants.
           if (!debrayable) {
             for (i = 0, l = this.composants.length; i < l; i++) {
-              for (j = 0, l2 = this.composants.points.length; j < l; j++) {
-                newpoint = this.rotatePoint(this.composants.points[i], angle, C);
-                this.composants.points[i].x.v = newpoint.x;
-                this.composants.points[i].y.v = newpoint.y;
+              for (j = 0, l2 = this.composants[i].points.length; j < l2; j++) {
+                this.composants[i].points[j].rotate(angle, C);
+                // Re-initialise la position par defaut.
+                this.composants[i].points_default[j].x.v = this.composants[i].points[j].x.v - this.points[0].x.v;
+                this.composants[i].points_default[j].y.v = this.composants[i].points[j].y.v - this.points[0].y.v;
               }
             }
           }
@@ -338,100 +313,8 @@ angular.module('pedaleswitchApp')
           }
         }
 
-        /*
-        // @todo cette partie marche que pour les rectangles et cercle car il sont dans des rectangles.
-
-        // 4 angle du rect.
-        points = this.getBoundingBoxPoints();
-
-        old_size = {
-          w: this.getWidth(),
-          h: this.getHeight()
-        };
-        old_pos = {
-          x: this.getX(),
-          y: this.getY()
-        };
-
-        // Inverse les dimensions du rect.
-        this.setWidth(old_size.h);
-        this.setHeight(old_size.w);
-
-        // Rotation 90 a droite.
-        if (angle < 0) {
-          point = this.rotatePoint(points[3], angle, C);
-          this.setX(point.x);
-          this.setY(point.y);
-        }
-        // Rotation 90 a gauche.
-        else {
-          point = this.rotatePoint(points[1], angle, C);
-          this.setX(point.x);
-          this.setY(point.y);
-        }
-
-        // Si l'obj a des composants.
-        if (this.composants.length > 0) {
-          // Si pas debrayable fait tourner les composants.
-          if (!debrayable) {
-            for (i = 0; i < this.composants.length; i++) {
-              this.composants[i].rotate(angle, { x: this.getCenterX(), y: this.getCenterY()}, debrayable);
-              this.composants[i].pos_default.x.v = this.composants[i].getX() - this.getX();
-              this.composants[i].pos_default.y.v = this.composants[i].getY() - this.getY();
-
-              old_size = {
-                w: this.composants[i].old_size.w.v,
-                h: this.composants[i].old_size.h.v
-              };
-              this.composants[i].old_size.h.v = old_size.w;
-              this.composants[i].old_size.w.v = old_size.h;
-
-            }
-          }
-          // Si debrayable doit appliquer un rotation au composant qui serait virtuellement dans cette
-          // position si cela n'avait pas été débrayable afin de remettre le composant à la bonne place
-          // si l'utilisateur switch de debrayable à non.
-          else {
-            for (i = 0; i < this.composants.length; i++) {
-              // Rotation 90 a droite.
-              if (angle < 0) {
-                // Coordonnée dans le repère du rect avant rotation.
-                point = {
-                  x: this.composants[i].pos_default.x.v,
-                  y: this.composants[i].pos_default.y.v + this.composants[i].getHeight()
-                };
-
-              }
-              // Rotation 90 a gauche.
-              else {
-                // Coordonnée dans le repère du rect avant rotation.
-                point = {
-                  x: this.composants[i].pos_default.x.v + this.composants[i].getWidth(),
-                  y: this.composants[i].pos_default.y.v
-                };
-              }
-              // Coordonnée dans le repère du canvas.
-              point.x = point.x + old_pos.x;
-              point.y = point.y + old_pos.y;
-
-              // Rotation dans le repère du canvas.
-              point = this.rotatePoint(point, angle, C);
-
-              // Nouvelle coordonnées dans le repère du rect et inversion des dimensions.
-              this.composants[i].pos_default.x.v = point.x - this.getX();
-              this.composants[i].pos_default.y.v = point.y - this.getY();
-
-              old_size = {
-                w: this.composants[i].old_size.w.v,
-                h: this.composants[i].old_size.h.v
-              };
-              this.composants[i].old_size.h.v = old_size.w;
-              this.composants[i].old_size.w.v = old_size.h;
-            }
-          }
-        }
-      */
       }
+
     }
 
 
@@ -452,8 +335,6 @@ angular.module('pedaleswitchApp')
 
     class Rect extends Shape {
       drawCanvas(ctx){
-
-
         ctx.beginPath();
         ctx.moveTo(this.points[0].x.v, this.points[0].y.v);
         for (var item = 0, length = this.points.length; item < length; item += 1) {
@@ -461,16 +342,6 @@ angular.module('pedaleswitchApp')
         }
         ctx.closePath();
         ctx.stroke();
-        /*
-        var points = this.getBoundingBoxPoints();
-        ctx.beginPath();
-        ctx.moveTo(points[0].x, points[0].y);
-        for (var item = 0, length = points.length; item < length; item += 1) {
-          ctx.lineTo(points[item].x, points[item].y);
-        }
-        ctx.closePath();
-        ctx.stroke();
-        */
         if (this.isOverlapping) {
           ctx.fillStyle = "rgba(255, 00, 00, 0.2)";
           ctx.fill();
