@@ -101,8 +101,8 @@ angular.module('pedaleswitchApp')
             boite.initMoveBox(tmp_eff);
 
             // Créer les flèches autour de la boite.
-            //tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
-            //tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
+            tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
+            tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
           }
           else {
             // Empeche que l'effet depasse du canvas.
