@@ -93,8 +93,8 @@ angular.module('pedaleswitchApp')
           drag = checkCollision.checkMouseBox(mousePos, [boite], 10);
           if(drag){
             drag.type = 'boite';
-            oldX = boite.pos.x.v;
-            oldY = boite.pos.y.v;
+            oldX = boite.pos.x;
+            oldY = boite.pos.y;
             return;
           }
         }
@@ -177,7 +177,7 @@ angular.module('pedaleswitchApp')
         var pos_max = canvasControl.findGlobalRect();
 
         var margin = canvasConversion.convertToPixel(40);
-        var marginboite = canvasControl.getBoite().margin.v;
+        var marginboite = canvasControl.getBoite().margin;
 
         // Bord haut ou bas.
         if (drag.pointer.type === 'ns-resize'){
@@ -196,7 +196,7 @@ angular.module('pedaleswitchApp')
             }
 
             // Redimensionne la boite.
-            boite.size.h.v += mousePos.y - boite.getBottom();
+            boite.size.h += mousePos.y - boite.getBottom();
           }
           //Bord haut.
           else {
@@ -211,7 +211,7 @@ angular.module('pedaleswitchApp')
             }
 
             // Redimensionne la boite.
-            boite.size.h.v += boite.getTop() - mousePos.y;
+            boite.size.h += boite.getTop() - mousePos.y;
             boite.setY(mousePos.y);
           }
         }
@@ -230,7 +230,7 @@ angular.module('pedaleswitchApp')
             }
 
             // Redimensionne la boite.
-            boite.size.w.v += mousePos.x - boite.getRight();
+            boite.size.w += mousePos.x - boite.getRight();
           }
           //Bord gauche.
           else {
@@ -245,7 +245,7 @@ angular.module('pedaleswitchApp')
             }
 
             // Redimensionne la boite.
-            boite.size.w.v += boite.getLeft() - mousePos.x;
+            boite.size.w += boite.getLeft() - mousePos.x;
             boite.setX(mousePos.x);
           }
         }
@@ -283,11 +283,11 @@ angular.module('pedaleswitchApp')
         // Bouge les effets et les compos.
         /*
         boite.moveEffetCompo({
-          deltaX: boite.pos.x.v - oldX,
-          deltaY: boite.pos.y.v - oldY
+          deltaX: boite.pos.x - oldX,
+          deltaY: boite.pos.y - oldY
         });
-        oldX = boite.pos.x.v;
-        oldY = boite.pos.y.v;
+        oldX = boite.pos.x;
+        oldY = boite.pos.y;
         */
 
 

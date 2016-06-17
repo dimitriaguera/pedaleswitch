@@ -19,69 +19,69 @@ angular.module('pedaleswitchApp')
       // @todo prise en compte de la boite.
       if (entity.constructor.name !== 'MasterBoite'){
         for (i = 0, l = entity.points.length; i < l ; i++){
-          entity.points[i].x.v = Math.round(ratio * entity.points[i].x.v);
-          entity.points[i].y.v = Math.round(ratio * entity.points[i].y.v);
+          entity.points[i].x = Math.round(ratio * entity.points[i].x);
+          entity.points[i].y = Math.round(ratio * entity.points[i].y);
         }
 
         //@todo a améliorer car cohabitation de deux coordonnées.
-        entity.pos.x.v = entity.points[0].x.v;
-        entity.pos.y.v = entity.points[0].y.v;
-        entity.size.w.v = Math.round(ratio * entity.size.w.v);
-        entity.size.h.v = Math.round(ratio * entity.size.h.v);
-        entity.size.d.v = Math.round(ratio * entity.size.d.v);
+        entity.pos.x = entity.points[0].x;
+        entity.pos.y = entity.points[0].y;
+        entity.size.w = Math.round(ratio * entity.size.w);
+        entity.size.h = Math.round(ratio * entity.size.h);
+        entity.size.d = Math.round(ratio * entity.size.d);
 
 
         if (entity.composants) {
           var compos = entity.composants;
           for (i = 0, l = compos.length ; i < l ; i++) {
             for (j = 0, l2 = compos[i].points.length; j < l2 ; j++){
-              compos[i].points[j].x.v = Math.round(ratio * compos[i].points[j].x.v);
-              compos[i].points[j].y.v = Math.round(ratio * compos[i].points[j].y.v);
-              compos[i].points_default[j].x.v = Math.round(ratio * compos[i].points_default[j].x.v);
-              compos[i].points_default[j].y.v = Math.round(ratio * compos[i].points_default[j].y.v);
+              compos[i].points[j].x = Math.round(ratio * compos[i].points[j].x);
+              compos[i].points[j].y = Math.round(ratio * compos[i].points[j].y);
+              compos[i].points_default[j].x = Math.round(ratio * compos[i].points_default[j].x);
+              compos[i].points_default[j].y = Math.round(ratio * compos[i].points_default[j].y);
             }
 
             //@todo a améliorer car cohabitation de deux coordonnées.
-            compos[i].pos.x.v = compos[i].points[0].x.v;
-            compos[i].pos.y.v = compos[i].points[0].y.v;
-            compos[i].pos_default.x.v = compos[i].points_default[0].x.v;
-            compos[i].pos_default.y.v = compos[i].points_default[0].y.v;
-            compos[i].size.w.v = Math.round(ratio * compos[i].size.w.v);
-            compos[i].size.h.v = Math.round(ratio * compos[i].size.h.v);
-            compos[i].size.d.v = Math.round(ratio * compos[i].size.d.v);
-            compos[i].old_size.w.v = Math.round(ratio * compos[i].old_size.w.v);
-            compos[i].old_size.h.v = Math.round(ratio * compos[i].old_size.h.v);
+            compos[i].pos.x = compos[i].points[0].x;
+            compos[i].pos.y = compos[i].points[0].y;
+            compos[i].pos_default.x = compos[i].points_default[0].x;
+            compos[i].pos_default.y = compos[i].points_default[0].y;
+            compos[i].size.w = Math.round(ratio * compos[i].size.w);
+            compos[i].size.h = Math.round(ratio * compos[i].size.h);
+            compos[i].size.d = Math.round(ratio * compos[i].size.d);
+            compos[i].old_size.w = Math.round(ratio * compos[i].old_size.w);
+            compos[i].old_size.h = Math.round(ratio * compos[i].old_size.h);
           }
         }
         if (entity.margin){
-          entity.margin.v = Math.round(ratio * entity.margin.v);
+          entity.margin = Math.round(ratio * entity.margin);
         }
 
 
       }
 
       /*
-      entity.pos.x.v = Math.round(ratio * entity.pos.x.v);
-      entity.pos.y.v = Math.round(ratio * entity.pos.y.v);
-      entity.size.w.v = Math.round(ratio * entity.size.w.v);
-      entity.size.h.v = Math.round(ratio * entity.size.h.v);
-      entity.size.d.v = Math.round(ratio * entity.size.d.v);
+      entity.pos.x = Math.round(ratio * entity.pos.x);
+      entity.pos.y = Math.round(ratio * entity.pos.y);
+      entity.size.w = Math.round(ratio * entity.size.w);
+      entity.size.h = Math.round(ratio * entity.size.h);
+      entity.size.d = Math.round(ratio * entity.size.d);
       if (entity.composants) {
         var compos = entity.composants;
         for (i = 0; i < compos.length; i++) {
-          compos[i].pos.x.v = Math.round(ratio * compos[i].pos.x.v);
-          compos[i].pos.y.v = Math.round(ratio * compos[i].pos.y.v);
-           = Math.round(ratio * compos[i].pos_default.x.v);
-           = Math.round(ratio * compos[i].pos_default.y.v);
-          compos[i].size.w.v = Math.round(ratio * compos[i].size.w.v);
-          compos[i].size.h.v = Math.round(ratio * compos[i].size.h.v);
-          compos[i].size.d.v = Math.round(ratio * compos[i].size.d.v);
-          compos[i].old_size.w.v = Math.round(ratio * compos[i].old_size.w.v);
-          compos[i].old_size.h.v = Math.round(ratio * compos[i].old_size.h.v);
+          compos[i].pos.x = Math.round(ratio * compos[i].pos.x);
+          compos[i].pos.y = Math.round(ratio * compos[i].pos.y);
+           = Math.round(ratio * compos[i].pos_default.x);
+           = Math.round(ratio * compos[i].pos_default.y);
+          compos[i].size.w = Math.round(ratio * compos[i].size.w);
+          compos[i].size.h = Math.round(ratio * compos[i].size.h);
+          compos[i].size.d = Math.round(ratio * compos[i].size.d);
+          compos[i].old_size.w = Math.round(ratio * compos[i].old_size.w);
+          compos[i].old_size.h = Math.round(ratio * compos[i].old_size.h);
         }
       }
       if (entity.margin){
-        entity.margin.v = Math.round(ratio * entity.margin.v);
+        entity.margin = Math.round(ratio * entity.margin);
       }
       */
     };

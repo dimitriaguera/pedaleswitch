@@ -107,7 +107,11 @@ angular.module('pedaleswitchApp')
         for (indexCounter = 0; indexCounter < outer; indexCounter++) {
           comparitor = items[indexCounter];
           if (intersect.pointInPoly(mouse, comparitor.points)) {
-            return {id: indexCounter, dx: mouse.x - comparitor.getCenterX(), dy: mouse.y - comparitor.getCenterY()};
+            return {
+              id: indexCounter,
+              dx: mouse.x - comparitor.getCenterX(),
+              dy: mouse.y - comparitor.getCenterY()
+            };
           }
         }
         return false;

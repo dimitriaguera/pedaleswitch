@@ -5,19 +5,12 @@ angular.module('pedaleswitchApp')
 
     class Point {
       constructor(point){
-        this.x = {v: point.x.v};
-        this.y = {v: point.y.v};
+        this.x = point.x;
+        this.y = point.y;
       }
       translate(vector){
-
-        //@todo a virer.
-        if (vector.x.v){
-          this.x.v += vector.x.v;
-          this.y.v += vector.y.v;
-        } else {
-          this.x.v += vector.x;
-          this.y.v += vector.y;
-        }
+        this.x += vector.x;
+        this.y += vector.y;
       }
       /**
        * Rotation d'un point par rapport à C
@@ -37,16 +30,16 @@ angular.module('pedaleswitchApp')
         this.setY(- pos_c.x * sin + pos_c.y * cos + C.y);
       }
       getX(){
-        return this.x.v;
+        return this.x;
       }
       getY(){
-        return this.y.v;
+        return this.y;
       }
       setX(value){
-        this.x.v = value;
+        this.x = value;
       }
       setY(value){
-        this.y.v = value;
+        this.y = value;
       }
     }
 
@@ -106,14 +99,14 @@ angular.module('pedaleswitchApp')
           for (var i = 0; i < compos.length ; i++) {
             // Pour chaque points j du composants i.
             for (var j = 0 ; j < compos[i].points.length ; j++){
-              compos[i].points[j].x.v = this.points[0].x.v + compos[i].points_default[j].x.v ;
-              compos[i].points[j].y.v = this.points[0].y.v + compos[i].points_default[j].y.v ;
+              compos[i].points[j].x = this.points[0].x + compos[i].points_default[j].x ;
+              compos[i].points[j].y = this.points[0].y + compos[i].points_default[j].y ;
             }
 
             /*
             // @todo a supprimer car cohabition de deux methodes.
-            compos[i].pos.x.v = compos[i].points[0].x.v;
-            compos[i].pos.y.v = compos[i].points[0].y.v;
+            compos[i].pos.x = compos[i].points[0].x;
+            compos[i].pos.y = compos[i].points[0].y;
             */
           }
         }
@@ -126,9 +119,9 @@ angular.module('pedaleswitchApp')
       getArea() {
         var area = 0;
         for (var i = 0, l = this.points.length; i < l - 1 ; i++){
-          area += this.points[i].x.v * this.points[i+1].y.v - this.points[i+1].x.v * this.points[i].y.v;
+          area += this.points[i].x * this.points[i+1].y - this.points[i+1].x * this.points[i].y;
         }
-        area += this.points[l-1].x.v * this.points[0].y.v - this.points[0].x.v * this.points[l-1].y.v;
+        area += this.points[l-1].x * this.points[0].y - this.points[0].x * this.points[l-1].y;
         area /= 2;
         return area;
       }
@@ -143,13 +136,13 @@ angular.module('pedaleswitchApp')
         var xg = 0, yg = 0, coef;
 
         for (var i = 0, l = this.points.length; i < l - 1 ; i++){
-          coef = this.points[i].x.v * this.points[i+1].y.v - this.points[i+1].x.v * this.points[i].y.v;
-          xg += (this.points[i].x.v + this.points[i+1].x.v) * coef;
-          yg += (this.points[i].y.v + this.points[i+1].y.v) * coef;
+          coef = this.points[i].x * this.points[i+1].y - this.points[i+1].x * this.points[i].y;
+          xg += (this.points[i].x + this.points[i+1].x) * coef;
+          yg += (this.points[i].y + this.points[i+1].y) * coef;
         }
-        coef = this.points[l-1].x.v * this.points[0].y.v - this.points[0].x.v * this.points[l-1].y.v;
-        xg += (this.points[l-1].x.v + this.points[0].x.v) * coef;
-        yg += (this.points[l-1].y.v + this.points[0].y.v) * coef;
+        coef = this.points[l-1].x * this.points[0].y - this.points[0].x * this.points[l-1].y;
+        xg += (this.points[l-1].x + this.points[0].x) * coef;
+        yg += (this.points[l-1].y + this.points[0].y) * coef;
 
         xg /= 6 * area;
         yg /= 6 * area;
@@ -191,10 +184,10 @@ angular.module('pedaleswitchApp')
         var posExtreme = {t:Infinity,r:-Infinity,b:-Infinity,l:Infinity};
         
         var saveExtreme = function(posExtreme, pos){
-          posExtreme.t = Math.min(posExtreme.t, pos.y.v);
-          posExtreme.r = Math.max(posExtreme.r, pos.x.v);
-          posExtreme.b = Math.max(posExtreme.b, pos.y.v);
-          posExtreme.l = Math.min(posExtreme.l, pos.x.v);
+          posExtreme.t = Math.min(posExtreme.t, pos.y);
+          posExtreme.r = Math.max(posExtreme.r, pos.x);
+          posExtreme.b = Math.max(posExtreme.b, pos.y);
+          posExtreme.l = Math.min(posExtreme.l, pos.x);
         };
 
         for (var i = 0, l = this.points.length; i < l; i++){
@@ -300,9 +293,9 @@ angular.module('pedaleswitchApp')
     class Rect extends Shape {
       drawCanvas(ctx){
         ctx.beginPath();
-        ctx.moveTo(this.points[0].x.v, this.points[0].y.v);
+        ctx.moveTo(this.points[0].x, this.points[0].y);
         for (var item = 0, length = this.points.length; item < length; item += 1) {
-          ctx.lineTo(this.points[item].x.v, this.points[item].y.v);
+          ctx.lineTo(this.points[item].x, this.points[item].y);
         }
         ctx.closePath();
         ctx.stroke();
@@ -322,14 +315,14 @@ angular.module('pedaleswitchApp')
      */
     class MasterBoite {
       constructor(entity) {
-        this.margin = {v: 5};
-        this.initialHeight = {v: 40};
+        this.margin = 5;
+        this.initialHeight = 40;
         this.size = {
-          w: {v: null},
-          h: {v: null},
-          d: {v: null},
-          d1: {v: 200},
-          d2: {v: 300}
+          w: null,
+          h: null,
+          d: null,
+          d1: 200,
+          d2: 300
         };
         this.projections = {
           up: null,
@@ -344,17 +337,17 @@ angular.module('pedaleswitchApp')
       }
 
       setSide(side, value){
-        this.size[side].v = value;
+        this.size[side] = value;
       }
 
       getSide(side){
-        return this.size[side].v;
+        return this.size[side];
       }
 
       initBoiteWithEffect(entity){
         var extremePos = entity.findExtreme();
-        var d = extremePos.size.h + 2 * this.margin.v;
-        var w = extremePos.size.w + 2 * this.margin.v;
+        var d = extremePos.size.h + 2 * this.margin;
+        var w = extremePos.size.w + 2 * this.margin;
         var d3 = this.getSide('d2') - this.getSide('d1');
         this.setSide('w', w);
         this.setSide('d', d);
@@ -362,11 +355,11 @@ angular.module('pedaleswitchApp')
       }
 
       convertMargin() {
-        this.margin.v = canvasConversion.convertToPixel(this.margin.v);
+        this.margin = canvasConversion.convertToPixel(this.margin);
       }
 
       convertInitialHeight() {
-        this.initialHeight.v = canvasConversion.convertToPixel(this.initialHeight.v);
+        this.initialHeight = canvasConversion.convertToPixel(this.initialHeight);
       }
 
       createProjectionsCoords(state) {
@@ -374,120 +367,120 @@ angular.module('pedaleswitchApp')
           top: {
             points: {
               p0: {
-                x: {v: 0},
-                y: {v: 0}
+                x: 0,
+                y: 0
               },
               p1: {
-                x: {v: this.getSide('w')},
-                y: {v: 0}
+                x: this.getSide('w'),
+                y: 0
               },
               p2: {
-                x: {v: this.getSide('w')},
-                y: {v: this.getSide('d2')}
+                x: this.getSide('w'),
+                y: this.getSide('d2')
               },
               p3: {
-                x: {v: 0},
-                y: {v: this.getSide('d2')}
+                x: 0,
+                y: this.getSide('d2')
               }
             }
           },
           bottom: {
             points: {
               p0: {
-                x: {v: 0},
-                y: {v: 0}
+                x: 0,
+                y: 0
               },
               p1: {
-                x: {v: this.getSide('w')},
-                y: {v: 0}
+                x: this.getSide('w'),
+                y: 0
               },
               p2: {
-                x: {v: this.getSide('w')},
-                y: {v: this.getSide('d1')}
+                x: this.getSide('w'),
+                y: this.getSide('d1')
               },
               p3: {
-                x: {v: 0},
-                y: {v: this.getSide('d1')}
+                x: 0,
+                y: this.getSide('d1')
               }
             }
           },
           up: {
             points: {
               p0: {
-                x: {v: 0},
-                y: {v: 0}
+                x: 0,
+                y: 0
               },
               p1: {
-                x: {v: this.getSide('w')},
-                y: {v: 0}
+                x: this.getSide('w'),
+                y: 0
               },
               p2: {
-                x: {v: this.getSide('w')},
-                y: {v: this.getSide('d')}
+                x: this.getSide('w'),
+                y: this.getSide('d')
               },
               p3: {
-                x: {v: 0},
-                y: {v: this.getSide('d')}
+                x: 0,
+                y: this.getSide('d')
               }
             }
           },
           down: {
             points: {
               p0: {
-                x: {v: 0},
-                y: {v: 0}
+                x: 0,
+                y: 0
               },
               p1: {
-                x: {v: this.getSide('w')},
-                y: {v: 0}
+                x: this.getSide('w'),
+                y: 0
               },
               p2: {
-                x: {v: this.getSide('w')},
-                y: {v: this.getSide('h')}
+                x: this.getSide('w'),
+                y: this.getSide('h')
               },
               p3: {
-                x: {v: 0},
-                y: {v: this.getSide('h')}
+                x: 0,
+                y: this.getSide('h')
               }
             }
           },
           left: {
             points: {
               p0: {
-                x: {v: 0},
-                y: {v: 0}
+                x: 0,
+                y: 0
               },
               p1: {
-                x: {v: this.getSide('h')},
-                y: {v: this.getSide('d2') - this.getSide('d1')}
+                x: this.getSide('h'),
+                y: this.getSide('d2') - this.getSide('d1')
               },
               p2: {
-                x: {v: this.getSide('h')},
-                y: {v: this.getSide('d2')}
+                x: this.getSide('h'),
+                y: this.getSide('d2')
               },
               p3: {
-                x: {v: 0},
-                y: {v: this.getSide('d2')}
+                x: 0,
+                y: this.getSide('d2')
               }
             }
           },
           right: {
             points: {
               p0: {
-                x: {v: 0},
-                y: {v: 0}
+                x: 0,
+                y: 0
               },
               p1: {
-                x: {v: this.getSide('h')},
-                y: {v: this.getSide('d1') - this.getSide('d2')}
+                x: this.getSide('h'),
+                y: this.getSide('d1') - this.getSide('d2')
               },
               p2: {
-                x: {v: this.getSide('h')},
-                y: {v: this.getSide('d1')}
+                x: this.getSide('h'),
+                y: this.getSide('d1')
               },
               p3: {
-                x: {v: 0},
-                y: {v: this.getSide('d1')}
+                x: 0,
+                y: this.getSide('d1')
               }
             }
           }
@@ -531,44 +524,44 @@ angular.module('pedaleswitchApp')
         var coords = this.createProjectionsCoords(state).points;
         var points = this.projections[state].points;
 
-        points.p0.setX(coords.p0.x.v);
-        points.p1.setX(coords.p1.x.v);
-        points.p2.setX(coords.p2.x.v);
-        points.p3.setX(coords.p3.x.v);
+        points.p0.setX(coords.p0.x);
+        points.p1.setX(coords.p1.x);
+        points.p2.setX(coords.p2.x);
+        points.p3.setX(coords.p3.x);
 
-        points.p0.setY(coords.p0.y.v);
-        points.p1.setY(coords.p1.y.v);
-        points.p2.setY(coords.p2.y.v);
-        points.p3.setY(coords.p3.y.v);
+        points.p0.setY(coords.p0.y);
+        points.p1.setY(coords.p1.y);
+        points.p2.setY(coords.p2.y);
+        points.p3.setY(coords.p3.y);
       }
       updateMaster(state){
         var proj, h, d1, d2, d3;
         switch (state) {
           case 'top':
             proj = this.createProjectionsCoords(state);
-            this.setSide('w', proj.points.p1.x.v - proj.points.p0.x.v);
-            this.setSide('d2', proj.points.p3.y.v - proj.points.p0.y.v);
+            this.setSide('w', proj.points.p1.x - proj.points.p0.x);
+            this.setSide('d2', proj.points.p3.y - proj.points.p0.y);
             break;
           case 'bottom':
             proj = this.createProjectionsCoords(state);
-            this.setSide('w', proj.points.p1.x.v - proj.points.p0.x.v);
-            this.setSide('d1', proj.points.p3.y.v - proj.points.p0.y.v);
+            this.setSide('w', proj.points.p1.x - proj.points.p0.x);
+            this.setSide('d1', proj.points.p3.y - proj.points.p0.y);
             break;
           case 'up':
             proj = this.createProjectionsCoords(state);
-            this.setSide('w', proj.points.p1.x.v - proj.points.p0.x.v);
-            this.setSide('d', proj.points.p3.y.v - proj.points.p0.y.v);
+            this.setSide('w', proj.points.p1.x - proj.points.p0.x);
+            this.setSide('d', proj.points.p3.y - proj.points.p0.y);
             break;
           case 'down':
             proj = this.createProjectionsCoords(state);
-            this.setSide('w', proj.points.p1.x.v - proj.points.p0.x.v);
-            this.setSide('h', proj.points.p3.y.v - proj.points.p0.y.v);
+            this.setSide('w', proj.points.p1.x - proj.points.p0.x);
+            this.setSide('h', proj.points.p3.y - proj.points.p0.y);
             break;
           case 'left':
             proj = this.createProjectionsCoords(state);
-            h = proj.points.p2.x.v - proj.points.p3.x.v;
-            d2 = proj.points.p3.y.v - proj.points.p0.y.v;
-            d1 = proj.points.p2.y.v - proj.points.p1.y.v;
+            h = proj.points.p2.x - proj.points.p3.x;
+            d2 = proj.points.p3.y - proj.points.p0.y;
+            d1 = proj.points.p2.y - proj.points.p1.y;
             d3 = d2 - d1;
             this.setSide('h', h);
             this.setSide('d', Math.sqrt(h*h + d3*d3));
@@ -577,9 +570,9 @@ angular.module('pedaleswitchApp')
             break;
           case 'right':
             proj = this.createProjectionsCoords(state);
-            h = proj.points.p2.x.v - proj.points.p3.x.v;
-            d1 = proj.points.p3.y.v - proj.points.p0.y.v;
-            d2 = proj.points.p2.y.v - proj.points.p1.y.v;
+            h = proj.points.p2.x - proj.points.p3.x;
+            d1 = proj.points.p3.y - proj.points.p0.y;
+            d2 = proj.points.p2.y - proj.points.p1.y;
             d3 = d2 - d1;
             this.setSide('h', h);
             this.setSide('d', Math.sqrt(h*h + d3*d3));
@@ -603,12 +596,12 @@ angular.module('pedaleswitchApp')
         this.margin = masterBoite.margin;
         // @todo : size a supprimer.
         this.size = {
-          w: {v: null},
-          h: {v: null}
+          w: null,
+          h: null
         };
         this.pos = {
-          x: {v: 200},
-          y: {v: 200}
+          x: 200,
+          y: 200
         };
         this.isSelected = false;
         this.isOverlapping = false;
@@ -630,8 +623,8 @@ angular.module('pedaleswitchApp')
       initMoveBox(entity){
         var extremePos = entity.findExtreme();
         var vect = {
-          x: {v:extremePos.l - this.margin.v},
-          y: {v:extremePos.t - this.margin.v}
+          x: extremePos.l - this.margin,
+          y: extremePos.t - this.margin
         };
         for (var i = 0, l = this.points.length; i < l ; i++){
           this.points[i].translate(vect);
@@ -659,10 +652,10 @@ angular.module('pedaleswitchApp')
         var posExtreme = {t:Infinity,r:-Infinity,b:-Infinity,l:Infinity};
 
         var saveExtreme = function(posExtreme, pos){
-          posExtreme.t = Math.min(posExtreme.t, pos.y.v);
-          posExtreme.r = Math.max(posExtreme.r, pos.x.v);
-          posExtreme.b = Math.max(posExtreme.b, pos.y.v);
-          posExtreme.l = Math.min(posExtreme.l, pos.x.v);
+          posExtreme.t = Math.min(posExtreme.t, pos.y);
+          posExtreme.r = Math.max(posExtreme.r, pos.x);
+          posExtreme.b = Math.max(posExtreme.b, pos.y);
+          posExtreme.l = Math.min(posExtreme.l, pos.x);
         };
 
         for (var i = 0, l = this.points.length; i < l; i++){
@@ -682,24 +675,24 @@ angular.module('pedaleswitchApp')
         var posExtBoite = this.findExtreme();
 
         // L'obj est à gauche de la boite
-        if (posExt.l < (posExtBoite.l + this.margin.v)){
-          this.points[0].setX(posExt.l - this.margin.v);
-          this.points[3].setX(posExt.l - this.margin.v);
+        if (posExt.l < (posExtBoite.l + this.margin)){
+          this.points[0].setX(posExt.l - this.margin);
+          this.points[3].setX(posExt.l - this.margin);
         }
         // L'obj est à haut de la boite
-        if (posExt.t < (posExtBoite.t + this.margin.v)){
-          this.points[0].setY(posExt.t - this.margin.v);
-          this.points[1].setY(posExt.t - this.margin.v);
+        if (posExt.t < (posExtBoite.t + this.margin)){
+          this.points[0].setY(posExt.t - this.margin);
+          this.points[1].setY(posExt.t - this.margin);
         }
         // L'obj est à droite de la boite
-        if (posExt.r > (posExtBoite.r - this.margin.v)){
-          this.points[1].setX(posExt.r + this.margin.v);
-          this.points[2].setX(posExt.r + this.margin.v);
+        if (posExt.r > (posExtBoite.r - this.margin)){
+          this.points[1].setX(posExt.r + this.margin);
+          this.points[2].setX(posExt.r + this.margin);
         }
         // L'obj est en bas de la boite
-        if (posExt.b > (posExtBoite.b - this.margin.v)){
-          this.points[2].setY(posExt.b + this.margin.v);
-          this.points[3].setY(posExt.b + this.margin.v);
+        if (posExt.b > (posExtBoite.b - this.margin)){
+          this.points[2].setY(posExt.b + this.margin);
+          this.points[3].setY(posExt.b + this.margin);
         }
       }
       moveEffetCompo(delta){
@@ -723,28 +716,28 @@ angular.module('pedaleswitchApp')
       }
       /*
       setX(coord){
-        this.pos.x.v = coord;
+        this.pos.x = coord;
       }
       setY(coord){
-        this.pos.y.v = coord;
+        this.pos.y = coord;
       }
       getX() {
-        return this.pos.x.v;
+        return this.pos.x;
       }
       getY() {
-        return this.pos.y.v;
+        return this.pos.y;
       }
       getHeight() {
-        return this.size.h.v;
+        return this.size.h;
       }
       getWidth() {
-        return this.size.w.v;
+        return this.size.w;
       }
       setHeight(h) {
-        this.size.h.v = h;
+        this.size.h = h;
       }
       setWidth(w) {
-        this.size.w.v = w;
+        this.size.w = w;
       }
       getCenterX(){
         return this.getX() + (this.getWidth() / 2);
@@ -790,9 +783,9 @@ angular.module('pedaleswitchApp')
       getArea() {
         var area = 0;
         for (var i = 0, l = this.points.length; i < l - 1 ; i++){
-          area += this.points[i].x.v * this.points[i+1].y.v - this.points[i+1].x.v * this.points[i].y.v;
+          area += this.points[i].x * this.points[i+1].y - this.points[i+1].x * this.points[i].y;
         }
-        area += this.points[l-1].x.v * this.points[0].y.v - this.points[0].x.v * this.points[l-1].y.v;
+        area += this.points[l-1].x * this.points[0].y - this.points[0].x * this.points[l-1].y;
         area /= 2;
         return area;
       }
@@ -807,13 +800,13 @@ angular.module('pedaleswitchApp')
         var xg = 0, yg = 0, coef;
 
         for (var i = 0, l = this.points.length; i < l - 1 ; i++){
-          coef = this.points[i].x.v * this.points[i+1].y.v - this.points[i+1].x.v * this.points[i].y.v;
-          xg += (this.points[i].x.v + this.points[i+1].x.v) * coef;
-          yg += (this.points[i].y.v + this.points[i+1].y.v) * coef;
+          coef = this.points[i].x * this.points[i+1].y - this.points[i+1].x * this.points[i].y;
+          xg += (this.points[i].x + this.points[i+1].x) * coef;
+          yg += (this.points[i].y + this.points[i+1].y) * coef;
         }
-        coef = this.points[l-1].x.v * this.points[0].y.v - this.points[0].x.v * this.points[l-1].y.v;
-        xg += (this.points[l-1].x.v + this.points[0].x.v) * coef;
-        yg += (this.points[l-1].y.v + this.points[0].y.v) * coef;
+        coef = this.points[l-1].x * this.points[0].y - this.points[0].x * this.points[l-1].y;
+        xg += (this.points[l-1].x + this.points[0].x) * coef;
+        yg += (this.points[l-1].y + this.points[0].y) * coef;
 
         xg /= 6 * area;
         yg /= 6 * area;
@@ -838,9 +831,9 @@ angular.module('pedaleswitchApp')
       }
       drawCanvas(ctx){
         ctx.beginPath();
-        ctx.moveTo(this.points[0].x.v, this.points[0].y.v);
+        ctx.moveTo(this.points[0].x, this.points[0].y);
         for (var item = 0, length = this.points.length; item < length; item += 1) {
-          ctx.lineTo(this.points[item].x.v, this.points[item].y.v);
+          ctx.lineTo(this.points[item].x, this.points[item].y);
         }
         ctx.closePath();
         ctx.stroke();
@@ -867,8 +860,8 @@ angular.module('pedaleswitchApp')
         // Angle de rotation
         this.angle = obj.angle || 0;
 
-        this.pos = obj.pos || {x:{v:60}, y:{v:60}};
-        this.size = obj.size || {w:{v:0}, h:{v:0}};
+        this.pos = obj.pos || {x:60, y:60};
+        this.size = obj.size || {w:0, h:0};
       }
 
       /**
@@ -880,8 +873,8 @@ angular.module('pedaleswitchApp')
           this.points[i].translate(vect);
         }
         //@todo a supprimer car cohabitation de deux coordonnée.
-        this.pos.x.v = this.points[0].x.v;
-        this.pos.y.v = this.points[0].y.v;
+        this.pos.x = this.points[0].x;
+        this.pos.y = this.points[0].y;
       }
       rotate(angle){
         this.angle += angle;
@@ -953,12 +946,12 @@ angular.module('pedaleswitchApp')
         switch(loc) {
           case 'right':
             this.setValue = function(value){
-              this.entity.size.h.v = canvasConversion.convertToPixel(value);
+              this.entity.size.h = canvasConversion.convertToPixel(value);
             };
             break;
           case 'bottom':
             this.setValue = function(value){
-              this.entity.size.w.v = canvasConversion.convertToPixel(value);
+              this.entity.size.w = canvasConversion.convertToPixel(value);
             };
             break;
           default:
@@ -970,33 +963,33 @@ angular.module('pedaleswitchApp')
       //  switch(loc) {
       //    case 'right':
       //      this.pos_start = {
-      //        x: {v: this.entity.pos.x.v + this.entity.size.w.v + this.margin},
-      //        y: {v: this.entity.pos.y.v}
+      //        x: this.entity.pos.x + this.entity.size.w + this.margin,
+      //        y: this.entity.pos.y
       //      };
       //      this.pos_end = {
-      //        x: {v: this.entity.pos.x.v + this.entity.size.w.v + this.margin},
-      //        y: {v: this.entity.pos.y.v + this.entity.size.h.v}
+      //        x: this.entity.pos.x + this.entity.size.w + this.margin,
+      //        y: this.entity.pos.y + this.entity.size.h
       //      };
       //      this.pos_box = {
-      //        x: {v: this.pos_start.x.v + 10},
-      //        y: {v: this.pos_start.y.v + (this.pos_end.y.v - this.pos_start.y.v)/2}
+      //        x: this.pos_start.x + 10,
+      //        y: this.pos_start.y + (this.pos_end.y - this.pos_start.y)/2
       //      };
-      //      this.value = canvasConversion.convertToMm(this.entity.size.h.v);
+      //      this.value = canvasConversion.convertToMm(this.entity.size.h);
       //      break;
       //    case 'bottom':
       //      this.pos_start = {
-      //        x: {v: this.entity.pos.x.v},
-      //        y: {v: this.entity.pos.y.v + this.entity.size.h.v + this.margin}
+      //        x: this.entity.pos.x,
+      //        y: this.entity.pos.y + this.entity.size.h + this.margin
       //      };
       //      this.pos_end = {
-      //        x: {v: this.entity.pos.x.v + this.entity.size.w.v},
-      //        y: {v: this.entity.pos.y.v + this.entity.size.h.v + this.margin}
+      //        x: this.entity.pos.x + this.entity.size.w,
+      //        y: this.entity.pos.y + this.entity.size.h + this.margin
       //      };
       //      this.pos_box = {
-      //        x: {v: this.pos_start.x.v + (this.pos_end.x.v - this.pos_start.x.v)/2},
-      //        y: {v: this.pos_start.y.v + 20}
+      //        x: this.pos_start.x + (this.pos_end.x - this.pos_start.x)/2,
+      //        y: this.pos_start.y + 20
       //      };
-      //      this.value = canvasConversion.convertToMm(this.entity.size.w.v);
+      //      this.value = canvasConversion.convertToMm(this.entity.size.w);
       //      break;
       //    default:
       //    console.log(loc + '--> terme non reconnu par le constructeur Arrow');
@@ -1007,33 +1000,33 @@ angular.module('pedaleswitchApp')
         switch(loc) {
           case 'right':
             this.pos_start = {
-              x: {v: this.entity.points[1].x.v + this.margin},
-              y: this.entity.points[1].y.v
+              x: this.entity.points[1].x + this.margin,
+              y: this.entity.points[1].y
             };
             this.pos_end = {
-              x: {v: this.entity.points[2].x.v + this.margin},
-              y: this.entity.points[2].y.v
+              x: this.entity.points[2].x + this.margin,
+              y: this.entity.points[2].y
             };
             this.pos_box = {
-              x: {v: this.pos_start.x.v + 10},
-              y: {v: this.pos_start.y.v + (this.pos_end.y.v - this.pos_start.y.v)/2}
+              x: this.pos_start.x + 10,
+              y: this.pos_start.y + (this.pos_end.y - this.pos_start.y)/2
             };
-            this.value = canvasConversion.convertToMm(this.entity.points[2].y.v - this.entity.points[1].y.v);
+            this.value = canvasConversion.convertToMm(this.entity.points[2].y - this.entity.points[1].y);
             break;
           case 'bottom':
             this.pos_start = {
-              x: this.entity.points[3].x.v,
-              y: {v: this.entity.points[3].y.v + this.margin}
+              x: this.entity.points[3].x,
+              y: this.entity.points[3].y + this.margin
             };
             this.pos_end = {
-              x: this.entity.points[2].x.v,
-              y: {v: this.entity.points[2].y.v + this.margin}
+              x: this.entity.points[2].x,
+              y: this.entity.points[2].y + this.margin
             };
             this.pos_box = {
-              x: {v: this.pos_start.x.v + (this.pos_end.x.v - this.pos_start.x.v)/2},
-              y: {v: this.pos_start.y.v + 20}
+              x: this.pos_start.x + (this.pos_end.x - this.pos_start.x)/2,
+              y: this.pos_start.y + 20
             };
-            this.value = canvasConversion.convertToMm(this.entity.points[2].x.v - this.entity.points[3].x.v);
+            this.value = canvasConversion.convertToMm(this.entity.points[2].x - this.entity.points[3].x);
             break;
           default:
             console.log(loc + '--> terme non reconnu par le constructeur Arrow');
@@ -1047,14 +1040,14 @@ angular.module('pedaleswitchApp')
               ctx.save();
               ctx.fillStyle="gray";
               ctx.beginPath();
-              ctx.moveTo(this.pos_start.x.v, this.pos_start.y.v);
-              ctx.lineTo(this.pos_start.x.v - 5, this.pos_start.y.v + 10);
-              ctx.lineTo(this.pos_start.x.v + 5, this.pos_start.y.v + 10);
+              ctx.moveTo(this.pos_start.x, this.pos_start.y);
+              ctx.lineTo(this.pos_start.x - 5, this.pos_start.y + 10);
+              ctx.lineTo(this.pos_start.x + 5, this.pos_start.y + 10);
               ctx.closePath();
               ctx.fill();
-              ctx.moveTo(this.pos_end.x.v, this.pos_end.y.v);
-              ctx.lineTo(this.pos_end.x.v - 5, this.pos_end.y.v - 10);
-              ctx.lineTo(this.pos_end.x.v + 5, this.pos_end.y.v - 10);
+              ctx.moveTo(this.pos_end.x, this.pos_end.y);
+              ctx.lineTo(this.pos_end.x - 5, this.pos_end.y - 10);
+              ctx.lineTo(this.pos_end.x + 5, this.pos_end.y - 10);
               ctx.closePath();
               ctx.fill();
               ctx.restore();
@@ -1063,13 +1056,13 @@ angular.module('pedaleswitchApp')
             this.drawText = function(ctx){
               ctx.save();
               ctx.font = "14px sans-serif";
-              ctx.fillText(this.value + ' mm', this.pos_box.x.v, this.pos_box.y.v);
+              ctx.fillText(this.value + ' mm', this.pos_box.x, this.pos_box.y);
               ctx.restore();
             };
 
             this.drawCanvas = function(ctx){
               ctx.beginPath();
-              ctx.fillRect(this.pos_start.x.v, this.pos_start.y.v + 5, 1, this.pos_end.y.v - this.pos_start.y.v - 5);
+              ctx.fillRect(this.pos_start.x, this.pos_start.y + 5, 1, this.pos_end.y - this.pos_start.y - 5);
               ctx.closePath();
               this.drawTriangle(ctx);
               //this.drawText(ctx);
@@ -1080,14 +1073,14 @@ angular.module('pedaleswitchApp')
               ctx.save();
               ctx.fillStyle="gray";
               ctx.beginPath();
-              ctx.moveTo(this.pos_start.x.v, this.pos_start.y.v);
-              ctx.lineTo(this.pos_start.x.v + 10, this.pos_start.y.v - 5);
-              ctx.lineTo(this.pos_start.x.v + 10, this.pos_start.y.v + 5);
+              ctx.moveTo(this.pos_start.x, this.pos_start.y);
+              ctx.lineTo(this.pos_start.x + 10, this.pos_start.y - 5);
+              ctx.lineTo(this.pos_start.x + 10, this.pos_start.y + 5);
               ctx.closePath();
               ctx.fill();
-              ctx.moveTo(this.pos_end.x.v, this.pos_end.y.v);
-              ctx.lineTo(this.pos_end.x.v - 10, this.pos_end.y.v - 5);
-              ctx.lineTo(this.pos_end.x.v - 10, this.pos_end.y.v + 5);
+              ctx.moveTo(this.pos_end.x, this.pos_end.y);
+              ctx.lineTo(this.pos_end.x - 10, this.pos_end.y - 5);
+              ctx.lineTo(this.pos_end.x - 10, this.pos_end.y + 5);
               ctx.closePath();
               ctx.fill();
               ctx.restore();
@@ -1096,13 +1089,13 @@ angular.module('pedaleswitchApp')
             this.drawText = function(ctx){
               ctx.save();
               ctx.font = "14px sans-serif";
-              ctx.fillText(this.value + ' mm', this.pos_box.x.v, this.pos_box.y.v);
+              ctx.fillText(this.value + ' mm', this.pos_box.x, this.pos_box.y);
               ctx.restore();
             };
 
             this.drawCanvas = function(ctx){
               ctx.beginPath();
-              ctx.fillRect(this.pos_start.x.v + 5, this.pos_start.y.v, this.pos_end.x.v - this.pos_start.x.v - 5, 1);
+              ctx.fillRect(this.pos_start.x + 5, this.pos_start.y, this.pos_end.x - this.pos_start.x - 5, 1);
               ctx.closePath();
               this.drawTriangle(ctx);
               //this.drawText(ctx);

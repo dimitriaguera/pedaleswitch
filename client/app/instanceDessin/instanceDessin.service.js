@@ -17,57 +17,56 @@ angular.module('pedaleswitchApp')
       titre_parent_option: null,
       points_default: [
         {
-          x: {v: 50},
-          y: {v: 50}
+          x: 50,         
+          y: 50        },
+        {
+          x: 60,
+          y: 70
         },
         {
-          x: {v: 60},
-          y: {v: 70}
+          x: 60,
+          y: 80
         },
         {
-          x: {v: 60},
-          y: {v: 80}
-        },
-        {
-          x: {v: 30},
-          y: {v: 70}
+          x: 30,
+          y: 70
         }
       ],
       points: [
         {
-          x: {v: 50},
-          y: {v: 50}
+          x: 50,
+          y: 50
         },
         {
-          x: {v: 60},
-          y: {v: 70}
+          x: 60,
+          y: 70
         },
         {
-          x: {v: 60},
-          y: {v: 80}
+          x: 60,
+          y: 80
         },
         {
-          x: {v: 30},
-          y: {v: 70}
+          x: 30,
+          y: 70
         }
       ],
       pos: {
-        x: {v: null},
-        y: {v: null}
+        x: null,
+        y: null
       },
       pos_default: {
-        x: {v: null},
-        y: {v: null}
+        x: null,
+        y: null
       },
       size: {
-        w: {v: null},
-        h: {v: null},
-        d: {v: null}
+        w: null,
+        h: null,
+        d: null
       },
       old_size: {
-        w: {v: null},
-        h: {v: null},
-        d: {v: null}
+        w: null,
+        h: null,
+        d: null
       },
       item_info: {
         shape: 'Rect'
@@ -82,23 +81,22 @@ angular.module('pedaleswitchApp')
     function getPoints (size, pos) {
       return [
         {
-          x: {v: pos.x - size.w/2},
-          y: {v: pos.y - size.h/2}
+          x: pos.x - size.w/2,
+          y: pos.y - size.h/2
         },
         {
-          x: {v: pos.x + size.w/2},
-          y: {v: pos.y - size.h/2}
+          x: pos.x + size.w/2,
+          y: pos.y - size.h/2
         },
         {
-          x: {v: pos.x + size.w/2},
-          y: {v: pos.y + size.h/2}
+          x: pos.x + size.w/2,
+          y: pos.y + size.h/2
         },
         {
-          x: {v: pos.x - size.w/2},
-          y: {v: pos.y + size.h/2}
+          x: pos.x - size.w/2,
+          y: pos.y + size.h/2
         }
-      ];
-    }
+      ];    }
 
     /**
      * @todo charger juste les composants des effets ajouter.
@@ -168,29 +166,28 @@ angular.module('pedaleswitchApp')
           description_option: option.description,
           prix: option.prix,
           size: {
-            w: {v: option.size.w},
-            h: {v: option.size.h},
-            d: {v: option.size.d || null}
+            w: option.size.w,
+            h: option.size.h,
+            d: option.size.d || null
           },
           old_size: {
-            w: {v: option.size.w},
-            h: {v: option.size.h},
-            d: {v: option.size.d || null}
-          },
+            w: option.size.w,
+            h: option.size.h,
+            d: option.size.d || null },
           //pos: {
           //  x: {v: option.pos.x || 20},
           //  y: {v: option.pos.y || 20},
           //  z: {v: option.pos.z || null}
           //},
           pos: {
-            x: {v: 20},
-            y: {v: 20},
-            z: {v: 20}
+            x:  20,
+            y:  20,
+            z:  20
           },
           points: {},
           composants: []
         };
-        nouv_effet.points = getPoints(option.size, {x: nouv_effet.pos.x.v + option.size.w/2, y: nouv_effet.pos.y.v + option.size.h/2});
+        nouv_effet.points = getPoints(option.size, {x: nouv_effet.pos.x + option.size.w/2, y: nouv_effet.pos.y + option.size.h/2});
         for(var i=0; i<option.composants.length; i++){
           var compo = {
             _id: option.composants[i]._id,
@@ -199,24 +196,24 @@ angular.module('pedaleswitchApp')
             titre_parent_effet: effet.titre,
             titre_parent_option: option.titre,
             pos_default: {
-              x: {v: option.composants[i].pos.x},
-              y: {v: option.composants[i].pos.y},
-              z: {v: option.composants[i].pos.z || null}
+              x: option.composants[i].pos.x,
+              y: option.composants[i].pos.y,
+              z: option.composants[i].pos.z || null
             },
             pos: {
-              x: {v: option.composants[i].pos.x + nouv_effet.pos.x.v},
-              y: {v: option.composants[i].pos.y + nouv_effet.pos.y.v},
-              z: {v: option.composants[i].pos.z + nouv_effet.pos.z.v}
+              x: option.composants[i].pos.x + nouv_effet.pos.x,
+              y: option.composants[i].pos.y + nouv_effet.pos.y,
+              z: option.composants[i].pos.z + nouv_effet.pos.z
             },
             size: {
-              w: {v: composantItems[option.composants[i].available_compo_id[0]].size.w},
-              h: {v: composantItems[option.composants[i].available_compo_id[0]].size.h},
-              d: {v: composantItems[option.composants[i].available_compo_id[0]].size.d || null}
+              w: composantItems[option.composants[i].available_compo_id[0]].size.w,
+              h: composantItems[option.composants[i].available_compo_id[0]].size.h,
+              d: composantItems[option.composants[i].available_compo_id[0]].size.d || null
             },
             old_size: {
-              w: {v: composantItems[option.composants[i].available_compo_id[0]].size.w},
-              h: {v: composantItems[option.composants[i].available_compo_id[0]].size.h},
-              d: {v: composantItems[option.composants[i].available_compo_id[0]].size.d || null}
+              w: composantItems[option.composants[i].available_compo_id[0]].size.w,
+              h: composantItems[option.composants[i].available_compo_id[0]].size.h,
+              d: composantItems[option.composants[i].available_compo_id[0]].size.d || null
             },
             points_default: getPoints(composantItems[option.composants[i].available_compo_id[0]].size, option.composants[i].pos),
             points: getPoints(composantItems[option.composants[i].available_compo_id[0]].size, option.composants[i].pos),
@@ -235,13 +232,8 @@ angular.module('pedaleswitchApp')
         canvasConversion.initializeEffetZoom(nouv_effet);
         dessin.options.push(nouv_effet);
       },
-
-      // @todo a supprime ?
-      //moveItem: function (item, x, y){
-      //  item.pos.x = x;
-      //  item.pos.y = y;
-      //},
-
+      
+      //@todo a garder ?
       zoomInitialize: function(value){
         canvasConversion.setZoom(value);
         for (var i = 0; i < dessin.options.length; i++) {

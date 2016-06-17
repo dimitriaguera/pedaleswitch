@@ -393,7 +393,7 @@ angular.module('pedaleswitchApp')
       moveCloseBorder: function(effet){
         // On deplace un effet.
         if (effet.constructor.name !== "Boite"){
-          //this.moveCloseBorderGenerale(effet, boite.margin.v);
+          //this.moveCloseBorderGenerale(effet, boite.margin);
         } 
         // On deplace la boite.  
         else {
@@ -417,12 +417,12 @@ angular.module('pedaleswitchApp')
 
         // Debordement par le haut.
         if (max_pos.t < realmargin) {
-          entity.setCenterY(entity.size.h.v / 2 + realmargin);
+          entity.setCenterY(entity.size.h / 2 + realmargin);
           max_pos.b = entity.getBottom();
         }
         // Debordement par la gauche.
         if (max_pos.l < realmargin) {
-          entity.setCenterX(entity.size.w.v / 2 + realmargin);
+          entity.setCenterX(entity.size.w / 2 + realmargin);
           max_pos.r = entity.getRight();
         }
         // Debordement par la droite.

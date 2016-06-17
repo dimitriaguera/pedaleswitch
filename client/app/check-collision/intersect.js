@@ -157,18 +157,14 @@ angular.module('pedaleswitchApp')
       /**
        * Regarde si un point est dans un rectangle a une tolérance près en pixel donnée par tol..
        * 
-       * @param x
-       * @param y
-       * @param left
-       * @param top
-       * @param right
-       * @param bottom
+       * @param pos : .x, .y
+       * @param posExtreme : .b , .l, .r, .t
        * @param tol : tolérance en pixel.
        * @returns {boolean}
        */
       pointInRect: function (pos, posExtreme, tol) {
         tol = tol || 0;
-        return (this.between(posExtreme.l-tol, pos.x, posExtreme.r+tol) && this.between(posExtreme.t-tol, pos.y, posExtreme.b+tol));
+        return (this.between(posExtreme.l - tol, pos.x, posExtreme.r + tol) && this.between(posExtreme.t - tol, pos.y, posExtreme.b + tol));
       },
 
       /**
@@ -212,15 +208,17 @@ angular.module('pedaleswitchApp')
        *                 <0 for P2  right of the line
        */
       isLeft: function(P0, P1, P2 ) {
-        return ( (P1.x.v - P0.x.v) * (P2.y - P0.y.v)  - (P2.x -  P0.x.v) * (P1.y.v - P0.y.v) );
+        return ( (P1.x - P0.x) * (P2.y - P0.y)  - (P2.x -  P0.x) * (P1.y - P0.y) );
       },
 
       /**
        * Test if a point is inside a polygon with the Winding number test
        *  wn The winding number (=0 only when P is outside).
-       *
+       *  
+       * n number of vertex.
+       * 
        * @param P : {x: ,y:} testing point.
-       * @param V : [] = vertex points of a polygon V[n+1] with V[n]=V[0]
+       * @param V : [] = vertex points of a polygon V[n+1]=V[0]
        * @return {boolean}
        */
       pointInPoly: function(P, V) {
@@ -229,15 +227,16 @@ angular.module('pedaleswitchApp')
 
         var n = V.length;
 
+        // Permet de faire que V[n+1]=V[0].
         V.push(V[0]);
 
         // loop through all edges of the polygon
         // edge from V[i] to  V[i+1]
         for (var i=0 ; i<n ; i++) {
           // start y <= P.y
-          if (V[i].y.v <= P.y) {
+          if (V[i].y <= P.y) {
             // an upward crossing
-            if (V[i+1].y.v  > P.y) {
+            if (V[i+1].y  > P.y) {
               // P left of  edge
               if (this.isLeft( V[i], V[i+1], P) > 0) {
                 // have  a valid up intersect
@@ -248,7 +247,7 @@ angular.module('pedaleswitchApp')
           // start y > P.y (no test needed)
           else {
             // a downward crossing
-            if (V[i+1].y.v  <= P.y) {
+            if (V[i+1].y  <= P.y) {
               // P right of  edge
               if (this.isLeft( V[i], V[i+1], P) < 0) {
                 // have  a valid down intersect
@@ -261,8 +260,6 @@ angular.module('pedaleswitchApp')
         V.pop();
         return (wn !== 0);
       },
-
-
 
       /**
        * Point dans cercle ?
@@ -297,7 +294,6 @@ angular.module('pedaleswitchApp')
       rectInRect: function (shape, comparitor) {
         var extremeShape = shape.findExtreme();
         var extremeComparitor = comparitor.findExtreme();
-
         
         return (
           extremeShape.l < extremeComparitor.l + extremeComparitor.size.w &&
@@ -365,14 +361,14 @@ angular.module('pedaleswitchApp')
         var u = {}, w = {};
         var num, den, dist;
 
-        u.x = pB.x.v - pA.x.v;
-        u.y = pB.y.v - pA.y.v;
+        u.x = pB.x - pA.x;
+        u.y = pB.y - pA.y;
 
-        w.x = center.x - pA.x.v;
-        w.y = center.y - pA.y.v;
+        w.x = center.x - pA.x;
+        w.y = center.y - pA.y;
 
-        num = Math.abs(u.x*w.y - u.y*w.x);   // norme du vecteur w
-        den = Math.sqrt(u.x*u.x + u.y*u.y);  // norme de u
+        num = Math.abs(u.x * w.y - u.y * w.x);   // norme du vecteur w
+        den = Math.sqrt(u.x * u.x + u.y * u.y);  // norme de u
 
         dist = num / den;
 
@@ -394,12 +390,12 @@ angular.module('pedaleswitchApp')
         var ab = {},ac = {},bc = {};
         var pscal1, pscal2;
 
-        ab.x = pB.x.v - pA.x.v;
-        ab.y = pB.y.v - pA.y.v;
-        ac.x = center.x - pA.x.v;
-        ac.y = center.y - pA.y.v;
-        bc.x = center.x - pB.x.v;
-        bc.y = center.y - pB.y.v;
+        ab.x = pB.x - pA.x;
+        ab.y = pB.y - pA.y;
+        ac.x = center.x - pA.x;
+        ac.y = center.y - pA.y;
+        bc.x = center.x - pB.x;
+        bc.y = center.y - pB.y;
 
         pscal1 = ab.x*ac.x + ab.y*ac.y;
         pscal2 = (-ab.x)*bc.x + (-ab.y)*bc.y;
@@ -419,8 +415,8 @@ angular.module('pedaleswitchApp')
        * @returns {boolean}
        */
       pointInCircleLight: function (point, center, rayon) {
-        var dx = point.x.v - center.x;
-        var dy = point.y.v - center.y;
+        var dx = point.x - center.x;
+        var dy = point.y - center.y;
         return (Math.sqrt(dx * dx + dy * dy) <= rayon);
       },
 
