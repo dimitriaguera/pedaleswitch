@@ -6,6 +6,23 @@ angular.module('pedaleswitchApp')
     return {
 
       /**
+       * @todo a supprimer
+       * Check la collision entre un thing et un tableau de thing.
+       * @param item
+       * @param items
+       */
+      checktest: function(item, comparitor) {
+        item.setOverlapping(false);
+
+        if (intersect.circleInPoly(item, comparitor) === true) {
+          item.setOverlapping(true);
+          comparitor.setOverlapping(true);
+        }
+
+
+      },
+
+      /**
        * Check la collision entre un thing et un tableau de thing.
        * @param item
        * @param items
