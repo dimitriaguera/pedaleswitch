@@ -75,8 +75,8 @@ angular.module('pedaleswitchApp')
         this.pos = entity.pos;
         this.size = entity.size;
         this.old_size = entity.old_size;
-
         this.pos_default = entity.pos_default || null;
+
         this.points = entity.points;
         this.points_default = entity.points_default || null;
         this.initPoints(entity.points, this.points);
@@ -204,12 +204,14 @@ angular.module('pedaleswitchApp')
       getWidth() {
         return this.size.w.v;
       }
+
       setHeight(h) {
         this.size.h.v = h;
       }
       setWidth(w) {
         this.size.w.v = w;
       }
+
       getCenterX(){
         return this.getCenter().x;
         //return this.getX() + (this.getWidth() / 2);
@@ -283,7 +285,7 @@ angular.module('pedaleswitchApp')
       rotate(angle, C, debrayable){
         var i, l, j, l2;
         var point;
-
+        var old_p0 = new Point(this.points[0]);
 
         debrayable = debrayable || false;
         // Barycentre.
@@ -302,10 +304,12 @@ angular.module('pedaleswitchApp')
               for (j = 0, l2 = this.composants[i].points.length; j < l2; j++) {
                 this.composants[i].points[j].rotate(angle, C);
                 // Re-initialise la position par defaut.
-                this.composants[i].points_default[j].x.v = this.composants[i].points[j].x.v - this.points[0].x.v;
-                this.composants[i].points_default[j].y.v = this.composants[i].points[j].y.v - this.points[0].y.v;
+                this.composants[i].points_default[j].setX(this.composants[i].points[j].getX() - this.points[0].getX());
+                this.composants[i].points_default[j].setY(this.composants[i].points[j].getY() - this.points[0].getY());
               }
             }
+
+            var test = 5;
           }
           // Si debrayable doit appliquer un rotation au composant qui serait virtuellement dans cette
           // position si cela n'avait pas été débrayable afin de remettre le composant à la bonne place
@@ -314,7 +318,24 @@ angular.module('pedaleswitchApp')
 
             for (i = 0, l = this.composants.length; i < l; i++) {
               for (j = 0, l2 = this.composants[i].points.length; j < l2; j++) {
-                
+
+
+                point = new Point(this.composants[i].points_default[j]);
+
+                // Coordonnée du pt dans le ref du barycentre.
+                point.setX(point.getX() - old_p0.getX() - C.x);
+                point.setY(point.getY() - old_p0.getY() - C.y);
+
+                // Rotation du pt par rapport au bary dans le repère du bary.
+                point.rotate(angle, {x:0,y:0});
+
+                // Coordonné du pt par rapport à p0 de l'effet deja rotate.
+                point.setX(point.getX() - this.points[0].getX());
+                point.setY(point.getY() - this.points[0].getY());
+
+                // Affectation.
+                this.composants[i].points_default[j].setX(point.getX());
+                this.composants[i].points_default[j].setY(point.getY());
                 
                 /*
                  // Coordonnée dans le repère du rect avant rotation.
@@ -449,8 +470,10 @@ angular.module('pedaleswitchApp')
       drawCanvas(ctx) {
         ctx.beginPath();
         ctx.arc(this.getCenterX(), this.getCenterY(), this.getRadius(), 0, 2*Math.PI);
+
         // Draw center.
         ctx.fillRect(this.getCenterX(),this.getCenterY(),1,1);
+
         if (this.isOverlapping) {
           ctx.fillStyle = "rgba(255, 00, 00, 0.2)";
           ctx.fill();
@@ -469,6 +492,10 @@ angular.module('pedaleswitchApp')
         }
         ctx.closePath();
         ctx.stroke();
+
+        // Draw center.
+        ctx.fillRect(this.getCenterX(),this.getCenterY(),1,1);
+
         if (this.isOverlapping) {
           ctx.fillStyle = "rgba(255, 00, 00, 0.2)";
           ctx.fill();
