@@ -132,6 +132,9 @@ angular.module('pedaleswitchApp')
           // Rajoute l'effet a la table effet et le master dans la table MesterEffet.
           tableEffet.push(tmp_eff);
 
+          // Empeche que l'effet depasse du canvas.
+          this.moveCloseBorder(tmp_eff);
+          
           // Check les collisions entre tout les obj.
           checkCollision.checkAll(tableEffet);
 
