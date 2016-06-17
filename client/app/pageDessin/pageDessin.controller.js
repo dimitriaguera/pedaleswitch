@@ -21,7 +21,7 @@ class PageDessinComponent {
       this.effets = response.data;
        if(this.instanceDessin.getDessin().options.length === 0){
         this.instanceDessin.setEffet(this.effets[0], this.effets[0].options[0]);
-        //this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
+        this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
        }
     });
 

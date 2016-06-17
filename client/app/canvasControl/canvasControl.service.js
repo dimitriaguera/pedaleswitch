@@ -218,7 +218,7 @@ angular.module('pedaleswitchApp')
             viewState = 'left';
             masterBoite.updateProjection(viewState);
             this.resetAll();
-            this.setBoite(masterBoite.projections.left).moveBox();
+          this.setBoite(masterBoite.projections.left).moveBox();
             this.setTableEffet(masterBoite.projections.left.effets);
             this.setTableComposant(masterBoite.projections.left.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));

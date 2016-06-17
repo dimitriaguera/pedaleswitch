@@ -186,6 +186,7 @@ angular.module('pedaleswitchApp')
           this.points[i].translate(vect);
         }
       }
+      
       findExtreme(){
         var posExtreme = {t:Infinity,r:-Infinity,b:-Infinity,l:Infinity};
         
@@ -616,36 +617,44 @@ angular.module('pedaleswitchApp')
         this.composants = [];
         this.initPoints(proj_points.points);
       }
-
+      // @todo faire la meme chose que la classe Shape.
       initPoints(points){
-        this.points = {
-          p0: new Point(points.p0),
-          p1: new Point(points.p1),
-          p2: new Point(points.p2),
-          p3: new Point(points.p3)
-        }
+        this.points = [
+          new Point(points.p0),
+          new Point(points.p1),
+          new Point(points.p2),
+          new Point(points.p3)
+        ];
       }
+      
       initMoveBox(entity){
         var extremePos = entity.findExtreme();
-        this.pos.x.v = extremePos.l - this.margin.v;
-        this.pos.y.v = extremePos.t - this.margin.v;
-        this.points.p0.translate(this.pos);
-        this.points.p1.translate(this.pos);
-        this.points.p2.translate(this.pos);
-        this.points.p3.translate(this.pos);
+        var vect = {
+          x: {v:extremePos.l - this.margin.v},
+          y: {v:extremePos.t - this.margin.v}
+        };
+        for (var i = 0, l = this.points.length; i < l ; i++){
+          this.points[i].translate(vect);
+        }
       }
+
+      /**
+       * Deplace l'obj d'un delta
+       * @param vec
+       */
+      move(vect){
+        for (var i = 0, l = this.points.length; i < l; i++){
+          this.points[i].translate(vect);
+        }
+      }
+
+      // @todo a supprimer.
       moveBox(){
-        this.points.p0.translate(this.pos);
-        this.points.p1.translate(this.pos);
-        this.points.p2.translate(this.pos);
-        this.points.p3.translate(this.pos);
+        for (var i = 0, l = this.points.length; i < l ; i++){
+          this.points[i].translate(this.pos);
+        }
       }
-      moveBoxTo(vector){
-        this.points.p0.translate(vector);
-        this.points.p1.translate(vector);
-        this.points.p2.translate(vector);
-        this.points.p3.translate(vector);
-      }
+
       findExtreme(){
         var posExtreme = {t:Infinity,r:-Infinity,b:-Infinity,l:Infinity};
 
@@ -664,35 +673,36 @@ angular.module('pedaleswitchApp')
         return(posExtreme);
       }
 
-      // Redimensionne la boite si le nouvel effet est en dehors.
+
+      /**
+       * Redimensionne la boite si le nouvel effet est en dehors.
+       */
       checkBorderBoite(entity){
         var posExt = entity.findExtreme();
         var posExtBoite = this.findExtreme();
 
         // L'obj est à gauche de la boite
         if (posExt.l < (posExtBoite.l + this.margin.v)){
-          var old_pos_x = posExtBoite.l;
-          this.setX(posExt.l - this.margin.v);
-          this.setWidth(posExtBoite.size.w + (old_pos_x - posExt.l) + this.margin.v);
+          this.points[0].setX(posExt.l - this.margin.v);
+          this.points[3].setX(posExt.l - this.margin.v);
         }
         // L'obj est à haut de la boite
         if (posExt.t < (posExtBoite.t + this.margin.v)){
-          var old_pos_y = posExtBoite.l;
-          this.setY(posExt.t - this.margin.v);
-          this.setHeight(posExtBoite.size.h + (old_pos_y - posExt.t) + this.margin.v);
+          this.points[0].setY(posExt.t - this.margin.v);
+          this.points[1].setY(posExt.t - this.margin.v);
         }
         // L'obj est à droite de la boite
-        if ((posExt.l + posExt.size.w) > (posExtBoite.l + posExtBoite.size.w - this.margin.v)){
-          this.setWidth((posExt.l + posExt.size.w) - posExtBoite.l + this.margin.v);
+        if (posExt.r > (posExtBoite.r - this.margin.v)){
+          this.points[1].setX(posExt.r + this.margin.v);
+          this.points[2].setX(posExt.r + this.margin.v);
         }
         // L'obj est en bas de la boite
-        if ((posExt.t + posExt.size.h) > (posExtBoite.t + posExtBoite.size.h - this.margin.v)){
-          this.setHeight((posExt.t + posExt.size.h) - posExtBoite.t + this.margin.v);
+        if (posExt.b > (posExtBoite.b - this.margin.v)){
+          this.points[2].setY(posExt.b + this.margin.v);
+          this.points[3].setY(posExt.b + this.margin.v);
         }
       }
-
       moveEffetCompo(delta){
-        /*
         var effets = this.effets, compos, i, j;
         if(effets.length !== 0) {
           for (i = 0; i < effets.length; i++) {
@@ -708,8 +718,8 @@ angular.module('pedaleswitchApp')
             }
           }
         }
-        */
       }
+      /*
       setX(coord){
         this.pos.x.v = coord;
       }
@@ -769,7 +779,55 @@ angular.module('pedaleswitchApp')
           l: this.getLeft()
         }
       }
-      
+      */
+
+      /**
+       * Aire d'un poly tester et c OK
+       * @returns {number}
+       */
+      getArea() {
+        var area = 0;
+        for (var i = 0, l = this.points.length; i < l - 1 ; i++){
+          area += this.points[i].x.v * this.points[i+1].y.v - this.points[i+1].x.v * this.points[i].y.v;
+        }
+        area += this.points[l-1].x.v * this.points[0].y.v - this.points[0].x.v * this.points[l-1].y.v;
+        area /= 2;
+        return area;
+      }
+
+      /**
+       * Centre de masse d'un poly OK
+       * @returns {{x: number, y: number}}
+       */
+      getCenter(){
+        var area = this.getArea();
+
+        var xg = 0, yg = 0, coef;
+
+        for (var i = 0, l = this.points.length; i < l - 1 ; i++){
+          coef = this.points[i].x.v * this.points[i+1].y.v - this.points[i+1].x.v * this.points[i].y.v;
+          xg += (this.points[i].x.v + this.points[i+1].x.v) * coef;
+          yg += (this.points[i].y.v + this.points[i+1].y.v) * coef;
+        }
+        coef = this.points[l-1].x.v * this.points[0].y.v - this.points[0].x.v * this.points[l-1].y.v;
+        xg += (this.points[l-1].x.v + this.points[0].x.v) * coef;
+        yg += (this.points[l-1].y.v + this.points[0].y.v) * coef;
+
+        xg /= 6 * area;
+        yg /= 6 * area;
+
+        return {
+          x: xg,
+          y: yg
+        }
+      }
+      getCenterX(){
+        return this.getCenter().x;
+      }
+      getCenterY(){
+        return this.getCenter().y;
+      }
+
       setSelected(selected) {
         this.isSelected = selected;
       }
@@ -947,33 +1005,33 @@ angular.module('pedaleswitchApp')
         switch(loc) {
           case 'right':
             this.pos_start = {
-              x: {v: this.entity.points.p1.x.v + this.margin},
-              y: this.entity.points.p1.y
+              x: {v: this.entity.points[1].x.v + this.margin},
+              y: this.entity.points[1].y.v
             };
             this.pos_end = {
-              x: {v: this.entity.points.p2.x.v + this.margin},
-              y: this.entity.points.p2.y
+              x: {v: this.entity.points[2].x.v + this.margin},
+              y: this.entity.points[2].y.v
             };
             this.pos_box = {
               x: {v: this.pos_start.x.v + 10},
               y: {v: this.pos_start.y.v + (this.pos_end.y.v - this.pos_start.y.v)/2}
             };
-            this.value = canvasConversion.convertToMm(this.entity.points.p2.y.v - this.entity.points.p1.y.v);
+            this.value = canvasConversion.convertToMm(this.entity.points[2].y.v - this.entity.points[1].y.v);
             break;
           case 'bottom':
             this.pos_start = {
-              x: this.entity.points.p3.x,
-              y: {v: this.entity.points.p3.y.v + this.margin}
+              x: this.entity.points[3].x.v,
+              y: {v: this.entity.points[3].y.v + this.margin}
             };
             this.pos_end = {
-              x: this.entity.points.p2.x,
-              y: {v: this.entity.points.p2.y.v + this.margin}
+              x: this.entity.points[2].x.v,
+              y: {v: this.entity.points[2].y.v + this.margin}
             };
             this.pos_box = {
               x: {v: this.pos_start.x.v + (this.pos_end.x.v - this.pos_start.x.v)/2},
               y: {v: this.pos_start.y.v + 20}
             };
-            this.value = canvasConversion.convertToMm(this.entity.points.p2.x.v - this.entity.points.p3.x.v);
+            this.value = canvasConversion.convertToMm(this.entity.points[2].x.v - this.entity.points[3].x.v);
             break;
           default:
             console.log(loc + '--> terme non reconnu par le constructeur Arrow');

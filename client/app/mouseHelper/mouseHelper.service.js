@@ -267,16 +267,15 @@ angular.module('pedaleswitchApp')
           return;
         }
 
+        // Deplace le thing.
+        boite.move({x: e.layerX - mousePos.x, y: e.layerY - mousePos.y});
+
         // Bouge les effets et les compos.
         boite.moveEffetCompo({x: e.layerX - mousePos.x, y: e.layerY - mousePos.y});
-
+        
         mousePos = {x: e.layerX, y: e.layerY};
         // Met le bon pointeur de souris
         update('move');
-
-        // Affecte la nouvelle position.
-        boite.setCenterX(mousePos.x - drag.dx);
-        boite.setCenterY(mousePos.y - drag.dy);
 
         // Deplace l'obj si sa nouvelle position depasse le canvas.
         canvasControl.moveCloseBorder(boite);

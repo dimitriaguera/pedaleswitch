@@ -211,7 +211,7 @@ angular.module('pedaleswitchApp')
        *                 =0 for P2  on the line
        *                 <0 for P2  right of the line
        */
-      isLeft(P0, P1, P2 ) {
+      isLeft: function(P0, P1, P2 ) {
         return ( (P1.x.v - P0.x.v) * (P2.y - P0.y.v)  - (P2.x -  P0.x.v) * (P1.y.v - P0.y.v) );
       },
 
@@ -223,7 +223,7 @@ angular.module('pedaleswitchApp')
        * @param V : [] = vertex points of a polygon V[n+1] with V[n]=V[0]
        * @return {boolean}
        */
-      pointInPoly(P, V) {
+      pointInPoly: function(P, V) {
         // the  winding number counter
         var wn = 0;
 
