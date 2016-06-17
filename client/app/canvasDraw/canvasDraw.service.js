@@ -17,7 +17,7 @@ angular.module('pedaleswitchApp')
         context.strokeStyle = "#00bfff";
         context.fillStyle = "#00bfff";
         context.textAlign = 'center';
-        context.fillText(item.titre, item.getCenterX(), item.pos.y.v - canvasConversion.convertToPixel(5));
+        context.fillText(item.titre, item.getCenterX(), item.findExtreme().t - canvasConversion.convertToPixel(5));
         context.shadowColor   = "#666";
         context.shadowOffsetX = 1;
         context.shadowOffsetY = 1;
