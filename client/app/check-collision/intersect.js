@@ -93,14 +93,16 @@ angular.module('pedaleswitchApp')
         var tab = [], k;
         var ipos = [], cpos = [];
         var i, c;
-        
-        ipos.push(item.getTop());
-        ipos.push(item.getCenterY());
-        ipos.push(item.getBottom());
 
-        cpos.push(comparitor.getTop());
+        var extreme = item.findExtreme();
+        ipos.push(extreme.t);
+        ipos.push(item.getCenterY());
+        ipos.push(extreme.b);
+
+        extreme = comparitor.findExtreme();
+        cpos.push(extreme.t);
         cpos.push(comparitor.getCenterY());
-        cpos.push(comparitor.getBottom());
+        cpos.push(extreme.b);
 
         for (i = 0; i < 3; i++) {
           for (c = 0; c < 3; c++) {
@@ -129,13 +131,15 @@ angular.module('pedaleswitchApp')
         var tab = [], k;
         var ipos = [], cpos = [], i, c;
 
-        ipos.push(item.getLeft());
+        var extreme = item.findExtreme();
+        ipos.push(extreme.l);
         ipos.push(item.getCenterX());
-        ipos.push(item.getRight());
+        ipos.push(extreme.r);
 
-        cpos.push(comparitor.getLeft());
+        extreme = comparitor.findExtreme();
+        cpos.push(extreme.l);
         cpos.push(comparitor.getCenterX());
-        cpos.push(comparitor.getRight());
+        cpos.push(extreme.r);
 
         for (i = 0; i < 3; i++) {
           for (c = 0; c < 3; c++) {
@@ -291,11 +295,15 @@ angular.module('pedaleswitchApp')
        * @returns {boolean}
        */
       rectInRect: function (shape, comparitor) {
+        var extremeShape = shape.findExtreme();
+        var extremeComparitor = comparitor.findExtreme();
+
+        
         return (
-          shape.getX() < comparitor.getX() + comparitor.size.w.v &&
-          shape.getX() + shape.size.w.v > comparitor.getX() &&
-          shape.getY() < comparitor.getY() + comparitor.size.h.v &&
-          shape.size.h.v + shape.getY() > comparitor.getY()
+          extremeShape.l < extremeComparitor.l + extremeComparitor.size.w &&
+          extremeShape.l + extremeShape.size.w > extremeComparitor.l &&
+          extremeShape.t < extremeComparitor.t + extremeComparitor.size.h &&
+          extremeShape.size.h + extremeShape.t > extremeComparitor.t
         );
       },
 
@@ -321,25 +329,27 @@ angular.module('pedaleswitchApp')
           return false;
         }
 
-        var distX = Math.abs(circle.getCenterX() - rect.getX() - rect.size.w.v / 2);
-        var distY = Math.abs(circle.getCenterY() - rect.getY() - rect.size.h.v / 2);
+        var extremePos = rect.findExtreme();
 
-        if (distX > (rect.size.w.v / 2 + circle.getRadius())) {
+        var distX = Math.abs(circle.getCenterX() - extremePos.l - (extremePos.size.w) /2);
+        var distY = Math.abs(circle.getCenterY() - extremePos.t - (extremePos.size.h) /2);
+
+        if (distX > (extremePos.size.w / 2 + circle.getRadius())) {
           return false;
         }
-        if (distY > (rect.size.h.v / 2 + circle.getRadius())) {
+        if (distY > (extremePos.size.h / 2 + circle.getRadius())) {
           return false;
         }
 
-        if (distX <= (rect.size.w.v / 2)) {
+        if (distX <= (extremePos.size.w / 2)) {
           return true;
         }
-        if (distY <= (rect.size.h.v / 2)) {
+        if (distY <= (extremePos.size.h / 2)) {
           return true;
         }
 
-        var dx = distX - rect.size.w.v / 2;
-        var dy = distY - rect.size.h.v / 2;
+        var dx = distX - extremePos.size.w / 2;
+        var dy = distY - extremePos.size.h / 2;
         return (dx * dx + dy * dy <= (circle.getRadius() * circle.getRadius()));
       },
 

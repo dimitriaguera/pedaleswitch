@@ -109,7 +109,7 @@ angular.module('pedaleswitchApp')
             this.moveCloseBorder(tmp_eff);
 
             // Redimensionne la boite si le nouvelle effet est en dehors.
-            //boite.checkBorderBoite(tmp_eff);
+            boite.checkBorderBoite(tmp_eff);
 
             // Repositionne les arraw.
             this.setArrowPos();
@@ -321,16 +321,16 @@ angular.module('pedaleswitchApp')
       resizeCanvas: function(){
         if (boite.constructor.name === "Boite") {
           var realmargin = 150;
-          var bbot = boite.getBottom(),
-            bright = boite.getRight();
+
+          var posExt = boite.findExtreme();
 
           // Debordement par la droite.
-          if (bright + realmargin > canvas.width) {
-            canvas.width = bright + realmargin;
+          if (posExt.r + realmargin > canvas.width) {
+            canvas.width = posExt.r + realmargin;
           }
           // Debordement par le bas.
-          if (bbot + realmargin > canvas.height) {
-            canvas.height = bbot + realmargin;
+          if (posExt.b + realmargin > canvas.height) {
+            canvas.height = posExt.b + realmargin;
           }
         }
       },
@@ -366,7 +366,7 @@ angular.module('pedaleswitchApp')
           effet = tableEffet[i];
 
           // Recupère les bords
-          pos = effet.getMax();
+          pos = effet.findExtreme();
           // Garde le maximum.
           saveMax(posmax, pos);
           
@@ -375,7 +375,7 @@ angular.module('pedaleswitchApp')
             for (j = 0; j < compos.length; j++) {
               compo = compos[j];
               // Recupère les bords
-              pos = compo.getMax();
+              pos = compo.findExtreme();
               // Garde le maximum.
               saveMax(posmax, pos);
             }
@@ -413,7 +413,7 @@ angular.module('pedaleswitchApp')
         var realmargin = margin + addmargin;
         
         // Regarde si la figure sort du canvas.
-        var max_pos = entity.getMax();
+        var max_pos = entity.findExtreme();
 
         // Debordement par le haut.
         if (max_pos.t < realmargin) {
