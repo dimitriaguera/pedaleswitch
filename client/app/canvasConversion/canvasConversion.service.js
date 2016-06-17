@@ -13,77 +13,56 @@ angular.module('pedaleswitchApp')
     var oldZoom = 1;
     var zoom = 1;
 
+
+    var convertSizePoints = function (points, ratio){
+      for (var i = 0, l = points.length; i < l ; i++){
+        points[i].x = Math.round(ratio * points[i].x);
+        points[i].y = Math.round(ratio * points[i].y);
+      }
+    };
+
+
     var convertSize = function (entity, ratio) {
-      var i, j, l , l2;
 
-      // @todo prise en compte de la boite.
-      if (entity.constructor.name !== 'MasterBoite'){
-        for (i = 0, l = entity.points.length; i < l ; i++){
-          entity.points[i].x = Math.round(ratio * entity.points[i].x);
-          entity.points[i].y = Math.round(ratio * entity.points[i].y);
-        }
+      if (entity.constructor.name === 'MasterBoite'){
 
-        //@todo a améliorer car cohabitation de deux coordonnées.
-        entity.pos.x = entity.points[0].x;
-        entity.pos.y = entity.points[0].y;
-        entity.size.w = Math.round(ratio * entity.size.w);
-        entity.size.h = Math.round(ratio * entity.size.h);
+        entity.margin = Math.round(ratio * entity.margin);
+        entity.initialHeight = Math.round(ratio * entity.initialHeight);
+
         entity.size.d = Math.round(ratio * entity.size.d);
+        entity.size.d1 = Math.round(ratio * entity.size.d1);
+        entity.size.d2 = Math.round(ratio * entity.size.d2);
+        entity.size.h = Math.round(ratio * entity.size.h);
+        entity.size.w = Math.round(ratio * entity.size.w);
 
+        convertSize(entity.projections.bottom, ratio);
+        convertSize(entity.projections.down, ratio);
+        convertSize(entity.projections.left, ratio);
+        convertSize(entity.projections.right, ratio);
+        convertSize(entity.projections.top, ratio);
+        convertSize(entity.projections.up, ratio);
+      }
+      else if (entity.constructor.name === 'Boite'){
 
-        if (entity.composants) {
-          var compos = entity.composants;
-          for (i = 0, l = compos.length ; i < l ; i++) {
-            for (j = 0, l2 = compos[i].points.length; j < l2 ; j++){
-              compos[i].points[j].x = Math.round(ratio * compos[i].points[j].x);
-              compos[i].points[j].y = Math.round(ratio * compos[i].points[j].y);
-              compos[i].points_default[j].x = Math.round(ratio * compos[i].points_default[j].x);
-              compos[i].points_default[j].y = Math.round(ratio * compos[i].points_default[j].y);
-            }
+        entity.margin = Math.round(ratio * entity.margin);
 
-            //@todo a améliorer car cohabitation de deux coordonnées.
-            compos[i].pos.x = compos[i].points[0].x;
-            compos[i].pos.y = compos[i].points[0].y;
-            compos[i].pos_default.x = compos[i].points_default[0].x;
-            compos[i].pos_default.y = compos[i].points_default[0].y;
-            compos[i].size.w = Math.round(ratio * compos[i].size.w);
-            compos[i].size.h = Math.round(ratio * compos[i].size.h);
-            compos[i].size.d = Math.round(ratio * compos[i].size.d);
-            compos[i].old_size.w = Math.round(ratio * compos[i].old_size.w);
-            compos[i].old_size.h = Math.round(ratio * compos[i].old_size.h);
+        // Convertie les points de la boite.
+        convertSizePoints(entity.points, ratio);
+
+      }
+      // Entity est un effet.
+      else {
+        // Convertie les points de l'entity.
+        convertSizePoints(entity.points, ratio);
+
+        // Convertie les composants
+        if (entity.composants && entity.constructor.name !== 'Boite') {
+          for (var i = 0, l = entity.composants.length ; i < l ; i++) {
+            convertSizePoints(entity.composants[i].points, ratio);
+            convertSizePoints(entity.composants[i].points_default, ratio);
           }
         }
-        if (entity.margin){
-          entity.margin = Math.round(ratio * entity.margin);
-        }
-
-
       }
-
-      /*
-      entity.pos.x = Math.round(ratio * entity.pos.x);
-      entity.pos.y = Math.round(ratio * entity.pos.y);
-      entity.size.w = Math.round(ratio * entity.size.w);
-      entity.size.h = Math.round(ratio * entity.size.h);
-      entity.size.d = Math.round(ratio * entity.size.d);
-      if (entity.composants) {
-        var compos = entity.composants;
-        for (i = 0; i < compos.length; i++) {
-          compos[i].pos.x = Math.round(ratio * compos[i].pos.x);
-          compos[i].pos.y = Math.round(ratio * compos[i].pos.y);
-           = Math.round(ratio * compos[i].pos_default.x);
-           = Math.round(ratio * compos[i].pos_default.y);
-          compos[i].size.w = Math.round(ratio * compos[i].size.w);
-          compos[i].size.h = Math.round(ratio * compos[i].size.h);
-          compos[i].size.d = Math.round(ratio * compos[i].size.d);
-          compos[i].old_size.w = Math.round(ratio * compos[i].old_size.w);
-          compos[i].old_size.h = Math.round(ratio * compos[i].old_size.h);
-        }
-      }
-      if (entity.margin){
-        entity.margin = Math.round(ratio * entity.margin);
-      }
-      */
     };
 
     // Public API here

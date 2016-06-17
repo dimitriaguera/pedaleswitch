@@ -7,4 +7,7 @@ Rotation :
 
   Quand on tourne un obj trop pret du canvas l'est composant qui le compose bouge...
 
-  Attention pointInPoly & isLeft a un .v dans intersect
+ 1) passage d'une vue a l'autre probleme la boite bouge.
+
+ 4) quand on change les valeurs de la dim de la boite par les flèches elle ne s'agrandit pas
+

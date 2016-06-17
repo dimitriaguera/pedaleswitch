@@ -75,12 +75,18 @@ class PageDessinComponent {
   }
 
   save(){
+
+    // Convertie en mm.
+    this.canvasConversion.convertDessinToMm(this.dessin);
+
     // Initialise dessinStock.
     var dessinStock = JSON.parse(JSON.stringify(this.dessin));
+
+    // Convertie en pixel.
+    this.canvasConversion.convertDessinToPixel(this.dessin);
+
     // Conserve l'option debrayable.
     dessinStock.debrayable = this.canvasControl.getDeb();
-    // Convertie en mm.
-    this.canvasConversion.convertDessinToMm(dessinStock);
     // Stock.
     this.storage.put('dessin', dessinStock);
   }

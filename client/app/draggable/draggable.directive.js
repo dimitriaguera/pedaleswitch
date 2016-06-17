@@ -22,20 +22,26 @@ angular.module('pedaleswitchApp')
             // L'autre methode et de l'ajouter au body mais il faut apres le cacher et le supprimer au drop.
             var canvasimg = document.createElement('canvas');
 
-            canvasimg.width = sc.effet.size.w;
-            canvasimg.height = sc.effet.size.h;
+
+            var size = {w: sc.effet.points[1].x - sc.effet.points[0].x , h: sc.effet.points[2].y - sc.effet.points[1].y};
+            canvasimg.width = size.w;
+            canvasimg.height = size.h;
 
             var  ctximg = canvasimg.getContext('2d'),
               img = document.createElement("img");
-
+            
             ctximg.beginPath();
-            ctximg.lineWidth = 1;
-            ctximg.strokeStyle= "green";
-            ctximg.rect(0, 0, sc.effet.size.w, sc.effet.size.h);
+            ctximg.lineWidth = 5;
+            ctximg.strokeStyle = "red";
+            ctximg.moveTo(sc.effet.points[0].x, sc.effet.points[0].y);
+            for (var i = 0, length = sc.effet.points.length ; i < length; i++) {
+              ctximg.lineTo(sc.effet.points[i].x, sc.effet.points[i].y);
+            }
+            ctximg.closePath();
             ctximg.stroke();
-            img.src = canvasimg.toDataURL("image/gif");
-            e.dataTransfer.setDragImage(img, sc.effet.size.w/2, sc.effet.size.h/2);
 
+            img.src = canvasimg.toDataURL("image/gif");
+            e.dataTransfer.setDragImage(img, canvasimg.width/2, canvasimg.height/2);
 
             e.dataTransfer.effectAllowed = 'move';
             e.dataTransfer.setData('data', JSON.stringify(sc.effet));

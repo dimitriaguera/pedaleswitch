@@ -28,6 +28,9 @@ angular.module('pedaleswitchApp')
     var viewState = 'up';
     var isActive = 'effet';
     
+    var marginCanvas = canvasConversion.convertToPixel(40);
+    
+    
     var thing = function(entity) {
       switch (entity.item_info.shape){
         case 'Rect':
@@ -47,15 +50,7 @@ angular.module('pedaleswitchApp')
         
     // Public API here
     return{
-            
       
-      //@todo A SUPPRIMER
-      addpoly: function(entity){
-        var test = canvasGeneration.newPoly(entity);
-        tableEffet.push(test);
-      },
-
-
       /**
        * Cette fonction créé les objets du canvas à partir du modèle dessin.
        * Et l'ajoute dans tableEffet et tableComposant pour les composants correspondants.
@@ -87,7 +82,6 @@ angular.module('pedaleswitchApp')
             this.setMasterBoite(canvasGeneration.newMasterBoite(tmp_eff));
 
             // Convert marge en px, créer les projections de la boite.
-            masterBoite.convertMargin();
             masterBoite.convertInitialHeight();
             masterBoite.createProjection();
 
@@ -100,6 +94,7 @@ angular.module('pedaleswitchApp')
             // Initialise la position de la boite.
             boite.initMoveBox(tmp_eff);
 
+            
             // Créer les flèches autour de la boite.
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
@@ -178,7 +173,7 @@ angular.module('pedaleswitchApp')
             viewState = 'top';
             masterBoite.updateProjection(viewState);
             this.resetAll();
-            this.setBoite(masterBoite.projections.top).moveBox();
+            this.setBoite(masterBoite.projections.top).move({x: 200, y:200});
             this.setTableEffet(masterBoite.projections.top.effets);
             this.setTableComposant(masterBoite.projections.top.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
@@ -188,7 +183,7 @@ angular.module('pedaleswitchApp')
             viewState = 'bottom';
             masterBoite.updateProjection(viewState);
             this.resetAll();
-            this.setBoite(masterBoite.projections.bottom).moveBox();
+            this.setBoite(masterBoite.projections.bottom).move({x: 200, y:200});
             this.setTableEffet(masterBoite.projections.bottom.effets);
             this.setTableComposant(masterBoite.projections.bottom.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
@@ -198,7 +193,7 @@ angular.module('pedaleswitchApp')
             viewState = 'up';
             masterBoite.updateProjection(viewState);
             this.resetAll();
-            this.setBoite(masterBoite.projections.up).moveBox();
+            this.setBoite(masterBoite.projections.up).move({x: 200, y:200});
             this.setTableEffet(masterBoite.projections.up.effets);
             this.setTableComposant(masterBoite.projections.up.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
@@ -208,7 +203,7 @@ angular.module('pedaleswitchApp')
             viewState = 'down';
             masterBoite.updateProjection(viewState);
             this.resetAll();
-            this.setBoite(masterBoite.projections.down).moveBox();
+            this.setBoite(masterBoite.projections.down).move({x: 200, y:200});
             this.setTableEffet(masterBoite.projections.down.effets);
             this.setTableComposant(masterBoite.projections.down.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
@@ -218,7 +213,7 @@ angular.module('pedaleswitchApp')
             viewState = 'left';
             masterBoite.updateProjection(viewState);
             this.resetAll();
-          this.setBoite(masterBoite.projections.left).moveBox();
+            this.setBoite(masterBoite.projections.left).move({x: 200, y:200});
             this.setTableEffet(masterBoite.projections.left.effets);
             this.setTableComposant(masterBoite.projections.left.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
@@ -228,7 +223,7 @@ angular.module('pedaleswitchApp')
             viewState = 'right';
             masterBoite.updateProjection(viewState);
             this.resetAll();
-            this.setBoite(masterBoite.projections.right).moveBox();
+            this.setBoite(masterBoite.projections.right).move({x: 200, y:200});
             this.setTableEffet(masterBoite.projections.right.effets);
             this.setTableComposant(masterBoite.projections.right.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
@@ -388,19 +383,23 @@ angular.module('pedaleswitchApp')
 
       /**
        * Empeche que l'effet depasse du canvas.
-       * @param effet
+       * @param entity
        */
-      moveCloseBorder: function(effet){
+      moveCloseBorder: function(entity){
         // On deplace un effet.
-        if (effet.constructor.name !== "Boite"){
-          //this.moveCloseBorderGenerale(effet, boite.margin);
+        if (entity.constructor.name !== "Boite"){
+          this.moveCloseBorderGenerale(entity, boite.margin);
         } 
         // On deplace la boite.  
         else {
-          //this.moveCloseBorderGenerale(effet, 0);
+          this.moveCloseBorderGenerale(entity, 0);
         }
       },
 
+      getMarginCanvas: function(){
+        return marginCanvas;
+      },
+      
       /**
        * Permet de modifier les coordonnées d'un thing s'il depasse les bordures.
        * @todo a reflechir.
@@ -408,22 +407,18 @@ angular.module('pedaleswitchApp')
        * @param addmargin = int
        */
       moveCloseBorderGenerale: function(entity, addmargin) {
-        var margin = canvasConversion.convertToPixel(40);
-
-        var realmargin = margin + addmargin;
+        var realmargin = this.getMarginCanvas() + addmargin;
         
         // Regarde si la figure sort du canvas.
         var max_pos = entity.findExtreme();
 
         // Debordement par le haut.
         if (max_pos.t < realmargin) {
-          entity.setCenterY(entity.size.h / 2 + realmargin);
-          max_pos.b = entity.getBottom();
+          entity.move({x:0, y: realmargin - max_pos.t});
         }
         // Debordement par la gauche.
         if (max_pos.l < realmargin) {
-          entity.setCenterX(entity.size.w / 2 + realmargin);
-          max_pos.r = entity.getRight();
+          entity.move({x:realmargin - max_pos.l, y:0});
         }
         // Debordement par la droite.
         if (max_pos.r + realmargin + 150 > canvas.width) {
