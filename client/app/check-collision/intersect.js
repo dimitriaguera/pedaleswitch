@@ -354,62 +354,148 @@ angular.module('pedaleswitchApp')
       },
 
       /**
-       * @todo a supprimer je pense car ne fonctionne pas pour l'instant.
-       * 
-       * Cercle dans un poly.
-       * @param shape
-       * @param comparitor
+       * Retourne true si le cercle de centre 'center' et de rayon 'rayon' croise la droite AB.
+       * @param pA
+       * @param pB
+       * @param center
+       * @param rayon
        * @returns {boolean}
        */
+      cercleInLine: function (pA, pB, center, rayon){
+        var u = {}, w = {};
+        var num, den, dist;
+
+        u.x = pB.x.v - pA.x.v;
+        u.y = pB.y.v - pA.y.v;
+
+        w.x = center.x - pA.x.v;
+        w.y = center.y - pA.y.v;
+
+        num = Math.abs(u.x*w.y - u.y*w.x);   // norme du vecteur w
+        den = Math.sqrt(u.x*u.x + u.y*u.y);  // norme de u
+
+        dist = num / den;
+
+        return (dist < rayon);
+      },
+
+      /**
+       * Retourne true si le cercle de centre 'center' et de rayon 'rayon' croise le segment AB.
+       * @param pA
+       * @param pB
+       * @param center
+       * @param rayon
+       * @returns {boolean}
+       */
+      cercleInSegment: function (pA, pB, center, rayon){
+
+        if (!this.cercleInLine(pA, pB, center, rayon)) return false;  // si on ne touche pas la droite, on ne touchera jamais le segment
+
+        var ab = {},ac = {},bc = {};
+        var pscal1, pscal2;
+
+        ab.x = pB.x.v - pA.x.v;
+        ab.y = pB.y.v - pA.y.v;
+        ac.x = center.x - pA.x.v;
+        ac.y = center.y - pA.y.v;
+        bc.x = center.x - pB.x.v;
+        bc.y = center.y - pB.y.v;
+
+        pscal1 = ab.x*ac.x + ab.y*ac.y;
+        pscal2 = (-ab.x)*bc.x + (-ab.y)*bc.y;
+
+        if (pscal1 >= 0 && pscal2 >= 0) return true;
+        if (this.pointInCircleLight(pA, center, rayon)) return true;
+        if (this.pointInCircleLight(pB, center, rayon)) return true;
+
+        return false;
+      },
+
+      /**
+       * Version allégée de pointInCircle.
+       * @param point
+       * @param center
+       * @param rayon
+       * @returns {boolean}
+       */
+      pointInCircleLight: function (point, center, rayon) {
+        var dx = point.x.v - center.x;
+        var dy = point.y.v - center.y;
+        return (Math.sqrt(dx * dx + dy * dy) <= rayon);
+      },
+
       circleInPoly: function(shape, comparitor){
-        var mecount = 0, cou = 0;
-        cou = 0;
-        mecount = 0;
-        for (var counter = 0, l = recpoints.length; counter <= l - 1; counter++) {
+        var i, l, p, c, r;
+        p = comparitor.points;
+        l = p.length;
+        c = shape.getCenter();
+        r = shape.getRadius();
 
-          var pointA = recpoints[counter];
-          if (counter == l - 1) {
-            var pointB = recpoints[0];
-          }
-          else {
-            var pointB = recpoints[counter + 1];
-          }
-
-          var X = pointB.pos.x - pointA.pos.x;
-          var Y = pointB.pos.y - pointA.pos.y;
-
-          if (X == 0) {
-            var xprim = pointB.pos.x;
-            var yprim = circle.pos.y;
-            var norm = Math.abs(circle.pos.x - pointB.pos.x);
-            if (norm < circle.getRadius()) {
-              mecount = mecount + 1;
-              if (this.between(pointA.pos.y, yprim, pointB.pos.y)) {
-                return true;
-              }
-            }
-          }
-          else if (Y == 0) {
-            var xprim = circle.pos.x;
-            var yprim = pointB.pos.y;
-            var norm = Math.abs(circle.pos.y - pointB.pos.y);
-            if (norm < circle.getRadius()) {
-              mecount = mecount + 1;
-              if (this.between(pointA.pos.x, xprim, pointB.pos.x)) {
-                return true;
-              }
-            }
-          }
-          else {
-            var coefdir = Y / X;
-            var oo = coefdir * pointA.pos.x - pointA.pos.y;
-            var xprim = (X * circle.pos.x + Y * circle.pos.y - Y * oo) / (X + Y * coefdir);
-            var yprim = coefdir * xprim + oo;
-            var norm = Math.sqrt((xprim - circle.pos.x) * (xprim - circle.pos.x) + (yprim - circle.pos.y) * (yprim - circle.pos.y));
-          }
+        for(i = 0; i < l-1; i++) {
+          if (this.cercleInSegment(p[i], p[i+1], c, r)) return true;
         }
-        return (mecount >= 1 && cou >= 1);
-      }
+        if (this.cercleInSegment(p[0], p[l-1], c, r)) return true;
+
+        return this.pointInPoly(c, p);
+      },
+
+      ///**
+      // * @todo a supprimer je pense car ne fonctionne pas pour l'instant.
+      // *
+      // * Cercle dans un poly.
+      // * @param shape
+      // * @param comparitor
+      // * @returns {boolean}
+      // */
+      //circleInPoly: function(shape, comparitor){
+      //  var mecount = 0, cou = 0;
+      //  cou = 0;
+      //  mecount = 0;
+      //  for (var counter = 0, l = recpoints.length; counter <= l - 1; counter++) {
+      //
+      //    var pointA = recpoints[counter];
+      //    if (counter == l - 1) {
+      //      var pointB = recpoints[0];
+      //    }
+      //    else {
+      //      var pointB = recpoints[counter + 1];
+      //    }
+      //
+      //    var X = pointB.pos.x - pointA.pos.x;
+      //    var Y = pointB.pos.y - pointA.pos.y;
+      //
+      //    if (X == 0) {
+      //      var xprim = pointB.pos.x;
+      //      var yprim = circle.pos.y;
+      //      var norm = Math.abs(circle.pos.x - pointB.pos.x);
+      //      if (norm < circle.getRadius()) {
+      //        mecount = mecount + 1;
+      //        if (this.between(pointA.pos.y, yprim, pointB.pos.y)) {
+      //          return true;
+      //        }
+      //      }
+      //    }
+      //    else if (Y == 0) {
+      //      var xprim = circle.pos.x;
+      //      var yprim = pointB.pos.y;
+      //      var norm = Math.abs(circle.pos.y - pointB.pos.y);
+      //      if (norm < circle.getRadius()) {
+      //        mecount = mecount + 1;
+      //        if (this.between(pointA.pos.x, xprim, pointB.pos.x)) {
+      //          return true;
+      //        }
+      //      }
+      //    }
+      //    else {
+      //      var coefdir = Y / X;
+      //      var oo = coefdir * pointA.pos.x - pointA.pos.y;
+      //      var xprim = (X * circle.pos.x + Y * circle.pos.y - Y * oo) / (X + Y * coefdir);
+      //      var yprim = coefdir * xprim + oo;
+      //      var norm = Math.sqrt((xprim - circle.pos.x) * (xprim - circle.pos.x) + (yprim - circle.pos.y) * (yprim - circle.pos.y));
+      //    }
+      //  }
+      //  return (mecount >= 1 && cou >= 1);
+      //}
     
 
     };

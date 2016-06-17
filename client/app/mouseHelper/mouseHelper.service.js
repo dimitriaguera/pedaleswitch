@@ -322,6 +322,10 @@ angular.module('pedaleswitchApp')
         if (!canvasControl.getDeb()) {
           tabActive[drag.id].resetCompPos();
         }
+
+        // @todo a sup
+        //checkCollision.checktest(tabActive[drag.id], tabActive[4]);
+
         // Check les collisions entre l'item déplacé et la table active.
         checkCollision.check(tabActive[drag.id], tabActive);
         // Check l'alignement des things.

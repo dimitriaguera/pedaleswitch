@@ -9,6 +9,70 @@ angular.module('pedaleswitchApp')
       boite: {}
     };
 
+    var polyTest = {
+      _id: '11111',
+      key: '555',
+      titre: 'test poly',
+      titre_parent_effet: null,
+      titre_parent_option: null,
+      points_default: [
+        {
+          x: {v: 50},
+          y: {v: 50}
+        },
+        {
+          x: {v: 60},
+          y: {v: 70}
+        },
+        {
+          x: {v: 60},
+          y: {v: 80}
+        },
+        {
+          x: {v: 30},
+          y: {v: 70}
+        }
+      ],
+      points: [
+        {
+          x: {v: 50},
+          y: {v: 50}
+        },
+        {
+          x: {v: 60},
+          y: {v: 70}
+        },
+        {
+          x: {v: 60},
+          y: {v: 80}
+        },
+        {
+          x: {v: 30},
+          y: {v: 70}
+        }
+      ],
+      pos: {
+        x: {v: null},
+        y: {v: null}
+      },
+      pos_default: {
+        x: {v: null},
+        y: {v: null}
+      },
+      size: {
+        w: {v: null},
+        h: {v: null},
+        d: {v: null}
+      },
+      old_size: {
+        w: {v: null},
+        h: {v: null},
+        d: {v: null}
+      },
+      item_info: {
+        shape: 'Rect'
+      }
+    };
 
     /**
      * Retour les coordonnées des quatres sommet de la forme.
@@ -166,6 +230,7 @@ angular.module('pedaleswitchApp')
           };
           nouv_effet.composants.push(compo);
         }
+        nouv_effet.composants.push(polyTest);
         canvasConversion.convertEffetSize(nouv_effet);
         canvasConversion.initializeEffetZoom(nouv_effet);
         dessin.options.push(nouv_effet);

@@ -15,7 +15,7 @@ class PageDessinComponent {
   }
 
   $onInit(){
-
+    
     //@todo a supp et verifier dans le constructor de virer http et OrderArray.
     this.$http.get('/api/effets').then(response => {
       this.effets = response.data;
@@ -24,7 +24,7 @@ class PageDessinComponent {
         this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
        }
     });
-
+    
     this.initialisation();
   }
   
@@ -236,8 +236,6 @@ class PageDessinComponent {
   
   //@todo a supprimer.
   getTable(){
-    this.canvasControl.addpoly({_id: 5, size:{w:25,h:32}});
-    this.canvasDraw.drawStuff();
     this.toutesTables = [this.canvasControl.tableState() , this.instanceDessin.getDessin()];
   }
 }
