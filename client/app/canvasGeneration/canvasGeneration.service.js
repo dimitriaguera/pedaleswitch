@@ -703,6 +703,7 @@ angular.module('pedaleswitchApp')
         }
       }
       moveEffetCompo(delta){
+        /*
         var effets = this.effets, compos, i, j;
         if(effets.length !== 0) {
           for (i = 0; i < effets.length; i++) {
@@ -718,6 +719,7 @@ angular.module('pedaleswitchApp')
             }
           }
         }
+        */
       }
       /*
       setX(coord){
