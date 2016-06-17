@@ -847,12 +847,18 @@ angular.module('pedaleswitchApp')
         switch(loc) {
           case 'right':
             this.setValue = function(value){
-              this.entity.size.h = canvasConversion.convertToPixel(value);
+              var posExtreme = this.entity.findExtreme();
+              var newVal = canvasConversion.convertToPixel(value);
+              this.entity.points[2].translate({x:0, y: newVal - posExtreme.size.h});
+              this.entity.points[3].translate({x:0, y: newVal - posExtreme.size.h})
             };
             break;
           case 'bottom':
             this.setValue = function(value){
-              this.entity.size.w = canvasConversion.convertToPixel(value);
+              var posExtreme = this.entity.findExtreme();
+              var newVal = canvasConversion.convertToPixel(value);
+              this.entity.points[1].translate({x:newVal - posExtreme.size.w, y: 0});
+              this.entity.points[2].translate({x:newVal - posExtreme.size.w, y: 0})
             };
             break;
           default:
