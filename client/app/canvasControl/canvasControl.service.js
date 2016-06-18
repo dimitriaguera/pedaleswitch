@@ -219,8 +219,8 @@ angular.module('pedaleswitchApp')
             this.setBoite(masterBoite.projections.left).move({x: 200, y:200});
             this.setTableEffet(masterBoite.projections.left.effets);
             this.setTableComposant(masterBoite.projections.left.composants);
-            tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
-            tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
+            tableArrow.push(canvasGeneration.newArrowPoint(boite, 'right'));
+            tableArrow.push(canvasGeneration.newArrowPoint(boite, 'bottom'));
             break;
           case 'right':
             viewState = 'right';
@@ -229,8 +229,8 @@ angular.module('pedaleswitchApp')
             this.setBoite(masterBoite.projections.right).move({x: 200, y:200});
             this.setTableEffet(masterBoite.projections.right.effets);
             this.setTableComposant(masterBoite.projections.right.composants);
-            tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
-            tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
+            tableArrow.push(canvasGeneration.newArrowPoint(boite, 'right'));
+            tableArrow.push(canvasGeneration.newArrowPoint(boite, 'bottom'));
             break;
           default:
             return console.log('ERROR ' + state + ' is not a valid state');

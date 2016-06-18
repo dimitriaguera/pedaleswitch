@@ -11,15 +11,23 @@ angular.module('pedaleswitchApp')
        * @param item
        * @param items
        */
-      checktest: function(item, comparitor) {
+      checktest: function(item, items) {
+        var indexCounter,
+          outer = items.length,
+          comparitor;
+
         item.setOverlapping(false);
 
-        if (intersect.circleInPoly(item, comparitor) === true) {
-          item.setOverlapping(true);
-          comparitor.setOverlapping(true);
+        for (indexCounter = 0; indexCounter < outer; indexCounter++) {
+          comparitor = items[indexCounter];
+          if (!(item._id == comparitor._id && item.key == comparitor.key)) {
+            comparitor.setOverlapping(false);
+            if (intersect.polyInPoly(item, comparitor) === true) {
+              item.setOverlapping(true);
+              comparitor.setOverlapping(true);
+            }
+          }
         }
-
-
       },
 
       /**

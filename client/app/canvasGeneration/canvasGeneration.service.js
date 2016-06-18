@@ -301,13 +301,15 @@ angular.module('pedaleswitchApp')
     class MasterBoite {
       constructor(entity) {
         this.margin = 5;
-        this.initialHeight = 40;
+        this.initialHeight = 100;
+        this.convertMargin();
+        this.convertInitialHeight();
         this.size = {
           w: null,
           h: null,
           d: null,
-          d1: 200,
-          d2: 300
+          d1: this.initialHeight,
+          d2: this.initialHeight
         };
         this.projections = {
           up: null,
@@ -317,7 +319,6 @@ angular.module('pedaleswitchApp')
           top: null,
           bottom: null
         };
-        this.convertMargin();
         this.initBoiteWithEffect(entity);
       }
 
@@ -513,34 +514,44 @@ angular.module('pedaleswitchApp')
           points[i].setX(coords[i].x);
           points[i].setY(coords[i].y);
         }
-
-
       }
       updateMaster(state){
-        var proj, h, d1, d2, d3;
+        var proj, h, d, d1, d2, d3;
         switch (state) {
           case 'top':
-            proj = this.createProjectionsCoords(state);
+            proj = this.projections[state];
             this.setSide('w', proj.points[1].x - proj.points[0].x);
             this.setSide('d2', proj.points[3].y - proj.points[0].y);
             break;
           case 'bottom':
-            proj = this.createProjectionsCoords(state);
+            proj = this.projections[state];
             this.setSide('w', proj.points[1].x - proj.points[0].x);
             this.setSide('d1', proj.points[3].y - proj.points[0].y);
             break;
           case 'up':
-            proj = this.createProjectionsCoords(state);
+            proj = this.projections[state];
+            d = proj.points[3].y - proj.points[0].y;
+            d1 = this.getSide('d1');
+            d2 = this.getSide('d2');
+            d3 = d2 - d1;
+            h = Math.sqrt(d * d - d3 * d3);
             this.setSide('w', proj.points[1].x - proj.points[0].x);
-            this.setSide('d', proj.points[3].y - proj.points[0].y);
+            this.setSide('d', d);
+            this.setSide('h', h);
             break;
           case 'down':
-            proj = this.createProjectionsCoords(state);
+            proj = this.projections[state];
+            h = proj.points[3].y - proj.points[0].y;
+            d1 = this.getSide('d1');
+            d2 = this.getSide('d2');
+            d3 = d2 - d1;
+            d = Math.sqrt(h * h + d3 * d3);
             this.setSide('w', proj.points[1].x - proj.points[0].x);
-            this.setSide('h', proj.points[3].y - proj.points[0].y);
+            this.setSide('d', d);
+            this.setSide('h', h);
             break;
           case 'left':
-            proj = this.createProjectionsCoords(state);
+            proj = this.projections[state];
             h = proj.points[2].x - proj.points[3].x;
             d2 = proj.points[3].y - proj.points[0].y;
             d1 = proj.points[2].y - proj.points[1].y;
@@ -551,7 +562,7 @@ angular.module('pedaleswitchApp')
             this.setSide('d2', d2);
             break;
           case 'right':
-            proj = this.createProjectionsCoords(state);
+            proj = this.projections[state];
             h = proj.points[2].x - proj.points[3].x;
             d1 = proj.points[3].y - proj.points[0].y;
             d2 = proj.points[2].y - proj.points[1].y;
@@ -1014,6 +1025,32 @@ angular.module('pedaleswitchApp')
       }
     }
 
+    /**
+     * Constructeur ArrowPoint : ne change les coordonnées que d'un seul point.
+     */
+    class ArrowPoint extends Arrow {
+      setMethods(loc){
+        switch(loc) {
+          case 'right':
+            this.setValue = function(value){
+              var newVal = canvasConversion.convertToPixel(value);
+              this.entity.points[1].translate({x:0, y: (this.entity.points[2].y - this.entity.points[1].y) - newVal});
+            };
+            break;
+          case 'bottom':
+            this.setValue = function(value){
+              var posExtreme = this.entity.findExtreme();
+              var newVal = canvasConversion.convertToPixel(value);
+              this.entity.points[1].translate({x:newVal - posExtreme.size.w, y: 0});
+              this.entity.points[2].translate({x:newVal - posExtreme.size.w, y: 0})
+            };
+            break;
+          default:
+            console.log(loc + '--> terme non reconnu par le constructeur Arrow');
+        }
+      }
+    }
+
     // Public API here
     return {
       newCercle: function (entity) {
@@ -1030,6 +1067,10 @@ angular.module('pedaleswitchApp')
 
       newArrow: function (entity, location) {
         return new Arrow(entity, location);
+      },
+
+      newArrowPoint: function (entity, location) {
+        return new ArrowPoint(entity, location);
       },
 
       newMasterBoite: function (entity) {

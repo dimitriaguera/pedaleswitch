@@ -420,6 +420,12 @@ angular.module('pedaleswitchApp')
         return (Math.sqrt(dx * dx + dy * dy) <= rayon);
       },
 
+      /**
+       * Teste sur un shape de type cercle est dans un comparitor de type polygone.
+       * @param shape
+       * @param comparitor
+       * @returns {boolean}
+       */
       circleInPoly: function(shape, comparitor){
         var i, l, p, c, r;
         p = comparitor.points;
@@ -434,6 +440,82 @@ angular.module('pedaleswitchApp')
 
         return this.pointInPoly(c, p);
       },
+
+      /**
+       * Teste sur un shape de type polygone est dans un comparitor de type cercle.
+       * @param shape
+       * @param comparitor
+       * @returns {boolean}
+       */
+      polyInCircle: function(shape, comparitor) {
+        var i, l, p, c, r;
+        p = shape.points;
+        l = p.length;
+        c = comparitor.getCenter();
+        r = comparitor.getRadius();
+
+        for(i = 0; i < l-1; i++) {
+          if (this.cercleInSegment(p[i], p[i+1], c, r)) return true;
+        }
+        if (this.cercleInSegment(p[0], p[l-1], c, r)) return true;
+
+        return this.pointInPoly(c, p);
+      },
+
+      /**
+       * Retourne true si le segment AB croise le segment IP.
+       * Sinon false.
+       * @param pA
+       * @param pB
+       * @param pI
+       * @param pP
+       * @returns {boolean}
+       */
+      segmentIntersection: function(pA,pB,pI,pP){
+        var ab = {}, ip = {}, den, t, u;
+        ab.x = pB.x - pA.x;
+        ab.y = pB.y - pA.y;
+        ip.x = pP.x - pI.x;
+        ip.y = pP.y - pI.y;
+
+        den = ab.x * ip.y - ab.y * ip.x;
+        if (den === 0) return false;   // cas limite : segments paralleles.
+
+        t = -(pA.x * ip.y - pI.x * ip.y - ip.x * pA.y + ip.x * pI.y) / den;
+        if (t < 0 || t >= 1) return false;
+
+        u = -(-ab.x * pA.y + ab.x * pI.y + ab.y * pA.x - ab.y * pI.x) / den;
+        if (u < 0 || u >= 1) return false;
+
+        return true;
+      },
+
+      /**
+       * Teste si un shape de type polygone est dans un comparitor de type polygone.
+       * @param shape
+       * @param comparitor
+       * @returns {boolean}
+       */
+      polyInPoly: function(shape, comparitor){
+        var i, j, l, p, pc, lc;
+        p = shape.points;
+        l = p.length;
+        pc = comparitor.points;
+        lc = pc.length;
+
+        for(i = 0; i < l-1; i++) {
+          for(j = 0; j < lc-1; j++) {
+            if (this.segmentIntersection(p[i], p[i+1], pc[j], pc[j+1])) return true;
+          }
+          if (this.segmentIntersection(p[i], p[i+1], pc[0], pc[lc-1])) return true;
+        }
+        for(j = 0; j < lc-1; j++) {
+          if (this.segmentIntersection(p[0], p[l-1], pc[j], pc[j+1])) return true;
+        }
+        if (this.segmentIntersection(p[0], p[l-1], pc[0], pc[lc-1])) return true;
+
+        return this.pointInPoly(p[0], pc);
+      }
 
       ///**
       // * @todo a supprimer je pense car ne fonctionne pas pour l'instant.
