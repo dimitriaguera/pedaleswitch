@@ -186,8 +186,32 @@ class PageDessinComponent {
     this.canvasDraw.drawStuff();
   }
 
+  down(){
+    this.canvasControl.canvasViewState('down');
+    this.canvasControl.canvasDrawState(this.isActive);
+    this.canvasDraw.drawStuff();
+  }
+
   right(){
     this.canvasControl.canvasViewState('right');
+    this.canvasControl.canvasDrawState(this.isActive);
+    this.canvasDraw.drawStuff();
+  }
+
+  left(){
+    this.canvasControl.canvasViewState('left');
+    this.canvasControl.canvasDrawState(this.isActive);
+    this.canvasDraw.drawStuff();
+  }
+
+  top(){
+    this.canvasControl.canvasViewState('top');
+    this.canvasControl.canvasDrawState(this.isActive);
+    this.canvasDraw.drawStuff();
+  }
+
+  bottom(){
+    this.canvasControl.canvasViewState('bottom');
     this.canvasControl.canvasDrawState(this.isActive);
     this.canvasDraw.drawStuff();
   }

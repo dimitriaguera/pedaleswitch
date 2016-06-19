@@ -176,7 +176,7 @@ angular.module('pedaleswitchApp')
             viewState = 'top';
             masterBoite.updateProjection(viewState);
             this.resetAll();
-            this.setBoite(masterBoite.projections.top).move({x: 200, y:200});
+            this.setBoite(masterBoite.projections.top);
             this.setTableEffet(masterBoite.projections.top.effets);
             this.setTableComposant(masterBoite.projections.top.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
@@ -186,7 +186,7 @@ angular.module('pedaleswitchApp')
             viewState = 'bottom';
             masterBoite.updateProjection(viewState);
             this.resetAll();
-            this.setBoite(masterBoite.projections.bottom).move({x: 200, y:200});
+            this.setBoite(masterBoite.projections.bottom);
             this.setTableEffet(masterBoite.projections.bottom.effets);
             this.setTableComposant(masterBoite.projections.bottom.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
@@ -196,7 +196,7 @@ angular.module('pedaleswitchApp')
             viewState = 'up';
             masterBoite.updateProjection(viewState);
             this.resetAll();
-            this.setBoite(masterBoite.projections.up).move({x: 200, y:200});
+            this.setBoite(masterBoite.projections.up);
             this.setTableEffet(masterBoite.projections.up.effets);
             this.setTableComposant(masterBoite.projections.up.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
@@ -206,7 +206,7 @@ angular.module('pedaleswitchApp')
             viewState = 'down';
             masterBoite.updateProjection(viewState);
             this.resetAll();
-            this.setBoite(masterBoite.projections.down).move({x: 200, y:200});
+            this.setBoite(masterBoite.projections.down);
             this.setTableEffet(masterBoite.projections.down.effets);
             this.setTableComposant(masterBoite.projections.down.composants);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
@@ -216,7 +216,7 @@ angular.module('pedaleswitchApp')
             viewState = 'left';
             masterBoite.updateProjection(viewState);
             this.resetAll();
-            this.setBoite(masterBoite.projections.left).move({x: 200, y:200});
+            this.setBoite(masterBoite.projections.left);
             this.setTableEffet(masterBoite.projections.left.effets);
             this.setTableComposant(masterBoite.projections.left.composants);
             tableArrow.push(canvasGeneration.newArrowPoint(boite, 'right'));
@@ -226,7 +226,7 @@ angular.module('pedaleswitchApp')
             viewState = 'right';
             masterBoite.updateProjection(viewState);
             this.resetAll();
-            this.setBoite(masterBoite.projections.right).move({x: 200, y:200});
+            this.setBoite(masterBoite.projections.right);
             this.setTableEffet(masterBoite.projections.right.effets);
             this.setTableComposant(masterBoite.projections.right.composants);
             tableArrow.push(canvasGeneration.newArrowPoint(boite, 'right'));

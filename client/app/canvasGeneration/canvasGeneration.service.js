@@ -507,12 +507,28 @@ angular.module('pedaleswitchApp')
         this.projections.bottom = new Boite(this, proj_points.bottom);
       }
       updateProjection(state){
+        var vect;
         var coords = this.createProjectionsCoords(state).points;
         var points = this.projections[state].points;
 
+        // On récupère les anciennes coordonées du point p0.
+        vect = {
+          x: points[0].x,
+          y: points[0].y
+        };
+
+        // Si la coordonnées de positionne est de 0, on deplace la figure.
+        if (vect.x === 0 && vect.y === 0){
+          vect.x = 200;
+          vect.y = 200;
+        }
+
         for (var i=0, l = points.length ; i < l ; i++) {
+          // On transmet les nouvelles coordonnées absolues.
           points[i].setX(coords[i].x);
           points[i].setY(coords[i].y);
+          // On bouge la forme selon les anciennes coordonnées.
+          points[i].translate(vect);
         }
       }
       updateMaster(state){

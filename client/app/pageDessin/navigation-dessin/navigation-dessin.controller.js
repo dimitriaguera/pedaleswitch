@@ -16,7 +16,11 @@
         load: '&',
         save: '&',
         up: '&',
-        right: '&'
+        down: '&',
+        right: '&',
+        left: '&',
+        top: '&',
+        bottom: '&'
       },
       controller: NavigationDessin
     });
