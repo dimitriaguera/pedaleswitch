@@ -36,6 +36,7 @@
         <div class="col-xs-3">
 
             <panier-dessin
+                    ng-hide="$ctrl.deco"
                     items="$ctrl.items"
                     effets="$ctrl.dessin.options"
                     on-compo="$ctrl.mouseOnCompo(value)"
@@ -47,7 +48,8 @@
             </panier-dessin>
 
             <deco-dessin
-              add-text-to-table="$ctrl.addTextToTable(string)">
+                    ng-show="$ctrl.deco"
+                    add-text-to-table="$ctrl.addTextToTable(string)">
             </deco-dessin>
 
         </div>

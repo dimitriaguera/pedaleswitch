@@ -516,66 +516,6 @@ angular.module('pedaleswitchApp')
 
         return this.pointInPoly(p[0], pc);
       }
-
-      ///**
-      // * @todo a supprimer je pense car ne fonctionne pas pour l'instant.
-      // *
-      // * Cercle dans un poly.
-      // * @param shape
-      // * @param comparitor
-      // * @returns {boolean}
-      // */
-      //circleInPoly: function(shape, comparitor){
-      //  var mecount = 0, cou = 0;
-      //  cou = 0;
-      //  mecount = 0;
-      //  for (var counter = 0, l = recpoints.length; counter <= l - 1; counter++) {
-      //
-      //    var pointA = recpoints[counter];
-      //    if (counter == l - 1) {
-      //      var pointB = recpoints[0];
-      //    }
-      //    else {
-      //      var pointB = recpoints[counter + 1];
-      //    }
-      //
-      //    var X = pointB.pos.x - pointA.pos.x;
-      //    var Y = pointB.pos.y - pointA.pos.y;
-      //
-      //    if (X == 0) {
-      //      var xprim = pointB.pos.x;
-      //      var yprim = circle.pos.y;
-      //      var norm = Math.abs(circle.pos.x - pointB.pos.x);
-      //      if (norm < circle.getRadius()) {
-      //        mecount = mecount + 1;
-      //        if (this.between(pointA.pos.y, yprim, pointB.pos.y)) {
-      //          return true;
-      //        }
-      //      }
-      //    }
-      //    else if (Y == 0) {
-      //      var xprim = circle.pos.x;
-      //      var yprim = pointB.pos.y;
-      //      var norm = Math.abs(circle.pos.y - pointB.pos.y);
-      //      if (norm < circle.getRadius()) {
-      //        mecount = mecount + 1;
-      //        if (this.between(pointA.pos.x, xprim, pointB.pos.x)) {
-      //          return true;
-      //        }
-      //      }
-      //    }
-      //    else {
-      //      var coefdir = Y / X;
-      //      var oo = coefdir * pointA.pos.x - pointA.pos.y;
-      //      var xprim = (X * circle.pos.x + Y * circle.pos.y - Y * oo) / (X + Y * coefdir);
-      //      var yprim = coefdir * xprim + oo;
-      //      var norm = Math.sqrt((xprim - circle.pos.x) * (xprim - circle.pos.x) + (yprim - circle.pos.y) * (yprim - circle.pos.y));
-      //    }
-      //  }
-      //  return (mecount >= 1 && cou >= 1);
-      //}
-    
-
     };
     
   }

@@ -255,6 +255,10 @@ angular.module('pedaleswitchApp')
 
 
     class Cercle extends Shape {
+      constructor(entity){
+        super(entity);
+        this.shapeObject = 'Cercle';
+      }
       getRadius(){
         var x = this.findExtreme();
         return (x.b - x.t) /2;
@@ -276,6 +280,10 @@ angular.module('pedaleswitchApp')
     }
 
     class Rect extends Shape {
+      constructor(entity){
+        super(entity);
+        this.shapeObject = 'Rect';
+      }
       drawCanvas(ctx){
         ctx.beginPath();
         ctx.moveTo(this.points[0].x, this.points[0].y);
@@ -292,6 +300,13 @@ angular.module('pedaleswitchApp')
           ctx.fillStyle = "rgba(255, 00, 00, 0.2)";
           ctx.fill();
         }
+      }
+    }
+
+    class Poly extends Shape {
+      constructor(entity) {
+        super(entity);
+        this.shapeObject = 'Poly';
       }
     }
 
@@ -610,6 +625,9 @@ angular.module('pedaleswitchApp')
         this.effets = [];
         this.composants = [];
         this.points = [];
+        this.textDecoration = [];
+        this.shapeDecoration = [];
+        this.imgDecoration = [];
         this.initPoints(proj_points.points, this.points);
       }
 
@@ -644,17 +662,27 @@ angular.module('pedaleswitchApp')
       }
 
       moveEffetCompo(delta){
-        var effets = this.effets, compos, i, j;
+        var effets, text, shape, img, compos, i, j;
+        effets = this.effets;
+        text = this.textDecoration;
+        shape = this.shapeDecoration;
+        img = this.imgDecoration;
+
         if(effets.length !== 0) {
-         for (i = 0; i < effets.length; i++) {
-           effets[i].move(delta);
-           compos = effets[i].composants;
-           if(compos.length !== 0) {
-             for (j = 0; j < compos.length; j++) {
-               compos[j].move(delta);
-             }
-           }
-         }
+          for (i = 0; i < effets.length; i++) {
+            effets[i].move(delta);
+            compos = effets[i].composants;
+            if (compos.length !== 0) {
+              for (j = 0; j < compos.length; j++) {
+                compos[j].move(delta);
+              }
+            }
+          }
+        }
+        if(text.length !== 0) {
+          for (i = 0; i < text.length; i++) {
+            text[i].move(delta);
+          }
         }
       }
       
@@ -770,28 +798,176 @@ angular.module('pedaleswitchApp')
       }
     }
 
+    //class Texte {
+    //  constructor(obj){
+    //    this.font = {};
+    //    // normal, italic, oblique
+    //    this.font.style = obj.font.style || 'normal';
+    //    //normal, small-caps
+    //    this.font.variant = obj.font.variant || 'normal';
+    //    // normal, bold, bolder, lighter, 100, 200 ... 900.
+    //    this.font.weight = obj.font.weight || 'normal';
+    //    this.font.size = obj.font.size || '14';
+    //    this.font.family = obj.font.family || 'sans-serif';
+    //    //this.textAlign = obj.textAlign || 'left';
+    //    this.color = obj.color || 'black';
+    //    this.input = obj.input || 'input';
+    //    // fillText, strokeText
+    //    this.type = obj.type || 'fillText';
+    //
+    //    // Angle de rotation
+    //    this.angle = obj.angle || 0;
+    //
+    //    this.pos = obj.pos || {x:60, y:60};
+    //    this.size = obj.size || {w:0, h:0};
+    //  }
+    //
+    //  /**
+    //   * Deplace l'obj d'un delta
+    //   * @param vec
+    //   */
+    //  move(vect){
+    //    for (var i = 0, l = this.points.length; i < l; i++){
+    //      this.points[i].translate(vect);
+    //    }
+    //  }
+    //
+    //  rotate(angle){
+    //    this.angle += angle;
+    //  }
+    //
+    //  drawCanvas(ctx){
+    //    ctx.save();
+    //
+    //    ctx.font =
+    //      this.font.style + ' '
+    //      + this.font.variant + ' '
+    //      + this.font.weight + ' '
+    //      + this.font.size + 'px' + ' '
+    //      + this.font.family;
+    //
+    //    ctx.fillStyle = this.color;
+    //
+    //    ctx.translate(this.getX(), this.getY());
+    //    ctx.rotate(this.angle * (2*Math.PI)/360.0);
+    //
+    //    switch(this.type) {
+    //      case 'fillText':
+    //      default:
+    //        ctx.fillText(this.input, 0, 0);
+    //        break;
+    //      case 'strokeText':
+    //        ctx.strokeText(this.input, 0, 0);
+    //        break;
+    //    }
+    //
+    //    var mes = ctx.measureText(this.input);
+    //    this.setWidth(Math.round(mes.width));
+    //    this.setHeight(parseInt(this.font.size));
+    //
+    //    ctx.restore();
+    //  }
+    //
+    //  setSelected(selected) {
+    //    this.isSelected = false;
+    //  }
+    //  setOverlapping(selected) {
+    //    this.isOverlapping = false;
+    //  }
+    //}
+
+
     class Texte {
-      constructor(obj){
-        this.font = {};
-        // normal, italic, oblique
-        this.font.style = obj.font.style || 'normal';
-        //normal, small-caps
-        this.font.variant = obj.font.variant || 'normal';
-        // normal, bold, bolder, lighter, 100, 200 ... 900.
-        this.font.weight = obj.font.weight || 'normal';
-        this.font.size = obj.font.size || '14';
-        this.font.family = obj.font.family || 'sans-serif';
-        //this.textAlign = obj.textAlign || 'left';
+      constructor(obj, ctx){
+        this.font = {
+          style: obj.font.style || 'normal', // normal, italic, oblique.
+          variant: obj.font.variant || 'normal', //normal, small-caps.
+          weight: obj.font.weight || 'normal', // normal, bold, bolder, lighter, 100, 200 ... 900.
+          baseline: obj.font.baseline || 'middle', // top" || "hanging" || "middle" || "alphabetic" || "ideographic" || "bottom",
+          size: obj.font.size || '14',
+          family: obj.font.family || 'sans-serif',
+          color: obj.font.color || 'black'
+        };
+        this.margin = 20;
         this.color = obj.color || 'black';
         this.input = obj.input || 'input';
         // fillText, strokeText
         this.type = obj.type || 'fillText';
+        //this.textAlign = obj.textAlign || 'left';
 
         // Angle de rotation
         this.angle = obj.angle || 0;
+        this.createPoints(ctx);
+      }
 
-        this.pos = obj.pos || {x:60, y:60};
-        this.size = obj.size || {w:0, h:0};
+      createPoints(ctx){
+        var mar, w, h;
+        this.getSize(ctx);
+        mar = this.margin;
+        w = this.size.w;
+        h = this.size.h;
+
+        this.points = [
+          new Point({x: 0, y: 0}),
+          new Point({x: w + mar*2, y: 0}),
+          new Point({x: w + mar*2, y: h + mar*2}),
+          new Point({x: 0, y: h + mar*2})
+        ];
+      }
+      /**
+       * Aire d'un poly tester et c OK
+       * @returns {number}
+       */
+      getArea() {
+        var area = 0;
+        for (var i = 0, l = this.points.length; i < l - 1 ; i++){
+          area += this.points[i].x * this.points[i+1].y - this.points[i+1].x * this.points[i].y;
+        }
+        area += this.points[l-1].x * this.points[0].y - this.points[0].x * this.points[l-1].y;
+        area /= 2;
+        return area;
+      }
+
+      /**
+       * Centre de masse d'un poly OK
+       * @returns {{x: number, y: number}}
+       */
+      getCenter(){
+        var area = this.getArea();
+
+        var xg = 0, yg = 0, coef;
+
+        for (var i = 0, l = this.points.length; i < l - 1 ; i++){
+          coef = this.points[i].x * this.points[i+1].y - this.points[i+1].x * this.points[i].y;
+          xg += (this.points[i].x + this.points[i+1].x) * coef;
+          yg += (this.points[i].y + this.points[i+1].y) * coef;
+        }
+        coef = this.points[l-1].x * this.points[0].y - this.points[0].x * this.points[l-1].y;
+        xg += (this.points[l-1].x + this.points[0].x) * coef;
+        yg += (this.points[l-1].y + this.points[0].y) * coef;
+
+        xg /= 6 * area;
+        yg /= 6 * area;
+
+        return {
+          x: xg,
+          y: yg
+        }
+      }
+      getCenterX(){
+        return this.getCenter().x;
+      }
+      getCenterY(){
+        return this.getCenter().y;
+      }
+      /**
+       * Deplace l'objet a la position donnée par le nouveau barycentre OK.
+       * @param pos
+       */
+      moveTo(pos){
+        var bary = this.getCenter();
+        var vect = {x: pos.x - bary.x, y: pos.y - bary.y};
+        this.move(vect);
       }
 
       /**
@@ -804,11 +980,83 @@ angular.module('pedaleswitchApp')
         }
       }
 
-      rotate(angle){
-        this.angle += angle;
+      findExtreme(){
+        var posExtreme = {t:Infinity,r:-Infinity,b:-Infinity,l:Infinity};
+
+        var saveExtreme = function(posExtreme, pos){
+          posExtreme.t = Math.min(posExtreme.t, pos.y);
+          posExtreme.r = Math.max(posExtreme.r, pos.x);
+          posExtreme.b = Math.max(posExtreme.b, pos.y);
+          posExtreme.l = Math.min(posExtreme.l, pos.x);
+        };
+
+        for (var i = 0, l = this.points.length; i < l; i++){
+          saveExtreme(posExtreme, this.points[i]);
+        }
+
+        posExtreme.size = {w: posExtreme.r - posExtreme.l, h: posExtreme.b - posExtreme.t};
+        return(posExtreme);
+      }
+
+      setSelected(selected) {
+        this.isSelected = selected;
+      }
+      setOverlapping(overlap) {
+        this.isOverlapping = overlap;
+      }
+      /**
+       * Rotate un element.
+       * @param angle en degre
+       * @param C : position du centre de rotation.
+       */
+      rotate(angle, C){
+        var i, l;
+
+        // Barycentre.
+        C = C || { x: this.getCenterX(), y: this.getCenterY()};
+
+        // Tourne la forme
+        for (i = 0, l = this.points.length; i < l; i++){
+          this.points[i].rotate(angle, C);
+        }
+      }
+
+      getSize(ctx){
+
+        ctx.save();
+        ctx.font =
+          this.font.style + ' '
+          + this.font.variant + ' '
+          + this.font.weight + ' '
+          + this.font.size + 'px' + ' '
+          + this.font.family;
+
+        //ctx.translate(center.x, center.y);
+        ctx.rotate(this.angle * (2*Math.PI)/360.0);
+
+        this.size = {
+          w: ctx.measureText(this.input).width,
+          h: parseInt(this.font.size)
+        };
+
+        ctx.restore();
+      }
+
+      drawHandler(ctx){
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(this.points[0].x, this.points[0].y);
+        for (var i = 0, length = this.points.length; i < length; i++) {
+          ctx.lineTo(this.points[i].x, this.points[i].y);
+        }
+        ctx.closePath();
+        ctx.stroke();
+        ctx.restore();
       }
 
       drawCanvas(ctx){
+
+        //var center = this.getCenter();
         ctx.save();
 
         ctx.font =
@@ -818,36 +1066,29 @@ angular.module('pedaleswitchApp')
           + this.font.size + 'px' + ' '
           + this.font.family;
 
-        ctx.fillStyle = this.color;
+        ctx.fillStyle = this.font.color;
+        ctx.textBaseline = this.font.baseline;
 
-        ctx.translate(this.getX(), this.getY());
+        //ctx.translate(center.x, center.y);
         ctx.rotate(this.angle * (2*Math.PI)/360.0);
-        
+
         switch(this.type) {
           case 'fillText':
           default:
-            ctx.fillText(this.input, 0, 0);
+            ctx.fillText(this.input, this.points[0].x + this.margin, this.points[0].y + this.size.h/2 + this.margin);
             break;
           case 'strokeText':
-            ctx.strokeText(this.input, 0, 0);
+            ctx.strokeText(this.input, this.points[0].x + this.margin, this.points[0].y + this.size.h/2 + this.margin);
             break;
         }
 
-        var mes = ctx.measureText(this.input);
-        this.setWidth(Math.round(mes.width));
-        this.setHeight(parseInt(this.font.size));
+        if (this.isSelected) {
+          this.drawHandler(ctx);
+        }
 
         ctx.restore();
       }
-
-      setSelected(selected) {
-        this.isSelected = false;
-      }
-      setOverlapping(selected) {
-        this.isOverlapping = false;
-      }
     }
-
 
     /**
      * Constructeur de classe Arrow.
@@ -893,73 +1134,36 @@ angular.module('pedaleswitchApp')
         }
       }
 
-      //setPos(loc){
-      //  switch(loc) {
-      //    case 'right':
-      //      this.pos_start = {
-      //        x: this.entity.pos.x + this.entity.size.w + this.margin,
-      //        y: this.entity.pos.y
-      //      };
-      //      this.pos_end = {
-      //        x: this.entity.pos.x + this.entity.size.w + this.margin,
-      //        y: this.entity.pos.y + this.entity.size.h
-      //      };
-      //      this.pos_box = {
-      //        x: this.pos_start.x + 10,
-      //        y: this.pos_start.y + (this.pos_end.y - this.pos_start.y)/2
-      //      };
-      //      this.value = canvasConversion.convertToMm(this.entity.size.h);
-      //      break;
-      //    case 'bottom':
-      //      this.pos_start = {
-      //        x: this.entity.pos.x,
-      //        y: this.entity.pos.y + this.entity.size.h + this.margin
-      //      };
-      //      this.pos_end = {
-      //        x: this.entity.pos.x + this.entity.size.w,
-      //        y: this.entity.pos.y + this.entity.size.h + this.margin
-      //      };
-      //      this.pos_box = {
-      //        x: this.pos_start.x + (this.pos_end.x - this.pos_start.x)/2,
-      //        y: this.pos_start.y + 20
-      //      };
-      //      this.value = canvasConversion.convertToMm(this.entity.size.w);
-      //      break;
-      //    default:
-      //    console.log(loc + '--> terme non reconnu par le constructeur Arrow');
-      //  }
-      //}
-
       setPos(loc){
         switch(loc) {
           case 'right':
-            this.pos_start = {
+            this.pos_start = new Point({
               x: this.entity.points[1].x + this.margin,
               y: this.entity.points[1].y
-            };
-            this.pos_end = {
+            });
+            this.pos_end = new Point({
               x: this.entity.points[2].x + this.margin,
               y: this.entity.points[2].y
-            };
-            this.pos_box = {
+            });
+            this.pos_box = new Point ({
               x: this.pos_start.x + 10,
               y: this.pos_start.y + (this.pos_end.y - this.pos_start.y)/2
-            };
+            });
             this.value = canvasConversion.convertToMm(this.entity.points[2].y - this.entity.points[1].y);
             break;
           case 'bottom':
-            this.pos_start = {
+            this.pos_start = new Point({
               x: this.entity.points[3].x,
               y: this.entity.points[3].y + this.margin
-            };
-            this.pos_end = {
+            });
+            this.pos_end = new Point({
               x: this.entity.points[2].x,
               y: this.entity.points[2].y + this.margin
-            };
-            this.pos_box = {
+            });
+            this.pos_box = new Point({
               x: this.pos_start.x + (this.pos_end.x - this.pos_start.x)/2,
               y: this.pos_start.y + 20
-            };
+            });
             this.value = canvasConversion.convertToMm(this.entity.points[2].x - this.entity.points[3].x);
             break;
           default:
@@ -1045,6 +1249,9 @@ angular.module('pedaleswitchApp')
      * Constructeur ArrowPoint : ne change les coordonnées que d'un seul point.
      */
     class ArrowPoint extends Arrow {
+      constructor(entity, location){
+        super(entity, location);
+      }
       setMethods(loc){
         switch(loc) {
           case 'right':
@@ -1093,8 +1300,8 @@ angular.module('pedaleswitchApp')
         return new MasterBoite(entity);
       },
 
-      newTexte: function(obj) {
-        return new Texte(obj);
+      newTexte: function(obj, ctx) {
+        return new Texte(obj, ctx);
       },
 
       newPoly: function (entity) {

@@ -127,14 +127,10 @@ class PageDessinComponent {
 
   // Appeler par menu-dessin.html
   switchDeco(){
-    if (this.deco){
+    if (this.deco) {
       this.isActive = 'deco';
-      var notEmpty = this.canvasControl.canvasDrawState('deco');
-      if (notEmpty) {
-        this.canvasDraw.drawStuff();
-      }
-    } else {
-      this.activeEffet();
+      this.canvasControl.canvasDrawState('deco');
+      this.canvasDraw.drawStuff();
     }
   }
 
