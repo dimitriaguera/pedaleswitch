@@ -1019,6 +1019,8 @@ angular.module('pedaleswitchApp')
         for (i = 0, l = this.points.length; i < l; i++){
           this.points[i].rotate(angle, C);
         }
+
+        this.angle += angle;
       }
 
       getSize(ctx){
@@ -1055,10 +1057,7 @@ angular.module('pedaleswitchApp')
       }
 
       drawCanvas(ctx){
-
-        //var center = this.getCenter();
         ctx.save();
-
         ctx.font =
           this.font.style + ' '
           + this.font.variant + ' '
@@ -1069,24 +1068,28 @@ angular.module('pedaleswitchApp')
         ctx.fillStyle = this.font.color;
         ctx.textBaseline = this.font.baseline;
 
-        //ctx.translate(center.x, center.y);
+        ctx.textAlign = 'center';
+        var center = this.getCenter();
+        ctx.translate(center.x, center.y);
         ctx.rotate(this.angle * (2*Math.PI)/360.0);
 
         switch(this.type) {
           case 'fillText':
           default:
-            ctx.fillText(this.input, this.points[0].x + this.margin, this.points[0].y + this.size.h/2 + this.margin);
+            ctx.fillText(this.input, 0, 0);
             break;
           case 'strokeText':
-            ctx.strokeText(this.input, this.points[0].x + this.margin, this.points[0].y + this.size.h/2 + this.margin);
+            ctx.strokeText(this.input, 0, 0);
             break;
         }
+        ctx.restore();
 
+        ctx.save();
         if (this.isSelected) {
           this.drawHandler(ctx);
         }
-
         ctx.restore();
+
       }
     }
 
