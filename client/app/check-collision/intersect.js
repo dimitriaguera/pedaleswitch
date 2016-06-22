@@ -27,14 +27,54 @@ angular.module('pedaleswitchApp')
        * @returns {*}
        */
       check: function (shape, comparitor) {
-        if (shape.shapeObject === "Rect" && comparitor.shapeObject === "Rect") {
-          return this.rectInRect(shape, comparitor);
-        }
-        else if (shape.shapeObject === "Cercle" && comparitor.shapeObject === "Cercle") {
-          return this.circleInCircle(shape, comparitor);
-        }
-        else {
-          return this.rectInCircle(shape, comparitor);
+        switch (shape.shapeObject){
+          case 'Rect':
+            switch (comparitor.shapeObject){
+              case 'Rect':
+                return this.rectInRect(shape, comparitor);
+                break;
+              case 'Cercle':
+                return this.rectInCircle(shape, comparitor);
+                break;
+              case 'Poly':
+                break;
+                return this.polyInPoly(shape, comparitor);
+              default:
+                console.log(comparitor.shapeObject + "---> Forme de l'element qui compare (comparitor) inconnue dans intersect");
+            }
+            break;
+          case 'Cercle':
+            switch (comparitor.shapeObject){
+              case 'Rect':
+                return this.circleInRect(shape, comparitor);
+                break;
+              case 'Cercle':
+                return this.circleInCircle(shape, comparitor);
+                break;
+              case 'Poly':
+                return this.circleInPoly(shape, comparitor);
+                break;
+              default:
+                console.log(comparitor.shapeObject + "---> Forme de l'element qui compare (comparitor) inconnue dans intersect");
+            }
+            break;
+          case 'Poly':
+            switch (comparitor.shapeObject){
+              case 'Rect':
+                return this.polyInPoly(shape, comparitor);
+                break;
+              case 'Cercle':
+                return this.polyInCircle(shape, comparitor);
+                break;
+              case 'Poly':
+                return this.polyInPoly(shape, comparitor);
+                break;
+              default:
+                console.log(comparitor.shapeObject + "---> Forme de l'element qui compare (comparitor) inconnue dans intersect");
+            }
+            break;
+          default:
+            console.log(shape.shapeObject + "---> Forme de l'element à compare (shape) inconnue dans intersect");
         }
       },
 
@@ -274,6 +314,20 @@ angular.module('pedaleswitchApp')
       },
 
       /**
+       * Version allégée de pointInCircle.
+       * @param point
+       * @param center
+       * @param rayon
+       * @returns {boolean}
+       */
+      pointInCircleLight: function (point, center, rayon) {
+        var dx = point.x - center.x;
+        var dy = point.y - center.y;
+        return (Math.sqrt(dx * dx + dy * dy) <= rayon);
+      },
+
+
+      /**
        * Cercle dans cercle ?
        * @param shape
        * @param comparitor
@@ -302,38 +356,23 @@ angular.module('pedaleswitchApp')
           extremeShape.size.h + extremeShape.t > extremeComparitor.t
         );
       },
-
+      
       /**
        * Rectangle dans cercle.
        * @param shape
        * @param comparitor
        * @returns {boolean}
        */
-      rectInCircle: function (shape, comparitor) {
-        var circle, rect;
+      rectInCircle: function(shape, comparitor) {
+        var extremePos = shape.findExtreme();
 
-        if (shape.shapeObject === "Cercle" && comparitor.shapeObject === 'Rect') {
-          circle = shape;
-          rect = comparitor;
-        }
-        else if (shape.shapeObject === "Rect" && comparitor.shapeObject === 'Cercle') {
-          rect = shape;
-          circle = comparitor;
-        }
-        else {
-          console.log('intersect shape of item and comparitor not circle or rect. item : ' + shape.shapeObject + ', comparitor : ' + comparitor.shapeObject);
+        var distX = Math.abs(comparitor.getCenterX() - extremePos.l - (extremePos.size.w) /2);
+        var distY = Math.abs(comparitor.getCenterY() - extremePos.t - (extremePos.size.h) /2);
+
+        if (distX > (extremePos.size.w / 2 + comparitor.getRadius())) {
           return false;
         }
-
-        var extremePos = rect.findExtreme();
-
-        var distX = Math.abs(circle.getCenterX() - extremePos.l - (extremePos.size.w) /2);
-        var distY = Math.abs(circle.getCenterY() - extremePos.t - (extremePos.size.h) /2);
-
-        if (distX > (extremePos.size.w / 2 + circle.getRadius())) {
-          return false;
-        }
-        if (distY > (extremePos.size.h / 2 + circle.getRadius())) {
+        if (distY > (extremePos.size.h / 2 + comparitor.getRadius())) {
           return false;
         }
 
@@ -346,9 +385,19 @@ angular.module('pedaleswitchApp')
 
         var dx = distX - extremePos.size.w / 2;
         var dy = distY - extremePos.size.h / 2;
-        return (dx * dx + dy * dy <= (circle.getRadius() * circle.getRadius()));
+        return (dx * dx + dy * dy <= (comparitor.getRadius() * comparitor.getRadius()));
       },
 
+      /**
+       * Cercle dans rectangle
+       * @param shape
+       * @param comparitor
+       * @returns {boolean}
+       */
+      circleInRect: function(shape, comparitor) {
+        return(this.rectInCircle(comparitor, shape));
+      },
+      
       /**
        * Retourne true si le cercle de centre 'center' et de rayon 'rayon' croise la droite AB.
        * @param pA
@@ -357,7 +406,7 @@ angular.module('pedaleswitchApp')
        * @param rayon
        * @returns {boolean}
        */
-      cercleInLine: function (pA, pB, center, rayon){
+      circleInLine: function (pA, pB, center, rayon){
         var u = {}, w = {};
         var num, den, dist;
 
@@ -383,9 +432,9 @@ angular.module('pedaleswitchApp')
        * @param rayon
        * @returns {boolean}
        */
-      cercleInSegment: function (pA, pB, center, rayon){
+      circleInSegment: function (pA, pB, center, rayon){
 
-        if (!this.cercleInLine(pA, pB, center, rayon)) return false;  // si on ne touche pas la droite, on ne touchera jamais le segment
+        if (!this.circleInLine(pA, pB, center, rayon)) return false;  // si on ne touche pas la droite, on ne touchera jamais le segment
 
         var ab = {},ac = {},bc = {};
         var pscal1, pscal2;
@@ -408,19 +457,6 @@ angular.module('pedaleswitchApp')
       },
 
       /**
-       * Version allégée de pointInCircle.
-       * @param point
-       * @param center
-       * @param rayon
-       * @returns {boolean}
-       */
-      pointInCircleLight: function (point, center, rayon) {
-        var dx = point.x - center.x;
-        var dy = point.y - center.y;
-        return (Math.sqrt(dx * dx + dy * dy) <= rayon);
-      },
-
-      /**
        * Teste sur un shape de type cercle est dans un comparitor de type polygone.
        * @param shape
        * @param comparitor
@@ -434,9 +470,9 @@ angular.module('pedaleswitchApp')
         r = shape.getRadius();
 
         for(i = 0; i < l-1; i++) {
-          if (this.cercleInSegment(p[i], p[i+1], c, r)) return true;
+          if (this.circleInSegment(p[i], p[i+1], c, r)) return true;
         }
-        if (this.cercleInSegment(p[0], p[l-1], c, r)) return true;
+        if (this.circleInSegment(p[0], p[l-1], c, r)) return true;
 
         return this.pointInPoly(c, p);
       },
@@ -455,9 +491,9 @@ angular.module('pedaleswitchApp')
         r = comparitor.getRadius();
 
         for(i = 0; i < l-1; i++) {
-          if (this.cercleInSegment(p[i], p[i+1], c, r)) return true;
+          if (this.circleInSegment(p[i], p[i+1], c, r)) return true;
         }
-        if (this.cercleInSegment(p[0], p[l-1], c, r)) return true;
+        if (this.circleInSegment(p[0], p[l-1], c, r)) return true;
 
         return this.pointInPoly(c, p);
       },

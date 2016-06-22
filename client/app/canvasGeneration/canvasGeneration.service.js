@@ -255,6 +255,16 @@ angular.module('pedaleswitchApp')
 
         // Met à jour la propriété angle.
         this.angle += angle;
+
+        // Change la forme de l'obj rectangle si pas // a l'axe.
+        if (this.constructor.name === 'Rect'){
+          if (this.angle%90 === 0) {
+            this.shapeObject = 'Rect';
+          }
+          else {
+            this.shapeObject = 'Poly';
+          }
+        }
       }
 
     }
@@ -288,7 +298,7 @@ angular.module('pedaleswitchApp')
     class Rect extends Shape {
       constructor(entity){
         super(entity);
-        this.shapeObject = 'Rect';
+        this.shapeObject = entity.shapeObject || 'Rect';
       }
       drawCanvas(ctx){
         ctx.beginPath();
@@ -1289,7 +1299,7 @@ angular.module('pedaleswitchApp')
             };
             break;
           default:
-            console.log(loc + '--> terme non reconnu par le constructeur Arrow');
+            console.log(loc + '--> terme non reconnu par le constructeur ArrowPoint');
         }
       }
     }

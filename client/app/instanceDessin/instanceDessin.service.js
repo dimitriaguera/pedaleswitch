@@ -12,6 +12,7 @@ angular.module('pedaleswitchApp')
     var polyTest = {
       _id: '11111',
       key: '555',
+      shapeObject: 'Poly',
       titre: 'test poly',
       titre_parent_effet: null,
       titre_parent_option: null,
