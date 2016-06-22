@@ -40,7 +40,7 @@ angular.module('pedaleswitchApp')
           return canvasGeneration.newCercle(entity);
           break;
         case 'Poly':
-          //return canvasGeneration.newPoly(entity);
+          return canvasGeneration.newPoly(entity);
           break;
         default:
           console.log('Shape not match in canvasControl :' + entity.shape);
