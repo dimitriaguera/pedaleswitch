@@ -396,7 +396,7 @@ angular.module('pedaleswitchApp')
        */
       moveCloseBorder: function(entity){
         // On deplace un effet.
-        if (entity.constructor.name !== "Boite"){
+        if (entity.fonction !== "Boite"){
           this.moveCloseBorderGenerale(entity, boite.margin);
         } 
         // On deplace la boite.  

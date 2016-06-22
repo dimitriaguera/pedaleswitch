@@ -27,10 +27,10 @@ angular.module('pedaleswitchApp')
        * @returns {*}
        */
       check: function (shape, comparitor) {
-        if (shape.constructor.name === "Rect" && comparitor.constructor.name === "Rect") {
+        if (shape.shapeObject === "Rect" && comparitor.shapeObject === "Rect") {
           return this.rectInRect(shape, comparitor);
         }
-        else if (shape.constructor.name === "Cercle" && comparitor.constructor.name === "Cercle") {
+        else if (shape.shapeObject === "Cercle" && comparitor.shapeObject === "Cercle") {
           return this.circleInCircle(shape, comparitor);
         }
         else {
@@ -312,16 +312,16 @@ angular.module('pedaleswitchApp')
       rectInCircle: function (shape, comparitor) {
         var circle, rect;
 
-        if (shape.constructor.name === "Cercle" && comparitor.constructor.name === 'Rect') {
+        if (shape.shapeObject === "Cercle" && comparitor.shapeObject === 'Rect') {
           circle = shape;
           rect = comparitor;
         }
-        else if (shape.constructor.name === "Rect" && comparitor.constructor.name === 'Cercle') {
+        else if (shape.shapeObject === "Rect" && comparitor.shapeObject === 'Cercle') {
           rect = shape;
           circle = comparitor;
         }
         else {
-          console.log('intersect shape of item and comparitor not circle or rect. item : ' + shape.constructor.name + ', comparitor : ' + comparitor.constructor.name)
+          console.log('intersect shape of item and comparitor not circle or rect. item : ' + shape.shapeObject + ', comparitor : ' + comparitor.shapeObject);
           return false;
         }
 

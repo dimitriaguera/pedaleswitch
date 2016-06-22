@@ -24,7 +24,7 @@ angular.module('pedaleswitchApp')
 
     var convertSize = function (entity, ratio) {
 
-      if (entity.constructor.name === 'MasterBoite'){
+      if (entity.fonction === 'MasterBoite'){
 
         entity.margin = Math.round(ratio * entity.margin);
         entity.initialHeight = Math.round(ratio * entity.initialHeight);
@@ -42,7 +42,7 @@ angular.module('pedaleswitchApp')
         convertSize(entity.projections.top, ratio);
         convertSize(entity.projections.up, ratio);
       }
-      else if (entity.constructor.name === 'Boite'){
+      else if (entity.fonction === 'Boite'){
 
         entity.margin = Math.round(ratio * entity.margin);
 
@@ -56,7 +56,7 @@ angular.module('pedaleswitchApp')
         convertSizePoints(entity.points, ratio);
 
         // Convertie les composants
-        if (entity.composants && entity.constructor.name !== 'Boite') {
+        if (entity.composants && entity.fonction !== 'Boite') {
           for (var i = 0, l = entity.composants.length ; i < l ; i++) {
             convertSizePoints(entity.composants[i].points, ratio);
             convertSizePoints(entity.composants[i].points_default, ratio);

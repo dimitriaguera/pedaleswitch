@@ -65,6 +65,8 @@ angular.module('pedaleswitchApp')
         this.isSelected = false;
         this.isOverlapping = false;
 
+        this.fonction = 'effet';
+        
         this.points = entity.points;
         this.points_default = entity.points_default || null;
         this.initPoints(entity.points, this.points);
@@ -334,6 +336,10 @@ angular.module('pedaleswitchApp')
           top: null,
           bottom: null
         };
+        
+        this.fonction = 'MasterBoite';
+        this.shapeObject = 'Rect';
+        
         this.initBoiteWithEffect(entity);
       }
 
@@ -628,6 +634,10 @@ angular.module('pedaleswitchApp')
         this.textDecoration = [];
         this.shapeDecoration = [];
         this.imgDecoration = [];
+        
+        this.shapeObject = 'Rect';
+        this.fonction = 'Boite';
+        
         this.initPoints(proj_points.points, this.points);
       }
 
