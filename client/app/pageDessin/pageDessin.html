@@ -3,66 +3,69 @@
 <div class="container-fluid">
     <div class="col-xs-12">
 
-        <modal-dessin
-                name="Ajouter un effet"
-                class-btn="btn btn-default"
-                template="modalBiblioBox">
-        </modal-dessin>
+      <modal-dessin
+        name="Ajouter un effet"
+        class-btn="btn btn-default"
+        template="modalBiblioBox">
+      </modal-dessin>
 
-        <menu-dessin
-          deco="$ctrl.deco"
-          switch-deco="$ctrl.switchDeco()"
-          debrayable="$ctrl.debrayable"
-          switch-deb="$ctrl.switchDeb()"
-          active-effet="$ctrl.activeEffet()"
-          active-compo="$ctrl.activeCompo()"
-          is-active="$ctrl.isActive">
-        </menu-dessin>
+      <menu-dessin
+        deco="$ctrl.deco"
+        switch-deco="$ctrl.switchDeco()"
+        debrayable="$ctrl.debrayable"
+        switch-deb="$ctrl.switchDeb()"
+        active-effet="$ctrl.activeEffet()"
+        active-compo="$ctrl.activeCompo()"
+        is-active="$ctrl.isActive">
+      </menu-dessin>
 
-        <navigation-dessin zoom="$ctrl.zoom"
-                           zoom-add="$ctrl.zoomAdd(value)"
-                           load="$ctrl.load()"
-                           save="$ctrl.save()"
-                           up="$ctrl.up()"
-                           down="$ctrl.down()"
-                           left="$ctrl.left()"
-                           right="$ctrl.right()"
-                           top="$ctrl.top()"
-                           bottom="$ctrl.bottom()">
-        </navigation-dessin>
+      <navigation-dessin
+        ng-hide="$ctrl.deco"
+        zoom="$ctrl.zoom"
+        zoom-add="$ctrl.zoomAdd(value)"
+        load="$ctrl.load()"
+        save="$ctrl.save()"
+        up="$ctrl.up()"
+        down="$ctrl.down()"
+        left="$ctrl.left()"
+        right="$ctrl.right()"
+        top="$ctrl.top()"
+        bottom="$ctrl.bottom()">
+      </navigation-dessin>
 
     </div>
+
     <div class="row">
         <div class="col-xs-3">
 
-            <panier-dessin
-                    ng-hide="$ctrl.deco"
-                    items="$ctrl.items"
-                    effets="$ctrl.dessin.options"
-                    on-compo="$ctrl.mouseOnCompo(value)"
-                    on-effet="$ctrl.mouseOnEffet(value)"
-                    leave-effet="$ctrl.mouseLeaveEffet()"
-                    update-composant="$ctrl.updateComposant(compo, value)"
-                    add-to-table="$ctrl.addToTable(value)"
-                    remove-to-table="$ctrl.removeToTable(value)">
-            </panier-dessin>
+          <panier-dessin
+            ng-hide="$ctrl.deco"
+            items="$ctrl.items"
+            effets="$ctrl.dessin.options"
+            on-compo="$ctrl.mouseOnCompo(value)"
+            on-effet="$ctrl.mouseOnEffet(value)"
+            leave-effet="$ctrl.mouseLeaveEffet()"
+            update-composant="$ctrl.updateComposant(compo, value)"
+            add-to-table="$ctrl.addToTable(value)"
+            remove-to-table="$ctrl.removeToTable(value)">
+          </panier-dessin>
 
-            <deco-dessin
-                    ng-show="$ctrl.deco"
-                    add-text-to-table="$ctrl.addTextToTable(string)">
-            </deco-dessin>
+          <deco-dessin
+            ng-show="$ctrl.deco"
+            add-text-to-table="$ctrl.addTextToTable(string)">
+          </deco-dessin>
 
         </div>
         <div class="col-xs-3">
 
-            <table-dessin
-                    items="$ctrl.items"
-                    table-data="$ctrl.tableArrow"
-                    table-menu="$ctrl.activeItem"
-                    update-composant="$ctrl.updateComposant(compo, value)"
-                    rotate="$ctrl.rotate(value, data)"
-                    arrow-change="$ctrl.arrowChangeValue()">
-            </table-dessin>
+          <table-dessin
+            items="$ctrl.items"
+            table-data="$ctrl.tableArrow"
+            table-menu="$ctrl.activeItem"
+            update-composant="$ctrl.updateComposant(compo, value)"
+            rotate="$ctrl.rotate(value, data)"
+            arrow-change="$ctrl.arrowChangeValue()">
+          </table-dessin>
 
         </div>
     </div>

@@ -1,7 +1,7 @@
 <button type="button" class="btn btn-primary" ng-model="$ctrl.deco" ng-click="$ctrl.switchDeco()" uib-btn-checkbox>
   Mode décoration
 </button>
-<button type="button" class="btn btn-primary" ng-model="$ctrl.debrayable" ng-click="$ctrl.switchDeb()" uib-btn-checkbox>
+<button ng-hide="$ctrl.deco" type="button" class="btn btn-primary" ng-model="$ctrl.debrayable" ng-click="$ctrl.switchDeb()" uib-btn-checkbox>
     Composants positionnables
 </button>
 <div class="btn-group">
