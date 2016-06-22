@@ -217,6 +217,8 @@ angular.module('pedaleswitchApp')
           // Si pas debrayable fait tourner les composants.
           if (!debrayable) {
             for (i = 0, l = this.composants.length; i < l; i++) {
+              this.composants[i].changeShape();
+              this.composants[i].angle += angle;
               for (j = 0, l2 = this.composants[i].points.length; j < l2; j++) {
                 this.composants[i].points[j].rotate(angle, C);
                 // Re-initialise la position par defaut.
@@ -255,7 +257,10 @@ angular.module('pedaleswitchApp')
 
         // Met à jour la propriété angle.
         this.angle += angle;
+        this.changeShape();
+      }
 
+      changeShape(){
         // Change la forme de l'obj rectangle si pas // a l'axe.
         if (this.constructor.name === 'Rect'){
           if (this.angle%90 === 0) {
@@ -266,6 +271,7 @@ angular.module('pedaleswitchApp')
           }
         }
       }
+
 
     }
 
