@@ -3,10 +3,11 @@
          class="form-control"
          ng-model="$ctrl.data.input"
          required>
-  Couleur :<input type="text"
-         class="form-control"
-         ng-model="$ctrl.data.font.color"
-         required>
+  <color-picker
+    ng-model='$ctrl.data.font.color'
+    color-picker-disabled='false'
+    color-picker-format="'hex'"
+  ></color-picker>
 </div>
 
 <div class="btn-group">

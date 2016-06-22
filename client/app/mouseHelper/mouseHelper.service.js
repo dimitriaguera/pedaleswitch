@@ -72,7 +72,12 @@ angular.module('pedaleswitchApp')
             // et redessine.
             if (olddragid !== null){
               tabActive[olddragid].setSelected(false);
-              canvasControl.resetActiveItem();
+
+
+              // Enlève pop-up quand on deplace la souris hors zone
+              //canvasControl.resetActiveItem();
+
+              
               canvasDraw.drawStuff();
             }
             olddragid = null;

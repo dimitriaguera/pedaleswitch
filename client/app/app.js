@@ -10,7 +10,8 @@ angular.module('pedaleswitchApp', [
   'btford.socket-io',
   'ui.router',
   'ui.bootstrap',
-  'validation.match'
+  'validation.match',
+  'color.picker'
 ])
   .config(function($urlRouterProvider, $locationProvider) {
     $urlRouterProvider
