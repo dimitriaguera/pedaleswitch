@@ -66,6 +66,7 @@ angular.module('pedaleswitchApp')
         this.isOverlapping = false;
 
         this.fonction = 'effet';
+        this.angle = entity.angle || 0;
         
         this.points = entity.points;
         this.points_default = entity.points_default || null;
@@ -251,6 +252,9 @@ angular.module('pedaleswitchApp')
             }
           }
         }
+
+        // Met à jour la propriété angle.
+        this.angle += angle;
       }
 
     }
@@ -906,7 +910,10 @@ angular.module('pedaleswitchApp')
         //this.textAlign = obj.textAlign || 'left';
 
         // Angle de rotation
+        this.shapeObject = 'Rect';
+        this.fonction = 'déco';
         this.angle = obj.angle || 0;
+        
         this.createPoints(ctx);
       }
 
