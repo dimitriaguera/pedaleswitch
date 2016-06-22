@@ -163,6 +163,11 @@ class PageDessinComponent {
     this.canvasDraw.drawStuff();
   }
 
+  addTextToTable(string){
+    this.canvasControl.addTextToCanvas({font: {}, input:string});
+    this.canvasDraw.drawStuff();
+  }
+
   removeToTable(effet){
     this.canvasControl.removeToCanvas(effet);
     this.canvasDraw.drawStuff();
@@ -218,11 +223,6 @@ class PageDessinComponent {
     data.rotate(value, null, this.debrayable);
     this.canvasControl.setArrowPos();
     this.canvasControl.resizeCanvas();
-    this.canvasDraw.drawStuff();
-  }
-
-  addTextToTable(string){
-    this.canvasControl.addTextToCanvas({font: {}, input:string});
     this.canvasDraw.drawStuff();
   }
 

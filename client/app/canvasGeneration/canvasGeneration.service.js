@@ -923,8 +923,26 @@ angular.module('pedaleswitchApp')
         this.shapeObject = 'Rect';
         this.fonction = 'déco';
         this.angle = obj.angle || 0;
-        
+
         this.createPoints(ctx);
+      }
+
+      getSize(ctx){
+
+        ctx.save();
+        ctx.font =
+          this.font.style + ' '
+          + this.font.variant + ' '
+          + this.font.weight + ' '
+          + this.font.size + 'px' + ' '
+          + this.font.family;
+        
+        this.size = {
+          w: ctx.measureText(this.input).width,
+          h: parseInt(this.font.size)
+        };
+
+        ctx.restore();
       }
 
       createPoints(ctx){
@@ -1050,27 +1068,6 @@ angular.module('pedaleswitchApp')
         this.angle += angle;
       }
 
-      getSize(ctx){
-
-        ctx.save();
-        ctx.font =
-          this.font.style + ' '
-          + this.font.variant + ' '
-          + this.font.weight + ' '
-          + this.font.size + 'px' + ' '
-          + this.font.family;
-
-        //ctx.translate(center.x, center.y);
-        ctx.rotate(this.angle * (2*Math.PI)/360.0);
-
-        this.size = {
-          w: ctx.measureText(this.input).width,
-          h: parseInt(this.font.size)
-        };
-
-        ctx.restore();
-      }
-
       drawHandler(ctx){
         ctx.save();
         ctx.beginPath();
@@ -1098,7 +1095,7 @@ angular.module('pedaleswitchApp')
         ctx.textAlign = 'center';
         var center = this.getCenter();
         ctx.translate(center.x, center.y);
-        ctx.rotate(this.angle * (2*Math.PI)/360.0);
+        ctx.rotate(-this.angle * (2*Math.PI)/360.0);
 
         switch(this.type) {
           case 'fillText':
