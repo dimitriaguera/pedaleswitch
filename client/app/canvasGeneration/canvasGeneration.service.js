@@ -276,8 +276,7 @@ angular.module('pedaleswitchApp')
         this.shapeObject = 'Cercle';
       }
       getRadius(){
-        var x = this.findExtreme();
-        return (x.b - x.t) /2;
+        return Math.sqrt((this.points[0].x - this.points[1].x) * (this.points[0].x - this.points[1].x) + (this.points[0].y - this.points[1].y) * (this.points[0].y - this.points[1].y)) / 2
       }
       drawCanvas(ctx) {
         ctx.beginPath();
@@ -936,7 +935,7 @@ angular.module('pedaleswitchApp')
           + this.font.weight + ' '
           + this.font.size + 'px' + ' '
           + this.font.family;
-        
+
         this.size = {
           w: ctx.measureText(this.input).width,
           h: parseInt(this.font.size)
