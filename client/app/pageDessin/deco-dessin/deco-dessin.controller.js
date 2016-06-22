@@ -3,7 +3,7 @@
 
   class DecoDessin {
     constructor() {
-      
+
     }
   }
 
@@ -11,7 +11,8 @@
     .component('decoDessin', {
       templateUrl: 'app/pageDessin/deco-dessin/deco-dessin.html',
       bindings: {
-        addTextToTable: '&'
+        addTextToTable: '&',
+        items:'<'
       },
       controller: DecoDessin
     });

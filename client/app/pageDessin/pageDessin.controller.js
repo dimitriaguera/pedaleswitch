@@ -34,6 +34,7 @@ class PageDessinComponent {
     this.items = this.instanceDessin.getComposantItems();
     this.dessin = this.instanceDessin.getDessin();
     this.tableArrow = this.canvasControl.getTableArrow();
+    this.tableText = this.canvasControl.getTableText();
     this.activeItem = this.canvasControl.getActiveItem();
     
     // Met les bonnes options.

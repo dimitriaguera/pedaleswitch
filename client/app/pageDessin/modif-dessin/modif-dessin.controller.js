@@ -3,7 +3,8 @@
 
   class ModifDessin {
     constructor() {
-
+      //@todo a sup
+      var x = 5;
     }
   }
 
@@ -11,6 +12,7 @@
     .component('modifDessin', {
       templateUrl: 'app/pageDessin/modif-dessin/modif-dessin.html',
       bindings: {
+        data: '=',
         rotate: '&'
       },
       controller: ModifDessin

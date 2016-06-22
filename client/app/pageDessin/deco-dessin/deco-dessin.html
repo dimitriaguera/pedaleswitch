@@ -1,4 +1,12 @@
 <h3>Edition graphique</h3>
 
+
+<ul ng-repeat="item in $ctrl.items">
+  <li>
+    {{item.input}}
+  </li>
+
+</ul>
+
 <input type="text" name="text" ng-model="string"><br>
 <button type="submit" class="btn btn-primary btn-sm" ng-click="$ctrl.addTextToTable({string: string})">+</button>
