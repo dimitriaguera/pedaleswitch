@@ -11,8 +11,6 @@ angular.module('pedaleswitchApp')
     var boite = {};
     var masterBoite = {};
 
-    var tableMasterEffet = [];
-    var tableMasterComposant = [];
     var tableEffet = [];
     var tableComposant = [];
     var tableActive = [];
@@ -282,10 +280,10 @@ angular.module('pedaleswitchApp')
           case 'deco':
             this.resetIsSelected(tableComposant);
             this.resetIsSelected(tableEffet);
+            this.resetTableDrawDashed();
             this.resetTableDrawThin();
             this.setTableActive(tableText);
-            var mix = tableEffet.concat(tableComposant);
-            this.setTableDrawDashed(mix);
+            this.setTableDrawThin(tableComposant);
             return (tableText.length > 0);
             break;
           
@@ -505,7 +503,10 @@ angular.module('pedaleswitchApp')
           var index_effet = this.searchTabByIdReturnIndex(tableEffet, effet._id, effet.key);
           var index_effet_compo = this.searchTabByIdReturnIndex(tableEffet[index_effet].composants, compo._id, compo.key);
           var index_compo = this.searchTabByIdReturnIndex(tableComposant, compo._id, compo.key);
+          // On genere une nouveau composant.
+          // On met à jour le shapeObject.
           tableEffet[index_effet].composants[index_effet_compo] = tableComposant[index_compo] = thing(compo);
+          tableEffet[index_effet].composants[index_effet_compo].changeShape();
         }
       },
 
@@ -770,8 +771,6 @@ angular.module('pedaleswitchApp')
         return {
           masterBoite: masterBoite,
           boite: boite,
-          tableMasterEffet: tableMasterEffet,
-          tableMasterComposant: tableMasterComposant,
           tableEffet: tableEffet,
           tableComposant: tableComposant,
           tableActive: tableActive,

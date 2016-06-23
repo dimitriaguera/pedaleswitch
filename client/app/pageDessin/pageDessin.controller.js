@@ -133,6 +133,18 @@ class PageDessinComponent {
       this.canvasControl.canvasDrawState('deco');
       this.canvasDraw.drawStuff();
     }
+    else {
+      if (this.debrayable) {
+        this.isActive = 'composant';
+        this.canvasControl.canvasDrawState(this.isActive);
+        this.canvasDraw.drawStuff();
+      }
+      else {
+        this.isActive = 'effet';
+        this.canvasControl.canvasDrawState(this.isActive);
+        this.canvasDraw.drawStuff();
+      }
+    }
   }
 
   // Appeler par menu-dessin.html

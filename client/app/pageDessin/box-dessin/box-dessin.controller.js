@@ -28,8 +28,16 @@
           this.$onInit = function () {
             // Si l'objet n'est pas un arrow, on ajoute une pos_box, et on ajoute un template pour la popover.
             if (this.data.constructor.name !== "Arrow" && this.data.constructor.name !== "ArrowPoint") {
+
               var posExt = this.data.findExtreme();
-              this.data.pos_box = {x: this.data.points[0].x, y:this.data.points[0].y};
+              var C = this.data.getCenter();
+
+              // On calcule le point de référence du masque carré.
+              this.data.pos_box = {
+                x: C.x - posExt.size.w / 2,
+                y: C.y - posExt.size.h / 2
+              };
+
               this.zIndex = '-2';
               this.popUpUrl = 'app/pageDessin/box-dessin/option-box-popover.html';
             }

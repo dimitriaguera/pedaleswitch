@@ -67,6 +67,7 @@ angular.module('pedaleswitchApp')
 
         this.fonction = 'effet';
         this.angle = entity.angle || 0;
+        this.size = {};
         
         this.points = entity.points;
         this.points_default = entity.points_default || null;
@@ -183,6 +184,10 @@ angular.module('pedaleswitchApp')
         }
 
         posExtreme.size = {w: posExtreme.r - posExtreme.l, h: posExtreme.b - posExtreme.t};
+
+        this.size.w = posExtreme.size.w;
+        this.size.h = posExtreme.size.h;
+
         return(posExtreme);
       }
 
@@ -258,6 +263,9 @@ angular.module('pedaleswitchApp')
         // Met à jour la propriété angle.
         this.angle += angle;
         this.changeShape();
+
+        // Met à jour la propriété size.
+        this.findExtreme();
       }
 
       changeShape(){
@@ -321,13 +329,6 @@ angular.module('pedaleswitchApp')
           ctx.fillStyle = "rgba(255, 00, 00, 0.2)";
           ctx.fill();
         }
-      }
-    }
-
-    class Poly extends Shape {
-      constructor(entity) {
-        super(entity);
-        this.shapeObject = 'Poly';
       }
     }
 
@@ -922,6 +923,8 @@ angular.module('pedaleswitchApp')
         this.input = obj.input || 'input';
         // fillText, strokeText
         this.type = obj.type || 'fillText';
+        this.size = {};
+        this.text_size = {};
         //this.textAlign = obj.textAlign || 'left';
 
         // Angle de rotation
@@ -933,6 +936,7 @@ angular.module('pedaleswitchApp')
       }
 
       getSize(ctx, value){
+        var size;
         var val = value || {};
         var text = val.texte || this.input;
         var fontSize = val.size || this.font.size;
@@ -953,22 +957,24 @@ angular.module('pedaleswitchApp')
         //  + this.font.family;
         ctx.font = fontSettings;
 
-        this.size = {
+        size = {
           w: ctx.measureText(text).width,
           h: parseInt(fontSize)
         };
 
-        ctx.font = fontSettings;
+        this.text_size = size;
 
         ctx.restore();
+
+        return size;
       }
 
       createPoints(ctx){
         var mar, w, h;
-        this.getSize(ctx);
+        var size = this.getSize(ctx);
         mar = this.margin;
-        w = this.size.w;
-        h = this.size.h;
+        w = size.w;
+        h = size.h;
 
         this.points = [
           new Point({x: 0, y: 0}),
@@ -982,12 +988,13 @@ angular.module('pedaleswitchApp')
         var mar, vectors, w, h, ow, oh, deltaW, deltaH, oC, C, l;
         // On récupere les anciennes dimensions.
         mar = this.margin;
-        ow = this.size.w;
-        oh = this.size.h;
+        ow = this.text_size.w;
+        oh = this.text_size.h;
 
         this.getSize(ctx, value);
-        w = this.size.w;
-        h = this.size.h;
+
+        w = this.text_size.w;
+        h = this.text_size.h;
 
         // On calcule la variation de taille.
         deltaW = (w - ow) / 2;
@@ -1101,6 +1108,10 @@ angular.module('pedaleswitchApp')
         }
 
         posExtreme.size = {w: posExtreme.r - posExtreme.l, h: posExtreme.b - posExtreme.t};
+
+        this.size.w = posExtreme.size.w;
+        this.size.h = posExtreme.size.h;
+
         return(posExtreme);
       }
 
@@ -1180,13 +1191,13 @@ angular.module('pedaleswitchApp')
             ctx.strokeText(this.input, 0, 0);
             break;
         }
+       // ctx.setTransform(1, 0, 0, 1, 0, 0);
+       // ctx.translate(-center.x, -center.y);
         ctx.restore();
 
-        ctx.save();
         if (this.isSelected) {
           this.drawHandler(ctx);
         }
-        ctx.restore();
 
       }
     }
