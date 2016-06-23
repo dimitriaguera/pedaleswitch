@@ -17,13 +17,13 @@ class PageDessinComponent {
   $onInit(){
     
     //@todo a supp et verifier dans le constructor de virer http et OrderArray.
-    this.$http.get('/api/effets').then(response => {
-      this.effets = response.data;
-       if(this.instanceDessin.getDessin().options.length === 0){
-        this.instanceDessin.setEffet(this.effets[0], this.effets[0].options[0]);
-        this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
-       }
-    });
+    //this.$http.get('/api/effets').then(response => {
+    //  this.effets = response.data;
+    //   if(this.instanceDessin.getDessin().options.length === 0){
+    //    this.instanceDessin.setEffet(this.effets[0], this.effets[0].options[0]);
+    //    this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
+    //   }
+    //});
     
     this.initialisation();
   }
@@ -166,6 +166,11 @@ class PageDessinComponent {
 
   addTextToTable(string){
     this.canvasControl.addTextToCanvas({font: {}, input:string});
+    this.canvasDraw.drawStuff();
+  }
+
+  dataChange(value, data){
+    this.canvasControl.actualisePoints(value, data);
     this.canvasDraw.drawStuff();
   }
 

@@ -12,7 +12,8 @@ angular.module('pedaleswitchApp')
           items: '<',
           updateComposant: '&',
           rotate: '&',
-          arrowChange: '&'
+          arrowChange: '&',
+          datachange: '&'
         },
         
         link: function(scope, element) {
@@ -35,6 +36,9 @@ angular.module('pedaleswitchApp')
           // Puis dans la tables actives.
           canv.addEventListener("mousemove", mouseHelper.mouseMove);
 
+          // MouseUp par default : passe les selects à false.
+          canv.addEventListener("mouseup", mouseHelper.mouseUpDefault);
+
           // Listener pour regarder si l'on a cliquer sur :
           // Check les bordures de la boite
           // Check la boite
@@ -42,24 +46,28 @@ angular.module('pedaleswitchApp')
           canv.addEventListener("mousedown", mouseHelper.mouseDown);
 
           var handler1 = $rootScope.$on('click-on-border-boite', function(){
+            canv.removeEventListener("mouseup", mouseHelper.mouseUpDefault);
             canv.removeEventListener("mousemove", mouseHelper.mouseMove);
             canv.addEventListener("mousemove", mouseHelper.mouseMoveBorderBoite);
             canv.addEventListener("mouseup", mouseHelper.mouseUp);
           });
 
           var handler2 = $rootScope.$on('click-on-boite', function(){
+            canv.removeEventListener("mouseup", mouseHelper.mouseUpDefault);
             canv.removeEventListener("mousemove", mouseHelper.mouseMove);
             canv.addEventListener("mousemove", mouseHelper.mouseMoveBoite);
             canv.addEventListener("mouseup", mouseHelper.mouseUp);
           });
 
           var handler3 = $rootScope.$on('click-on-thing', function(){
+            canv.removeEventListener("mouseup", mouseHelper.mouseUpDefault);
             canv.removeEventListener("mousemove", mouseHelper.mouseMove);
             canv.addEventListener("mousemove", mouseHelper.mouseMoveThing);
             canv.addEventListener("mouseup", mouseHelper.mouseUp);
           });
 
           var handler4 = $rootScope.$on('click-on-deco', function(){
+            canv.removeEventListener("mouseup", mouseHelper.mouseUpDefault);
             canv.removeEventListener("mousemove", mouseHelper.mouseMove);
             canv.addEventListener("mousemove", mouseHelper.mouseMoveDeco);
             canv.addEventListener("mouseup", mouseHelper.mouseUp);
@@ -72,6 +80,7 @@ angular.module('pedaleswitchApp')
             canv.removeEventListener("mousemove", mouseHelper.mouseMoveDeco);
             canv.removeEventListener("mouseup", mouseHelper.mouseUp);
 
+            canv.addEventListener("mouseup", mouseHelper.mouseUpDefault);
             canv.addEventListener("mousemove", mouseHelper.mouseMove);
           });
 

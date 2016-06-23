@@ -25,6 +25,7 @@
 
     <box-dessin ng-repeat="menu in tableMenu"
                 data="menu"
+                datachange="datachange({value:value, data:data})"
                 box-action="updateComposant({compo:compo, value:value})"
                 rotate="rotate({value:value, data:data})"
                 items="items">

@@ -13,6 +13,7 @@
       templateUrl: 'app/pageDessin/modif-dessin/modif-dessin.html',
       bindings: {
         data: '=',
+        datachange: '&',
         rotate: '&'
       },
       controller: ModifDessin

@@ -10,6 +10,7 @@
         templateUrl: 'app/pageDessin/box-dessin/box-dessin.html',
         bindToController: {
           data: '=',
+          datachange: '&',
           items: '<',
           boxAction: '&',
           rotate: '&'
@@ -28,7 +29,7 @@
             // Si l'objet n'est pas un arrow, on ajoute une pos_box, et on ajoute un template pour la popover.
             if (this.data.constructor.name !== "Arrow" && this.data.constructor.name !== "ArrowPoint") {
               var posExt = this.data.findExtreme();
-              this.data.pos_box = {x: posExt.r, y: posExt.t + posExt.size.h/2 };
+              this.data.pos_box = {x: this.data.points[0].x, y:this.data.points[0].y};
               this.zIndex = '-2';
               this.popUpUrl = 'app/pageDessin/box-dessin/option-box-popover.html';
             }

@@ -53,10 +53,10 @@ angular.module('pedaleswitchApp')
             } else {
               drag.type = 'thing';
             }
-            // Met isSelect a l'objet en cours
+            // Met isSelect a l'objet en cours si ce n'est pas un deco.
             // Et enlève l'ancien sélectionner.
             // Redraw si nécessaire.
-            if (olddragid !== drag.id){
+            if (olddragid !== drag.id && drag.type !== 'deco'){
               tabActive[drag.id].setSelected(true);
               if (olddragid !== null){
                 tabActive[olddragid].setSelected(false);
@@ -140,22 +140,27 @@ angular.module('pedaleswitchApp')
        * On déplace de la deco
        */
       mouseMoveDeco: function(e){
-        // Delais avant le drag
-        timeb = (new Date()).getTime() - timea;
-        if (timeb < DELAY_DRAG) {
-          return;
+
+        // On verifie si l'item est selected.
+        if (tabActive[drag.id].isSelected === true) {
+
+          // Delais avant le drag
+          timeb = (new Date()).getTime() - timea;
+          if (timeb < DELAY_DRAG) {
+            return;
+          }
+
+          // Affecte la nouvelle position.
+          tabActive[drag.id].move({x: e.layerX - mousePos.x, y: e.layerY - mousePos.y});
+          mousePos = {x: e.layerX, y: e.layerY};
+
+          // Met le bon pointeur de souris
+          update('move');
+
+
+          // Dessine.
+          canvasDraw.drawStuff();
         }
-        
-        // Affecte la nouvelle position.
-        tabActive[drag.id].move({x: e.layerX - mousePos.x, y: e.layerY - mousePos.y});
-        mousePos = {x: e.layerX, y: e.layerY};
-
-        // Met le bon pointeur de souris
-        update('move');
-
-        
-        // Dessine.
-        canvasDraw.drawStuff();
       },
 
       /**
@@ -336,15 +341,42 @@ angular.module('pedaleswitchApp')
 
 
       /**
+       * Mouse up par default.
+       * Listener est bindé par défault dans le controleur table-dessin.
+       * Désactivé au profit de MouseUp si un emit est créé par mouseDown.
+       *
+       */
+      mouseUpDefault: function (e){
+
+        // Verifier si on click ou si on draggue.
+        timeb = (new Date()).getTime() - timea;
+
+        // Si click, on enleve les selects et on redessine.
+        if (timeb < DELAY_CLICK){
+          canvasControl.resetIsSelected(tabActive);
+          canvasDraw.drawStuff();
+        }
+      },
+
+      /**
        * Mouse up.
        */
       mouseUp: function (e) {
 
         // Verifier si on click ou si on draggue pour l'affichage des pop-up.
         timeb = (new Date()).getTime() - timea;
+
+        // Si oui, on annule le isSelected.
+        if (timeb < DELAY_CLICK) {
+          canvasControl.resetIsSelected(tabActive);
+        }
+
         // Si oui on click.
         if (timeb < DELAY_CLICK && drag.type !=='boite' && tabActive[drag.id]){
           canvasControl.setActiveItem(tabActive[drag.id]);
+          if (drag.type === 'deco'){
+            tabActive[drag.id].setSelected(true);
+          }
         }
 
         mousePos = {};

@@ -179,7 +179,7 @@ angular.module('pedaleswitchApp')
             this.setBoite(masterBoite.projections.top);
             this.setTableEffet(masterBoite.projections.top.effets);
             this.setTableComposant(masterBoite.projections.top.composants);
-            this.setTableText(masterBoite.projections.top.textDecoration);
+            this.setTableText(masterBoite.projections.top.textDeco);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
             break;
@@ -190,7 +190,7 @@ angular.module('pedaleswitchApp')
             this.setBoite(masterBoite.projections.bottom);
             this.setTableEffet(masterBoite.projections.bottom.effets);
             this.setTableComposant(masterBoite.projections.bottom.composants);
-            this.setTableText(masterBoite.projections.bottom.textDecoration);
+            this.setTableText(masterBoite.projections.bottom.textDeco);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
             break;
@@ -201,7 +201,7 @@ angular.module('pedaleswitchApp')
             this.setBoite(masterBoite.projections.up);
             this.setTableEffet(masterBoite.projections.up.effets);
             this.setTableComposant(masterBoite.projections.up.composants);
-            this.setTableText(masterBoite.projections.up.textDecoration);
+            this.setTableText(masterBoite.projections.up.textDeco);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
             break;
@@ -212,7 +212,7 @@ angular.module('pedaleswitchApp')
             this.setBoite(masterBoite.projections.down);
             this.setTableEffet(masterBoite.projections.down.effets);
             this.setTableComposant(masterBoite.projections.down.composants);
-            this.setTableText(masterBoite.projections.down.textDecoration);
+            this.setTableText(masterBoite.projections.down.textDeco);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
             break;
@@ -223,7 +223,7 @@ angular.module('pedaleswitchApp')
             this.setBoite(masterBoite.projections.left);
             this.setTableEffet(masterBoite.projections.left.effets);
             this.setTableComposant(masterBoite.projections.left.composants);
-            this.setTableText(masterBoite.projections.left.textDecoration);
+            this.setTableText(masterBoite.projections.left.textDeco);
             tableArrow.push(canvasGeneration.newArrowPoint(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrowPoint(boite, 'bottom'));
             break;
@@ -234,7 +234,7 @@ angular.module('pedaleswitchApp')
             this.setBoite(masterBoite.projections.right);
             this.setTableEffet(masterBoite.projections.right.effets);
             this.setTableComposant(masterBoite.projections.right.composants);
-            this.setTableText(masterBoite.projections.right.textDecoration);
+            this.setTableText(masterBoite.projections.right.textDeco);
             tableArrow.push(canvasGeneration.newArrowPoint(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrowPoint(boite, 'bottom'));
             break;
@@ -449,10 +449,14 @@ angular.module('pedaleswitchApp')
         p = pos || {x: 400, y: 400};
         texte = canvasGeneration.newTexte(string, ctx);
         texte.moveTo(p);
-        masterBoite.projections[viewState].textDecoration.push(texte);
+        masterBoite.projections[viewState].textDeco.push(texte);
 
         // Rajoute le texte à la table texte.
         tableText.push(texte);
+      },
+
+      actualisePoints: function(value, data){
+        data.actualisePoints(ctx, value);
       },
 
       getTableText: function() {
