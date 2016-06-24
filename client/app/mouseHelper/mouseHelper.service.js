@@ -59,7 +59,10 @@ angular.module('pedaleswitchApp')
 
         // change la couleur de l'item actif.
         var tableText = canvasControl.getTableText();
-        tableText[drag.id].font.color = hex;
+        tableText[drag.id].font.color = '#' + hex;
+
+        // Dessine.
+        canvasDraw.drawStuff();
 
         $rootScope.$emit('no-click-on-element');
       },
