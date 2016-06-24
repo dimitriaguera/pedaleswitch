@@ -46,9 +46,15 @@ angular.module('pedaleswitchApp')
 
         entity.margin = Math.round(ratio * entity.margin);
 
-        // Convertie les points de la boite.
+        // Convertit les points de la boite.
         convertSizePoints(entity.points, ratio);
 
+        if (entity.textDeco.length !== 0){
+          for (var j = 0; j < entity.textDeco.length; j++) {
+            convertSizePoints(entity.textDeco[j].points, ratio);
+            entity.textDeco[j].font.size = Math.round(ratio * entity.textDeco[j].font.size);
+          }
+        }
       }
       // Entity est un effet.
       else {

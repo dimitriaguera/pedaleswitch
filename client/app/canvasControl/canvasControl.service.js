@@ -11,8 +11,6 @@ angular.module('pedaleswitchApp')
     var boite = {};
     var masterBoite = {};
 
-    var tableMasterEffet = [];
-    var tableMasterComposant = [];
     var tableEffet = [];
     var tableComposant = [];
     var tableActive = [];
@@ -57,33 +55,7 @@ angular.module('pedaleswitchApp')
 
     // Public API here
     return{
-
-      eyedropper: function(){
-        // Sauve les items actifs et les supprimes pour enlever le pop-up.
-        activeItemBak = this.getActiveItem()[0];
-        this.resetActiveItem();
-        // Change le pointer de la souris
-        document.body.style.cursor = "url('http://wiki-devel.sugarlabs.org/images/e/e2/Arrow.cur'), auto";
-        $rootScope.$emit('color');
-      },
-
-
-      mouseDownColor: function(a, e){
-        var mousePos = {x: e.layerX ,y: e.layerY};
-        var data = ctx.getImageData(mousePos.x, mousePos.y, 1, 1).data;
-        var rgba = 'rgba(' + data[0] + ',' + data[1] +
-          ',' + data[2] + ',' + data[3] + ')';
-
-        // change la couleur de l'item actif.
-        activeItemBak.font.color = tinycolor(rgba).toHex();
-
-        // restore les items actifs.
-        this.setActiveItem(activeItemBak);
-
-        $rootScope.$emit('click-on-deco');
-      },
-
-
+      
       /**
        * Cette fonction créé les objets du canvas à partir du modèle dessin.
        * Et l'ajoute dans tableEffet et tableComposant pour les composants correspondants.
@@ -212,7 +184,7 @@ angular.module('pedaleswitchApp')
             this.setBoite(masterBoite.projections.top);
             this.setTableEffet(masterBoite.projections.top.effets);
             this.setTableComposant(masterBoite.projections.top.composants);
-            this.setTableText(masterBoite.projections.top.textDecoration);
+            this.setTableText(masterBoite.projections.top.textDeco);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
             break;
@@ -223,7 +195,7 @@ angular.module('pedaleswitchApp')
             this.setBoite(masterBoite.projections.bottom);
             this.setTableEffet(masterBoite.projections.bottom.effets);
             this.setTableComposant(masterBoite.projections.bottom.composants);
-            this.setTableText(masterBoite.projections.bottom.textDecoration);
+            this.setTableText(masterBoite.projections.bottom.textDeco);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
             break;
@@ -234,7 +206,7 @@ angular.module('pedaleswitchApp')
             this.setBoite(masterBoite.projections.up);
             this.setTableEffet(masterBoite.projections.up.effets);
             this.setTableComposant(masterBoite.projections.up.composants);
-            this.setTableText(masterBoite.projections.up.textDecoration);
+            this.setTableText(masterBoite.projections.up.textDeco);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
             break;
@@ -245,7 +217,7 @@ angular.module('pedaleswitchApp')
             this.setBoite(masterBoite.projections.down);
             this.setTableEffet(masterBoite.projections.down.effets);
             this.setTableComposant(masterBoite.projections.down.composants);
-            this.setTableText(masterBoite.projections.down.textDecoration);
+            this.setTableText(masterBoite.projections.down.textDeco);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
             break;
@@ -256,7 +228,7 @@ angular.module('pedaleswitchApp')
             this.setBoite(masterBoite.projections.left);
             this.setTableEffet(masterBoite.projections.left.effets);
             this.setTableComposant(masterBoite.projections.left.composants);
-            this.setTableText(masterBoite.projections.left.textDecoration);
+            this.setTableText(masterBoite.projections.left.textDeco);
             tableArrow.push(canvasGeneration.newArrowPoint(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrowPoint(boite, 'bottom'));
             break;
@@ -267,7 +239,7 @@ angular.module('pedaleswitchApp')
             this.setBoite(masterBoite.projections.right);
             this.setTableEffet(masterBoite.projections.right.effets);
             this.setTableComposant(masterBoite.projections.right.composants);
-            this.setTableText(masterBoite.projections.right.textDecoration);
+            this.setTableText(masterBoite.projections.right.textDeco);
             tableArrow.push(canvasGeneration.newArrowPoint(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrowPoint(boite, 'bottom'));
             break;
@@ -315,10 +287,10 @@ angular.module('pedaleswitchApp')
           case 'deco':
             this.resetIsSelected(tableComposant);
             this.resetIsSelected(tableEffet);
+            this.resetTableDrawDashed();
             this.resetTableDrawThin();
             this.setTableActive(tableText);
-            var mix = tableEffet.concat(tableComposant);
-            this.setTableDrawDashed(mix);
+            this.setTableDrawThin(tableComposant);
             return (tableText.length > 0);
             break;
           
@@ -482,10 +454,14 @@ angular.module('pedaleswitchApp')
         p = pos || {x: 400, y: 400};
         texte = canvasGeneration.newTexte(string, ctx);
         texte.moveTo(p);
-        masterBoite.projections[viewState].textDecoration.push(texte);
+        masterBoite.projections[viewState].textDeco.push(texte);
 
         // Rajoute le texte à la table texte.
         tableText.push(texte);
+      },
+
+      actualisePoints: function(value, data){
+        data.actualisePoints(ctx, value);
       },
 
       getTableText: function() {
@@ -534,7 +510,10 @@ angular.module('pedaleswitchApp')
           var index_effet = this.searchTabByIdReturnIndex(tableEffet, effet._id, effet.key);
           var index_effet_compo = this.searchTabByIdReturnIndex(tableEffet[index_effet].composants, compo._id, compo.key);
           var index_compo = this.searchTabByIdReturnIndex(tableComposant, compo._id, compo.key);
+          // On genere une nouveau composant.
+          // On met à jour le shapeObject.
           tableEffet[index_effet].composants[index_effet_compo] = tableComposant[index_compo] = thing(compo);
+          tableEffet[index_effet].composants[index_effet_compo].changeShape();
         }
       },
 
@@ -799,8 +778,6 @@ angular.module('pedaleswitchApp')
         return {
           masterBoite: masterBoite,
           boite: boite,
-          tableMasterEffet: tableMasterEffet,
-          tableMasterComposant: tableMasterComposant,
           tableEffet: tableEffet,
           tableComposant: tableComposant,
           tableActive: tableActive,

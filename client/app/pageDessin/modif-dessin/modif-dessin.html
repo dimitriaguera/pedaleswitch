@@ -1,8 +1,15 @@
 <div ng-if="$ctrl.data.input">
   Texte :<input type="text"
-         class="form-control"
-         ng-model="$ctrl.data.input"
-         required>
+                class="form-control"
+                ng-model="$ctrl.data.input"
+                ng-blur="$ctrl.datachange({value: {texte: $ctrl.data.input}})"
+                required>
+  Taille :<input type="text"
+                 class="form-control"
+                 placeholder="{{$ctrl.data.font.size}}"
+                 ng-model="$ctrl.data.font.size"
+                 ng-blur="$ctrl.datachange({value: {size: $ctrl.size}})"
+                 required>
   <color-picker
     ng-model='$ctrl.data.font.color'
     color-picker-disabled='false'

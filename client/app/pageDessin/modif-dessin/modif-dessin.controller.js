@@ -13,7 +13,8 @@
       bindings: {
         data: '=',
         rotate: '&',
-        eyedropper: '&'
+        eyedropper: '&',
+        datachange: '&'
       },
       controller: ModifDessin
     });

@@ -67,6 +67,7 @@ angular.module('pedaleswitchApp')
 
         this.fonction = 'effet';
         this.angle = entity.angle || 0;
+        this.size = {};
         
         this.points = entity.points;
         this.points_default = entity.points_default || null;
@@ -183,6 +184,10 @@ angular.module('pedaleswitchApp')
         }
 
         posExtreme.size = {w: posExtreme.r - posExtreme.l, h: posExtreme.b - posExtreme.t};
+
+        this.size.w = posExtreme.size.w;
+        this.size.h = posExtreme.size.h;
+
         return(posExtreme);
       }
 
@@ -258,6 +263,9 @@ angular.module('pedaleswitchApp')
         // Met à jour la propriété angle.
         this.angle += angle;
         this.changeShape();
+
+        // Met à jour la propriété size.
+        this.findExtreme();
       }
 
       changeShape(){
@@ -321,13 +329,6 @@ angular.module('pedaleswitchApp')
           ctx.fillStyle = "rgba(255, 00, 00, 0.2)";
           ctx.fill();
         }
-      }
-    }
-
-    class Poly extends Shape {
-      constructor(entity) {
-        super(entity);
-        this.shapeObject = 'Poly';
       }
     }
 
@@ -650,9 +651,9 @@ angular.module('pedaleswitchApp')
         this.effets = [];
         this.composants = [];
         this.points = [];
-        this.textDecoration = [];
-        this.shapeDecoration = [];
-        this.imgDecoration = [];
+        this.textDeco = [];
+        this.shapeDeco = [];
+        this.imgDeco = [];
         
         this.shapeObject = 'Rect';
         this.fonction = 'Boite';
@@ -693,9 +694,9 @@ angular.module('pedaleswitchApp')
       moveEffetCompo(delta){
         var effets, text, shape, img, compos, i, j;
         effets = this.effets;
-        text = this.textDecoration;
-        shape = this.shapeDecoration;
-        img = this.imgDecoration;
+        text = this.textDeco;
+        shape = this.shapeDeco;
+        img = this.imgDeco;
 
         if(effets.length !== 0) {
           for (i = 0; i < effets.length; i++) {
@@ -908,6 +909,10 @@ angular.module('pedaleswitchApp')
 
     class Texte {
       constructor(obj, ctx){
+
+        this._id = obj._id || Math.floor(Math.random() * (1e5 +1));
+        this.key = 0;
+        
         this.font = {
           style: obj.font.style || 'normal', // normal, italic, oblique.
           variant: obj.font.variant || 'normal', //normal, small-caps.
@@ -917,45 +922,63 @@ angular.module('pedaleswitchApp')
           family: obj.font.family || 'sans-serif',
           color: obj.font.color || 'black'
         };
-        this.margin = 20;
+        this.margin = 5;
         this.color = obj.color || 'black';
         this.input = obj.input || 'input';
         // fillText, strokeText
         this.type = obj.type || 'fillText';
+        this.size = {};
+        this.text_size = {};
         //this.textAlign = obj.textAlign || 'left';
 
         // Angle de rotation
         this.shapeObject = 'Rect';
-        this.fonction = 'déco';
+        this.fonction = 'deco';
         this.angle = obj.angle || 0;
 
         this.createPoints(ctx);
       }
 
-      getSize(ctx){
+      getSize(ctx, value){
+        var size;
+        var val = value || {};
+        var text = val.texte || this.input;
+        var fontSize = val.size || this.font.size;
+
+        var fontSettings =
+            this.font.style + ' '
+            + this.font.variant + ' '
+            + this.font.weight + ' '
+            + fontSize + 'px' + ' '
+            + this.font.family;
 
         ctx.save();
-        ctx.font =
-          this.font.style + ' '
-          + this.font.variant + ' '
-          + this.font.weight + ' '
-          + this.font.size + 'px' + ' '
-          + this.font.family;
+        //ctx.font =
+        //  this.font.style + ' '
+        //  + this.font.variant + ' '
+        //  + this.font.weight + ' '
+        //  + fontSize + 'px' + ' '
+        //  + this.font.family;
+        ctx.font = fontSettings;
 
-        this.size = {
-          w: ctx.measureText(this.input).width,
-          h: parseInt(this.font.size)
+        size = {
+          w: ctx.measureText(text).width,
+          h: parseInt(fontSize)
         };
 
+        this.text_size = size;
+
         ctx.restore();
+
+        return size;
       }
 
       createPoints(ctx){
         var mar, w, h;
-        this.getSize(ctx);
+        var size = this.getSize(ctx);
         mar = this.margin;
-        w = this.size.w;
-        h = this.size.h;
+        w = size.w;
+        h = size.h;
 
         this.points = [
           new Point({x: 0, y: 0}),
@@ -964,6 +987,50 @@ angular.module('pedaleswitchApp')
           new Point({x: 0, y: h + mar*2})
         ];
       }
+
+      actualisePoints(ctx, value){
+        var mar, vectors, w, h, ow, oh, deltaW, deltaH, oC, C, l;
+        // On récupere les anciennes dimensions.
+        mar = this.margin;
+        ow = this.text_size.w;
+        oh = this.text_size.h;
+
+        this.getSize(ctx, value);
+
+        w = this.text_size.w;
+        h = this.text_size.h;
+
+        // On calcule la variation de taille.
+        deltaW = (w - ow) / 2;
+        deltaH = (h - oh) / 2;
+
+        // On prend en compte la marge.
+        if (deltaW || deltaH) {
+          // On récupère le barycentre.
+          C = this.getCenter();
+          l = this.points.length;
+          // On construit les vecteurs de transformation.
+          vectors = [
+            new Point({x: -deltaW, y: -deltaH}),
+            new Point({x: deltaW, y: -deltaH}),
+            new Point({x: deltaW, y: deltaH}),
+            new Point({x: -deltaW, y: deltaH})
+          ];
+
+          // On applique la transformation.
+          for (var i = 0; i < l; i++) {
+            this.points[i].rotate(-this.angle, C);
+            this.points[i].translate(vectors[i]);
+            this.points[i].rotate(this.angle, C);
+          }
+        }
+      }
+
+
+      actualiseFont(){
+
+      }
+
       /**
        * Aire d'un poly tester et c OK
        * @returns {number}
@@ -1031,7 +1098,7 @@ angular.module('pedaleswitchApp')
       }
 
       findExtreme(){
-        var posExtreme = {t:Infinity,r:-Infinity,b:-Infinity,l:Infinity};
+        var posExtreme = {t:Infinity,r: Number.NEGATIVE_INFINITY,b:Number.NEGATIVE_INFINITY,l:Infinity};
 
         var saveExtreme = function(posExtreme, pos){
           posExtreme.t = Math.min(posExtreme.t, pos.y);
@@ -1045,6 +1112,10 @@ angular.module('pedaleswitchApp')
         }
 
         posExtreme.size = {w: posExtreme.r - posExtreme.l, h: posExtreme.b - posExtreme.t};
+
+        this.size.w = posExtreme.size.w;
+        this.size.h = posExtreme.size.h;
+
         return(posExtreme);
       }
 
@@ -1070,18 +1141,46 @@ angular.module('pedaleswitchApp')
           this.points[i].rotate(angle, C);
         }
 
+        this.changeShape();
+
         this.angle += angle;
       }
 
+      changeShape(){
+        // Change la forme de l'obj rectangle si pas // a l'axe.
+        if (this.constructor.name === 'Texte'){
+          if (this.angle%90 === 0) {
+            this.shapeObject = 'Rect';
+          }
+          else {
+            this.shapeObject = 'Poly';
+          }
+        }
+      }
+
+
       drawHandler(ctx){
+
+        var i, j, l = this.points.length;
+
         ctx.save();
+
         ctx.beginPath();
         ctx.moveTo(this.points[0].x, this.points[0].y);
-        for (var i = 0, length = this.points.length; i < length; i++) {
+        for (i = 0; i < l; i++) {
           ctx.lineTo(this.points[i].x, this.points[i].y);
         }
         ctx.closePath();
         ctx.stroke();
+
+        ctx.fillStyle = 'white';
+        for (j = 0; j < l; j++) {
+          ctx.beginPath();
+          ctx.arc(this.points[j].x, this.points[j].y, 5, 0, 2 * Math.PI, false);
+          ctx.closePath();
+          ctx.stroke();
+          ctx.fill();
+        }
         ctx.restore();
       }
 
@@ -1111,13 +1210,13 @@ angular.module('pedaleswitchApp')
             ctx.strokeText(this.input, 0, 0);
             break;
         }
+       // ctx.setTransform(1, 0, 0, 1, 0, 0);
+       // ctx.translate(-center.x, -center.y);
         ctx.restore();
 
-        ctx.save();
         if (this.isSelected) {
           this.drawHandler(ctx);
         }
-        ctx.restore();
 
       }
     }

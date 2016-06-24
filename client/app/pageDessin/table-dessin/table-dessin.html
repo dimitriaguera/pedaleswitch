@@ -25,11 +25,12 @@
 
     <box-dessin ng-repeat="menu in tableMenu"
                 data="menu"
+                datachange="datachange({value:value, data:data})"
                 box-action="updateComposant({compo:compo, value:value})"
                 rotate="rotate({value:value, data:data})"
                 eyedropper="eyedropper()"
                 items="items">
-        <div style="width:{{ $ctrl.data.size.w }}px;height:{{ $ctrl.data.size.h }}px;"
+        <div style="width:{{ $ctrl.data.size.w }}px;height:{{ $ctrl.data.size.h }}px; background:black;"
              uib-popover-template="$ctrl.popUpUrl"
              popover-append-to-body="true"
              popover-is-open="true"

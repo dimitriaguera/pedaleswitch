@@ -3,14 +3,16 @@
 
 class PageDessinComponent {
 
-  constructor(instanceDessin, canvasConversion, canvasControl, canvasDraw, storage, $http) {
+  constructor(instanceDessin, canvasConversion, canvasControl, canvasDraw, storage, $http, mouseHelper) {
     this.instanceDessin = instanceDessin;
     this.canvasControl = canvasControl;
     this.canvasConversion = canvasConversion;
     this.canvasDraw = canvasDraw;
     this.storage = storage;
 
+    
     //@todo a sup verifier le oninit.
+    this.mouseHelper = mouseHelper;
     this.$http = $http; //@todo a supp et dans la declaration aussi
   }
 
@@ -21,7 +23,7 @@ class PageDessinComponent {
       this.effets = response.data;
        if(this.instanceDessin.getDessin().options.length === 0){
         this.instanceDessin.setEffet(this.effets[0], this.effets[0].options[0]);
-        this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
+    //    this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
        }
     });
     
@@ -133,6 +135,18 @@ class PageDessinComponent {
       this.canvasControl.canvasDrawState('deco');
       this.canvasDraw.drawStuff();
     }
+    else {
+      if (this.debrayable) {
+        this.isActive = 'composant';
+        this.canvasControl.canvasDrawState(this.isActive);
+        this.canvasDraw.drawStuff();
+      }
+      else {
+        this.isActive = 'effet';
+        this.canvasControl.canvasDrawState(this.isActive);
+        this.canvasDraw.drawStuff();
+      }
+    }
   }
 
   // Appeler par menu-dessin.html
@@ -166,6 +180,11 @@ class PageDessinComponent {
 
   addTextToTable(string){
     this.canvasControl.addTextToCanvas({font: {}, input:string});
+    this.canvasDraw.drawStuff();
+  }
+
+  dataChange(value, data){
+    this.canvasControl.actualisePoints(value, data);
     this.canvasDraw.drawStuff();
   }
 
@@ -228,7 +247,7 @@ class PageDessinComponent {
   }
 
   eyedropper(){
-    this.canvasControl.eyedropper();
+    this.mouseHelper.eyedropper();
   }
 
   // Utiliser par table-dessin.
