@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('pedaleswitchApp')
-  .factory('canvasControl', function (canvasGeneration, canvasConversion, checkCollision, rulers) {
+  .factory('canvasControl', function (canvasGeneration, canvasConversion, checkCollision, rulers, $rootScope) {
     // Service logic
 
     var ctx = {};
@@ -27,7 +27,10 @@ angular.module('pedaleswitchApp')
     var debrayable = false;
     var viewState = 'up';
     var isActive = 'effet';
-    
+
+    var color = '';
+    var activeItemBak= [];
+
     var marginCanvas = canvasConversion.convertToPixel(40);
     
     
@@ -45,12 +48,42 @@ angular.module('pedaleswitchApp')
         default:
           console.log('Shape not match in canvasControl :' + entity.shape);
           return false;
-      }      
+      }
     };
-        
+
+    var setActiveItem = function(item){
+      return this.setActiveItem(item);
+    };
+
     // Public API here
     return{
-      
+
+      eyedropper: function(){
+        // Sauve les items actifs et les supprimes pour enlever le pop-up.
+        activeItemBak = this.getActiveItem()[0];
+        this.resetActiveItem();
+        // Change le pointer de la souris
+        document.body.style.cursor = "url('http://wiki-devel.sugarlabs.org/images/e/e2/Arrow.cur'), auto";
+        $rootScope.$emit('color');
+      },
+
+
+      mouseDownColor: function(a, e){
+        var mousePos = {x: e.layerX ,y: e.layerY};
+        var data = ctx.getImageData(mousePos.x, mousePos.y, 1, 1).data;
+        var rgba = 'rgba(' + data[0] + ',' + data[1] +
+          ',' + data[2] + ',' + data[3] + ')';
+
+        // change la couleur de l'item actif.
+        activeItemBak.font.color = tinycolor(rgba).toHex();
+
+        // restore les items actifs.
+        this.setActiveItem(activeItemBak);
+
+        $rootScope.$emit('click-on-deco');
+      },
+
+
       /**
        * Cette fonction créé les objets du canvas à partir du modèle dessin.
        * Et l'ajoute dans tableEffet et tableComposant pour les composants correspondants.

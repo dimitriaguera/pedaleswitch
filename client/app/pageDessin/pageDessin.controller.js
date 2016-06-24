@@ -227,6 +227,10 @@ class PageDessinComponent {
     this.canvasDraw.drawStuff();
   }
 
+  eyedropper(){
+    this.canvasControl.eyedropper();
+  }
+
   // Utiliser par table-dessin.
   arrowChangeValue(){
     //@todo : implémenter verif collision box - effets.

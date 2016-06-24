@@ -12,6 +12,7 @@ angular.module('pedaleswitchApp')
           items: '<',
           updateComposant: '&',
           rotate: '&',
+          eyedropper: '&',
           arrowChange: '&'
         },
         
@@ -75,12 +76,23 @@ angular.module('pedaleswitchApp')
             canv.addEventListener("mousemove", mouseHelper.mouseMove);
           });
 
+          var colorHandler = $rootScope.$on('color', function(){
+            canv.removeEventListener("mousemove", mouseHelper.mouseMove);
+            canv.removeEventListener("mousemove", mouseHelper.mouseMoveDeco);
+            canv.removeEventListener("mouseup", mouseHelper.mouseUp);
+            canv.removeEventListener("mousedown", mouseHelper.mouseDown);
+
+            canv.addEventListener("mousedown", canvasControl.mouseDownColor.apply(canvasControl));
+          });
+          
+          
           scope.$on('$destroy', function(){
             handler1();
             handler2();
             handler3();
             handler4();
             nohandler();
+            colorHandler();
           });
         }
         

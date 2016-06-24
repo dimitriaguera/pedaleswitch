@@ -101,7 +101,7 @@ angular.module('pedaleswitchApp')
           }
         }
       },
-
+      
       /**
        * Event appeler dans le canvas lors d'un mouse down.
        */
