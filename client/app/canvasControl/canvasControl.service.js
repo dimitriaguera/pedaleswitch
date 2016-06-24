@@ -25,12 +25,8 @@ angular.module('pedaleswitchApp')
     var debrayable = false;
     var viewState = 'up';
     var isActive = 'effet';
-
-    var color = '';
-    var activeItemBak= [];
-
-    var marginCanvas = canvasConversion.convertToPixel(40);
     
+    var marginCanvas = canvasConversion.convertToPixel(40);
     
     var thing = function(entity) {
       switch (entity.item_info.shape){
@@ -48,11 +44,7 @@ angular.module('pedaleswitchApp')
           return false;
       }
     };
-
-    var setActiveItem = function(item){
-      return this.setActiveItem(item);
-    };
-
+    
     // Public API here
     return{
       

@@ -23,13 +23,28 @@ angular.module('pedaleswitchApp')
       document.body.style.cursor = handle;
     };
 
+    /**
+     * @param e event
+     * @return {object} x,y, color in hex
+     */
+    var mouse = function(e) {
+      // le +2 et le +21 depende de l'icone choisie.
+      var mouse = {x: e.layerX + 2, y: e.layerY + 21};
+      var data = canvasControl.getCtx().getImageData(mouse.x, mouse.y, 1, 1).data;
+      var rgba = 'rgba(' + data[0] + ',' + data[1] +
+        ',' + data[2] + ',' + data[3] + ')';
+      var hex = '#' + tinycolor(rgba).toHex();
+      mouse.color = hex;
+      return mouse;
+    };
+
     return {
 
       /**
        * Fonction qui est invoquer quand on clique sur pipette.
        * Enlève la pop-over.
        * Se rappelle de l'élément sélectionner.
-       * Changer le curseurd la souris.
+       * Changer le curseur la souris.
        * Enlève les listener habituelle sur le canvas et en 
        * rajoute un sur mousedown.
        */
@@ -50,16 +65,23 @@ angular.module('pedaleswitchApp')
         $rootScope.$emit('color');
       },
 
+      mouseMoveColor: function(e){
+        mousePos = mouse(e);
+        
+        // change la couleur de l'item actif.
+        var tableText = canvasControl.getTableText();
+        tableText[drag.id].font.color = mousePos.color;
+
+        // Dessine.
+        canvasDraw.drawStuff();
+      },
+
       mouseDownColor: function(e){
-        var mousePos = {x: e.layerX ,y: e.layerY};
-        var data = canvasControl.getCtx().getImageData(mousePos.x, mousePos.y, 1, 1).data;
-        var rgba = 'rgba(' + data[0] + ',' + data[1] +
-          ',' + data[2] + ',' + data[3] + ')';
-        var hex = tinycolor(rgba).toHex();
+        mousePos = mouse(e);
 
         // change la couleur de l'item actif.
         var tableText = canvasControl.getTableText();
-        tableText[drag.id].font.color = '#' + hex;
+        tableText[drag.id].font.color = mousePos.color;
 
         // Dessine.
         canvasDraw.drawStuff();
@@ -67,8 +89,6 @@ angular.module('pedaleswitchApp')
         $rootScope.$emit('no-click-on-element');
       },
       
-      
-
       /**
        * Listener quand la souris bouge mais ne clique pas.
        * Check les bordures de la boite
@@ -76,9 +96,8 @@ angular.module('pedaleswitchApp')
        * Quand on clique on passe au listener mousedown (cf. table-dessin.controller.js dans le link).
        */
       mouseMove: function (e) {
-
         mousePos = {x: e.layerX, y: e.layerY};
-
+        
         tabActive = canvasControl.getTableActive();
         boite = canvasControl.getBoite();
 

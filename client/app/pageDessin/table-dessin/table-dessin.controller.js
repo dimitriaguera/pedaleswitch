@@ -81,6 +81,7 @@ angular.module('pedaleswitchApp')
             canv.removeEventListener("mousemove", mouseHelper.mouseMoveDeco);
             canv.removeEventListener("mouseup", mouseHelper.mouseUp);
 
+            canv.removeEventListener("mousemove", mouseHelper.mouseMoveColor);
             canv.removeEventListener("mousedown", mouseHelper.mouseDownColor);
             
             canv.addEventListener("mouseup", mouseHelper.mouseUpDefault);
@@ -94,6 +95,7 @@ angular.module('pedaleswitchApp')
             canv.removeEventListener("mouseup", mouseHelper.mouseUp);
             canv.removeEventListener("mousedown", mouseHelper.mouseDown);
 
+            canv.addEventListener("mousemove", mouseHelper.mouseMoveColor);
             canv.addEventListener("mousedown", mouseHelper.mouseDownColor);
           });
           
