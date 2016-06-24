@@ -444,7 +444,7 @@ angular.module('pedaleswitchApp')
         var texte, p;
 
         p = pos || {x: 400, y: 400};
-        texte = canvasGeneration.newTexte(string, ctx);
+        texte = canvasGeneration.newTexte(string);
         texte.moveTo(p);
         masterBoite.projections[viewState].textDeco.push(texte);
 
@@ -453,7 +453,7 @@ angular.module('pedaleswitchApp')
       },
 
       actualisePoints: function(value, data){
-        data.actualisePoints(ctx, value);
+        data.actualisePoints(value);
       },
 
       getTableText: function() {

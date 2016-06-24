@@ -169,6 +169,8 @@ class PageDessinComponent {
     }
   }
   
+  // Rajoute un effet au canvas
+  // Appeler par panier dessin et quand on droppable directive
   addToTable(effet){
     // Ajouter l'effet au canvas si pas deja.
     if (!effet.in_canvas) {this.canvasControl.addToCanvas(effet);}
@@ -187,7 +189,7 @@ class PageDessinComponent {
     this.canvasControl.actualisePoints(value, data);
     this.canvasDraw.drawStuff();
   }
-
+  
   removeToTable(effet){
     this.canvasControl.removeToCanvas(effet);
     this.canvasDraw.drawStuff();
@@ -246,6 +248,7 @@ class PageDessinComponent {
     this.canvasDraw.drawStuff();
   }
 
+  // Fonction de pipette couleur appeler par modif-dessin
   eyedropper(){
     this.mouseHelper.eyedropper();
   }

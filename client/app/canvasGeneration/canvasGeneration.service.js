@@ -829,7 +829,7 @@ angular.module('pedaleswitchApp')
     }
 
     class Texte {
-      constructor(obj, ctx){
+      constructor(obj){
 
         // @todo a verifier si c vraiment un id unique.
         this._id = obj._id || Math.floor(Math.random() * (1e6 +1));
@@ -850,7 +850,7 @@ angular.module('pedaleswitchApp')
         this.type = obj.type || 'fillText';
 
         //this.textAlign = obj.textAlign || 'left';
-        this.vertical = obj.vertical || false;
+        this.isVertical = obj.vertical || false;
 
         this.margin = 5;
 
@@ -862,10 +862,10 @@ angular.module('pedaleswitchApp')
         this.fonction = 'deco';
         this.angle = obj.angle || 0;
 
-        this.createPoints(ctx);
+        this.createPoints();
       }
 
-      getSize(ctx, value){
+      getSize(value){
         var size;
         var val = value || {};
         var text = val.texte || this.input;
@@ -878,7 +878,10 @@ angular.module('pedaleswitchApp')
             + fontSize + 'px' + ' '
             + this.font.family;
 
-        ctx.save();
+        // Ceci crée un canvas virtuel qui va servir a calculer la taille.
+        var canvasimg = document.createElement('canvas');
+        var ctx = canvasimg.getContext('2d');
+        
         //ctx.font =
         //  this.font.style + ' '
         //  + this.font.variant + ' '
@@ -888,7 +891,7 @@ angular.module('pedaleswitchApp')
         ctx.font = fontSettings;
 
 
-        if (!this.vertical) {
+        if (!this.isVertical) {
           size = {
             w: ctx.measureText(text).width,
             h: parseInt(fontSize)
@@ -902,15 +905,13 @@ angular.module('pedaleswitchApp')
 
 
         this.text_size = size;
-
-        ctx.restore();
-
+        
         return size;
       }
 
-      createPoints(ctx){
+      createPoints(){
         var mar, w, h;
-        var size = this.getSize(ctx);
+        var size = this.getSize();
         mar = this.margin;
         w = size.w;
         h = size.h;
@@ -923,14 +924,14 @@ angular.module('pedaleswitchApp')
         ];
       }
 
-      actualisePoints(ctx, value){
+      actualisePoints(value){
         var mar, vectors, w, h, ow, oh, deltaW, deltaH, oC, C, l;
         // On récupere les anciennes dimensions.
         mar = this.margin;
         ow = this.text_size.w;
         oh = this.text_size.h;
 
-        this.getSize(ctx, value);
+        this.getSize(value);
 
         w = this.text_size.w;
         h = this.text_size.h;
@@ -1033,7 +1034,7 @@ angular.module('pedaleswitchApp')
       }
 
       findExtreme(){
-        var posExtreme = {t:Infinity,r: Number.NEGATIVE_INFINITY,b:Number.NEGATIVE_INFINITY,l:Infinity};
+        var posExtreme = {t:Infinity,r:-Infinity,b:-Infinity,l:Infinity};
 
         var saveExtreme = function(posExtreme, pos){
           posExtreme.t = Math.min(posExtreme.t, pos.y);
@@ -1139,7 +1140,7 @@ angular.module('pedaleswitchApp')
         switch(this.type) {
           case 'fillText':
           default:
-            if (this.vertical) {
+            if (this.isVertical) {
               var pos = this.findExtreme();
               ctx.translate(0, pos.t - center.y + 2*this.margin);
               for (var i=0, l = this.input.length ; i < l ; i++) {
