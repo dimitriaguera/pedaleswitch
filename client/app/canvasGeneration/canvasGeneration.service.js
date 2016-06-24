@@ -828,89 +828,11 @@ angular.module('pedaleswitchApp')
       }
     }
 
-    //class Texte {
-    //  constructor(obj){
-    //    this.font = {};
-    //    // normal, italic, oblique
-    //    this.font.style = obj.font.style || 'normal';
-    //    //normal, small-caps
-    //    this.font.variant = obj.font.variant || 'normal';
-    //    // normal, bold, bolder, lighter, 100, 200 ... 900.
-    //    this.font.weight = obj.font.weight || 'normal';
-    //    this.font.size = obj.font.size || '14';
-    //    this.font.family = obj.font.family || 'sans-serif';
-    //    //this.textAlign = obj.textAlign || 'left';
-    //    this.color = obj.color || 'black';
-    //    this.input = obj.input || 'input';
-    //    // fillText, strokeText
-    //    this.type = obj.type || 'fillText';
-    //
-    //    // Angle de rotation
-    //    this.angle = obj.angle || 0;
-    //
-    //    this.pos = obj.pos || {x:60, y:60};
-    //    this.size = obj.size || {w:0, h:0};
-    //  }
-    //
-    //  /**
-    //   * Deplace l'obj d'un delta
-    //   * @param vec
-    //   */
-    //  move(vect){
-    //    for (var i = 0, l = this.points.length; i < l; i++){
-    //      this.points[i].translate(vect);
-    //    }
-    //  }
-    //
-    //  rotate(angle){
-    //    this.angle += angle;
-    //  }
-    //
-    //  drawCanvas(ctx){
-    //    ctx.save();
-    //
-    //    ctx.font =
-    //      this.font.style + ' '
-    //      + this.font.variant + ' '
-    //      + this.font.weight + ' '
-    //      + this.font.size + 'px' + ' '
-    //      + this.font.family;
-    //
-    //    ctx.fillStyle = this.color;
-    //
-    //    ctx.translate(this.getX(), this.getY());
-    //    ctx.rotate(this.angle * (2*Math.PI)/360.0);
-    //
-    //    switch(this.type) {
-    //      case 'fillText':
-    //      default:
-    //        ctx.fillText(this.input, 0, 0);
-    //        break;
-    //      case 'strokeText':
-    //        ctx.strokeText(this.input, 0, 0);
-    //        break;
-    //    }
-    //
-    //    var mes = ctx.measureText(this.input);
-    //    this.setWidth(Math.round(mes.width));
-    //    this.setHeight(parseInt(this.font.size));
-    //
-    //    ctx.restore();
-    //  }
-    //
-    //  setSelected(selected) {
-    //    this.isSelected = false;
-    //  }
-    //  setOverlapping(selected) {
-    //    this.isOverlapping = false;
-    //  }
-    //}
-
-
     class Texte {
       constructor(obj, ctx){
 
-        this._id = obj._id || Math.floor(Math.random() * (1e5 +1));
+        // @todo a verifier si c vraiment un id unique.
+        this._id = obj._id || Math.floor(Math.random() * (1e6 +1));
         this.key = 0;
         
         this.font = {
@@ -922,14 +844,18 @@ angular.module('pedaleswitchApp')
           family: obj.font.family || 'sans-serif',
           color: obj.font.color || 'black'
         };
-        this.margin = 5;
         this.color = obj.color || 'black';
         this.input = obj.input || 'input';
         // fillText, strokeText
         this.type = obj.type || 'fillText';
+
+        //this.textAlign = obj.textAlign || 'left';
+        this.vertical = obj.vertical || false;
+
+        this.margin = 5;
+
         this.size = {};
         this.text_size = {};
-        //this.textAlign = obj.textAlign || 'left';
 
         // Angle de rotation
         this.shapeObject = 'Rect';
@@ -961,10 +887,19 @@ angular.module('pedaleswitchApp')
         //  + this.font.family;
         ctx.font = fontSettings;
 
-        size = {
-          w: ctx.measureText(text).width,
-          h: parseInt(fontSize)
-        };
+
+        if (!this.vertical) {
+          size = {
+            w: ctx.measureText(text).width,
+            h: parseInt(fontSize)
+          };
+        } else {
+          size = {
+            w: ctx.measureText('A').width,
+            h: this.font.size * this.input.length
+          };
+        }
+
 
         this.text_size = size;
 
@@ -1204,7 +1139,16 @@ angular.module('pedaleswitchApp')
         switch(this.type) {
           case 'fillText':
           default:
-            ctx.fillText(this.input, 0, 0);
+            if (this.vertical) {
+              var pos = this.findExtreme();
+              ctx.translate(0, pos.t - center.y + 2*this.margin);
+              for (var i=0, l = this.input.length ; i < l ; i++) {
+                ctx.fillText(this.input[i], 0, i * this.font.size);
+              }
+            }
+            else {
+              ctx.fillText(this.input, 0, 0);
+            }
             break;
           case 'strokeText':
             ctx.strokeText(this.input, 0, 0);
@@ -1217,6 +1161,7 @@ angular.module('pedaleswitchApp')
         if (this.isSelected) {
           this.drawHandler(ctx);
         }
+
 
       }
     }
