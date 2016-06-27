@@ -193,7 +193,7 @@ angular.module('pedaleswitchApp')
           };
           nouv_effet.composants.push(compo);
         }
-        nouv_effet.composants.push(polyTest);
+        //nouv_effet.composants.push(polyTest);
         canvasConversion.convertEffetSize(nouv_effet);
         canvasConversion.initializeEffetZoom(nouv_effet);
         dessin.options.push(nouv_effet);

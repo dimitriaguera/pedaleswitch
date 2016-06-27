@@ -389,7 +389,584 @@ angular.module('pedaleswitchApp')
         this.initialHeight = canvasConversion.convertToPixel(this.initialHeight);
       }
 
+      /**
+       * Teste les collisions boite/contenu sur chaque projection de la boite.
+       * La projection down (dessous de boite) n'est pas testée.
+       *
+       * @param state : état de la vue . up, down, lest, right, top, bottom.
+       * @param mousePos : position x et y  de la souris.
+       * @param index : index du point de référence - 0, 1, 2, 3.
+       *                Le point de référence est le sommet de la
+       *                projection de boite qui est bougé dans la
+       *                vue active.
+       * @returns {false || Number}
+       */
+      projectionsCollisionX(state, mousePos, index){
+
+        var delta, up, down, left, right, top, bottom, ref, move, func;
+        var cosinus = this.size.h / this.size.d;
+        //var ashtray = 0;
+
+        up = this.projections.up;
+        //down = this.projections.down;
+        left = this.projections.left;
+        right = this.projections.right;
+        top = this.projections.top;
+        bottom = this.projections.bottom;
+
+        switch (state) {
+          case 'top':
+            // Test de la projection UP.
+            // On calcul le delta de deplacement de la bordure.
+            delta = mousePos.x - top.points[index].x;
+            ref = ((index - 2) >= 0) ? index - 2 : index + 2;
+
+            // Si deplacement bord gauche de la projection UP.
+            if (ref === 0 || ref === 3) {
+
+              move = up.points[ref].x - delta;
+
+              if (move > up.size_proj_mini.l - this.margin) {
+                up.points[0].setX(up.size_proj_mini.l - this.margin);
+                up.points[3].setX(up.size_proj_mini.l - this.margin);
+                top.setOverlapping(true);
+                //ashtray =  (up.points[1].x - up.points[0].x);
+                return (up.points[1].x - up.points[0].x);
+              }
+
+              up.points[0].setX(move);
+              up.points[3].setX(move);
+
+            }
+            // Si deplacement bord droit de la projection UP.
+            else {
+
+              move = up.points[ref].x - delta;
+
+              if (move < up.size_proj_mini.r + this.margin) {
+                up.points[1].setX(up.size_proj_mini.r + this.margin);
+                up.points[2].setX(up.size_proj_mini.r + this.margin);
+                top.setOverlapping(true);
+                //ashtray = (up.points[1].x - up.points[0].x);
+                return (up.points[1].x - up.points[0].x)
+              }
+
+              up.points[1].setX(move);
+              up.points[2].setX(move);
+
+            }
+
+            // Test de la projection BOTTOM.
+            // On calcul le delta de deplacement de la bordure.
+            ref = ((index - 2) >= 0) ? index - 2 : index + 2;
+
+            // Si deplacement bord gauche de la projection BOTTOM.
+            if (ref === 0 || ref === 3) {
+
+              move = bottom.points[ref].x - delta;
+
+              if (move > bottom.size_proj_mini.l - this.margin) {
+                bottom.points[0].setX(bottom.size_proj_mini.l - this.margin);
+                bottom.points[3].setX(bottom.size_proj_mini.l - this.margin);
+                top.setOverlapping(true);
+                //ashtray = (bottom.points[1].x - bottom.points[0].x);
+                return (bottom.points[1].x - bottom.points[0].x);
+              }
+
+              bottom.points[0].setX(move);
+              bottom.points[3].setX(move);
+
+            }
+            // Si deplacement bord droit de la projection BOTTOM.
+            else {
+
+              move = bottom.points[ref].x - delta;
+
+              if (move < bottom.size_proj_mini.r + this.margin) {
+                bottom.points[1].setX(bottom.size_proj_mini.r + this.margin);
+                bottom.points[2].setX(bottom.size_proj_mini.r + this.margin);
+                top.setOverlapping(true);
+                //ashtray = (bottom.points[1].x - bottom.points[0].x);
+                return (bottom.points[1].x - bottom.points[0].x);
+              }
+
+              bottom.points[1].setX(move);
+              bottom.points[2].setX(move);
+
+            }
+
+            top.setOverlapping(false);
+            //return ashtray;
+            return false;
+
+          case 'bottom':
+            // Test de la projection UP.
+            // On calcul le delta de deplacement de la bordure.
+            delta = mousePos.x - bottom.points[index].x;
+            ref = index;
+
+            // Si deplacement bord gauche de la projection UP.
+            if (ref === 0 || ref === 3) {
+
+              move = up.points[ref].x + delta;
+
+              if (move > up.size_proj_mini.l - this.margin) {
+                up.points[0].setX(up.size_proj_mini.l - this.margin);
+                up.points[3].setX(up.size_proj_mini.l - this.margin);
+                bottom.setOverlapping(true);
+                return (up.points[1].x - up.points[0].x);
+              }
+
+              up.points[0].setX(move);
+              up.points[3].setX(move);
+
+            }
+            // Si deplacement bord droit de la projection UP.
+            else {
+
+              move = up.points[ref].x + delta;
+
+              if (move < up.size_proj_mini.r + this.margin) {
+                up.points[1].setX(up.size_proj_mini.r + this.margin);
+                up.points[2].setX(up.size_proj_mini.r + this.margin);
+                bottom.setOverlapping(true);
+                return (up.points[1].x - up.points[0].x);
+              }
+
+              up.points[1].setX(move);
+              up.points[2].setX(move);
+
+            }
+
+            // Test de la projection TOP.
+            // On calcul le delta de deplacement de la bordure.
+            ref = ((index - 2) >= 0) ? index - 2 : index + 2;
+
+            // Si deplacement bord gauche de la projection TOP.
+            if (ref === 0 || ref === 3) {
+
+              move = top.points[ref].x - delta;
+
+              if (move > top.size_proj_mini.l - this.margin) {
+                top.points[0].setX(top.size_proj_mini.l - this.margin);
+                top.points[3].setX(top.size_proj_mini.l - this.margin);
+                bottom.setOverlapping(true);
+                return (top.points[1].x - top.points[0].x);
+              }
+
+              top.points[0].setX(move);
+              top.points[3].setX(move);
+
+            }
+            // Si deplacement bord droit de la projection TOP.
+            else {
+
+              move = top.points[ref].x - delta;
+
+              if (move < top.size_proj_mini.r + this.margin) {
+                top.points[1].setX(top.size_proj_mini.r + this.margin);
+                top.points[2].setX(top.size_proj_mini.r + this.margin);
+                bottom.setOverlapping(true);
+                return (top.points[1].x - top.points[0].x);
+              }
+
+              top.points[1].setX(move);
+              top.points[2].setX(move);
+
+            }
+
+            bottom.setOverlapping(false);
+            return false;
+
+          case 'up':
+            // Test de la projection TOP.
+            // On calcul le delta de deplacement de la bordure.
+            delta = mousePos.x - up.points[index].x;
+            ref = ((index - 2) >= 0) ? index - 2 : index + 2;
+
+            var test = 0;
+            var execute = [];
+
+            // Si deplacement bord gauche de la projection TOP.
+            if (ref === 0 || ref === 3) {
+
+              move = top.points[ref].x - delta;
+
+              if (move > top.size_proj_mini.l - this.margin) {
+                up.setOverlapping(true);
+                //top.points[0].setX();
+                //top.points[3].setX(top.size_proj_mini.l - this.margin);
+                //return (top.points[1].x - top.points[0].x);
+                // test = (top.points[1].x - top.points[0].x);
+
+                test = top.points[1].x - (top.size_proj_mini.l - this.margin);
+                //result = top.points[1].x - top.points[0].x;
+
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? top.points[1].x - value : value;
+                  top.points[0].setX(v || m);
+                  top.points[3].setX(v || m);
+                }
+              };
+
+              execute.push(func());
+
+              //if (test === 0) {
+              //  top.points[0].setX(move);
+              //  top.points[3].setX(move);
+              //}
+            }
+
+            // Si deplacement bord droit de la projection TOP.
+            else {
+
+              move = top.points[ref].x - delta;
+
+              if (move < top.size_proj_mini.r + this.margin) {
+                up.setOverlapping(true);
+                //top.points[1].setX(top.size_proj_mini.r + this.margin);
+                //top.points[2].setX(top.size_proj_mini.r + this.margin);
+                //return (top.points[1].x - top.points[0].x);
+               // test = (top.points[1].x - top.points[0].x);
+
+                test = (top.size_proj_mini.r + this.margin) - top.points[0].x;
+               // result = top.points[1].x - top.points[0].x;
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? top.points[0].x + value : value;
+                  top.points[1].setX(v || m);
+                  top.points[2].setX(v || m);
+                }
+              };
+
+              execute.push(func());
+
+              //if (test === 0) {
+              //  top.points[1].setX(move);
+              //  top.points[2].setX(move);
+              //}
+            }
+
+            // Test de la projection BOTTOM.
+            // On calcul le delta de deplacement de la bordure.
+            ref = index;
+
+            // Si deplacement bord gauche de la projection BOTTOM.
+            if (ref === 0 || ref === 3) {
+
+              move = bottom.points[ref].x + delta;
+
+              if (move > bottom.size_proj_mini.l - this.margin) {
+                up.setOverlapping(true);
+                //bottom.points[0].setX(bottom.size_proj_mini.l - this.margin);
+                //bottom.points[3].setX(bottom.size_proj_mini.l - this.margin);
+                //return (bottom.points[1].x - bottom.points[0].x);
+                //test = (bottom.points[1].x - bottom.points[0].x);
+
+                test = bottom.points[1].x - (bottom.size_proj_mini.l - this.margin);
+                //result = bottom.points[1].x - bottom.points[0].x;
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? bottom.points[1].x - value : value;
+                  bottom.points[0].setX(v || m);
+                  bottom.points[3].setX(v || m);
+                }
+              };
+
+              execute.push(func());
+
+              //if(test === 0) {
+              //  bottom.points[0].setX(move);
+              //  bottom.points[3].setX(move);
+              //}
+            }
+
+            // Si deplacement bord droit de la projection BOTTOM.
+            else {
+
+              move = bottom.points[ref].x + delta;
+
+              if (move < bottom.size_proj_mini.r + this.margin) {
+                up.setOverlapping(true);
+                //bottom.points[1].setX(bottom.size_proj_mini.r + this.margin);
+                //bottom.points[2].setX(bottom.size_proj_mini.r + this.margin);
+                //return (bottom.points[1].x - bottom.points[0].x);
+                //test = (bottom.points[1].x - bottom.points[0].x);
+
+                test = (bottom.size_proj_mini.r + this.margin) - bottom.points[0].x;
+                //result = bottom.points[1].x - bottom.points[0].x;
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? bottom.points[0].x + value : value;
+                  bottom.points[1].setX(v || m);
+                  bottom.points[2].setX(v || m);
+                }
+              };
+
+              execute.push(func());
+
+              //if(test === 0) {
+              //  bottom.points[1].setX(move);
+              //  bottom.points[2].setX(move);
+              //}
+            }
+
+            //up.setOverlapping(false);
+            //return false;
+            //return test;
+
+            // Exécution des mouvements de projections.
+            if (test !== 0){
+              for(var ind1 in execute){
+                execute[ind1](test);
+              }
+              return test;
+            }
+            else {
+              for(var ind2 in execute){
+                execute[ind2]();
+              }
+              up.setOverlapping(false);
+              return false;
+            }
+
+          case 'left':
+            // Test de la projection UP.
+            // On calcul le delta de deplacement de la bordure.
+            delta = (mousePos.x - left.points[index].x) / cosinus;
+            ref = ((index + 1) <= 3) ? index + 1 : 0;
+
+            // Si deplacement bord bas de la projection UP.
+            if (ref === 3 || ref === 2) {
+
+              move = up.points[ref].y + delta;
+
+              if (move < up.size_proj_mini.b + this.margin) {
+                up.points[3].setY(up.size_proj_mini.b + this.margin);
+                up.points[2].setY(up.size_proj_mini.b + this.margin);
+                left.setOverlapping(true);
+                // On retourne la distance à fixer.
+                return ((up.points[3].y - up.points[0].y) * cosinus);
+              }
+
+              up.points[3].setY(move);
+              up.points[2].setY(move);
+
+            }
+            // Si deplacement bord haut de la projection UP.
+            else {
+
+              move = up.points[ref].y + delta;
+
+              if (move > up.size_proj_mini.t - this.margin) {
+                up.points[0].setY(up.size_proj_mini.t - this.margin);
+                up.points[1].setY(up.size_proj_mini.t - this.margin);
+                left.setOverlapping(true);
+                // On retourne la distance à fixer.
+                return ((up.points[3].y - up.points[0].y) * cosinus);
+              }
+
+              up.points[0].setY(move);
+              up.points[1].setY(move);
+
+            }
+            left.setOverlapping(false);
+            return false;
+
+          case 'right':
+            // Test de la projection UP.
+            // On calcul le delta de deplacement de la bordure.
+            delta = (mousePos.x - right.points[index].x) / cosinus;
+            ref = ((index - 1) >= 0) ? index - 1 : 3;
+
+            // Si deplacement bord bas de la projection UP.
+            if (ref === 3 || ref === 2) {
+
+              move = up.points[ref].y - delta;
+
+              if (move < up.size_proj_mini.b + this.margin) {
+                // Si la limite est depassée.
+                // On fixe la bordure à la valeur limite.
+                up.points[3].setY(up.size_proj_mini.b + this.margin);
+                up.points[2].setY(up.size_proj_mini.b + this.margin);
+                right.setOverlapping(true);
+                // On retourne la distance à fixer.
+                return ((up.points[3].y - up.points[0].y) * cosinus);
+              }
+
+              // Si la valeur limite n'est pas dépassée, on bouge la projection.
+              up.points[3].setY(move);
+              up.points[2].setY(move);
+
+            }
+            // Si deplacement bord haut de la projection UP.
+            else {
+
+              move = up.points[ref].y - delta;
+
+              if (move > up.size_proj_mini.t - this.margin) {
+                // Si la limite est depassée.
+                // On fixe la bordure à la valeur limite.
+                up.points[0].setY(up.size_proj_mini.t - this.margin);
+                up.points[1].setY(up.size_proj_mini.t - this.margin);
+                right.setOverlapping(true);
+                // On retourne la distance à fixer.
+                return ((up.points[3].y - up.points[0].y) * cosinus);
+              }
+
+              // Si la valeur limite n'est pas dépassée, on bouge la projection.
+              up.points[0].setY(move);
+              up.points[1].setY(move);
+
+            }
+            right.setOverlapping(false);
+            return false;
+
+          default:
+            return console.log('ERROR ' + state + ' is not a valid state');
+        }
+      }
+
+      /**
+       * Redimensionne les projections si le nouvel effet pousse la projection active.
+       *
+       * @param state
+       * @param entity
+       */
+      checkBorderBoite(state, entity){
+
+        var posExt = entity.findExtreme(),
+            boite = this.projections[state],
+            posExtBoite = boite.findExtreme(),
+            position = {};
+
+        // L'obj est à gauche de la boite
+        if (posExt.l < (posExtBoite.l + boite.margin)){
+          position.x = posExt.l - boite.margin;
+          this.projectionsCollisionX(state, position, 0);
+          boite.points[0].setX(posExt.l - boite.margin);
+          boite.points[3].setX(posExt.l - boite.margin);
+        }
+        // L'obj est à haut de la boite
+        if (posExt.t < (posExtBoite.t + boite.margin)){
+          boite.points[0].setY(posExt.t - boite.margin);
+          boite.points[1].setY(posExt.t - boite.margin);
+        }
+        // L'obj est à droite de la boite
+        if (posExt.r > (posExtBoite.r - boite.margin)){
+          position.x = posExt.r + boite.margin;
+          this.projectionsCollisionX(state, position, 1);
+          boite.points[1].setX(posExt.r + boite.margin);
+          boite.points[2].setX(posExt.r + boite.margin);
+        }
+        // L'obj est en bas de la boite
+        if (posExt.b > (posExtBoite.b - boite.margin)){
+          boite.points[2].setY(posExt.b + boite.margin);
+          boite.points[3].setY(posExt.b + boite.margin);
+        }
+      }
+
+      createProjectionsLimits(state){
+
+        // On détermine le cosinus de la pente de la boite.
+        //var cosinus = this.size.h / this.size.d;
+        //
+        //function compare(forW, forH, proj_limit, size, forHypo, forAdj){
+        //  size[forW] = Math.max(size[forW], proj_limit.size.w);
+        //  size[forH] = Math.max(size[forH], proj_limit.size.h);
+        //  if (forHypo){
+        //    size.d = Math.max(size.d, proj_limit.size[forHypo]/cosinus);
+        //  }
+        //  if (forAdj){
+        //    size.h = Math.max(size.h, proj_limit.size.h*cosinus);
+        //  }
+        //}
+
+        // Definition des tailles limites minimales.
+        var limit_up, limit_down, limit_left, limit_right, limit_top, limit_bottom, size_proj_mini = {};
+
+        limit_up = this.projections.up.findAllExtreme();
+        limit_down = this.projections.down.findAllExtreme();
+        limit_left = this.projections.left.findAllExtreme();
+        limit_right = this.projections.right.findAllExtreme();
+        limit_top = this.projections.top.findAllExtreme();
+        limit_bottom = this.projections.bottom.findAllExtreme();
+
+        this.projections.top.size_proj_mini = limit_top;
+        this.projections.bottom.size_proj_mini = limit_bottom;
+        this.projections.up.size_proj_mini = limit_up;
+        this.projections.down.size_proj_mini = limit_down;
+        this.projections.left.size_proj_mini = limit_left;
+        this.projections.right.size_proj_mini = limit_right;
+
+        //var size_mini = {
+        //  w: 0,
+        //  h: 0,
+        //  d: 0,
+        //  d1: this.initialHeight,
+        //  d2: this.initialHeight
+        //};
+        //
+        //compare('w', 'd', limit_up, size_mini, false, true);
+        //compare('w', 'h', limit_down, size_mini, 'h', false);
+        //compare('h', 'd1', limit_left, size_mini, 'w', false);
+        //compare('h', 'd1', limit_right, size_mini, 'w', false);
+        //compare('w', 'd2', limit_top, size_mini, false, false);
+        //compare('w', 'd1', limit_bottom, size_mini, false, false);
+        //
+        //
+        //this.projections.top.size_proj_mini = {
+        //  w: size_mini.w,
+        //  h: size_mini.d2
+        //};
+        //
+        //this.projections.bottom.size_proj_mini = {
+        //  w: size_mini.w,
+        //  h: size_mini.d1
+        //};
+        //
+        //this.projections.up.size_proj_mini = {
+        //  w: size_mini.w,
+        //  h: size_mini.d
+        //};
+        //
+        //this.projections.down.size_proj_mini = {
+        //  hypo: size_mini.d,
+        //  w: size_mini.w,
+        //  h: size_mini.h
+        //};
+        //
+        //this.projections.left.size_proj_mini = {
+        //  hypo: size_mini.d,
+        //  w: size_mini.h,
+        //  h: Math.max(size_mini.d1, size_mini.d2)
+        //};
+        //
+        //this.projections.right.size_proj_mini = {
+        //  hypo: size_mini.d,
+        //  w: size_mini.h,
+        //  h: Math.max(size_mini.d1, size_mini.d2)
+        //};
+        //
+        //return size_mini;
+      }
+
       createProjectionsCoords(state) {
+        // Création des coordonnées de point des projections.
+        // A partir des dimensions de la MasterBoite.
         var proj_points = {
           top: {
             points:[
@@ -572,6 +1149,16 @@ angular.module('pedaleswitchApp')
           points[i].translate(vect);
         }
       }
+      updateAllProjections(state){
+        this.updateMaster(state);
+        this.updateProjection('top');
+        this.updateProjection('bottom');
+        this.updateProjection('left');
+        this.updateProjection('right');
+        this.updateProjection('up');
+        this.updateProjection('down');
+      }
+
       updateMaster(state){
         var proj, h, d, d1, d2, d3;
         switch (state) {
@@ -715,7 +1302,51 @@ angular.module('pedaleswitchApp')
           }
         }
       }
-      
+
+      /**
+       * Retourne les la position extreme selon tous les éléments présents sur le facette de la boite.
+       * Permet d'en déduire les tailles minimales des boites.
+       *
+       * @returns {{t: Number, r: number, b: number, l: Number}}
+       */
+      findAllExtreme(){
+        var i, j, m, l, posExtreme = {}, saveExtreme;
+
+        posExtreme = {t:Infinity,r:-Infinity,b:-Infinity,l:Infinity};
+
+        saveExtreme = function(posExtreme, pos){
+          posExtreme.t = Math.min(posExtreme.t, pos.y);
+          posExtreme.r = Math.max(posExtreme.r, pos.x);
+          posExtreme.b = Math.max(posExtreme.b, pos.y);
+          posExtreme.l = Math.min(posExtreme.l, pos.x);
+        };
+
+        l = this.effets.length;
+        if (l){
+          for (i = 0; i < l; i++){
+            for (j = 0, m = this.effets[i].points.length; j < m; j++){
+              saveExtreme(posExtreme, this.effets[i].points[j]);
+            }
+          }
+        }
+        l = this.composants.length;
+        if (l){
+          for (i = 0; i < l; i++){
+            for (j = 0, m = this.composants[i].points.length; j < m; j++){
+              saveExtreme(posExtreme, this.composants[i].points[j]);
+            }
+          }
+        }
+
+        posExtreme.size = {w: posExtreme.r - posExtreme.l, h: posExtreme.b - posExtreme.t};
+
+        return posExtreme;
+      }
+
+      /**
+       * Retourne les dimensions extremes de la boite.
+       * @returns {{t: Number, r: number, b: number, l: Number}}
+       */
       findExtreme(){
         var posExtreme = {t:Infinity,r:-Infinity,b:-Infinity,l:Infinity};
 
@@ -735,34 +1366,34 @@ angular.module('pedaleswitchApp')
       }
 
 
-      /**
-       * Redimensionne la boite si le nouvel effet est en dehors.
-       */
-      checkBorderBoite(entity){
-        var posExt = entity.findExtreme();
-        var posExtBoite = this.findExtreme();
-
-        // L'obj est à gauche de la boite
-        if (posExt.l < (posExtBoite.l + this.margin)){
-          this.points[0].setX(posExt.l - this.margin);
-          this.points[3].setX(posExt.l - this.margin);
-        }
-        // L'obj est à haut de la boite
-        if (posExt.t < (posExtBoite.t + this.margin)){
-          this.points[0].setY(posExt.t - this.margin);
-          this.points[1].setY(posExt.t - this.margin);
-        }
-        // L'obj est à droite de la boite
-        if (posExt.r > (posExtBoite.r - this.margin)){
-          this.points[1].setX(posExt.r + this.margin);
-          this.points[2].setX(posExt.r + this.margin);
-        }
-        // L'obj est en bas de la boite
-        if (posExt.b > (posExtBoite.b - this.margin)){
-          this.points[2].setY(posExt.b + this.margin);
-          this.points[3].setY(posExt.b + this.margin);
-        }
-      }
+      ///**
+      // * Redimensionne la boite si le nouvel effet est en dehors.
+      // */
+      //checkBorderBoite(entity){
+      //  var posExt = entity.findExtreme();
+      //  var posExtBoite = this.findExtreme();
+      //
+      //  // L'obj est à gauche de la boite
+      //  if (posExt.l < (posExtBoite.l + this.margin)){
+      //    this.points[0].setX(posExt.l - this.margin);
+      //    this.points[3].setX(posExt.l - this.margin);
+      //  }
+      //  // L'obj est à haut de la boite
+      //  if (posExt.t < (posExtBoite.t + this.margin)){
+      //    this.points[0].setY(posExt.t - this.margin);
+      //    this.points[1].setY(posExt.t - this.margin);
+      //  }
+      //  // L'obj est à droite de la boite
+      //  if (posExt.r > (posExtBoite.r - this.margin)){
+      //    this.points[1].setX(posExt.r + this.margin);
+      //    this.points[2].setX(posExt.r + this.margin);
+      //  }
+      //  // L'obj est en bas de la boite
+      //  if (posExt.b > (posExtBoite.b - this.margin)){
+      //    this.points[2].setY(posExt.b + this.margin);
+      //    this.points[3].setY(posExt.b + this.margin);
+      //  }
+      //}
 
       /**
        * Aire d'un poly tester et c OK
@@ -825,6 +1456,14 @@ angular.module('pedaleswitchApp')
         }
         ctx.closePath();
         ctx.stroke();
+      }
+      drawCanvasLimits(ctx){
+        if(this.size_proj_mini.size.w > 0) {
+          ctx.beginPath();
+          ctx.rect(this.size_proj_mini.l, this.size_proj_mini.t, this.size_proj_mini.size.w, this.size_proj_mini.size.h);
+          ctx.closePath();
+          ctx.stroke();
+        }
       }
     }
 

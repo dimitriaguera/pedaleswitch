@@ -11,6 +11,11 @@ angular.module('pedaleswitchApp')
     var tableDrawThin = [];
     var tableDrawShine = [];
     var tableArrow = [];
+
+    //@todo: table de travail, a supprimer.
+    var tableDrawLimits = [];
+    //Fin todo.
+
     var selectDraw = function(context, item){
       if (item.isSelected) {
         context.font = "16px sans-serif";
@@ -112,6 +117,10 @@ angular.module('pedaleswitchApp')
             context.fillStyle = colorFill;
             context.fill();
           }
+          if (boite.isOverlapping) {
+            context.fillStyle = "rgba(255, 00, 00, 0.2)";
+            context.fill();
+          }
           context.restore();
         }
       },
@@ -178,6 +187,30 @@ angular.module('pedaleswitchApp')
         }
       },
 
+      //@todo : table de travail, a supprimer.
+      drawTableLimits: function (context, colorStroke, colorFill, lineWidth, dashArray) {
+        tableDrawLimits = canvasControl.getTableDrawLimits();
+        if(tableDrawLimits.length !== 0) {
+          context.save();
+          context.lineWidth = lineWidth;
+          context.strokeStyle = colorStroke;
+          context.setLineDash(dashArray);
+          for (var k = 0; k < tableDrawLimits.length; k++) {
+            context.save();
+            selectDraw(context, tableDrawLimits[k]);
+            //overlappingDraw(context, tableDrawDashed[k]);
+            tableDrawLimits[k].drawCanvasLimits(context);
+            if (colorFill){
+              context.fillStyle = colorFill;
+              context.fill();
+            }
+            context.restore()
+          }
+          context.restore();
+        }
+      },
+      // Fin todo.
+
       drawStuff: function() {
 
         canvas = canvasControl.getCanvas();
@@ -187,6 +220,7 @@ angular.module('pedaleswitchApp')
 
         this.drawBoite(ctx, "gray", "#f6f6f6", "1px");
         this.drawTableDashed(ctx, "gray", "#f6f6f6", "1px", [10, 3]);
+        this.drawTableLimits(ctx, "gray", "#f6f6f6", "1px", [10, 3]);
         this.drawTableThin(ctx, "gray", null, "1px");
         this.drawTableAlignLine(canvas, ctx, "#d0d0d0", "#00bfff", [10, 3]);
         this.drawTableActive(ctx, "black", null, "1px");

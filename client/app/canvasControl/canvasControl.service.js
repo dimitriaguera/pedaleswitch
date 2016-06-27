@@ -22,6 +22,10 @@ angular.module('pedaleswitchApp')
     var tableArrow = [];
     var activeItem = [];
 
+    // @todo a supprimer, table de travail.
+    var tableDrawLimits = [];
+    // Fin todo
+
     var debrayable = false;
     var viewState = 'up';
     var isActive = 'effet';
@@ -102,7 +106,7 @@ angular.module('pedaleswitchApp')
             this.moveCloseBorder(tmp_eff);
 
             // Redimensionne la boite si le nouvelle effet est en dehors.
-            boite.checkBorderBoite(tmp_eff);
+            masterBoite.checkBorderBoite(viewState, tmp_eff);
 
             // Repositionne les arraw.
             this.setArrowPos();
@@ -132,9 +136,12 @@ angular.module('pedaleswitchApp')
 
           // Empeche que l'effet depasse du canvas.
           this.moveCloseBorder(tmp_eff);
-          
+
           // Check les collisions entre tout les obj.
           checkCollision.checkAll(tableEffet);
+
+          // Créé les limites des projections.
+          masterBoite.createProjectionsLimits(viewState);
 
           return tmp_eff;
         }
@@ -173,6 +180,7 @@ angular.module('pedaleswitchApp')
           case 'top':
             viewState = 'top';
             masterBoite.updateProjection(viewState);
+            masterBoite.createProjectionsLimits(viewState);
             this.resetAll();
             this.setBoite(masterBoite.projections.top);
             this.setTableEffet(masterBoite.projections.top.effets);
@@ -180,10 +188,16 @@ angular.module('pedaleswitchApp')
             this.setTableText(masterBoite.projections.top.textDeco);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
+
+            //@todo : table de travail, a supprimer.
+            this.setTableDrawLimits([masterBoite.projections.bottom]);
+            this.setTableDrawDashed([masterBoite.projections.bottom]);
+
             break;
           case 'bottom':
             viewState = 'bottom';
             masterBoite.updateProjection(viewState);
+            masterBoite.createProjectionsLimits(viewState);
             this.resetAll();
             this.setBoite(masterBoite.projections.bottom);
             this.setTableEffet(masterBoite.projections.bottom.effets);
@@ -191,10 +205,16 @@ angular.module('pedaleswitchApp')
             this.setTableText(masterBoite.projections.bottom.textDeco);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
+
+            //@todo : table de travail, a supprimer.
+            this.setTableDrawLimits([masterBoite.projections.top]);
+            this.setTableDrawDashed([masterBoite.projections.top]);
+
             break;
           case 'up':
             viewState = 'up';
             masterBoite.updateProjection(viewState);
+            masterBoite.createProjectionsLimits(viewState);
             this.resetAll();
             this.setBoite(masterBoite.projections.up);
             this.setTableEffet(masterBoite.projections.up.effets);
@@ -202,10 +222,16 @@ angular.module('pedaleswitchApp')
             this.setTableText(masterBoite.projections.up.textDeco);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
+
+            //@todo : table de travail, a supprimer.
+            this.setTableDrawLimits([masterBoite.projections.top, masterBoite.projections.bottom]);
+            this.setTableDrawDashed([masterBoite.projections.top, masterBoite.projections.bottom]);
+
             break;
           case 'down':
             viewState = 'down';
             masterBoite.updateProjection(viewState);
+            masterBoite.createProjectionsLimits(viewState);
             this.resetAll();
             this.setBoite(masterBoite.projections.down);
             this.setTableEffet(masterBoite.projections.down.effets);
@@ -217,6 +243,7 @@ angular.module('pedaleswitchApp')
           case 'left':
             viewState = 'left';
             masterBoite.updateProjection(viewState);
+            masterBoite.createProjectionsLimits(viewState);
             this.resetAll();
             this.setBoite(masterBoite.projections.left);
             this.setTableEffet(masterBoite.projections.left.effets);
@@ -228,6 +255,7 @@ angular.module('pedaleswitchApp')
           case 'right':
             viewState = 'right';
             masterBoite.updateProjection(viewState);
+            masterBoite.createProjectionsLimits(viewState);
             this.resetAll();
             this.setBoite(masterBoite.projections.right);
             this.setTableEffet(masterBoite.projections.right.effets);
@@ -259,7 +287,7 @@ angular.module('pedaleswitchApp')
             //this.isActive = 'effet';
             this.resetIsSelected(active);
             this.resetIsSelected(inactive);
-            this.resetTableDrawDashed();
+            //this.resetTableDrawDashed();
             this.setTableActive(active);
             this.setTableDrawThin(inactive);
             return (active.length > 0);
@@ -455,6 +483,10 @@ angular.module('pedaleswitchApp')
 
       actualisePoints: function(value, data){
         data.actualisePoints(ctx, value);
+      },
+
+      getViewState: function(){
+        return viewState;
       },
 
       getTableText: function() {
@@ -711,6 +743,20 @@ angular.module('pedaleswitchApp')
       resetTableDrawDashed: function(){
         tableDrawDashed = [];
       },
+
+      //////////// @Todo : a supprimer, table de travail.
+      setTableDrawLimits: function(tabr){
+        tableDrawLimits = tabr;
+      },
+
+      getTableDrawLimits: function(){
+        return tableDrawLimits;
+      },
+
+      resetTableDrawLimits: function(){
+        tableDrawLimits = [];
+      },
+      /////////////// Fin todo.
 
       setTableDrawShine: function(tabr){
         for (var i = 0; i < tabr.length; i++){
