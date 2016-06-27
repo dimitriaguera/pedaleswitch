@@ -867,7 +867,8 @@ angular.module('pedaleswitchApp')
         this.fonction = obj.fonction ||'deco';
         this.angle = obj.angle || 0;
 
-        this.size = obj.size || this.getSize();
+        this.sizeTxt = obj.sizeTxt || this.getSizeTxt();
+        this.size = obj.size || {};
         this.points = obj.points || this.createPoints();
       }
 
@@ -879,7 +880,7 @@ angular.module('pedaleswitchApp')
           + this.font.family;
       }
 
-      getSize(){
+      getSizeTxt(){
         // Ceci crée un canvas virtuel qui va servir a calculer la taille.
         var canvasimg = document.createElement('canvas');
         var ctx = canvasimg.getContext('2d');
@@ -887,25 +888,25 @@ angular.module('pedaleswitchApp')
         ctx.font = this.fontSettings();
 
         if (!this.isVertical) {
-          this.size = {
+          this.sizeTxt = {
             w: ctx.measureText(this.input).width + 2 * this.margin,
             h: +this.font.size + 2 * this.margin
           };
         } else {
-          this.size = {
+          this.sizeTxt = {
             w: ctx.measureText('A').width + 2 * this.margin, // One random letter
             h: +this.font.size * this.input.length + 2 * this.margin
           };
         }
-        return this.size;
+        return this.sizeTxt;
       }
 
       createPoints(){
         return [
           new Point({x: 0, y: 0}),
-          new Point({x: this.size.w, y: 0}),
-          new Point({x: this.size.w, y: this.size.h}),
-          new Point({x: 0, y: this.size.h})
+          new Point({x: this.sizeTxt.w, y: 0}),
+          new Point({x: this.sizeTxt.w, y: this.sizeTxt.h}),
+          new Point({x: 0, y: this.sizeTxt.h})
         ];
       }
 
@@ -913,13 +914,13 @@ angular.module('pedaleswitchApp')
         var vectors, w, h, ow, oh, deltaW, deltaH, C;
 
         // On récupere les anciennes dimensions.
-        ow = this.size.w;
-        oh = this.size.h;
+        ow = this.sizeTxt.w;
+        oh = this.sizeTxt.h;
 
         // On récupère les nouvelles dimensions.
-        this.getSize();
-        w = this.size.w;
-        h = this.size.h;
+        this.getSizeTxt();
+        w = this.sizeTxt.w;
+        h = this.sizeTxt.h;
 
         // On calcule la variation de taille.
         deltaW = (w - ow) / 2;
@@ -1027,7 +1028,10 @@ angular.module('pedaleswitchApp')
         }
 
         posExtreme.size = {w: posExtreme.r - posExtreme.l, h: posExtreme.b - posExtreme.t};
-        
+
+        this.size.w = posExtreme.size.w;
+        this.size.h = posExtreme.size.h;
+
         return(posExtreme);
       }
 
@@ -1103,7 +1107,7 @@ angular.module('pedaleswitchApp')
 
         this.angle = 0;
 
-        this.getSize();
+        this.getSizeTxt();
 
         this.points = this.createPoints();
         this.moveTo(center);
@@ -1127,7 +1131,7 @@ angular.module('pedaleswitchApp')
 
               ctx.translate(this.points[0].x, this.points[0].y);
               ctx.rotate(-this.angle * (2*Math.PI)/360.0);
-              ctx.translate(this.size.w/2, this.font.size/2);
+              ctx.translate(this.sizeTxt.w/2, this.font.size/2);
               for (var i=0, l = this.input.length ; i < l ; i++) {
                 ctx.fillText(this.input[i], 0, (i * this.font.size));
               }
