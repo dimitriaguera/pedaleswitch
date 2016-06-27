@@ -831,110 +831,95 @@ angular.module('pedaleswitchApp')
     class Texte {
       constructor(obj){
 
+        if (typeof obj === 'string' || myVar instanceof obj) {
+          var str = obj;
+          obj = {};
+          obj.input = str;
+        }
+        obj.font = obj.font || {};
+        
         // @todo a verifier si c vraiment un id unique.
         this._id = obj._id || Math.floor(Math.random() * (1e6 +1));
         this.key = 0;
         
         this.font = {
+          // Font propiété dans canvas affect by ctx.font =
           style: obj.font.style || 'normal', // normal, italic, oblique.
           variant: obj.font.variant || 'normal', //normal, small-caps.
           weight: obj.font.weight || 'normal', // normal, bold, bolder, lighter, 100, 200 ... 900.
-          baseline: obj.font.baseline || 'middle', // top" || "hanging" || "middle" || "alphabetic" || "ideographic" || "bottom",
-          size: obj.font.size || '14',
+          size: obj.font.size || 50,
           family: obj.font.family || 'sans-serif',
-          color: obj.font.color || 'black'
+
+          textAlign: 'center',
+          baseline: 'middle', // top" || "hanging" || "middle" || "alphabetic" || "ideographic" || "bottom",
+
+          color: obj.font.color || 'black',
+          type: obj.type || 'fillText', // fillText, strokeText
+          isVertical: obj.vertical || false // ecrire vertical ou horizontal
         };
-        this.color = obj.color || 'black';
+
         this.input = obj.input || 'input';
-        // fillText, strokeText
-        this.type = obj.type || 'fillText';
 
-        //this.textAlign = obj.textAlign || 'left';
-        this.isVertical = obj.vertical || false;
+        this.margin = obj.margin || 5;
 
-        this.margin = 5;
 
-        this.size = {};
-        this.text_size = {};
-
-        // Angle de rotation
-        this.shapeObject = 'Rect';
-        this.fonction = 'deco';
+        this.shapeObject = obj.shape || 'Rect';
+        this.fonction = obj.fonction ||'deco';
         this.angle = obj.angle || 0;
 
-        this.createPoints();
+        this.size = obj.size || this.getSize();
+        this.points = obj.points || this.createPoints();
       }
 
-      getSize(value){
-        var size;
-        var val = value || {};
-        var text = val.texte || this.input;
-        var fontSize = val.size || this.font.size;
+      fontSettings(){
+        return this.font.style + ' '
+          + this.font.variant + ' '
+          + this.font.weight + ' '
+          + this.font.size + 'px' + ' '
+          + this.font.family;
+      }
 
-        var fontSettings =
-            this.font.style + ' '
-            + this.font.variant + ' '
-            + this.font.weight + ' '
-            + fontSize + 'px' + ' '
-            + this.font.family;
-
+      getSize(){
         // Ceci crée un canvas virtuel qui va servir a calculer la taille.
         var canvasimg = document.createElement('canvas');
         var ctx = canvasimg.getContext('2d');
         
-        //ctx.font =
-        //  this.font.style + ' '
-        //  + this.font.variant + ' '
-        //  + this.font.weight + ' '
-        //  + fontSize + 'px' + ' '
-        //  + this.font.family;
-        ctx.font = fontSettings;
-
+        ctx.font = this.fontSettings();
 
         if (!this.isVertical) {
-          size = {
-            w: ctx.measureText(text).width,
-            h: parseInt(fontSize)
+          this.size = {
+            w: ctx.measureText(this.input).width + 2 * this.margin,
+            h: +this.font.size + 2 * this.margin
           };
         } else {
-          size = {
-            w: ctx.measureText('A').width,
-            h: this.font.size * this.input.length
+          this.size = {
+            w: ctx.measureText('A').width + 2 * this.margin, // One random letter
+            h: +this.font.size * this.input.length + 2 * this.margin
           };
         }
-
-
-        this.text_size = size;
-        
-        return size;
+        return this.size;
       }
 
       createPoints(){
-        var mar, w, h;
-        var size = this.getSize();
-        mar = this.margin;
-        w = size.w;
-        h = size.h;
-
-        this.points = [
+        return [
           new Point({x: 0, y: 0}),
-          new Point({x: w + mar*2, y: 0}),
-          new Point({x: w + mar*2, y: h + mar*2}),
-          new Point({x: 0, y: h + mar*2})
+          new Point({x: this.size.w, y: 0}),
+          new Point({x: this.size.w, y: this.size.h}),
+          new Point({x: 0, y: this.size.h})
         ];
       }
 
-      actualisePoints(value){
-        var mar, vectors, w, h, ow, oh, deltaW, deltaH, oC, C, l;
+      actualisePoints(){
+        var vectors, w, h, ow, oh, deltaW, deltaH, C;
+
         // On récupere les anciennes dimensions.
-        mar = this.margin;
-        ow = this.text_size.w;
-        oh = this.text_size.h;
+        ow = this.size.w;
+        oh = this.size.h;
 
-        this.getSize(value);
-
-        w = this.text_size.w;
-        h = this.text_size.h;
+        // On récupère les nouvelles dimensions.
+        this.getSize();
+        w = this.size.w;
+        h = this.size.h;
 
         // On calcule la variation de taille.
         deltaW = (w - ow) / 2;
@@ -942,9 +927,7 @@ angular.module('pedaleswitchApp')
 
         // On prend en compte la marge.
         if (deltaW || deltaH) {
-          // On récupère le barycentre.
-          C = this.getCenter();
-          l = this.points.length;
+
           // On construit les vecteurs de transformation.
           vectors = [
             new Point({x: -deltaW, y: -deltaH}),
@@ -954,17 +937,13 @@ angular.module('pedaleswitchApp')
           ];
 
           // On applique la transformation.
-          for (var i = 0; i < l; i++) {
+          C = this.getCenter();
+          for (var i = 0, l = this.points.length; i < l; i++) {
             this.points[i].rotate(-this.angle, C);
             this.points[i].translate(vectors[i]);
             this.points[i].rotate(this.angle, C);
           }
         }
-      }
-
-
-      actualiseFont(){
-
       }
 
       /**
@@ -1048,10 +1027,7 @@ angular.module('pedaleswitchApp')
         }
 
         posExtreme.size = {w: posExtreme.r - posExtreme.l, h: posExtreme.b - posExtreme.t};
-
-        this.size.w = posExtreme.size.w;
-        this.size.h = posExtreme.size.h;
-
+        
         return(posExtreme);
       }
 
@@ -1094,9 +1070,8 @@ angular.module('pedaleswitchApp')
         }
       }
 
-
+      // Dessine la boite autour du texte.
       drawHandler(ctx){
-
         var i, j, l = this.points.length;
 
         ctx.save();
@@ -1120,34 +1095,47 @@ angular.module('pedaleswitchApp')
         ctx.restore();
       }
 
+
+      //@todo a supprimer je pense ne sert a rien
+      changeOrientation() {
+        // Recalcule les points par rapport au barycentre.
+        var center = this.getCenter();
+
+        this.angle = 0;
+
+        this.getSize();
+
+        this.points = this.createPoints();
+        this.moveTo(center);
+
+
+      }
+
       drawCanvas(ctx){
         ctx.save();
-        ctx.font =
-          this.font.style + ' '
-          + this.font.variant + ' '
-          + this.font.weight + ' '
-          + this.font.size + 'px' + ' '
-          + this.font.family;
-
+        ctx.font = this.fontSettings();
         ctx.fillStyle = this.font.color;
         ctx.textBaseline = this.font.baseline;
+        ctx.textAlign = this.font.textAlign;
 
-        ctx.textAlign = 'center';
-        var center = this.getCenter();
-        ctx.translate(center.x, center.y);
-        ctx.rotate(-this.angle * (2*Math.PI)/360.0);
+
 
         switch(this.type) {
           case 'fillText':
           default:
             if (this.isVertical) {
-              var pos = this.findExtreme();
-              ctx.translate(0, pos.t - center.y + 2*this.margin);
+
+              ctx.translate(this.points[0].x, this.points[0].y);
+              ctx.rotate(-this.angle * (2*Math.PI)/360.0);
+              ctx.translate(this.size.w/2, this.font.size/2);
               for (var i=0, l = this.input.length ; i < l ; i++) {
-                ctx.fillText(this.input[i], 0, i * this.font.size);
+                ctx.fillText(this.input[i], 0, (i * this.font.size));
               }
             }
             else {
+              var center = this.getCenter();
+              ctx.translate(center.x, center.y);
+              ctx.rotate(-this.angle * (2*Math.PI)/360.0);
               ctx.fillText(this.input, 0, 0);
             }
             break;
@@ -1155,14 +1143,11 @@ angular.module('pedaleswitchApp')
             ctx.strokeText(this.input, 0, 0);
             break;
         }
-       // ctx.setTransform(1, 0, 0, 1, 0, 0);
-       // ctx.translate(-center.x, -center.y);
         ctx.restore();
 
         if (this.isSelected) {
           this.drawHandler(ctx);
         }
-
 
       }
     }

@@ -181,7 +181,7 @@ class PageDessinComponent {
   }
 
   addTextToTable(string){
-    this.canvasControl.addTextToCanvas({font: {}, input:string});
+    this.canvasControl.addTextToCanvas(string);
     this.canvasDraw.drawStuff();
   }
 
