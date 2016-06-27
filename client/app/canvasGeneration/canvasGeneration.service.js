@@ -1099,8 +1099,6 @@ angular.module('pedaleswitchApp')
         ctx.restore();
       }
 
-
-      //@todo a supprimer je pense ne sert a rien
       changeOrientation() {
         // Recalcule les points par rapport au barycentre.
         var center = this.getCenter();
@@ -1111,8 +1109,6 @@ angular.module('pedaleswitchApp')
 
         this.points = this.createPoints();
         this.moveTo(center);
-
-
       }
 
       drawCanvas(ctx){
@@ -1122,13 +1118,10 @@ angular.module('pedaleswitchApp')
         ctx.textBaseline = this.font.baseline;
         ctx.textAlign = this.font.textAlign;
 
-
-
         switch(this.type) {
           case 'fillText':
           default:
             if (this.isVertical) {
-
               ctx.translate(this.points[0].x, this.points[0].y);
               ctx.rotate(-this.angle * (2*Math.PI)/360.0);
               ctx.translate(this.sizeTxt.w/2, this.font.size/2);
@@ -1144,7 +1137,20 @@ angular.module('pedaleswitchApp')
             }
             break;
           case 'strokeText':
-            ctx.strokeText(this.input, 0, 0);
+            if (this.isVertical) {
+              ctx.translate(this.points[0].x, this.points[0].y);
+              ctx.rotate(-this.angle * (2*Math.PI)/360.0);
+              ctx.translate(this.sizeTxt.w/2, this.font.size/2);
+              for (var i=0, l = this.input.length ; i < l ; i++) {
+                ctx.strokeText(this.input[i], 0, (i * this.font.size));
+              }
+            }
+            else {
+              var center = this.getCenter();
+              ctx.translate(center.x, center.y);
+              ctx.rotate(-this.angle * (2*Math.PI)/360.0);
+              ctx.strokeText(this.input, 0, 0);
+            }
             break;
         }
         ctx.restore();
