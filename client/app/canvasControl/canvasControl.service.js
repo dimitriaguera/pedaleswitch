@@ -192,6 +192,8 @@ angular.module('pedaleswitchApp')
             //@todo : table de travail, a supprimer.
             this.setTableDrawLimits([masterBoite.projections.bottom]);
             this.setTableDrawDashed([masterBoite.projections.bottom]);
+            this.setTableDrawLimits([masterBoite.projections.up]);
+            this.setTableDrawDashed([masterBoite.projections.up]);
 
             break;
           case 'bottom':
@@ -209,6 +211,8 @@ angular.module('pedaleswitchApp')
             //@todo : table de travail, a supprimer.
             this.setTableDrawLimits([masterBoite.projections.top]);
             this.setTableDrawDashed([masterBoite.projections.top]);
+            this.setTableDrawLimits([masterBoite.projections.up]);
+            this.setTableDrawDashed([masterBoite.projections.up]);
 
             break;
           case 'up':
@@ -224,8 +228,8 @@ angular.module('pedaleswitchApp')
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
 
             //@todo : table de travail, a supprimer.
-            this.setTableDrawLimits([masterBoite.projections.top, masterBoite.projections.bottom]);
-            this.setTableDrawDashed([masterBoite.projections.top, masterBoite.projections.bottom]);
+            this.setTableDrawLimits([masterBoite.projections.left, masterBoite.projections.right]);
+            this.setTableDrawDashed([masterBoite.projections.left, masterBoite.projections.right]);
 
             break;
           case 'down':
@@ -251,6 +255,11 @@ angular.module('pedaleswitchApp')
             this.setTableText(masterBoite.projections.left.textDeco);
             tableArrow.push(canvasGeneration.newArrowPoint(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrowPoint(boite, 'bottom'));
+
+            //@todo : table de travail, a supprimer.
+            this.setTableDrawLimits([masterBoite.projections.top, masterBoite.projections.bottom]);
+            this.setTableDrawDashed([masterBoite.projections.top, masterBoite.projections.bottom]);
+
             break;
           case 'right':
             viewState = 'right';
@@ -263,6 +272,11 @@ angular.module('pedaleswitchApp')
             this.setTableText(masterBoite.projections.right.textDeco);
             tableArrow.push(canvasGeneration.newArrowPoint(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrowPoint(boite, 'bottom'));
+
+            //@todo : table de travail, a supprimer.
+            this.setTableDrawLimits([masterBoite.projections.top, masterBoite.projections.bottom]);
+            this.setTableDrawDashed([masterBoite.projections.top, masterBoite.projections.bottom]);
+
             break;
           default:
             return console.log('ERROR ' + state + ' is not a valid state');

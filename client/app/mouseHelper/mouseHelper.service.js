@@ -204,6 +204,14 @@ angular.module('pedaleswitchApp')
             if (mousePos.y < pos_max.b + marginBoite) {
               mousePos.y = pos_max.b + marginBoite;
             }
+
+            // Regarde sur les autres projections si pas inférieur a un composant ou un effet.
+            test_proj = masterBoite.projectionsCollisionY(viewState, mousePos, 3);
+            if(test_proj) {
+              mousePos.y = boite.points[0].y + test_proj;
+              //mousePos.x = boite.points[1].x;
+            }
+
             // Redimensionne la boite.
             boite.points[2].setY(mousePos.y);
             boite.points[3].setY(mousePos.y);
@@ -218,6 +226,13 @@ angular.module('pedaleswitchApp')
             // Regarde si pas inferieur a un composant ou a effet.
             if (mousePos.y > pos_max.t - marginBoite) {
               mousePos.y = pos_max.t - marginBoite;
+            }
+
+            // Regarde sur les autres projections si pas inférieur a un composant ou un effet.
+            test_proj = masterBoite.projectionsCollisionY(viewState, mousePos, 0);
+            if(test_proj) {
+              mousePos.y = boite.points[3].y - test_proj;
+              //mousePos.x = boite.points[1].x;
             }
 
             // Redimensionne la boite.
