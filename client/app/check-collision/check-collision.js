@@ -130,12 +130,41 @@ angular.module('pedaleswitchApp')
       
       /**
        * Check la collision entre la souris et un tableau de thing avec un tolérance en pixel donnée.
+    * @param mouse object contenant x,y
+    * @param items
+    * @param tolerance
+    * @returns {*}
+    */
+    checkMouseBorder: function(mouse, items, tolerance) {
+      var indexCounter,
+        outer = items.length,
+        test,
+        comparitor;
+
+      for (indexCounter = 0; indexCounter < outer; indexCounter++) {
+        comparitor = items[indexCounter];
+        test = intersect.pointOnRect(mouse, comparitor.findExtreme(), tolerance);
+        if (test) {
+          return {
+            id: indexCounter,
+            dx: mouse.x - comparitor.getCenterX(),
+            dy: mouse.y - comparitor.getCenterY(),
+            pointer: test
+          };
+        }
+      }
+      return false;
+    },
+
+      /**
+       * Check la collision des sommets entre la souris et un tableau de thing avec un tolérance en pixel donnée.
        * @param mouse object contenant x,y
        * @param items
        * @param tolerance
+       * @param corners array [all, top-left, top-right, bottom-right, bottom-left]
        * @returns {*}
        */
-      checkMouseBorder: function(mouse, items, tolerance) {
+      checkMouseCorner: function(mouse, items, tolerance, corners) {
         var indexCounter,
           outer = items.length,
           test,
@@ -143,7 +172,7 @@ angular.module('pedaleswitchApp')
 
         for (indexCounter = 0; indexCounter < outer; indexCounter++) {
           comparitor = items[indexCounter];
-          test = intersect.pointOnRect(mouse, comparitor.findExtreme(), tolerance);
+          test = intersect.pointOnCorner(mouse, comparitor, tolerance, corners);
           if (test) {
             return {
               id: indexCounter,
@@ -155,7 +184,6 @@ angular.module('pedaleswitchApp')
         }
         return false;
       },
-
 
       /**
        * Permet de voir si le centre de l'obj deplace est aligné avec le centre des obj actifs.

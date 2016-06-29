@@ -235,6 +235,43 @@ angular.module('pedaleswitchApp')
         }
         return false;
       },
+
+      pointOnCorner: function (pos, comparitor, tol, corners){
+        tol = tol || 10;
+
+        var all, tl, tr, br, bl;
+
+        all = corners.indexOf('all');
+        tl = corners.indexOf('top-left');
+        tr = corners.indexOf('top-right');
+        br = corners.indexOf('bottom-right');
+        bl = corners.indexOf('bottom-left');
+
+        if(all !== -1 || tl !== -1){
+          if (this.pointInCircleLight(pos, comparitor.points[0], tol)){
+            return {pos: 'top-left', type: 'nw-resize'};
+          }
+        }
+
+        if(all !== -1 || tr !== -1){
+          if (this.pointInCircleLight(pos, comparitor.points[1], tol)){
+            return {pos: 'top-right', type: 'ne-resize'};
+          }
+        }
+
+        if(all !== -1 || br !== -1){
+          if (this.pointInCircleLight(pos, comparitor.points[2], tol)){
+            return {pos: 'bottom-right', type: 'se-resize'};
+          }
+        }
+
+        if(all !== -1 || bl !== -1){
+          if (this.pointInCircleLight(pos, comparitor.points[3], tol)){
+            return {pos: 'bottom-left', type: 'sw-resize'};
+          }
+        }
+        return false;
+      },
       
       /**
        * Tests if a point is Left|On|Right of an infinite line.

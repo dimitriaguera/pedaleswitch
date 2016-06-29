@@ -83,8 +83,7 @@ angular.module('pedaleswitchApp')
           if(boite.constructor.name !== "Boite") {
             this.setMasterBoite(canvasGeneration.newMasterBoite(tmp_eff));
 
-            // Convert marge en px, créer les projections de la boite.
-            masterBoite.convertInitialHeight();
+            // Créer les projections de la boite.
             masterBoite.createProjection();
 
             // On sélectionne la bonne projection.
@@ -188,13 +187,6 @@ angular.module('pedaleswitchApp')
             this.setTableText(masterBoite.projections.top.textDeco);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
-
-            //@todo : table de travail, a supprimer.
-            this.setTableDrawLimits([masterBoite.projections.bottom]);
-            this.setTableDrawDashed([masterBoite.projections.bottom]);
-            this.setTableDrawLimits([masterBoite.projections.up]);
-            this.setTableDrawDashed([masterBoite.projections.up]);
-
             break;
           case 'bottom':
             viewState = 'bottom';
@@ -207,13 +199,6 @@ angular.module('pedaleswitchApp')
             this.setTableText(masterBoite.projections.bottom.textDeco);
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
-
-            //@todo : table de travail, a supprimer.
-            this.setTableDrawLimits([masterBoite.projections.top]);
-            this.setTableDrawDashed([masterBoite.projections.top]);
-            this.setTableDrawLimits([masterBoite.projections.up]);
-            this.setTableDrawDashed([masterBoite.projections.up]);
-
             break;
           case 'up':
             viewState = 'up';
@@ -257,8 +242,8 @@ angular.module('pedaleswitchApp')
             tableArrow.push(canvasGeneration.newArrowPoint(boite, 'bottom'));
 
             //@todo : table de travail, a supprimer.
-            this.setTableDrawLimits([masterBoite.projections.top, masterBoite.projections.bottom]);
-            this.setTableDrawDashed([masterBoite.projections.top, masterBoite.projections.bottom]);
+            this.setTableDrawLimits([masterBoite.projections.up]);
+            this.setTableDrawDashed([masterBoite.projections.up]);
 
             break;
           case 'right':

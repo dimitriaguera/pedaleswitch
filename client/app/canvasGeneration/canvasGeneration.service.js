@@ -338,7 +338,7 @@ angular.module('pedaleswitchApp')
     class MasterBoite {
       constructor(entity) {
         this.margin = 5;
-        this.initialHeight = 100;
+        this.initialHeight = 80;
         this.convertMargin();
         this.convertInitialHeight();
         this.size = {
@@ -403,7 +403,7 @@ angular.module('pedaleswitchApp')
        */
       projectionsCollisionY(state, mousePos, index){
 
-        var delta, up, left, right, top, bottom, ref, move, func, i, delta_hypo, hypo, adj, test_tmp;
+        var delta, up, left, right, top, bottom, ref, move, func, i, hypo, old_hypo, adj, old_adj, test_tmp;
         var cosinus = this.size.h / this.size.d;
         var opp = (this.size.d2 - this.size.d1);
         var tmp_cos = 1;
@@ -562,12 +562,53 @@ angular.module('pedaleswitchApp')
 
           case 'left':
 
-            delta = mousePos.y - left.points[index].y;
-            cosinus = (left.points[1].x - left.points[0].x)  / ((up.points[3].y - up.points[0].y) - (mousePos.y - up.points[index].y));
+            old_adj = left.points[1].y - left.points[0].y;
+            adj = old_adj - (mousePos.y - left.points[index].y);
+            opp = left.points[2].x - left.points[3].x;
+            old_hypo = getTriangleHypo(old_adj, opp);
+            hypo = getTriangleHypo(adj, opp);
+            cosinus = adj / hypo;
+
+
+            // Test de la projection UP.
+            // test uniquement sur le bord haut de la projection UP.
+            delta = old_hypo - hypo;
+
             ref = index;
+
+            if (ref === 0 || ref === 1) {
+
+              // On détermine le delta de mouvement à partir de la projection active.
+              move = up.points[ref].y + delta;
+
+              // On verifie si une limite est atteinte sur la projection testée.
+              // Si limite atteinte, on cherche l'épaisseur de la projection.
+              if (move > up.size_proj_mini.t - this.margin) {
+                left.setOverlapping(true);
+                //test = Math.max(test, up.points[3].y - (up.size_proj_mini.t - this.margin));
+                test = up.points[3].y - (up.size_proj_mini.t - this.margin);
+              }
+
+              // On construit la fonction qui sera exécutée en fin de block.
+              func = function(){
+                var m = move;
+                return function(value){
+                  // Si value = undefined : la projection est agrandie de la valeur delta 'm'.
+                  // Si value définie : la projection est agrandie en fonction de l'épaisseur passée en argument.
+                  var v = value ? up.points[3].y - value : value;
+                  up.points[0].setY(v || m);
+                  up.points[1].setY(v || m);
+                }
+              };
+
+              // La fonction anonyme retournée est chargée dans la table, prête à être exécutée.
+              execute.push(func());
+            }
 
             // Test de la projection TOP
             // Si deplacement bord haut de la projection TOP.
+            delta = mousePos.y - left.points[index].y;
+
             if (ref === 0 || ref === 1) {
 
               // On détermine le delta de mouvement à partir de la projection active.
@@ -620,36 +661,7 @@ angular.module('pedaleswitchApp')
 
             // Test de la projection BOTTOM
             // Si deplacement bord haut de la projection BOTTOM.
-            if (ref === 0 || ref === 1) {
-
-              // On détermine le delta de mouvement à partir de la projection active.
-              move = bottom.points[ref].y + delta;
-
-              // On verifie si une limite est atteinte sur la projection testée.
-              // Si limite atteinte, on cherche l'épaisseur de la projection.
-              if (move > bottom.size_proj_mini.t - this.margin) {
-                left.setOverlapping(true);
-                test = Math.max(test, bottom.points[3].y - (bottom.size_proj_mini.t - this.margin));
-              }
-
-              // On construit la fonction qui sera exécutée en fin de block.
-              func = function(){
-                var m = move;
-                return function(value){
-                  // Si value = undefined : la projection est agrandie de la valeur delta 'm'.
-                  // Si value définie : la projection est agrandie en fonction de l'épaisseur passée en argument.
-                  var v = value ? bottom.points[3].y - value : value;
-                  bottom.points[0].setY(v || m);
-                  bottom.points[1].setY(v || m);
-                }
-              };
-
-              // La fonction anonyme retournée est chargée dans la table, prête à être exécutée.
-              execute.push(func());
-            }
-
-            // Si deplacement bord bas de la projection BOTTOM.
-            else {
+            if (ref === 2 || ref === 3) {
 
               move = bottom.points[ref].y + delta;
 
@@ -675,7 +687,9 @@ angular.module('pedaleswitchApp')
               for(var i in execute){
                 execute[i](test);
               }
-              return getTriangleHypo(test, opp);
+              //return getTriangleHypo(test, opp);
+              //return test * cosinus
+              return getTriangleSide(test, opp) + (left.points[2].y - left.points[1].y);
             }
             else {
               for(var i in execute){
@@ -687,11 +701,54 @@ angular.module('pedaleswitchApp')
 
           case 'right':
 
-            delta = mousePos.y - right.points[index].y;
-            cosinus = (right.points[1].x - right.points[0].x)  / ((up.points[3].y - up.points[0].y) - (mousePos.y - up.points[index].y));
+            old_adj = right.points[0].y - right.points[1].y;
+            adj = old_adj - (mousePos.y - right.points[index].y);
+            opp = right.points[2].x - right.points[3].x;
+            old_hypo = getTriangleHypo(old_adj, opp);
+            hypo = getTriangleHypo(adj, opp);
+            cosinus = adj / hypo;
+
+            // Test de la projection UP.
+            // test uniquement sur le bord haut de la projection UP.
+            delta = old_hypo - hypo;
+
             ref = index;
 
+            if (ref === 0 || ref === 1) {
+
+              // On détermine le delta de mouvement à partir de la projection active.
+              move = up.points[ref].y + delta;
+
+              // On verifie si une limite est atteinte sur la projection testée.
+              // Si limite atteinte, on cherche l'épaisseur de la projection.
+              if (move > up.size_proj_mini.t - this.margin) {
+                right.setOverlapping(true);
+                //test = Math.max(test, up.points[3].y - (up.size_proj_mini.t - this.margin));
+                test = up.points[3].y - (up.size_proj_mini.t - this.margin);
+              }
+
+              // On construit la fonction qui sera exécutée en fin de block.
+              func = function(){
+                var m = move;
+                return function(value){
+                  // Si value = undefined : la projection est agrandie de la valeur delta 'm'.
+                  // Si value définie : la projection est agrandie en fonction de l'épaisseur passée en argument.
+                  var v = value ? up.points[3].y - value : value;
+                  up.points[0].setY(v || m);
+                  up.points[1].setY(v || m);
+                }
+              };
+
+              // La fonction anonyme retournée est chargée dans la table, prête à être exécutée.
+              execute.push(func());
+            }
+
+
+
             // Test de la projection TOP
+            delta = mousePos.y - right.points[index].y;
+            ref = index;
+
             // Si deplacement bord haut de la projection TOP.
             if (ref === 0 || ref === 1) {
 
@@ -745,36 +802,7 @@ angular.module('pedaleswitchApp')
 
             // Test de la projection BOTTOM
             // Si deplacement bord haut de la projection BOTTOM.
-            if (ref === 0 || ref === 1) {
-
-              // On détermine le delta de mouvement à partir de la projection active.
-              move = bottom.points[ref].y + delta;
-
-              // On verifie si une limite est atteinte sur la projection testée.
-              // Si limite atteinte, on cherche l'épaisseur de la projection.
-              if (move > bottom.size_proj_mini.t - this.margin) {
-                right.setOverlapping(true);
-                test = Math.max(test, bottom.points[3].y - (bottom.size_proj_mini.t - this.margin));
-              }
-
-              // On construit la fonction qui sera exécutée en fin de block.
-              func = function(){
-                var m = move;
-                return function(value){
-                  // Si value = undefined : la projection est agrandie de la valeur delta 'm'.
-                  // Si value définie : la projection est agrandie en fonction de l'épaisseur passée en argument.
-                  var v = value ? bottom.points[3].y - value : value;
-                  bottom.points[0].setY(v || m);
-                  bottom.points[1].setY(v || m);
-                }
-              };
-
-              // La fonction anonyme retournée est chargée dans la table, prête à être exécutée.
-              execute.push(func());
-            }
-
-            // Si deplacement bord bas de la projection BOTTOM.
-            else {
+            if (ref === 2 || ref === 3) {
 
               move = bottom.points[ref].y + delta;
 
@@ -800,7 +828,8 @@ angular.module('pedaleswitchApp')
               for(var i in execute){
                 execute[i](test);
               }
-              return getTriangleHypo(test, opp);
+              //return getTriangleHypo(test, opp);
+              return getTriangleSide(test, opp) + (right.points[3].y - right.points[0].y);
             }
             else {
               for(var i in execute){

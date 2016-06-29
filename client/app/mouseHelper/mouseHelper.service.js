@@ -15,6 +15,7 @@ angular.module('pedaleswitchApp')
 
 
     var mousePos = {};
+    var viewState;
 
     /**
      * Change la forme du pointeur de la souris.
@@ -37,6 +38,7 @@ angular.module('pedaleswitchApp')
 
         tabActive = canvasControl.getTableActive();
         boite = canvasControl.getBoite();
+        viewState = canvasControl.getViewState();
 
         // Met le bon pointeur de souris
         update('default');
@@ -84,13 +86,62 @@ angular.module('pedaleswitchApp')
           }
         }
 
+        // Si une boite existe.
         if (boite.titre !== undefined){
-          // Regarde si la souris est sur les bordure de la boite.
-          drag = checkCollision.checkMouseBorder(mousePos, [boite], 10);
-          if (drag) {
-            drag.type = 'borderboite';
-            update(drag.pointer.type);
-            return;
+
+          // Selon la vue, on regarde si la souris est sur les corners ou les borders.
+          switch(viewState){
+
+            case 'up':
+              drag = checkCollision.checkMouseBorder(mousePos, [boite], 10);
+              if (drag) {
+                drag.type = 'borderboite';
+                update(drag.pointer.type);
+                return;
+              }
+              break;
+
+            case 'left' :
+              drag = checkCollision.checkMouseCorner(mousePos, [boite], 10, ['top-left']);
+              if (drag) {
+                drag.type = 'cornersideboite';
+                update(drag.pointer.type);
+                return;
+              }
+              drag = checkCollision.checkMouseBorder(mousePos, [boite], 10);
+              if (drag && drag.pointer.pos !== 'top'){
+                drag.type = 'borderboite';
+                update(drag.pointer.type);
+                return;
+              }
+              break;
+
+            case 'right' :
+              drag = checkCollision.checkMouseCorner(mousePos, [boite], 10, ['top-right']);
+              if (drag) {
+                drag.type = 'cornersideboite';
+                update(drag.pointer.type);
+                return;
+              }
+              drag = checkCollision.checkMouseBorder(mousePos, [boite], 10);
+              if (drag && drag.pointer.pos !== 'top'){
+                drag.type = 'borderboite';
+                update(drag.pointer.type);
+                return;
+              }
+              break;
+
+            case 'top':
+              break;
+
+            case 'bottom':
+              break;
+
+            case 'down':
+              break;
+
+            default:
+              return console.log('ERROR ' + viewState + ' is not a valid state');
           }
 
           // Regarde si la souris est sur la boite
@@ -123,6 +174,9 @@ angular.module('pedaleswitchApp')
             break;
           case 'boite':
             $rootScope.$emit('click-on-boite');
+            break;
+          case 'cornersideboite':
+            $rootScope.$emit('click-on-corner-side-boite');
             break;
           case 'borderboite':
             $rootScope.$emit('click-on-border-boite');
@@ -164,13 +218,10 @@ angular.module('pedaleswitchApp')
       },
 
       /**
-       * On agrandie la boite.
-       *
-       * @todo un bonne partie est a metre dans canvasContol
-       * car par exemple les marges ne sont pas uniforme
-       * canvasConversion.convertToPixel(40)
+       * En vue LEFT ou RIGHT, agrandi une seule hauteur par le coin.
+       * @param e
        */
-      mouseMoveBorderBoite: function(e){
+      mouseMouveCornerSideBoite: function(e){
 
         // Delais avant le drag
         timeb = (new Date()).getTime() - timea;
@@ -189,6 +240,108 @@ angular.module('pedaleswitchApp')
         var marginCanvas = canvasControl.getMarginCanvas();
         var marginBoite = canvasControl.getBoite().margin;
 
+        switch(viewState){
+
+          case 'left':
+            // Coin haut-gauche.
+            if (drag.pointer.type === 'nw-resize'){
+
+              // La souris est plus haut que la marge.
+              if (mousePos.y < marginCanvas){
+                mousePos.y = marginCanvas;
+              }
+
+              // Regarde si pas inferieur au bord droit.
+              if (mousePos.y > boite.points[1].y) {
+                mousePos.y = boite.points[1].y;
+              }
+
+              // Regarde si pas inferieur a un composant ou a effet.
+              if (mousePos.y > pos_max.t - marginBoite) {
+                mousePos.y = pos_max.t - marginBoite;
+              }
+
+              // Regarde sur les autres projections si pas inférieur a un composant ou un effet.
+              test_proj = masterBoite.projectionsCollisionY(viewState, mousePos, 0);
+              if(test_proj) {
+                mousePos.y = boite.points[3].y - test_proj;
+              }
+
+              // Redimensionne la boite.
+              boite.points[0].setY(mousePos.y);
+            }
+            break;
+
+          case 'right':
+            // Coin haut-droit.
+            if (drag.pointer.type === 'ne-resize'){
+
+              // La souris est plus haut que la marge.
+              if (mousePos.y < marginCanvas){
+                mousePos.y = marginCanvas;
+              }
+
+              // Regarde si pas inferieur au bord gauche.
+              if (mousePos.y > boite.points[0].y) {
+                mousePos.y = boite.points[0].y;
+              }
+
+              // Regarde si pas inferieur a un composant ou a effet.
+              if (mousePos.y > pos_max.t - marginBoite) {
+                mousePos.y = pos_max.t - marginBoite;
+              }
+
+              // Regarde sur les autres projections si pas inférieur a un composant ou un effet.
+              test_proj = masterBoite.projectionsCollisionY(viewState, mousePos, 1);
+              if(test_proj) {
+                mousePos.y = boite.points[2].y - test_proj;
+              }
+
+              // Redimensionne la boite.
+              boite.points[1].setY(mousePos.y);
+            }
+            break;
+
+          default:
+            return console.log('ERROR ' + viewState + ' is not a valid state. Only "left" or "right" allowed');
+        }
+
+        // Recalcule les positions de fleches entourant la boite.
+        canvasControl.setArrowPos();
+        canvasDraw.drawStuff();
+      },
+
+      /**
+       * On agrandie la boite.
+       *
+       * @todo un bonne partie est a metre dans canvasContol
+       * car par exemple les marges ne sont pas uniforme
+       * canvasConversion.convertToPixel(40)
+       */
+      mouseMoveBorderBoite: function(e){
+
+        var b1, b2;
+        var limit = 50;
+
+        // Delais avant le drag
+        timeb = (new Date()).getTime() - timea;
+        if (timeb < DELAY_DRAG) {
+          return;
+        }
+
+        mousePos = {x: e.layerX, y: e.layerY};
+
+        var test_proj = false;
+        var canvas = canvasControl.getCanvas();
+        var pos_max = canvasControl.findGlobalRect();
+        var masterBoite = canvasControl.getMasterBoite();
+        var viewState = canvasControl.getViewState();
+
+        var marginCanvas = canvasControl.getMarginCanvas();
+        var marginBoite = canvasControl.getBoite().margin;
+
+        limit = (viewState === 'left' || viewState === 'right') ? masterBoite.initialHeight : limit;
+
         // Bord haut ou bas.
         if (drag.pointer.type === 'ns-resize'){
 
@@ -203,6 +356,21 @@ angular.module('pedaleswitchApp')
             // Regarde si pas inferieur a un composant ou a effet.
             if (mousePos.y < pos_max.b + marginBoite) {
               mousePos.y = pos_max.b + marginBoite;
+            }
+
+            // Regarde si pas inferieur à une taille minimale.
+            // On determine le bord le plus court.
+            b1 = boite.points[3].y - boite.points[0].y;
+            b2 = boite.points[2].y - boite.points[1].y;
+            if ( b1 <= b2 ) {
+              if (mousePos.y < boite.points[0].y + limit) {
+                mousePos.y = boite.points[0].y + limit;
+              }
+            }
+            else {
+              if (mousePos.y < boite.points[1].y + limit) {
+                mousePos.y = boite.points[1].y + limit;
+              }
             }
 
             // Regarde sur les autres projections si pas inférieur a un composant ou un effet.
