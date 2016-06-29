@@ -3,27 +3,14 @@ Sous Safari
 Le drag&drop ne marche pas quand on prend directement le nom de l'effet du panier. Pour que cela marche il faut ajouter
 draggable='true' en attribut du span qui contient le titre.
 
+Directive droppable : Virer les evenement inutile (dragenter, dragleave)
+
+Box-dessin.controller.js : Pk il est dans une fonctionne anonyme contrairement a tout les autres ?
 
 Texte :
 
-  Debut d'implémentation du texte vertical :
-      J'ai ajouter le booléan a la classe texte this.vertical
-      du cout pour calculer la position j'ai modifier getsize en fonction de this.vertical
-      et j'ai modifier drawCanvas
-
-      Plein de bug : exemeple pendant la rotation le texte bouge dans la boite
-      Le passe de vertical a non est a faire
-
-  Pour le changement de police :
-      regarder ce module :
-        https://github.com/Jimdo/angular-fontselect
-        avec comme demo cette page ca me parait super cool
-        http://jimdo.github.io/angular-fontselect/
 
 Rotation :
 
   Quand on tourne un obj trop pret du canvas l'est composant qui le compose bouge...
-
-
- 4) quand on change les valeurs de la dim de la boite par les flèches elle ne s'agrandit pas
 

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('pedaleswitchApp')
-  .directive('droppable', function (canvasControl, canvasDraw, instanceDessin, canvasConversion) {
+  .directive('droppable', function (canvasControl, canvasDraw, instanceDessin) {
     return {
 
       link: function(scope, element) {
