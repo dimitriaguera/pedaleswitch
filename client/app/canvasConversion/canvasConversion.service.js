@@ -81,6 +81,14 @@ angular.module('pedaleswitchApp')
         };
       },
 
+      getCanvasCenterInWindow: function () {
+        var center = this.getCanvasSize();
+        return {
+          x: center.w / 2,
+          y: center.h / 2
+        }
+      },
+
       getZoomRatio: function () {
         return Math.round(zoom * 100);
       },

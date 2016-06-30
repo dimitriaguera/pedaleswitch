@@ -280,7 +280,39 @@ angular.module('pedaleswitchApp')
         }
       }
 
+      moveCloseBorder(canvas, marginCanvas, marginAdd) {
 
+        marginAdd = marginAdd || 0;
+        marginCanvas += marginAdd;
+
+        var vector = {
+          x: 0,
+          y: 0
+        };
+
+        // Regarde si la figure sort du canvas.
+        var max_pos = this.findExtreme();
+
+        // Debordement par le haut.
+        if (max_pos.t < marginCanvas) {
+          this.move({x:0, y: marginCanvas - max_pos.t});
+          vector.y = marginCanvas - max_pos.t;
+        }
+        // Debordement par la gauche.
+        if (max_pos.l < marginCanvas) {
+          this.move({x:marginCanvas - max_pos.l, y:0});
+          vector.x = marginCanvas - max_pos.l;
+        }
+        // Debordement par la droite.
+        if (max_pos.r + marginCanvas + 150 > canvas.width) {
+          canvas.width = max_pos.r + marginCanvas + 150;
+        }
+        // Debordement par le bas.
+        if (max_pos.b + marginCanvas + 150 > canvas.height) {
+          canvas.height = max_pos.b + marginCanvas + 150;
+        }
+        return vector;
+      }
     }
 
 
@@ -334,6 +366,23 @@ angular.module('pedaleswitchApp')
 
     /**
      * Constructeur de la classe MasterBoite.
+     *
+     * La propriété 'projections' détient 6 proriétés, une pour chaque 'vue' du canvas.
+     * Chaqune des propriétés correspondates fait référence à une instance de l'objet 'Boite'.
+     *
+     *    -> VUE DESSUS  - viewState 'up':
+     *       masterBoite.projections.up
+     *    -> VUE DESSOUS  - viewState 'down':
+     *       masterBoite.projections.down
+     *    -> VUE COTE GAUCHE  - viewState 'left':
+     *       masterBoite.projections.left
+     *    -> VUE COTE DROIT  - viewState 'right':
+     *       masterBoite.projections.right
+     *    -> VUE COTE AVANT  - viewState 'bottom':
+     *       masterBoite.projections.bottom
+     *    -> VUE COTE ARRIERE  - viewState 'top':
+     *       masterBoite.projections.top
+     *
      */
     class MasterBoite {
       constructor(entity) {
@@ -403,10 +452,10 @@ angular.module('pedaleswitchApp')
        */
       projectionsCollisionY(state, mousePos, index){
 
-        var delta, up, left, right, top, bottom, ref, move, func, i, hypo, old_hypo, adj, old_adj, test_tmp;
-        var cosinus = this.size.h / this.size.d;
+        var delta, up, left, right, top, bottom, ref, move, func, i, hypo, old_hypo, adj, old_adj, height;
+        var cosinus;
         var opp = (this.size.d2 - this.size.d1);
-        var tmp_cos = 1;
+        var test_tmp = 0;
 
         var test = 0;
         var execute = [];
@@ -430,9 +479,6 @@ angular.module('pedaleswitchApp')
 
             // Test de la projection LEFT.
             // On calcul le delta de deplacement de la bordure.
-            //hypo = (up.points[3].y - up.points[0].y) - (mousePos.y - up.points[index].y);
-            //adj = getTriangleSide(hypo, opp);
-            //delta = (left.points[1].x - left.points[0].x) - adj;
 
             cosinus = (left.points[1].x - left.points[0].x)  / ((up.points[3].y - up.points[0].y) - (mousePos.y - up.points[index].y));
             delta = (mousePos.y - up.points[index].y) * cosinus;
@@ -567,7 +613,7 @@ angular.module('pedaleswitchApp')
             opp = left.points[2].x - left.points[3].x;
             old_hypo = getTriangleHypo(old_adj, opp);
             hypo = getTriangleHypo(adj, opp);
-            cosinus = adj / hypo;
+            height = left.points[2].y - left.points[1].y;
 
 
             // Test de la projection UP.
@@ -585,7 +631,6 @@ angular.module('pedaleswitchApp')
               // Si limite atteinte, on cherche l'épaisseur de la projection.
               if (move > up.size_proj_mini.t - this.margin) {
                 left.setOverlapping(true);
-                //test = Math.max(test, up.points[3].y - (up.size_proj_mini.t - this.margin));
                 test = up.points[3].y - (up.size_proj_mini.t - this.margin);
               }
 
@@ -618,7 +663,10 @@ angular.module('pedaleswitchApp')
               // Si limite atteinte, on cherche l'épaisseur de la projection.
               if (move > top.size_proj_mini.t - this.margin) {
                 left.setOverlapping(true);
-                test = Math.max(test, top.points[3].y - (top.size_proj_mini.t - this.margin));
+                // On cherche l'équivalent hypothénuse sur up de la limite sur top.
+                adj = (top.points[3].y - (top.size_proj_mini.t - this.margin)) - height;
+                hypo = getTriangleHypo(adj, opp);
+                test = Math.max(test, hypo);
               }
 
               // On construit la fonction qui sera exécutée en fin de block.
@@ -627,7 +675,7 @@ angular.module('pedaleswitchApp')
                 return function(value){
                   // Si value = undefined : la projection est agrandie de la valeur delta 'm'.
                   // Si value définie : la projection est agrandie en fonction de l'épaisseur passée en argument.
-                  var v = value ? top.points[3].y - value : value;
+                  var v = value ? top.points[3].y - (getTriangleSide(value, opp) + height) : value;
                   top.points[0].setY(v || m);
                   top.points[1].setY(v || m);
                 }
@@ -660,20 +708,20 @@ angular.module('pedaleswitchApp')
             }
 
             // Test de la projection BOTTOM
-            // Si deplacement bord haut de la projection BOTTOM.
+            // Si deplacement bord bas de la projection BOTTOM.
             if (ref === 2 || ref === 3) {
 
               move = bottom.points[ref].y + delta;
 
               if (move < bottom.size_proj_mini.b + this.margin) {
                 left.setOverlapping(true);
-                test = Math.max(test, (bottom.size_proj_mini.b + this.margin) - bottom.points[0].y);
+                test = Math.max(test, ((bottom.size_proj_mini.b + this.margin) - bottom.points[0].y) + old_adj);
               }
 
               func = function(){
                 var m = move;
                 return function(value){
-                  var v = value ? bottom.points[0].y + value : value;
+                  var v = value ? bottom.points[0].y + (value - old_adj) : value;
                   bottom.points[2].setY(v || m);
                   bottom.points[3].setY(v || m);
                 }
@@ -682,21 +730,78 @@ angular.module('pedaleswitchApp')
               execute.push(func());
             }
 
-            // Exécution des mouvements de projections.
-            if (test !== 0){
-              for(var i in execute){
-                execute[i](test);
-              }
-              //return getTriangleHypo(test, opp);
-              //return test * cosinus
-              return getTriangleSide(test, opp) + (left.points[2].y - left.points[1].y);
+            // Test de la projection RIGHT
+            // Si deplacement sommet droit de la projection RIGHT.
+            // Pas besoin de test collision.
+            // On coordonne uniquement le déplacement du sommet.
+            if (ref === 0){
+              move = right.points[1].y + delta;
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? right.points[2].y - (getTriangleSide(value, opp) + height) : value;
+                  right.points[1].setY(v || m);
+                }
+              };
+
+              execute.push(func());
             }
-            else {
-              for(var i in execute){
-                execute[i]();
+
+
+            // Si deplacement bord bas de la projection RIGHT.
+            if (ref === 2 || ref === 3) {
+
+              move = right.points[ref].y + delta;
+
+              if (move < right.size_proj_mini.b + this.margin) {
+                left.setOverlapping(true);
+                test = Math.max(test, (right.size_proj_mini.b + this.margin) - right.points[1].y);
               }
-              left.setOverlapping(false);
-              return false;
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? right.points[1].y + value : value;
+                  right.points[2].setY(v || m);
+                  right.points[3].setY(v || m);
+                }
+              };
+
+              execute.push(func());
+            }
+
+            // Exécution des mouvements de projections.
+            // Si mouvement côté haut sur Left.
+            if( test_tmp === 1 ) {
+              if (test !== 0) {
+                for (var i in execute) {
+                  execute[i](test);
+                }
+                return getTriangleSide(test, opp) + height;
+              }
+              else {
+                for (var i in execute) {
+                  execute[i]();
+                }
+                left.setOverlapping(false);
+                return false;
+              }
+            }
+          // Si mouvement côté bas sur Left.
+            else {
+              if (test !== 0) {
+                for (var i in execute) {
+                  execute[i](test);
+                }
+                return test
+              }
+              else {
+                for (var i in execute) {
+                  execute[i]();
+                }
+                left.setOverlapping(false);
+                return false;
+              }
             }
 
           case 'right':
@@ -706,7 +811,7 @@ angular.module('pedaleswitchApp')
             opp = right.points[2].x - right.points[3].x;
             old_hypo = getTriangleHypo(old_adj, opp);
             hypo = getTriangleHypo(adj, opp);
-            cosinus = adj / hypo;
+            height = right.points[3].y - right.points[0].y;
 
             // Test de la projection UP.
             // test uniquement sur le bord haut de la projection UP.
@@ -725,6 +830,7 @@ angular.module('pedaleswitchApp')
                 right.setOverlapping(true);
                 //test = Math.max(test, up.points[3].y - (up.size_proj_mini.t - this.margin));
                 test = up.points[3].y - (up.size_proj_mini.t - this.margin);
+                test_tmp = 1;
               }
 
               // On construit la fonction qui sera exécutée en fin de block.
@@ -759,7 +865,10 @@ angular.module('pedaleswitchApp')
               // Si limite atteinte, on cherche l'épaisseur de la projection.
               if (move > top.size_proj_mini.t - this.margin) {
                 right.setOverlapping(true);
-                test = Math.max(test, top.points[3].y - (top.size_proj_mini.t - this.margin));
+                adj = (top.points[3].y - (top.size_proj_mini.t - this.margin)) - height;
+                hypo = getTriangleHypo(adj, opp);
+                test = Math.max(test, hypo);
+                test_tmp = 1;
               }
 
               // On construit la fonction qui sera exécutée en fin de block.
@@ -768,7 +877,7 @@ angular.module('pedaleswitchApp')
                 return function(value){
                   // Si value = undefined : la projection est agrandie de la valeur delta 'm'.
                   // Si value définie : la projection est agrandie en fonction de l'épaisseur passée en argument.
-                  var v = value ? top.points[3].y - value : value;
+                  var v = value ? top.points[3].y - (getTriangleSide(value, opp) + height) : value;
                   top.points[0].setY(v || m);
                   top.points[1].setY(v || m);
                 }
@@ -801,20 +910,20 @@ angular.module('pedaleswitchApp')
             }
 
             // Test de la projection BOTTOM
-            // Si deplacement bord haut de la projection BOTTOM.
+            // Si deplacement bord bas de la projection BOTTOM.
             if (ref === 2 || ref === 3) {
 
               move = bottom.points[ref].y + delta;
 
               if (move < bottom.size_proj_mini.b + this.margin) {
                 right.setOverlapping(true);
-                test = Math.max(test, (bottom.size_proj_mini.b + this.margin) - bottom.points[0].y);
+                test = Math.max(test, ((bottom.size_proj_mini.b + this.margin) - bottom.points[0].y) + old_adj);
               }
 
               func = function(){
                 var m = move;
                 return function(value){
-                  var v = value ? bottom.points[0].y + value : value;
+                  var v = value ? bottom.points[0].y + (value - old_adj) : value;
                   bottom.points[2].setY(v || m);
                   bottom.points[3].setY(v || m);
                 }
@@ -823,24 +932,84 @@ angular.module('pedaleswitchApp')
               execute.push(func());
             }
 
-            // Exécution des mouvements de projections.
-            if (test !== 0){
-              for(var i in execute){
-                execute[i](test);
-              }
-              //return getTriangleHypo(test, opp);
-              return getTriangleSide(test, opp) + (right.points[3].y - right.points[0].y);
+            // Test de la projection LEFT
+            // Si deplacement sommet gauche de la projection LEFT.
+            // Pas besoin de test collision.
+            // On coordonne uniquement le déplacement du sommet.
+            if (ref === 1){
+              move = left.points[0].y + delta;
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? left.points[3].y - (getTriangleSide(value, opp) + height) : value;
+                  left.points[0].setY(v || m);
+                }
+              };
+
+              execute.push(func());
             }
-            else {
-              for(var i in execute){
-                execute[i]();
+            // Si deplacement bord bas de la projection LEFT.
+            if (ref === 2 || ref === 3) {
+
+              move = left.points[ref].y + delta;
+
+              if (move < left.size_proj_mini.b + this.margin) {
+                right.setOverlapping(true);
+                test = Math.max(test, (left.size_proj_mini.b + this.margin) - left.points[0].y);
               }
-              right.setOverlapping(false);
-              return false;
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? left.points[0].y + value : value;
+                  left.points[2].setY(v || m);
+                  left.points[3].setY(v || m);
+                }
+              };
+
+              execute.push(func());
             }
 
+            // Exécution des mouvements de projections.
+            // Si mouvement côté haut sur Right.
+            if( test_tmp === 1 ) {
+              if (test !== 0) {
+                for (var i in execute) {
+                  execute[i](test);
+                }
+                return getTriangleSide(test, opp) + height;
+              }
+              else {
+                for (var i in execute) {
+                  execute[i]();
+                }
+                right.setOverlapping(false);
+                return false;
+              }
+            }
+            // Si mouvement côté bas sur Right.
+            else {
+              if (test !== 0) {
+                for (var i in execute) {
+                  execute[i](test);
+                }
+                return test
+              }
+              else {
+                for (var i in execute) {
+                  execute[i]();
+                }
+                right.setOverlapping(false);
+                return false;
+              }
+            }
+
+          case 'top':
+            return console.log('WARNING : "' + state + '" viewState is not yet implemented in box collision');
+          case 'bottom':
+            return console.log('WARNING : "' + state + '" viewState is not yet implemented in box collision');
           default:
-            return console.log('ERROR ' + state + ' is not a valid state');
+            return console.log('ERROR : ' + state + ' is not a valid state');
         }
       }
 
@@ -858,12 +1027,20 @@ angular.module('pedaleswitchApp')
        */
       projectionsCollisionX(state, mousePos, index){
 
-        var delta, up, left, right, top, bottom, ref, move, func, i, test_tmp;
+        var delta, up, left, right, top, bottom, ref, move, func, i, test_tmp, old_adj, adj, opp, old_hypo, hypo;
         var cosinus = this.size.h / this.size.d;
         var tmp_cos = 1;
 
         var test = 0;
         var execute = [];
+
+        var getTriangleSide = function(hypo, side){
+          return Math.sqrt(hypo * hypo - side * side);
+        };
+
+        var getTriangleHypo = function(adj, opp){
+          return Math.sqrt(adj * adj + opp * opp);
+        };
 
         up = this.projections.up;
         left = this.projections.left;
@@ -1222,7 +1399,15 @@ angular.module('pedaleswitchApp')
           case 'left':
             // Test de la projection UP.
             // On calcul le delta de deplacement de la bordure.
-            delta = (mousePos.x - left.points[index].x) / cosinus;
+
+            old_adj = left.points[1].x - left.points[0].x;
+            adj = old_adj - (mousePos.x - left.points[index].x);
+            opp = left.points[1].y - left.points[0].y;
+            old_hypo = getTriangleHypo(old_adj, opp);
+            hypo = getTriangleHypo(adj, opp);
+
+            delta = old_hypo - hypo;
+            //delta = (mousePos.x - left.points[index].x) / cosinus;
             ref = ((index + 1) <= 3) ? index + 1 : 0;
 
             // Si deplacement bord bas de la projection UP.
@@ -1233,7 +1418,7 @@ angular.module('pedaleswitchApp')
               if (move < up.size_proj_mini.b + this.margin) {
                 left.setOverlapping(true);
                 test = Math.max(test, (up.size_proj_mini.b + this.margin) - up.points[0].y);
-                tmp_cos = cosinus;
+                tmp_cos = getTriangleSide(test, opp) / test;
               }
 
               func = function(){
@@ -1256,7 +1441,7 @@ angular.module('pedaleswitchApp')
               if (move > up.size_proj_mini.t - this.margin) {
                 left.setOverlapping(true);
                 test = Math.max(test, up.points[3].y - (up.size_proj_mini.t - this.margin));
-                tmp_cos = cosinus;
+                tmp_cos = getTriangleSide(test, opp) / test;
               }
 
               func = function(){
@@ -1273,6 +1458,7 @@ angular.module('pedaleswitchApp')
 
             // Test de la projection RIGHT
             // On calcul le delta de deplacement de la bordure.
+            delta = (mousePos.x - left.points[index].x);
             ref = ((index - 2) >= 0) ? index - 2 : index + 2;
 
             // Si deplacement bord gauche de la projection RIGHT.
@@ -1282,25 +1468,17 @@ angular.module('pedaleswitchApp')
 
               if (move > right.size_proj_mini.l - this.margin) {
                 left.setOverlapping(true);
-                // si la limite a été atteinte sur l'hypotenuse auparavant.
-                if (test !== 0 && tmp_cos < 1){
-                  test_tmp = Math.max(test, (right.points[1].x - (right.size_proj_mini.l - this.margin)) / cosinus);
-                  // si la limite actuelle passe avant celle de l'hypothenuse.
-                  if (test_tmp > test){
-                    tmp_cos = 1;
-                    test = right.points[1].x - (right.size_proj_mini.l - this.margin);
-                  }
-                }
-                // Si pas de limite sur l'hypothenuse auparavant, test standard.
-                else {
-                  test = Math.max(test, right.points[1].x - (right.size_proj_mini.l - this.margin));
+                test_tmp = Math.max(test, getTriangleHypo(right.points[1].x - (right.size_proj_mini.l - this.margin), opp));
+                if (test_tmp > test) {
+                  tmp_cos = (right.points[1].x - (right.size_proj_mini.l - this.margin)) / test_tmp;
+                  test = test_tmp;
                 }
               }
 
               func = function(){
                 var m = move;
                 return function(value){
-                  var v = value ? right.points[1].x - value : value;
+                  var v = value ? right.points[1].x - (value * tmp_cos) : value;
                   right.points[0].setX(v || m);
                   right.points[3].setX(v || m);
                 }
@@ -1316,25 +1494,17 @@ angular.module('pedaleswitchApp')
 
               if (move < right.size_proj_mini.r + this.margin) {
                 left.setOverlapping(true);
-                // si la limite a été atteinte sur l'hypotenuse auparavant.
-                if (test !== 0 && tmp_cos < 1){
-                  test_tmp = Math.max(test, ((right.size_proj_mini.r + this.margin) - right.points[0].x) / cosinus);
-                  // si la limite actuelle passe avant celle de l'hypothenuse.
-                  if (test_tmp > test){
-                    tmp_cos = 1;
-                    test = (right.size_proj_mini.r + this.margin) - right.points[0].x;
-                  }
-                }
-                // Si pas de limite sur l'hypothénuse auparavant, test standard.
-                else {
-                  test = Math.max(test, (right.size_proj_mini.r + this.margin) - right.points[0].x);
+                test_tmp = Math.max(test, getTriangleHypo((right.size_proj_mini.r + this.margin) - right.points[0].x, opp));
+                if (test_tmp > test) {
+                  tmp_cos = ((right.size_proj_mini.r + this.margin) - right.points[0].x) / test_tmp;
+                  test = test_tmp;
                 }
               }
 
               func = function(){
                 var m = move;
                 return function(value){
-                  var v = value ? right.points[0].x + value : value;
+                  var v = value ? right.points[0].x + (value * tmp_cos) : value;
                   right.points[1].setX(v || m);
                   right.points[2].setX(v || m);
                 }
@@ -1361,7 +1531,14 @@ angular.module('pedaleswitchApp')
           case 'right':
             // Test de la projection UP.
             // On calcul le delta de deplacement de la bordure.
-            delta = (mousePos.x - right.points[index].x) / cosinus;
+
+            old_adj = right.points[1].x - right.points[0].x;
+            adj = old_adj - (mousePos.x - right.points[index].x);
+            opp = right.points[0].y - right.points[1].y;
+            old_hypo = getTriangleHypo(old_adj, opp);
+            hypo = getTriangleHypo(adj, opp);
+
+            delta = old_hypo - hypo;
             ref = ((index - 1) >= 0) ? index - 1 : 3;
 
             // Si deplacement bord bas de la projection UP.
@@ -1372,6 +1549,7 @@ angular.module('pedaleswitchApp')
               if (move < up.size_proj_mini.b + this.margin) {
                 right.setOverlapping(true);
                 test = Math.max(test, (up.size_proj_mini.b + this.margin) - up.points[0].y);
+                tmp_cos = getTriangleSide(test, opp) / test;
               }
 
               func = function(){
@@ -1394,6 +1572,7 @@ angular.module('pedaleswitchApp')
               if (move > up.size_proj_mini.t - this.margin) {
                 right.setOverlapping(true);
                 test = Math.max(test, up.points[3].y - (up.size_proj_mini.t - this.margin));
+                tmp_cos = getTriangleSide(test, opp) / test;
               }
 
               func = function(){
@@ -1410,6 +1589,7 @@ angular.module('pedaleswitchApp')
 
             // Test de la projection LEFT.
             // On calcul le delta de deplacement de la bordure.
+            delta = (mousePos.x - right.points[index].x);
             ref = ((index - 2) >= 0) ? index - 2 : index + 2;
 
             // Si deplacement bord gauche de la projection LEFT.
@@ -1419,25 +1599,17 @@ angular.module('pedaleswitchApp')
 
               if (move > left.size_proj_mini.l - this.margin) {
                 right.setOverlapping(true);
-                // si la limite a été atteinte sur l'hypotenuse auparavant.
-                if (test !== 0 && tmp_cos < 1){
-                  test_tmp = Math.max(test, (left.points[1].x - (left.size_proj_mini.l - this.margin)) / cosinus);
-                  // si la limite actuelle passe avant celle de l'hypothenuse.
-                  if (test_tmp > test){
-                    tmp_cos = 1;
-                    test = left.points[1].x - (left.size_proj_mini.l - this.margin);
-                  }
-                }
-                // Si pas de limite sur l'hypothenuse auparavant, test standard.
-                else {
-                  test = Math.max(test, left.points[1].x - (left.size_proj_mini.l - this.margin));
+                test_tmp = Math.max(test, getTriangleHypo(left.points[1].x - (left.size_proj_mini.l - this.margin), opp));
+                if (test_tmp > test) {
+                  tmp_cos = (left.points[1].x - (left.size_proj_mini.l - this.margin)) / test_tmp;
+                  test = test_tmp;
                 }
               }
 
               func = function(){
                 var m = move;
                 return function(value){
-                  var v = value ? left.points[1].x - value : value;
+                  var v = value ? left.points[1].x - (value * tmp_cos) : value;
                   left.points[0].setX(v || m);
                   left.points[3].setX(v || m);
                 }
@@ -1453,25 +1625,17 @@ angular.module('pedaleswitchApp')
 
               if (move < left.size_proj_mini.r + this.margin) {
                 right.setOverlapping(true);
-                // si la limite a été atteinte sur l'hypotenuse auparavant.
-                if (test !== 0 && tmp_cos < 1){
-                  test_tmp = Math.max(test, ((left.size_proj_mini.r + this.margin) - left.points[0].x) / cosinus);
-                  // si la limite actuelle passe avant celle de l'hypothenuse.
-                  if (test_tmp > test){
-                    tmp_cos = 1;
-                    test = (left.size_proj_mini.r + this.margin) - left.points[0].x;
-                  }
-                }
-                // Si pas de limite sur l'hypothenuse auparavant, test standard.
-                else {
-                  test = Math.max(test, (left.size_proj_mini.r + this.margin) - left.points[0].x);
+                test_tmp = Math.max(test, getTriangleHypo((left.size_proj_mini.r + this.margin) - left.points[0].x, opp));
+                if (test_tmp > test) {
+                  tmp_cos = ((left.size_proj_mini.r + this.margin) - left.points[0].x) / test_tmp;
+                  test = test_tmp;
                 }
               }
 
               func = function(){
                 var m = move;
                 return function(value){
-                  var v = value ? left.points[0].x + value : value;
+                  var v = value ? left.points[0].x + (value * tmp_cos) : value;
                   left.points[1].setX(v || m);
                   left.points[2].setX(v || m);
                 }
@@ -1485,7 +1649,7 @@ angular.module('pedaleswitchApp')
               for(var i in execute){
                 execute[i](test);
               }
-              return test * cosinus;
+              return test * tmp_cos;
             }
             else {
               for(var i in execute){
@@ -1513,19 +1677,44 @@ angular.module('pedaleswitchApp')
             posExtBoite = boite.findExtreme(),
             position = {};
 
+        // L'obj est à haut de la boite.
+        // Si vue gauche ou droite, on bloque l'élargissement du top.
+        if (state === 'left' || state === 'right'){
+          var b1 = boite.points[2].y - boite.points[1].y;
+          var b2 = boite.points[3].y - boite.points[0].y;
+          var center = entity.getCenter();
+          // Si vue gauche, on bloque l'élément à la hauteur minimale d1.
+          if (state === 'left') {
+            posExtBoite.t =  posExtBoite.b - b1;
+            if (posExt.t < (posExtBoite.t + boite.margin)) {
+              entity.moveTo({x: center.x, y: posExtBoite.b - (b1 - (posExt.size.h / 2) - boite.margin)});
+              posExt = entity.findExtreme();
+            }
+          }
+          // Si vue droite, on bloque l'élément à la hauteur minimale d1.
+          else {
+            posExtBoite.t =  posExtBoite.b - b2;
+            if (posExt.t < (posExtBoite.t + boite.margin)) {
+              entity.moveTo({x: center.x, y: posExtBoite.b - (b2 - (posExt.size.h / 2) - boite.margin)});
+              posExt = entity.findExtreme();
+            }
+          }
+        }
+        // Si autre vue, on élargit la boite normalement.
+        else {
+          if (posExt.t < (posExtBoite.t + boite.margin)) {
+            position.y = posExt.t - boite.margin;
+            this.projectionsCollisionY(state, position, 0);
+            boite.points[0].setY(posExt.t - boite.margin);
+            boite.points[1].setY(posExt.t - boite.margin);
+          }
+        }
         // L'obj est à gauche de la boite
         if (posExt.l < (posExtBoite.l + boite.margin)){
           position.x = posExt.l - boite.margin;
           this.projectionsCollisionX(state, position, 0);
           boite.points[0].setX(posExt.l - boite.margin);
           boite.points[3].setX(posExt.l - boite.margin);
-        }
-        // L'obj est à haut de la boite
-        if (posExt.t < (posExtBoite.t + boite.margin)){
-          position.y = posExt.t - boite.margin;
-          this.projectionsCollisionY(state, position, 0);
-          boite.points[0].setY(posExt.t - boite.margin);
-          boite.points[1].setY(posExt.t - boite.margin);
         }
         // L'obj est à droite de la boite
         if (posExt.r > (posExtBoite.r - boite.margin)){
@@ -1576,56 +1765,6 @@ angular.module('pedaleswitchApp')
         this.projections.left.size_proj_mini = limit_left;
         this.projections.right.size_proj_mini = limit_right;
 
-        //var size_mini = {
-        //  w: 0,
-        //  h: 0,
-        //  d: 0,
-        //  d1: this.initialHeight,
-        //  d2: this.initialHeight
-        //};
-        //
-        //compare('w', 'd', limit_up, size_mini, false, true);
-        //compare('w', 'h', limit_down, size_mini, 'h', false);
-        //compare('h', 'd1', limit_left, size_mini, 'w', false);
-        //compare('h', 'd1', limit_right, size_mini, 'w', false);
-        //compare('w', 'd2', limit_top, size_mini, false, false);
-        //compare('w', 'd1', limit_bottom, size_mini, false, false);
-        //
-        //
-        //this.projections.top.size_proj_mini = {
-        //  w: size_mini.w,
-        //  h: size_mini.d2
-        //};
-        //
-        //this.projections.bottom.size_proj_mini = {
-        //  w: size_mini.w,
-        //  h: size_mini.d1
-        //};
-        //
-        //this.projections.up.size_proj_mini = {
-        //  w: size_mini.w,
-        //  h: size_mini.d
-        //};
-        //
-        //this.projections.down.size_proj_mini = {
-        //  hypo: size_mini.d,
-        //  w: size_mini.w,
-        //  h: size_mini.h
-        //};
-        //
-        //this.projections.left.size_proj_mini = {
-        //  hypo: size_mini.d,
-        //  w: size_mini.h,
-        //  h: Math.max(size_mini.d1, size_mini.d2)
-        //};
-        //
-        //this.projections.right.size_proj_mini = {
-        //  hypo: size_mini.d,
-        //  w: size_mini.h,
-        //  h: Math.max(size_mini.d1, size_mini.d2)
-        //};
-        //
-        //return size_mini;
       }
 
       createProjectionsCoords(state) {
@@ -1891,6 +2030,22 @@ angular.module('pedaleswitchApp')
 
     /**
      * Constructeur de la classe Boite.
+     *
+     * Une instance de Boite correspond à l'une des 6 vues du canvas.
+     * Chaque instance de Boite est passée en propriété de masterBoite.projections :
+     *
+     *    -> VUE DESSUS  - viewState 'up':
+     *       masterBoite.projections.up
+     *    -> VUE DESSOUS  - viewState 'down':
+     *       masterBoite.projections.down
+     *    -> VUE COTE GAUCHE  - viewState 'left':
+     *       masterBoite.projections.left
+     *    -> VUE COTE DROIT  - viewState 'right':
+     *       masterBoite.projections.right
+     *    -> VUE COTE AVANT  - viewState 'bottom':
+     *       masterBoite.projections.bottom
+     *    -> VUE COTE ARRIERE  - viewState 'top':
+     *       masterBoite.projections.top
      */
     class Boite {
       constructor (masterBoite, proj_points) {
@@ -1942,6 +2097,35 @@ angular.module('pedaleswitchApp')
         }
       }
 
+      /**
+       * Centre la boite et les élements dans le canvas.
+       * vérifie si les marges de canvas ne sont pas atteintes.
+       * Si margin du canvas atteintes, la boite et les élements sont bougés.
+       * @param canvasSetting : oject canvasSetting de canvasControl.
+       */
+      moveToCenterWindow(canvasSetting){
+        var vect;
+        var centerW = canvasConversion.getCanvasCenterInWindow();
+        var center = this.getCenter();
+
+        var vector = {
+          x: centerW.x - center.x,
+          y: centerW.y - center.y
+        };
+
+        this.move(vector);
+        vect = this.moveCloseBorder(canvasSetting.canvas, canvasSetting.marginCanvas);
+
+        vector.x += vect.x;
+        vector.y += vect.y;
+
+        this.moveEffetCompo(vector);
+      }
+
+      /**
+       * Bouge les éléemnts de la boite selon le vecteur passé en argument.
+       * @param delta
+       */
       moveEffetCompo(delta){
         var effets, text, shape, img, compos, i, j;
         effets = this.effets;
@@ -2029,36 +2213,6 @@ angular.module('pedaleswitchApp')
         return(posExtreme);
       }
 
-
-      ///**
-      // * Redimensionne la boite si le nouvel effet est en dehors.
-      // */
-      //checkBorderBoite(entity){
-      //  var posExt = entity.findExtreme();
-      //  var posExtBoite = this.findExtreme();
-      //
-      //  // L'obj est à gauche de la boite
-      //  if (posExt.l < (posExtBoite.l + this.margin)){
-      //    this.points[0].setX(posExt.l - this.margin);
-      //    this.points[3].setX(posExt.l - this.margin);
-      //  }
-      //  // L'obj est à haut de la boite
-      //  if (posExt.t < (posExtBoite.t + this.margin)){
-      //    this.points[0].setY(posExt.t - this.margin);
-      //    this.points[1].setY(posExt.t - this.margin);
-      //  }
-      //  // L'obj est à droite de la boite
-      //  if (posExt.r > (posExtBoite.r - this.margin)){
-      //    this.points[1].setX(posExt.r + this.margin);
-      //    this.points[2].setX(posExt.r + this.margin);
-      //  }
-      //  // L'obj est en bas de la boite
-      //  if (posExt.b > (posExtBoite.b - this.margin)){
-      //    this.points[2].setY(posExt.b + this.margin);
-      //    this.points[3].setY(posExt.b + this.margin);
-      //  }
-      //}
-
       /**
        * Aire d'un poly tester et c OK
        * @returns {number}
@@ -2106,6 +2260,40 @@ angular.module('pedaleswitchApp')
         return this.getCenter().y;
       }
 
+      moveCloseBorder(canvas, marginCanvas, marginAdd) {
+
+        marginAdd = marginAdd || 0;
+        marginCanvas += marginAdd;
+
+        var vector = {
+          x: 0,
+          y: 0
+        };
+
+        // Regarde si la figure sort du canvas.
+        var max_pos = this.findExtreme();
+
+        // Debordement par le haut.
+        if (max_pos.t < marginCanvas) {
+          this.move({x:0, y: marginCanvas - max_pos.t});
+          vector.y = marginCanvas - max_pos.t;
+        }
+        // Debordement par la gauche.
+        if (max_pos.l < marginCanvas) {
+          this.move({x:marginCanvas - max_pos.l, y:0});
+          vector.x = marginCanvas - max_pos.l;
+        }
+        // Debordement par la droite.
+        if (max_pos.r + marginCanvas + 150 > canvas.width) {
+          canvas.width = max_pos.r + marginCanvas + 150;
+        }
+        // Debordement par le bas.
+        if (max_pos.b + marginCanvas + 150 > canvas.height) {
+          canvas.height = max_pos.b + marginCanvas + 150;
+        }
+        return vector;
+      }
+
       setSelected(selected) {
         this.isSelected = selected;
       }
@@ -2130,85 +2318,6 @@ angular.module('pedaleswitchApp')
         }
       }
     }
-
-    //class Texte {
-    //  constructor(obj){
-    //    this.font = {};
-    //    // normal, italic, oblique
-    //    this.font.style = obj.font.style || 'normal';
-    //    //normal, small-caps
-    //    this.font.variant = obj.font.variant || 'normal';
-    //    // normal, bold, bolder, lighter, 100, 200 ... 900.
-    //    this.font.weight = obj.font.weight || 'normal';
-    //    this.font.size = obj.font.size || '14';
-    //    this.font.family = obj.font.family || 'sans-serif';
-    //    //this.textAlign = obj.textAlign || 'left';
-    //    this.color = obj.color || 'black';
-    //    this.input = obj.input || 'input';
-    //    // fillText, strokeText
-    //    this.type = obj.type || 'fillText';
-    //
-    //    // Angle de rotation
-    //    this.angle = obj.angle || 0;
-    //
-    //    this.pos = obj.pos || {x:60, y:60};
-    //    this.size = obj.size || {w:0, h:0};
-    //  }
-    //
-    //  /**
-    //   * Deplace l'obj d'un delta
-    //   * @param vec
-    //   */
-    //  move(vect){
-    //    for (var i = 0, l = this.points.length; i < l; i++){
-    //      this.points[i].translate(vect);
-    //    }
-    //  }
-    //
-    //  rotate(angle){
-    //    this.angle += angle;
-    //  }
-    //
-    //  drawCanvas(ctx){
-    //    ctx.save();
-    //
-    //    ctx.font =
-    //      this.font.style + ' '
-    //      + this.font.variant + ' '
-    //      + this.font.weight + ' '
-    //      + this.font.size + 'px' + ' '
-    //      + this.font.family;
-    //
-    //    ctx.fillStyle = this.color;
-    //
-    //    ctx.translate(this.getX(), this.getY());
-    //    ctx.rotate(this.angle * (2*Math.PI)/360.0);
-    //
-    //    switch(this.type) {
-    //      case 'fillText':
-    //      default:
-    //        ctx.fillText(this.input, 0, 0);
-    //        break;
-    //      case 'strokeText':
-    //        ctx.strokeText(this.input, 0, 0);
-    //        break;
-    //    }
-    //
-    //    var mes = ctx.measureText(this.input);
-    //    this.setWidth(Math.round(mes.width));
-    //    this.setHeight(parseInt(this.font.size));
-    //
-    //    ctx.restore();
-    //  }
-    //
-    //  setSelected(selected) {
-    //    this.isSelected = false;
-    //  }
-    //  setOverlapping(selected) {
-    //    this.isOverlapping = false;
-    //  }
-    //}
-
 
     class Texte {
       constructor(obj, ctx){

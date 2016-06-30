@@ -38,8 +38,9 @@ class PageDessinComponent {
     this.activeItem = this.canvasControl.getActiveItem();
     
     // Met les bonnes options.
+    this.canvasSetting = this.canvasControl.getCanvasSetting();
     this.zoom = this.canvasControl.getZoom();
-    this.debrayable = this.canvasControl.getDeb();
+    this.debrayable = this.canvasSetting.debrayable;
     this.deco = false;
 
     // Active les effets et les dessines.
@@ -87,7 +88,7 @@ class PageDessinComponent {
     this.canvasConversion.convertDessinToPixel(this.dessin);
 
     // Conserve l'option debrayable.
-    dessinStock.debrayable = this.canvasControl.getDeb();
+    dessinStock.debrayable = this.canvasSetting.debrayable;
     // Stock.
     this.storage.put('dessin', dessinStock);
   }
@@ -193,6 +194,7 @@ class PageDessinComponent {
 
   zoomAdd(value){
     this.instanceDessin.zoomChange(value);
+    this.canvasControl.centerInCanvas();
     this.canvasControl.resizeCanvas();
     this.canvasControl.setArrowPos();
     this.zoom = this.canvasControl.getZoom();
@@ -202,36 +204,42 @@ class PageDessinComponent {
   up(){
     this.canvasControl.canvasViewState('up');
     this.canvasControl.canvasDrawState(this.isActive);
+    this.canvasControl.resizeCanvas();
     this.canvasDraw.drawStuff();
   }
 
   down(){
     this.canvasControl.canvasViewState('down');
     this.canvasControl.canvasDrawState(this.isActive);
+    this.canvasControl.resizeCanvas();
     this.canvasDraw.drawStuff();
   }
 
   right(){
     this.canvasControl.canvasViewState('right');
     this.canvasControl.canvasDrawState(this.isActive);
+    this.canvasControl.resizeCanvas();
     this.canvasDraw.drawStuff();
   }
 
   left(){
     this.canvasControl.canvasViewState('left');
     this.canvasControl.canvasDrawState(this.isActive);
+    this.canvasControl.resizeCanvas();
     this.canvasDraw.drawStuff();
   }
 
   top(){
     this.canvasControl.canvasViewState('top');
     this.canvasControl.canvasDrawState(this.isActive);
+    this.canvasControl.resizeCanvas();
     this.canvasDraw.drawStuff();
   }
 
   bottom(){
     this.canvasControl.canvasViewState('bottom');
     this.canvasControl.canvasDrawState(this.isActive);
+    this.canvasControl.resizeCanvas();
     this.canvasDraw.drawStuff();
   }
 
@@ -239,6 +247,7 @@ class PageDessinComponent {
   // pret bord canvas. Les composants se deplace.
   rotate(value, data){
     data.rotate(value, null, this.debrayable);
+    this.canvasControl.checkBorderBoxRotate(data);
     this.canvasControl.setArrowPos();
     this.canvasControl.resizeCanvas();
     this.canvasDraw.drawStuff();

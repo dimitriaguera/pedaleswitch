@@ -4,12 +4,18 @@ angular.module('pedaleswitchApp')
   .factory('canvasControl', function (canvasGeneration, canvasConversion, checkCollision, rulers) {
     // Service logic
 
-    var ctx = {};
-    var canvas = {};
-    var canvas_window = {};
-
     var boite = {};
     var masterBoite = {};
+
+    var canvasSetting = {
+      ctx: {},
+      canvas: {},
+      canvas_window: {},
+      marginCanvas: canvasConversion.convertToPixel(40),
+      debrayable: false,
+      viewState: 'up',
+      isActive: 'effet'
+    };
 
     var tableEffet = [];
     var tableComposant = [];
@@ -25,12 +31,8 @@ angular.module('pedaleswitchApp')
     // @todo a supprimer, table de travail.
     var tableDrawLimits = [];
     // Fin todo
-
-    var debrayable = false;
-    var viewState = 'up';
-    var isActive = 'effet';
     
-    var marginCanvas = canvasConversion.convertToPixel(40);
+    //var marginCanvas = canvasConversion.convertToPixel(40);
     
     
     var thing = function(entity) {
@@ -74,7 +76,7 @@ angular.module('pedaleswitchApp')
 
           if (pos){
             tmp_eff.moveTo(pos);
-            if (debrayable){
+            if (canvasSetting.debrayable){
               tmp_eff.resetCompPos();
             }
           }
@@ -87,10 +89,10 @@ angular.module('pedaleswitchApp')
             masterBoite.createProjection();
 
             // On sélectionne la bonne projection.
-            this.setBoite(masterBoite.projections[viewState]);
+            this.setBoite(masterBoite.projections[canvasSetting.viewState]);
 
             // Empeche que l'effet depasse du canvas.
-            this.moveCloseBorder(tmp_eff);
+            tmp_eff.moveCloseBorder(canvasSetting.canvas, canvasSetting.marginCanvas, boite.margin);
 
             // Initialise la position de la boite.
             boite.initMoveBox(tmp_eff);
@@ -102,24 +104,24 @@ angular.module('pedaleswitchApp')
           }
           else {
             // Empeche que l'effet depasse du canvas.
-            this.moveCloseBorder(tmp_eff);
+            tmp_eff.moveCloseBorder(canvasSetting.canvas, canvasSetting.marginCanvas, boite.margin);
 
             // Redimensionne la boite si le nouvelle effet est en dehors.
-            masterBoite.checkBorderBoite(viewState, tmp_eff);
+            masterBoite.checkBorderBoite(canvasSetting.viewState, tmp_eff);
 
             // Repositionne les arraw.
             this.setArrowPos();
           }
 
           // Lie les effets et composants a la bonne projection de la boite.
-          masterBoite.projections[viewState].effets.push(tmp_eff);
+          masterBoite.projections[canvasSetting.viewState].effets.push(tmp_eff);
 
           // On créé les composants.
           for (var i = 0; i < compos.length; i++) {
             tmp_comp = thing(compos[i]);
             tableComposant.push(tmp_comp);
             tmp_eff.composants.push(tmp_comp);
-            masterBoite.projections[viewState].composants.push(tmp_comp);
+            masterBoite.projections[canvasSetting.viewState].composants.push(tmp_comp);
           }
 
           // Place bien les composants.
@@ -134,13 +136,13 @@ angular.module('pedaleswitchApp')
           tableEffet.push(tmp_eff);
 
           // Empeche que l'effet depasse du canvas.
-          this.moveCloseBorder(tmp_eff);
+          tmp_eff.moveCloseBorder(canvasSetting.canvas, canvasSetting.marginCanvas, boite.margin);
 
           // Check les collisions entre tout les obj.
           checkCollision.checkAll(tableEffet);
 
           // Créé les limites des projections.
-          masterBoite.createProjectionsLimits(viewState);
+          masterBoite.createProjectionsLimits(canvasSetting.viewState);
 
           return tmp_eff;
         }
@@ -174,12 +176,14 @@ angular.module('pedaleswitchApp')
        * @param state : string - 'top', 'bottom', 'up', 'down', 'left', 'right'
        */
       canvasViewState: function (state) {
-        masterBoite.updateMaster(viewState);
+
+        masterBoite.updateMaster(canvasSetting.viewState);
         switch (state) {
           case 'top':
-            viewState = 'top';
-            masterBoite.updateProjection(viewState);
-            masterBoite.createProjectionsLimits(viewState);
+            this.setViewState('top');
+            masterBoite.updateProjection(canvasSetting.viewState);
+            masterBoite.createProjectionsLimits(canvasSetting.viewState);
+            masterBoite.projections[canvasSetting.viewState].moveToCenterWindow(canvasSetting);
             this.resetAll();
             this.setBoite(masterBoite.projections.top);
             this.setTableEffet(masterBoite.projections.top.effets);
@@ -189,9 +193,10 @@ angular.module('pedaleswitchApp')
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
             break;
           case 'bottom':
-            viewState = 'bottom';
-            masterBoite.updateProjection(viewState);
-            masterBoite.createProjectionsLimits(viewState);
+            this.setViewState('bottom');
+            masterBoite.updateProjection(canvasSetting.viewState);
+            masterBoite.createProjectionsLimits(canvasSetting.viewState);
+            masterBoite.projections[canvasSetting.viewState].moveToCenterWindow(canvasSetting);
             this.resetAll();
             this.setBoite(masterBoite.projections.bottom);
             this.setTableEffet(masterBoite.projections.bottom.effets);
@@ -201,9 +206,10 @@ angular.module('pedaleswitchApp')
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
             break;
           case 'up':
-            viewState = 'up';
-            masterBoite.updateProjection(viewState);
-            masterBoite.createProjectionsLimits(viewState);
+            this.setViewState('up');
+            masterBoite.updateProjection(canvasSetting.viewState);
+            masterBoite.createProjectionsLimits(canvasSetting.viewState);
+            masterBoite.projections[canvasSetting.viewState].moveToCenterWindow(canvasSetting);
             this.resetAll();
             this.setBoite(masterBoite.projections.up);
             this.setTableEffet(masterBoite.projections.up.effets);
@@ -213,14 +219,15 @@ angular.module('pedaleswitchApp')
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
 
             //@todo : table de travail, a supprimer.
-            this.setTableDrawLimits([masterBoite.projections.left, masterBoite.projections.right]);
-            this.setTableDrawDashed([masterBoite.projections.left, masterBoite.projections.right]);
+            //this.setTableDrawLimits([masterBoite.projections.left, masterBoite.projections.right]);
+            //this.setTableDrawDashed([masterBoite.projections.left, masterBoite.projections.right]);
 
             break;
           case 'down':
-            viewState = 'down';
-            masterBoite.updateProjection(viewState);
-            masterBoite.createProjectionsLimits(viewState);
+            this.setViewState('down');
+            masterBoite.updateProjection(canvasSetting.viewState);
+            masterBoite.createProjectionsLimits(canvasSetting.viewState);
+            masterBoite.projections[canvasSetting.viewState].moveToCenterWindow(canvasSetting);
             this.resetAll();
             this.setBoite(masterBoite.projections.down);
             this.setTableEffet(masterBoite.projections.down.effets);
@@ -230,9 +237,10 @@ angular.module('pedaleswitchApp')
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
             break;
           case 'left':
-            viewState = 'left';
-            masterBoite.updateProjection(viewState);
-            masterBoite.createProjectionsLimits(viewState);
+            this.setViewState('left');
+            masterBoite.updateProjection(canvasSetting.viewState);
+            masterBoite.createProjectionsLimits(canvasSetting.viewState);
+            masterBoite.projections[canvasSetting.viewState].moveToCenterWindow(canvasSetting);
             this.resetAll();
             this.setBoite(masterBoite.projections.left);
             this.setTableEffet(masterBoite.projections.left.effets);
@@ -240,16 +248,12 @@ angular.module('pedaleswitchApp')
             this.setTableText(masterBoite.projections.left.textDeco);
             tableArrow.push(canvasGeneration.newArrowPoint(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrowPoint(boite, 'bottom'));
-
-            //@todo : table de travail, a supprimer.
-            this.setTableDrawLimits([masterBoite.projections.up]);
-            this.setTableDrawDashed([masterBoite.projections.up]);
-
             break;
           case 'right':
-            viewState = 'right';
-            masterBoite.updateProjection(viewState);
-            masterBoite.createProjectionsLimits(viewState);
+            this.setViewState('right');
+            masterBoite.updateProjection(canvasSetting.viewState);
+            masterBoite.createProjectionsLimits(canvasSetting.viewState);
+            masterBoite.projections[canvasSetting.viewState].moveToCenterWindow(canvasSetting);
             this.resetAll();
             this.setBoite(masterBoite.projections.right);
             this.setTableEffet(masterBoite.projections.right.effets);
@@ -257,11 +261,6 @@ angular.module('pedaleswitchApp')
             this.setTableText(masterBoite.projections.right.textDeco);
             tableArrow.push(canvasGeneration.newArrowPoint(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrowPoint(boite, 'bottom'));
-
-            //@todo : table de travail, a supprimer.
-            this.setTableDrawLimits([masterBoite.projections.top, masterBoite.projections.bottom]);
-            this.setTableDrawDashed([masterBoite.projections.top, masterBoite.projections.bottom]);
-
             break;
           default:
             return console.log('ERROR ' + state + ' is not a valid state');
@@ -283,10 +282,9 @@ angular.module('pedaleswitchApp')
           case 'effet':
             active = tableEffet;
             inactive = tableComposant;
-            //this.isActive = 'effet';
             this.resetIsSelected(active);
             this.resetIsSelected(inactive);
-            //this.resetTableDrawDashed();
+            this.resetTableDrawDashed();
             this.setTableActive(active);
             this.setTableDrawThin(inactive);
             return (active.length > 0);
@@ -295,7 +293,6 @@ angular.module('pedaleswitchApp')
           case 'composant':
             active = tableComposant;
             inactive = tableEffet;
-            //this.isActive = 'composant';
             this.resetIsSelected(active);
             this.resetIsSelected(inactive);
             this.resetTableDrawThin();
@@ -345,122 +342,95 @@ angular.module('pedaleswitchApp')
       },
 
       /**
-       * Agrandit le canvas pour qu'il soit au moins aussi grand que la boite.
+       * Agrandit/reduit le canvas pour qu'il soit au moins aussi grand que la boite.
        */
       resizeCanvas: function(){
         if (boite.constructor.name === "Boite") {
           var realmargin = 150;
 
+          var canvasInitialSize = canvasConversion.getCanvasSize();
           var posExt = boite.findExtreme();
 
-          // Debordement par la droite.
-          if (posExt.r + realmargin > canvas.width) {
-            canvas.width = posExt.r + realmargin;
-          }
-          // Debordement par le bas.
-          if (posExt.b + realmargin > canvas.height) {
-            canvas.height = posExt.b + realmargin;
-          }
+          // Test droite.
+          canvasSetting.canvas.width = Math.max((posExt.r + realmargin), canvasInitialSize.w);
+
+          // Test bas.
+          canvasSetting.canvas.height = Math.max((posExt.b + realmargin), canvasInitialSize.h);
         }
       },
 
+      ///**
+      // * Donne les coordonnées d'un rectangle qui entoure tout les objs.
+      // *
+      // * Cette fonction retourne :
+      // * t : position la plus petite de l'obj le plus en haut.
+      // * r : position la plus grande de l'obj le plus à droite.
+      // * b : position la plus grande de l'obj le plus en bas.
+      // * l : la position la plus petite de l'obj le plus à gauche.
+      // *
+      // * @returns {{t: number, r: number, b: number, l: number}}
+      // */
+      //findGlobalRect: function (){
+      //  var saveMax = function(posmax, pos){
+      //    posmax.t = Math.min(posmax.t, pos.t);
+      //    posmax.r = Math.max(posmax.r, pos.r);
+      //    posmax.b = Math.max(posmax.b, pos.b);
+      //    posmax.l = Math.min(posmax.l, pos.l);
+      //  };
+      //
+      //  var i, j;
+      //
+      //  var effet;
+      //  var compos, compo;
+      //
+      //  var pos = {t:Infinity,r:-Infinity,b:-Infinity,l:Infinity},
+      //      posmax = {t:Infinity,r:-Infinity,b:-Infinity,l:Infinity};
+      //
+      //  for (i = 0 ; i < tableEffet.length ; i++) {
+      //    effet = tableEffet[i];
+      //
+      //    // Recupère les bords
+      //    pos = effet.findExtreme();
+      //    // Garde le maximum.
+      //    saveMax(posmax, pos);
+      //
+      //    if (canvasSetting.debrayable){
+      //      compos = effet.composants;
+      //      for (j = 0; j < compos.length; j++) {
+      //        compo = compos[j];
+      //        // Recupère les bords
+      //        pos = compo.findExtreme();
+      //        // Garde le maximum.
+      //        saveMax(posmax, pos);
+      //      }
+      //    }
+      //  }
+      //
+      //  return posmax;
+      //},
+
+
       /**
-       * Donne les coordonnées d'un rectangle qui entoure tout les objs.
-       *
-       * Cette fonction retourne :
-       * t : position la plus petite de l'obj le plus en haut.
-       * r : position la plus grande de l'obj le plus à droite.
-       * b : position la plus grande de l'obj le plus en bas.
-       * l : la position la plus petite de l'obj le plus à gauche.
-       *
-       * @returns {{t: number, r: number, b: number, l: number}}
+       * Centre les élements dans le canvas.
        */
-      findGlobalRect: function (){
-        var saveMax = function(posmax, pos){
-          posmax.t = Math.min(posmax.t, pos.t);
-          posmax.r = Math.max(posmax.r, pos.r);
-          posmax.b = Math.max(posmax.b, pos.b);
-          posmax.l = Math.min(posmax.l, pos.l);
-        };
-
-        var i, j;
-
-        var effet;
-        var compos, compo;
-        
-        var pos = {t:Infinity,r:-Infinity,b:-Infinity,l:Infinity},
-            posmax = {t:Infinity,r:-Infinity,b:-Infinity,l:Infinity};
-
-        for (i = 0 ; i < tableEffet.length ; i++) {
-          effet = tableEffet[i];
-
-          // Recupère les bords
-          pos = effet.findExtreme();
-          // Garde le maximum.
-          saveMax(posmax, pos);
-          
-          if (debrayable){
-            compos = effet.composants;
-            for (j = 0; j < compos.length; j++) {
-              compo = compos[j];
-              // Recupère les bords
-              pos = compo.findExtreme();
-              // Garde le maximum.
-              saveMax(posmax, pos);
-            }
-          }
+      centerInCanvas: function() {
+        if (boite.points) {
+          boite.moveToCenterWindow(canvasSetting);
         }
-        
-        return posmax;
       },
 
-
       /**
-       * Empeche que l'effet depasse du canvas.
+       * Redimentionne la boite si l'entity depasse.
+       * Si l'entity est un effet ou un composant.
        * @param entity
        */
-      moveCloseBorder: function(entity){
-        // On deplace un effet.
-        if (entity.fonction !== "Boite"){
-          this.moveCloseBorderGenerale(entity, boite.margin);
-        } 
-        // On deplace la boite.  
-        else {
-          this.moveCloseBorderGenerale(entity, 0);
-        }
-      },
-
-      getMarginCanvas: function(){
-        return marginCanvas;
-      },
-      
-      /**
-       * Permet de modifier les coordonnées d'un thing s'il depasse les bordures.
-       * @todo a reflechir.
-       * @param entity = thing
-       * @param addmargin = int
-       */
-      moveCloseBorderGenerale: function(entity, addmargin) {
-        var realmargin = this.getMarginCanvas() + addmargin;
-        
-        // Regarde si la figure sort du canvas.
-        var max_pos = entity.findExtreme();
-
-        // Debordement par le haut.
-        if (max_pos.t < realmargin) {
-          entity.move({x:0, y: realmargin - max_pos.t});
-        }
-        // Debordement par la gauche.
-        if (max_pos.l < realmargin) {
-          entity.move({x:realmargin - max_pos.l, y:0});
-        }
-        // Debordement par la droite.
-        if (max_pos.r + realmargin + 150 > canvas.width) {
-          canvas.width = max_pos.r + realmargin + 150;
-        }
-        // Debordement par le bas.
-        if (max_pos.b + realmargin + 150 > canvas.height) {
-          canvas.height = max_pos.b + realmargin + 150;
+      checkBorderBoxRotate: function(entity){
+        var vect;
+        var fonc = entity.fonction;
+        if (fonc === 'effet') {
+          masterBoite.checkBorderBoite(canvasSetting.viewState, entity);
+          vect = boite.moveCloseBorder(canvasSetting.canvas, canvasSetting.marginCanvas);
+          boite.moveEffetCompo(vect);
         }
       },
 
@@ -472,20 +442,54 @@ angular.module('pedaleswitchApp')
         var texte, p;
 
         p = pos || {x: 400, y: 400};
-        texte = canvasGeneration.newTexte(string, ctx);
+        texte = canvasGeneration.newTexte(string, canvasSetting.ctx);
         texte.moveTo(p);
-        masterBoite.projections[viewState].textDeco.push(texte);
+        masterBoite.projections[canvasSetting.viewState].textDeco.push(texte);
 
         // Rajoute le texte à la table texte.
         tableText.push(texte);
       },
 
       actualisePoints: function(value, data){
-        data.actualisePoints(ctx, value);
+        data.actualisePoints(canvasSetting.ctx, value);
       },
 
-      getViewState: function(){
-        return viewState;
+      getCanvasSetting: function(){
+        return canvasSetting;
+      },
+
+      setCtx: function(context) {
+        canvasSetting.ctx = context;
+      },
+
+      setCanvas: function(canv){
+        var canvasSize = canvasConversion.getCanvasSize();
+        canv.width = canvasSize.w;
+        canv.height = canvasSize.h;
+        canvasSetting.canvas = canv;
+      },
+
+      setCanvasWindow: function(canv_window){
+        var canvasSize = canvasConversion.getCanvasSize();
+        canv_window.style.width = canvasSize.w.toString() + "px";
+        canv_window.style.height = canvasSize.h.toString() + "px";
+        canvasSetting.canvas_window = canv_window;
+      },
+
+      setMarginCanvas: function(margin){
+        canvasSetting.marginCanvas = margin;
+      },
+
+      setDeb: function(deb){
+        canvasSetting.debrayable = deb;
+      },
+
+      setViewState: function(state){
+        canvasSetting.viewState = state;
+      },
+
+      setIsActive: function(active){
+        canvasSetting.isActive = active;
       },
 
       getTableText: function() {
@@ -597,40 +601,6 @@ angular.module('pedaleswitchApp')
 
       getMasterBoite: function(){
         return masterBoite;
-      },
-
-      setDeb: function(deb){
-        debrayable = deb;
-      },
-
-      getDeb: function(){
-        return debrayable;
-      },
-
-      setCanvas: function(canv){
-        var canvasSize = canvasConversion.getCanvasSize();
-        canv.width = canvasSize.w;
-        canv.height = canvasSize.h;
-        canvas = canv;
-      },
-
-      setCanvasWindow: function(canv_window){
-        var canvasSize = canvasConversion.getCanvasSize();
-        canv_window.style.width = canvasSize.w.toString() + "px";
-        canv_window.style.height = canvasSize.h.toString() + "px";
-        canvas_window = canv_window;
-      },
-
-      getCanvas: function(){
-        return canvas;
-      },
-
-      setCtx: function(context) {
-        ctx = context;
-      },
-
-      getCtx: function(){
-        return ctx;
       },
 
       setTableEffet: function(tabr) {
@@ -803,12 +773,12 @@ angular.module('pedaleswitchApp')
 
       // @todo a supprimer
       drawRulers: function() {
-        rulers.render(canvas, ctx, '#aaa', 'pixels', 100);
+        rulers.render(canvasSetting.canvas, canvasSettings.ctx, '#aaa', 'pixels', 100);
       },
 
       // @todo a supprimer
       drawGrid: function() {
-        rulers.drawGrid(canvas, ctx);
+        rulers.drawGrid(canvasSetting.canvas, canvasSettings.ctx);
       },
 
       // @todo a supprimer

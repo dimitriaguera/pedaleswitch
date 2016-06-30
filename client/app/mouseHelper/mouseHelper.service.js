@@ -15,7 +15,8 @@ angular.module('pedaleswitchApp')
 
 
     var mousePos = {};
-    var viewState;
+
+    var canvasSetting = canvasControl.getCanvasSetting();
 
     /**
      * Change la forme du pointeur de la souris.
@@ -38,7 +39,6 @@ angular.module('pedaleswitchApp')
 
         tabActive = canvasControl.getTableActive();
         boite = canvasControl.getBoite();
-        viewState = canvasControl.getViewState();
 
         // Met le bon pointeur de souris
         update('default');
@@ -90,7 +90,7 @@ angular.module('pedaleswitchApp')
         if (boite.titre !== undefined){
 
           // Selon la vue, on regarde si la souris est sur les corners ou les borders.
-          switch(viewState){
+          switch(canvasSetting.viewState){
 
             case 'up':
               drag = checkCollision.checkMouseBorder(mousePos, [boite], 10);
@@ -141,14 +141,13 @@ angular.module('pedaleswitchApp')
               break;
 
             default:
-              return console.log('ERROR ' + viewState + ' is not a valid state');
+              return console.log('ERROR ' + canvasSetting.viewState + ' is not a valid state');
           }
 
           // Regarde si la souris est sur la boite
           drag = checkCollision.checkMouseBox(mousePos, [boite], 10);
           if(drag){
             drag.type = 'boite';
-            return;
           }
         }
       },
@@ -232,23 +231,21 @@ angular.module('pedaleswitchApp')
         mousePos = {x: e.layerX, y: e.layerY};
 
         var test_proj = false;
-        var canvas = canvasControl.getCanvas();
-        var pos_max = canvasControl.findGlobalRect();
+        //var pos_max = canvasControl.findGlobalRect();
         var masterBoite = canvasControl.getMasterBoite();
-        var viewState = canvasControl.getViewState();
+        var pos_max = boite.findAllExtreme();
 
-        var marginCanvas = canvasControl.getMarginCanvas();
         var marginBoite = canvasControl.getBoite().margin;
 
-        switch(viewState){
+        switch(canvasSetting.viewState){
 
           case 'left':
             // Coin haut-gauche.
             if (drag.pointer.type === 'nw-resize'){
 
               // La souris est plus haut que la marge.
-              if (mousePos.y < marginCanvas){
-                mousePos.y = marginCanvas;
+              if (mousePos.y < canvasSetting.marginCanvas){
+                mousePos.y = canvasSetting.marginCanvas;
               }
 
               // Regarde si pas inferieur au bord droit.
@@ -262,7 +259,7 @@ angular.module('pedaleswitchApp')
               }
 
               // Regarde sur les autres projections si pas inférieur a un composant ou un effet.
-              test_proj = masterBoite.projectionsCollisionY(viewState, mousePos, 0);
+              test_proj = masterBoite.projectionsCollisionY(canvasSetting.viewState, mousePos, 0);
               if(test_proj) {
                 mousePos.y = boite.points[3].y - test_proj;
               }
@@ -277,8 +274,8 @@ angular.module('pedaleswitchApp')
             if (drag.pointer.type === 'ne-resize'){
 
               // La souris est plus haut que la marge.
-              if (mousePos.y < marginCanvas){
-                mousePos.y = marginCanvas;
+              if (mousePos.y < canvasSetting.marginCanvas){
+                mousePos.y = canvasSetting.marginCanvas;
               }
 
               // Regarde si pas inferieur au bord gauche.
@@ -292,7 +289,7 @@ angular.module('pedaleswitchApp')
               }
 
               // Regarde sur les autres projections si pas inférieur a un composant ou un effet.
-              test_proj = masterBoite.projectionsCollisionY(viewState, mousePos, 1);
+              test_proj = masterBoite.projectionsCollisionY(canvasSetting.viewState, mousePos, 1);
               if(test_proj) {
                 mousePos.y = boite.points[2].y - test_proj;
               }
@@ -303,7 +300,7 @@ angular.module('pedaleswitchApp')
             break;
 
           default:
-            return console.log('ERROR ' + viewState + ' is not a valid state. Only "left" or "right" allowed');
+            return console.log('ERROR ' + canvasSetting.viewState + ' is not a valid state. Only "left" or "right" allowed');
         }
 
         // Recalcule les positions de fleches entourant la boite.
@@ -332,15 +329,13 @@ angular.module('pedaleswitchApp')
         mousePos = {x: e.layerX, y: e.layerY};
 
         var test_proj = false;
-        var canvas = canvasControl.getCanvas();
-        var pos_max = canvasControl.findGlobalRect();
+        //var pos_max = canvasControl.findGlobalRect();
+        var pos_max = boite.findAllExtreme();
         var masterBoite = canvasControl.getMasterBoite();
-        var viewState = canvasControl.getViewState();
 
-        var marginCanvas = canvasControl.getMarginCanvas();
         var marginBoite = canvasControl.getBoite().margin;
 
-        limit = (viewState === 'left' || viewState === 'right') ? masterBoite.initialHeight : limit;
+        limit = (canvasSetting.viewState === 'left' || canvasSetting.viewState === 'right') ? masterBoite.initialHeight : limit;
 
         // Bord haut ou bas.
         if (drag.pointer.type === 'ns-resize'){
@@ -349,8 +344,8 @@ angular.module('pedaleswitchApp')
           if (drag.pointer.pos === 'bottom'){
 
             // Agrendit le canvas.
-            if (mousePos.y > canvas.height * 0.8) {
-              canvas.height = mousePos.y * 1.2;
+            if (mousePos.y > canvasSetting.canvas.height * 0.8) {
+              canvasSetting.canvas.height = mousePos.y * 1.2;
             }
 
             // Regarde si pas inferieur a un composant ou a effet.
@@ -374,10 +369,14 @@ angular.module('pedaleswitchApp')
             }
 
             // Regarde sur les autres projections si pas inférieur a un composant ou un effet.
-            test_proj = masterBoite.projectionsCollisionY(viewState, mousePos, 3);
+            test_proj = masterBoite.projectionsCollisionY(canvasSetting.viewState, mousePos, 3);
             if(test_proj) {
-              mousePos.y = boite.points[0].y + test_proj;
-              //mousePos.x = boite.points[1].x;
+              if (canvasSetting.viewState === 'right') {
+                mousePos.y = boite.points[1].y + test_proj;
+              }
+              else {
+                mousePos.y = boite.points[0].y + test_proj;
+              }
             }
 
             // Redimensionne la boite.
@@ -387,8 +386,8 @@ angular.module('pedaleswitchApp')
           //Bord haut.
           else {
             // La souris est plus haut que la marge.
-            if (mousePos.y < marginCanvas){
-              mousePos.y = marginCanvas;
+            if (mousePos.y < canvasSetting.marginCanvas){
+              mousePos.y = canvasSetting.marginCanvas;
             }
 
             // Regarde si pas inferieur a un composant ou a effet.
@@ -397,7 +396,7 @@ angular.module('pedaleswitchApp')
             }
 
             // Regarde sur les autres projections si pas inférieur a un composant ou un effet.
-            test_proj = masterBoite.projectionsCollisionY(viewState, mousePos, 0);
+            test_proj = masterBoite.projectionsCollisionY(canvasSetting.viewState, mousePos, 0);
             if(test_proj) {
               mousePos.y = boite.points[3].y - test_proj;
               //mousePos.x = boite.points[1].x;
@@ -419,7 +418,7 @@ angular.module('pedaleswitchApp')
             }
 
             // Regarde sur les autres projections si pas inférieur a un composant ou un effet.
-            test_proj = masterBoite.projectionsCollisionX(viewState, mousePos, 1);
+            test_proj = masterBoite.projectionsCollisionX(canvasSetting.viewState, mousePos, 1);
             if(test_proj) {
               mousePos.x = boite.points[0].x + test_proj;
               //mousePos.x = boite.points[1].x;
@@ -431,16 +430,16 @@ angular.module('pedaleswitchApp')
             //boite.size.w += mousePos.x - boite.getRight();
 
             // Agrendit le canvas.
-            if (mousePos.x > canvas.width  * 0.8) {
-              canvas.width = mousePos.x * 1.2;
+            if (mousePos.x > canvasSetting.canvas.width  * 0.8) {
+              canvasSetting.canvas.width = mousePos.x * 1.2;
             }
 
           }
           //Bord gauche.
           else {
             // La souris est plus à gauche que la marge.
-            if (mousePos.x < marginCanvas) {
-              mousePos.x = marginCanvas;
+            if (mousePos.x < canvasSetting.marginCanvas) {
+              mousePos.x = canvasSetting.marginCanvas;
             }
 
             // Regarde si pas inferieur a un composant ou a effet.
@@ -449,7 +448,7 @@ angular.module('pedaleswitchApp')
             }
 
             // Regarde sur les autres projections si pas inférieur a un composant ou un effet.
-            test_proj = masterBoite.projectionsCollisionX(viewState, mousePos, 0);
+            test_proj = masterBoite.projectionsCollisionX(canvasSetting.viewState, mousePos, 0);
             if(test_proj) {
               mousePos.x = boite.points[1].x - test_proj;
               //mousePos.x = boite.points[0].x;
@@ -489,7 +488,7 @@ angular.module('pedaleswitchApp')
         boite.move({x: e.layerX - mousePos.x, y: e.layerY - mousePos.y});
 
         // Deplace la boite si elle depasse depasse le canvas.
-        canvasControl.moveCloseBorder(boite);
+        boite.moveCloseBorder(canvasSetting.canvas, canvasSetting.marginCanvas);
 
         // Bouge les effets et les compos.
         delta = {x: boite.points[0].x - delta.x, y: boite.points[0].y - delta.y};
@@ -510,7 +509,6 @@ angular.module('pedaleswitchApp')
       mouseMoveThing: function(e) {
 
         var masterBoite = canvasControl.getMasterBoite();
-        var viewState = canvasControl.getViewState();
 
         // Delais avant le drag
         timeb = (new Date()).getTime() - timea;
@@ -526,10 +524,10 @@ angular.module('pedaleswitchApp')
         update('move');
 
         // Deplace l'obj si sa nouvelle position depasse le canvas.
-        canvasControl.moveCloseBorder(tabActive[drag.id]);
+        tabActive[drag.id].moveCloseBorder(canvasSetting.canvas, canvasSetting.marginCanvas, boite.margin);
 
         // Bouge les composants si non debraillable.
-        if (!canvasControl.getDeb()) {
+        if (!canvasSetting.debrayable) {
           tabActive[drag.id].resetCompPos();
         }
 
@@ -538,7 +536,7 @@ angular.module('pedaleswitchApp')
         // Check l'alignement des things.
         canvasControl.setTableAlignLine(checkCollision.checkLine(tabActive[drag.id], tabActive));
         // Redimensionne la boite.
-        masterBoite.checkBorderBoite(viewState, tabActive[drag.id]);
+        masterBoite.checkBorderBoite(canvasSetting.viewState, tabActive[drag.id]);
         // Recalcule les positions de fleches entourant la boite.
         canvasControl.setArrowPos();
         // Dessine.
@@ -584,14 +582,6 @@ angular.module('pedaleswitchApp')
             tabActive[drag.id].setSelected(true);
           }
         }
-
-        //// Si on vient de bouge une bordure de boite, on update les projections.
-        //if(drag.type === 'borderboite'){
-        //  var masterBoite = canvasControl.getMasterBoite(),
-        //      viewState = canvasControl.getViewState();
-        //
-        //  masterBoite.updateAllProjections(viewState);
-        //}
 
         mousePos = {};
 

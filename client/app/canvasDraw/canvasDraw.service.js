@@ -3,8 +3,7 @@
 angular.module('pedaleswitchApp')
   .factory('canvasDraw', function (canvasControl, canvasConversion) {
 
-    var canvas = {};
-    var ctx = {};
+    var canvasSetting = canvasControl.getCanvasSetting();
     var boite = null;
     var tableActive = [];
     var tableDrawDashed = [];
@@ -213,18 +212,15 @@ angular.module('pedaleswitchApp')
 
       drawStuff: function() {
 
-        canvas = canvasControl.getCanvas();
-        ctx = canvasControl.getCtx();
+        canvasSetting.ctx.clearRect(0, 0, canvasSetting.canvas.width, canvasSetting.canvas.height);
 
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        this.drawBoite(ctx, "gray", "#f6f6f6", "1px");
-        this.drawTableDashed(ctx, "gray", "#f6f6f6", "1px", [10, 3]);
-        this.drawTableLimits(ctx, "gray", "#f6f6f6", "1px", [10, 3]);
-        this.drawTableThin(ctx, "gray", null, "1px");
-        this.drawTableAlignLine(canvas, ctx, "#d0d0d0", "#00bfff", [10, 3]);
-        this.drawTableActive(ctx, "black", null, "1px");
-        this.drawArrow(ctx, "gray");
+        this.drawBoite(canvasSetting.ctx, "gray", "#f6f6f6", "1px");
+        this.drawTableDashed(canvasSetting.ctx, "gray", "#f6f6f6", "1px", [10, 3]);
+        this.drawTableLimits(canvasSetting.ctx, "gray", "#f6f6f6", "1px", [10, 3]);
+        this.drawTableThin(canvasSetting.ctx, "gray", null, "1px");
+        this.drawTableAlignLine(canvasSetting.canvas, canvasSetting.ctx, "#d0d0d0", "#00bfff", [10, 3]);
+        this.drawTableActive(canvasSetting.ctx, "black", null, "1px");
+        this.drawArrow(canvasSetting.ctx, "gray");
         
         //this.drawText(ctx);
       }
