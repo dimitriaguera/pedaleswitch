@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('pedaleswitchApp')
-  .factory('canvasControl', function (canvasGeneration, canvasConversion, checkCollision, rulers) {
+  .factory('canvasControl', function (canvasGeneration, canvasConversion, checkCollision, rulers, $rootScope) {
     // Service logic
 
     var boite = {};
@@ -34,7 +34,6 @@ angular.module('pedaleswitchApp')
     
     //var marginCanvas = canvasConversion.convertToPixel(40);
     
-    
     var thing = function(entity) {
       switch (entity.item_info.shape){
         case 'Rect':
@@ -49,9 +48,9 @@ angular.module('pedaleswitchApp')
         default:
           console.log('Shape not match in canvasControl :' + entity.shape);
           return false;
-      }      
+      }
     };
-        
+    
     // Public API here
     return{
       
@@ -442,7 +441,8 @@ angular.module('pedaleswitchApp')
         var texte, p;
 
         p = pos || {x: 400, y: 400};
-        texte = canvasGeneration.newTexte(string, canvasSetting.ctx);
+
+        texte = canvasGeneration.newTexte(string);
         texte.moveTo(p);
         masterBoite.projections[canvasSetting.viewState].textDeco.push(texte);
 
@@ -450,8 +450,12 @@ angular.module('pedaleswitchApp')
         tableText.push(texte);
       },
 
+      //actualisePoints: function(value, data){
+      //  data.actualisePoints(canvasSetting.ctx, value);
+      //},
+
       actualisePoints: function(value, data){
-        data.actualisePoints(canvasSetting.ctx, value);
+        data.actualisePoints(value);
       },
 
       getCanvasSetting: function(){
@@ -490,6 +494,7 @@ angular.module('pedaleswitchApp')
 
       setIsActive: function(active){
         canvasSetting.isActive = active;
+        data.actualisePoints(value);
       },
 
       getTableText: function() {

@@ -20,7 +20,6 @@
       </menu-dessin>
 
       <navigation-dessin
-        ng-hide="$ctrl.deco"
         zoom="$ctrl.zoom"
         zoom-add="$ctrl.zoomAdd(value)"
         load="$ctrl.load()"
@@ -66,6 +65,7 @@
             table-menu="$ctrl.activeItem"
             update-composant="$ctrl.updateComposant(compo, value)"
             rotate="$ctrl.rotate(value, data)"
+            eyedropper="$ctrl.eyedropper()"
             arrow-change="$ctrl.arrowChangeValue()">
           </table-dessin>
 

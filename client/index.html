@@ -1,8 +1,8 @@
 <!doctype html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<!--[if lt IE 7]>      <html ng-app="pedaleswitchApp" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html ng-app="pedaleswitchApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html ng-app="pedaleswitchApp" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html ng-app="pedaleswitchApp" class="no-js"> <!--<![endif]-->
   <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -15,6 +15,7 @@
       <!-- bower:css -->
       <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
       <link rel="stylesheet" href="bower_components/angular-color-picker/dist/angularjs-color-picker.css" />
+      <link rel="stylesheet" href="bower_components/angular-fontselect/dist/angular-fontselect.css" />
       <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css({.tmp,client}) app/app.css -->
@@ -41,8 +42,9 @@
       <link rel="stylesheet" href="components/modal/modal.css">
       <!-- endinjector -->
     <!-- endbuild -->
+    <link rel="stylesheet" jd-fontselect-current-href>
   </head>
-  <body ng-app="pedaleswitchApp">
+  <body>
     <!--[if lt IE 7]>
       <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -81,6 +83,9 @@
       <script src="bower_components/angular-validation-match/dist/angular-validation-match.min.js"></script>
       <script src="bower_components/tinycolor/tinycolor.js"></script>
       <script src="bower_components/angular-color-picker/dist/angularjs-color-picker.js"></script>
+      <script src="bower_components/weakmap-polyfill/weakmap-polyfill.js"></script>
+      <script src="bower_components/angular-fontselect/dist/libs/webfontloader.js"></script>
+      <script src="bower_components/angular-fontselect/dist/angular-fontselect.js"></script>
       <!-- endbower -->
       <script src="socket.io-client/socket.io.js"></script>
     <!-- endbuild -->
@@ -91,7 +96,7 @@
       <script src="app/admin/admin.module.js"></script>
       <script src="components/auth/auth.module.js"></script>
       <script src="components/util/util.module.js"></script>
-      <script src="app/draggable/draggable.directive.js"></script>
+      <script src="app/droppable/droppable.directive.js"></script>
       <script src="app/account/signup/signup.controller.js"></script>
       <script src="app/addeffet/addeffet.js"></script>
       <script src="app/addeffet/addeffet/addeffet.controller.js"></script>
@@ -124,8 +129,9 @@
       <script src="app/composant/composant.js"></script>
       <script src="app/composantType/composantType.controller.js"></script>
       <script src="app/composantType/composantType.js"></script>
+      <script src="app/draggable/draggable.directive.js"></script>
       <script src="app/account/account.js"></script>
-      <script src="app/droppable/droppable.directive.js"></script>
+      <script src="app/googleFontApiKey/googleFontApiKey.js"></script>
       <script src="app/instanceDessin/instanceDessin.service.js"></script>
       <script src="app/loading/loading.directive.js"></script>
       <script src="app/main/main.controller.js"></script>

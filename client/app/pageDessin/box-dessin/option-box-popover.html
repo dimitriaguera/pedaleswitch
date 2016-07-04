@@ -9,9 +9,10 @@
     </div>
 
     <modif-dessin
-            data="$ctrl.data"
-            datachange="$ctrl.datachange({value: value, data:$ctrl.data})"
-            rotate="rotate({value:value, data:$ctrl.data})">
+      data="$ctrl.data"
+      datachange="$ctrl.datachange({value: value, data:$ctrl.data})"
+      rotate="rotate({value:value, data:$ctrl.data})"
+      eyedropper="eyedropper()">
     </modif-dessin>
 
     <div class="row">
@@ -42,8 +43,9 @@
         </div>
 
         <modif-dessin
-                data="$ctrl.data"
-                rotate="rotate({value:value, data:$ctrl.data})">
+          eyedropper="eyedropper()"
+          data="$ctrl.data"
+          rotate="rotate({value:value, data:$ctrl.data})">
         </modif-dessin>
 
         <div ng-repeat="composant in $ctrl.data.composants">
@@ -58,13 +60,13 @@
 
                 <p>
                     <modal-dessin
-                            name="Changer le composant"
-                            template="modalBox"
-                            class-btn="btn btn-default btn-sm"
-                            action="$ctrl.boxAction({compo:compo, value:value})"
-                            items="$ctrl.items"
-                            data="composant"
-                            selected="composant.item_info.id_item">
+                      name="Changer le composant"
+                      template="modalBox"
+                      class-btn="btn btn-default btn-sm"
+                      action="$ctrl.boxAction({compo:compo, value:value})"
+                      items="$ctrl.items"
+                      data="composant"
+                      selected="composant.item_info.id_item">
                     </modal-dessin>
                 </p>
             </div>

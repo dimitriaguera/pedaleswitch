@@ -3,11 +3,14 @@ Sous Safari
 Le drag&drop ne marche pas quand on prend directement le nom de l'effet du panier. Pour que cela marche il faut ajouter
 draggable='true' en attribut du span qui contient le titre.
 
+Directive droppable : Virer les evenement inutile (dragenter, dragleave)
+
+Box-dessin.controller.js : Pk il est dans une fonctionne anonyme contrairement a tout les autres ?
+
+Texte :
+
+
 Rotation :
 
   Quand on tourne un obj trop pret du canvas l'est composant qui le compose bouge...
-
- 1) passage d'une vue a l'autre probleme la boite bouge.
-
- 4) quand on change les valeurs de la dim de la boite par les flèches elle ne s'agrandit pas
 

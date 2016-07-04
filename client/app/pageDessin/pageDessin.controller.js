@@ -3,27 +3,29 @@
 
 class PageDessinComponent {
 
-  constructor(instanceDessin, canvasConversion, canvasControl, canvasDraw, storage, $http) {
+  constructor(instanceDessin, canvasConversion, canvasControl, canvasDraw, storage, $http, mouseHelper) {
     this.instanceDessin = instanceDessin;
     this.canvasControl = canvasControl;
     this.canvasConversion = canvasConversion;
     this.canvasDraw = canvasDraw;
     this.storage = storage;
 
+    
     //@todo a sup verifier le oninit.
+    this.mouseHelper = mouseHelper;
     this.$http = $http; //@todo a supp et dans la declaration aussi
   }
 
   $onInit(){
     
     //@todo a supp et verifier dans le constructor de virer http et OrderArray.
-    //this.$http.get('/api/effets').then(response => {
-    //  this.effets = response.data;
-    //   if(this.instanceDessin.getDessin().options.length === 0){
-    //    this.instanceDessin.setEffet(this.effets[0], this.effets[0].options[0]);
+    this.$http.get('/api/effets').then(response => {
+      this.effets = response.data;
+       if(this.instanceDessin.getDessin().options.length === 0){
+        this.instanceDessin.setEffet(this.effets[0], this.effets[0].options[0]);
     //    this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
-    //   }
-    //});
+       }
+    });
     
     this.initialisation();
   }
@@ -168,6 +170,8 @@ class PageDessinComponent {
     }
   }
   
+  // Rajoute un effet au canvas
+  // Appeler par panier dessin et quand on droppable directive
   addToTable(effet){
     // Ajouter l'effet au canvas si pas deja.
     if (!effet.in_canvas) {this.canvasControl.addToCanvas(effet);}
@@ -178,7 +182,7 @@ class PageDessinComponent {
   }
 
   addTextToTable(string){
-    this.canvasControl.addTextToCanvas({font: {}, input:string});
+    this.canvasControl.addTextToCanvas(string);
     this.canvasDraw.drawStuff();
   }
 
@@ -186,7 +190,7 @@ class PageDessinComponent {
     this.canvasControl.actualisePoints(value, data);
     this.canvasDraw.drawStuff();
   }
-
+  
   removeToTable(effet){
     this.canvasControl.removeToCanvas(effet);
     this.canvasDraw.drawStuff();
@@ -251,6 +255,11 @@ class PageDessinComponent {
     this.canvasControl.setArrowPos();
     this.canvasControl.resizeCanvas();
     this.canvasDraw.drawStuff();
+  }
+
+  // Fonction de pipette couleur appeler par modif-dessin
+  eyedropper(){
+    this.mouseHelper.eyedropper();
   }
 
   // Utiliser par table-dessin.

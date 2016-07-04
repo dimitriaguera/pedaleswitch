@@ -13,7 +13,8 @@
           datachange: '&',
           items: '<',
           boxAction: '&',
-          rotate: '&'
+          rotate: '&',
+          eyedropper: '&'
         },
         controller: function ($scope) {
 

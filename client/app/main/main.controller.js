@@ -8,7 +8,7 @@ class MainController {
     this.$http = $http;
     this.socket = socket;
     this.awesomeThings = [];
-
+    
     $scope.$on('$destroy', function() {
       socket.unsyncUpdates('thing');
     });

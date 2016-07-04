@@ -9,3 +9,5 @@ npm-debug.log
 coverage
 Gruntfile.js
 /travail/*
+/client/app/googleFontApiKey/*
+/client/app/googleFontApiKey
