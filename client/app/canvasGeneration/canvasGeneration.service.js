@@ -448,12 +448,11 @@ angular.module('pedaleswitchApp')
        *                Le point de référence est le sommet de la
        *                projection de boite qui est bougé dans la
        *                vue active.
-       * @returns {false || Number}
+       * @returns {false || Number} si collision detectée, retourne une distance limite relative au point d'impact.
        */
       projectionsCollisionY(state, mousePos, index){
 
-        var delta, up, left, right, top, bottom, ref, move, func, i, hypo, old_hypo, adj, old_adj, height;
-        var cosinus;
+        var delta, up, left, right, top, bottom, ref, move, func, i, hypo, old_hypo, adj, old_adj, height, cosinus;
         var opp = (this.size.d2 - this.size.d1);
         var test_tmp = 0;
 
@@ -1028,7 +1027,6 @@ angular.module('pedaleswitchApp')
       projectionsCollisionX(state, mousePos, index){
 
         var delta, up, left, right, top, bottom, ref, move, func, i, test_tmp, old_adj, adj, opp, old_hypo, hypo;
-        var cosinus = this.size.h / this.size.d;
         var tmp_cos = 1;
 
         var test = 0;
@@ -1407,7 +1405,6 @@ angular.module('pedaleswitchApp')
             hypo = getTriangleHypo(adj, opp);
 
             delta = old_hypo - hypo;
-            //delta = (mousePos.x - left.points[index].x) / cosinus;
             ref = ((index + 1) <= 3) ? index + 1 : 0;
 
             // Si deplacement bord bas de la projection UP.
@@ -1733,20 +1730,6 @@ angular.module('pedaleswitchApp')
       }
 
       createProjectionsLimits(state){
-
-        // On détermine le cosinus de la pente de la boite.
-        //var cosinus = this.size.h / this.size.d;
-        //
-        //function compare(forW, forH, proj_limit, size, forHypo, forAdj){
-        //  size[forW] = Math.max(size[forW], proj_limit.size.w);
-        //  size[forH] = Math.max(size[forH], proj_limit.size.h);
-        //  if (forHypo){
-        //    size.d = Math.max(size.d, proj_limit.size[forHypo]/cosinus);
-        //  }
-        //  if (forAdj){
-        //    size.h = Math.max(size.h, proj_limit.size.h*cosinus);
-        //  }
-        //}
 
         // Definition des tailles limites minimales.
         var limit_up, limit_down, limit_left, limit_right, limit_top, limit_bottom, size_proj_mini = {};
@@ -2101,7 +2084,7 @@ angular.module('pedaleswitchApp')
        * Centre la boite et les élements dans le canvas.
        * vérifie si les marges de canvas ne sont pas atteintes.
        * Si margin du canvas atteintes, la boite et les élements sont bougés.
-       * @param canvasSetting : oject canvasSetting de canvasControl.
+       * @param canvasSetting : object canvasSetting de canvasControl.
        */
       moveToCenterWindow(canvasSetting){
         var vect;
