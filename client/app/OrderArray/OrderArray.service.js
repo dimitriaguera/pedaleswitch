@@ -29,7 +29,7 @@ angular.module('pedaleswitchApp')
       order: function(array, key) {
         var arrayTrie = {};
         array.forEach(function (element, index, array) {
-          if (typeof this[element[key]] !== 'undefined') {
+          if (typeof this[element[key]] != 'undefined') {
             this[element[key]].push(element);
           }
           else {

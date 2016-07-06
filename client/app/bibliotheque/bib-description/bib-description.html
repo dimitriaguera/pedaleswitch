@@ -8,7 +8,7 @@
     <div class="list-group-item">Taille: {{$ctrl.op.size.h}} x {{$ctrl.op.size.w}}</div>
     <div class="list-group-item">
         Composants:
-        <div ng_repeat="compo in $ctrl.op.composants">
+        <div ng-repeat="compo in $ctrl.op.composants">
             - {{compo.titre}} [{{compo.type}}]
         </div>
     </div>
