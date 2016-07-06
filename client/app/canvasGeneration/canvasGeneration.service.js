@@ -168,6 +168,25 @@ angular.module('pedaleswitchApp')
           this.points[i].translate(vect);
         }
       }
+
+      /**
+       * Retourne des coordonnées pour positionner une box-dessin.
+       * @returns {{x: number, y: number}}
+       */
+      getBoxPos(){
+        var c = this.getCenter();
+        var e = this.findExtreme();
+
+        return {
+          x: c.x - e.size.w / 2,
+          y: c.y - e.size.h / 2
+        };
+      }
+
+      /**
+       * Retourne les dimensions de l'objet sur le canvas.
+       * @returns {{t: Number, r: number, b: number, l: Number}}
+       */
       
       findExtreme(){
         var posExtreme = {t:Infinity,r:-Infinity,b:-Infinity,l:Infinity};
@@ -2379,6 +2398,20 @@ angular.module('pedaleswitchApp')
           };
         }
         return this.sizeTxt;
+      }
+
+      /**
+       * Retourne des coordonnées pour positionner une box-dessin.
+       * @returns {{x: number, y: number}}
+       */
+      getBoxPos(){
+        var c = this.getCenter();
+        var e = this.findExtreme();
+
+        return {
+          x: c.x - e.size.w / 2,
+          y: c.y - e.size.h / 2
+        };
       }
 
       createPoints(){
