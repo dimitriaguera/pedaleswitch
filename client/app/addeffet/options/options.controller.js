@@ -12,7 +12,7 @@ class OptionsComponent {
     }
   }
   newOption(){
-    this.effet.options.push({titre:"nouvelle option"});
+    this.effet.options.push({titre:'nouvelle option'});
     this.nouvoption = true;
   }
   deleteOption(index){
@@ -27,7 +27,7 @@ angular.module('pedaleswitchApp')
     bindings: {
       effet: '=',
       nouvEffet: '<'
-    },
+    }
   });
 
 })();

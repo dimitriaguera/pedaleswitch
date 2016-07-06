@@ -1,15 +1,15 @@
 'use strict';
 
 angular.module('pedaleswitchApp')
-  .factory('canvasDraw', function (canvasControl, canvasConversion) {
+  .factory('canvasDraw', function (canvasControl) {
 
     var canvasSetting = canvasControl.getCanvasSetting();
     var boite = null;
     var tableActive = [];
     var tableDrawDashed = [];
     var tableDrawThin = [];
-    var tableDrawShine = [];
-    var tableArrow = [];
+    //var tableDrawShine = [];
+    //var tableArrow = [];
 
     //@todo: table de travail, a supprimer.
     var tableDrawLimits = [];
@@ -17,12 +17,12 @@ angular.module('pedaleswitchApp')
 
     var selectDraw = function(context, item){
       if (item.isSelected) {
-        context.font = "16px sans-serif";
-        context.strokeStyle = "#00bfff";
-        context.fillStyle = "#00bfff";
+        context.font = '16px sans-serif';
+        context.strokeStyle = '#00bfff';
+        context.fillStyle = '#00bfff';
         //context.textAlign = 'center';
         //context.fillText(item.titre, item.getCenterX(), item.findExtreme().t - canvasConversion.convertToPixel(5));
-        context.shadowColor   = "#666";
+        context.shadowColor   = '#666';
         context.shadowOffsetX = 1;
         context.shadowOffsetY = 1;
         context.shadowBlur    = 2;
@@ -30,7 +30,7 @@ angular.module('pedaleswitchApp')
     };
     //var overlappingDraw = function (context, item){
     //  if (item.isOverlapping) {
-    //    context.fillStyle = "rgba(255, 00, 00, 0.2)";
+    //    context.fillStyle = 'rgba(255, 00, 00, 0.2)';
     //    context.fill();
     //  }
     //};
@@ -53,7 +53,7 @@ angular.module('pedaleswitchApp')
               context.fillStyle = colorFill;
               context.fill();
             }
-            context.restore()
+            context.restore();
           }
           context.restore();
         }
@@ -74,7 +74,7 @@ angular.module('pedaleswitchApp')
               context.fillStyle = colorFill;
               context.fill();
             }
-            context.restore()
+            context.restore();
           }
           context.restore();
         }
@@ -103,11 +103,11 @@ angular.module('pedaleswitchApp')
 
       drawBoite: function (context, colorStroke, colorFill, lineWidth) {
         boite = canvasControl.getBoite();
-        if(boite.fonction === "Boite") {
+        if(boite.fonction === 'Boite') {
           context.save();
           context.lineWidth = lineWidth;
           context.strokeStyle = colorStroke;
-          context.shadowColor   = "#666";
+          context.shadowColor   = '#666';
           context.shadowOffsetX = 0;
           context.shadowOffsetY = 0;
           context.shadowBlur    = 2;
@@ -117,7 +117,7 @@ angular.module('pedaleswitchApp')
             context.fill();
           }
           if (boite.isOverlapping) {
-            context.fillStyle = "rgba(255, 00, 00, 0.2)";
+            context.fillStyle = 'rgba(255, 00, 00, 0.2)';
             context.fill();
           }
           context.restore();
@@ -165,7 +165,7 @@ angular.module('pedaleswitchApp')
         var tableArrow = canvasControl.getTableArrow();
         if(tableArrow.length !== 0) {
           context.save();
-          context.shadowColor   = "gray";
+          context.shadowColor   = 'gray';
           context.shadowOffsetX = 0;
           context.shadowOffsetY = 0;
           context.shadowBlur    = 1;
@@ -203,7 +203,7 @@ angular.module('pedaleswitchApp')
               context.fillStyle = colorFill;
               context.fill();
             }
-            context.restore()
+            context.restore();
           }
           context.restore();
         }
@@ -214,13 +214,13 @@ angular.module('pedaleswitchApp')
 
         canvasSetting.ctx.clearRect(0, 0, canvasSetting.canvas.width, canvasSetting.canvas.height);
 
-        this.drawBoite(canvasSetting.ctx, "gray", "#f6f6f6", "1px");
-        this.drawTableDashed(canvasSetting.ctx, "gray", "#f6f6f6", "1px", [10, 3]);
-        this.drawTableLimits(canvasSetting.ctx, "gray", "#f6f6f6", "1px", [10, 3]);
-        this.drawTableThin(canvasSetting.ctx, "gray", null, "1px");
-        this.drawTableAlignLine(canvasSetting.canvas, canvasSetting.ctx, "#d0d0d0", "#00bfff", [10, 3]);
-        this.drawTableActive(canvasSetting.ctx, "black", null, "1px");
-        this.drawArrow(canvasSetting.ctx, "gray");
+        this.drawBoite(canvasSetting.ctx, 'gray', '#f6f6f6', '1px');
+        this.drawTableDashed(canvasSetting.ctx, 'gray', '#f6f6f6', '1px', [10, 3]);
+        this.drawTableLimits(canvasSetting.ctx, 'gray', '#f6f6f6', '1px', [10, 3]);
+        this.drawTableThin(canvasSetting.ctx, 'gray', null, '1px');
+        this.drawTableAlignLine(canvasSetting.canvas, canvasSetting.ctx, '#d0d0d0', '#00bfff', [10, 3]);
+        this.drawTableActive(canvasSetting.ctx, 'black', null, '1px');
+        this.drawArrow(canvasSetting.ctx, 'gray');
         
         //this.drawText(ctx);
       }

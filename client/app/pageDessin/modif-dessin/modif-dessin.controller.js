@@ -15,6 +15,7 @@
         rotate: '&',
         eyedropper: '&',
         datachange: '&'
+        //changeFontSize: 'changeFontSize({value:value, data:data})'
       },
       controller: ModifDessin
     });

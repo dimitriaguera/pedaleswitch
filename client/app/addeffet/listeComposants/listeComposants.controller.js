@@ -33,7 +33,7 @@ class ListeComposants {
       if (this.listeCompo.hasOwnProperty(p)) {
         for (var j=0; j<this.listeCompo[p].length; j++) {
           if (this.listeCompo[p][j].value === true) {
-            this.selectCompo.push(this.listeCompo[p][j]._id)
+            this.selectCompo.push(this.listeCompo[p][j]._id);
           }
         }
       }

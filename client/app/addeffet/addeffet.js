@@ -8,7 +8,7 @@ angular.module('pedaleswitchApp')
         template: '<addeffet></addeffet>'
       })
       .state('addeffet.edit', {
-        url: "/edit",
+        url: '/edit',
         template: '<editeffet></editeffet>',
         params: {
           entity: null,

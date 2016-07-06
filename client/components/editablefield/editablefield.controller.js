@@ -20,7 +20,7 @@
         this.onUpdate({value: this.fieldValue});
       }
       this.editMode = !this.editMode;
-    };
+    }
   }
 
   angular.module('pedaleswitchApp')

@@ -14,27 +14,28 @@
           items: '<',
           boxAction: '&',
           rotate: '&',
-          eyedropper: '&'
+          eyedropper: '&',
+          //changeFontSize: '&'
         },
         controller: function ($scope) {
 
           this.onBlur = function(){
             $timeout.cancel(this.mypromise);
-            this.store_value = this.value;
+            this.storeValue = this.value;
             this.value = null;
             var self = this;
             this.mypromise = $timeout(function(){ self.change = false; }, 200, self);
           };
 
           this.$onInit = function () {
-            // Si l'objet n'est pas un arrow, on ajoute une pos_box, et on ajoute un template pour la popover.
-            if (this.data.constructor.name !== "Arrow" && this.data.constructor.name !== "ArrowPoint") {
+            // Si l'objet n'est pas un arrow, on ajoute une posBox, et on ajoute un template pour la popover.
+            if (this.data.constructor.name !== 'Arrow' && this.data.constructor.name !== 'ArrowPoint') {
 
               var posExt = this.data.findExtreme();
               var C = this.data.getCenter();
 
               // On calcule le point de référence du masque carré.
-              this.data.pos_box = {
+              this.data.posBox = {
                 x: C.x - posExt.size.w / 2,
                 y: C.y - posExt.size.h / 2
               };
@@ -49,9 +50,9 @@
           };
 
           this.$onDestroy = function() {
-            // Si l'objet n'est pas un arrow, on détruit sa pos_box.
-            if (this.data.constructor.name !== "Arrow") {
-              delete this.data.pos_box;
+            // Si l'objet n'est pas un arrow, on détruit sa posBox.
+            if (this.data.constructor.name !== 'Arrow') {
+              delete this.data.posBox;
             }
           };
 
@@ -59,22 +60,22 @@
             if (this.mypromise) {
               $timeout.cancel(this.mypromise);
             }
-            this.value = this.store_value = this.data.value;
+            this.value = this.storeValue = this.data.value;
             this.change = true;
           };
 
           this.validation = function () {
-            if (this.store_value) {
-              this.data.setValue(this.store_value);
+            if (this.storeValue) {
+              this.data.setValue(this.storeValue);
             }
             this.change = false;
-            this.value = this.store_value = null;
+            this.value = this.storeValue = null;
             this.boxAction();
           };
 
         },
         controllerAs: '$ctrl'
-      }
+      };
 
     });
 

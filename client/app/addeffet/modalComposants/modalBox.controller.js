@@ -5,15 +5,15 @@
     constructor($uibModalInstance, saved) {
       this.$uibModalInstance = $uibModalInstance;
       this.saved = saved;
-  };
+    }
 
     ok(selected) {
       this.$uibModalInstance.close(selected);
-    };
+    }
 
     cancel() {
       this.$uibModalInstance.dismiss('cancel');
-    };
+    }
   }
 
   angular.module('pedaleswitchApp')

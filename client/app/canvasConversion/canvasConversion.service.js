@@ -4,8 +4,6 @@ angular.module('pedaleswitchApp')
   .factory('canvasConversion', function ($window) {
     // Service logic
 
-    var resolution = 72;
-    var resoInMm = 25.4;
     var resolution = 2;
     var resoInMm = 1;
     var ratioW = 3/4.2;
@@ -65,7 +63,7 @@ angular.module('pedaleswitchApp')
         if (entity.composants && entity.fonction !== 'Boite') {
           for (var i = 0, l = entity.composants.length ; i < l ; i++) {
             convertSizePoints(entity.composants[i].points, ratio);
-            convertSizePoints(entity.composants[i].points_default, ratio);
+            convertSizePoints(entity.composants[i].pointsDefault, ratio);
           }
         }
       }
@@ -86,7 +84,7 @@ angular.module('pedaleswitchApp')
         return {
           x: center.w / 2,
           y: center.h / 2
-        }
+        };
       },
 
       getZoomRatio: function () {

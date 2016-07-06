@@ -26,21 +26,21 @@ angular.module('pedaleswitchApp')
     return {
 
       fillContextWithRuler: function(context, ruler, width, height) {
-        var pattern_holder = document.createElement('canvas'),
-          pattern_ctx = pattern_holder.getContext('2d');
+        var patternHolder = document.createElement('canvas'),
+          patternCtx = patternHolder.getContext('2d');
   
         context.fillStyle = context.createPattern(ruler, 'repeat-x');
         context.fillRect(RULERS_SIZE, 0, width, height);
   
-        pattern_holder.width = width;
-        pattern_holder.height = 100;
+        patternHolder.width = width;
+        patternHolder.height = 100;
   
-        pattern_ctx.translate(0, 0);
-        pattern_ctx.scale(-1, 1);
-        pattern_ctx.rotate(Math.PI / 4 * 2);
-        pattern_ctx.drawImage(ruler, 0, 0);
+        patternCtx.translate(0, 0);
+        patternCtx.scale(-1, 1);
+        patternCtx.rotate(Math.PI / 4 * 2);
+        patternCtx.drawImage(ruler, 0, 0);
   
-        context.fillStyle = context.createPattern(pattern_holder, 'repeat-y');
+        context.fillStyle = context.createPattern(patternHolder, 'repeat-y');
         context.fillRect(0, RULERS_SIZE, width, width);
       },
 
@@ -48,7 +48,7 @@ angular.module('pedaleswitchApp')
         var majorHeight = parseInt(RULERS_SIZE * MAJOR_INTERVAL_RATIO, 10),
           minorHeight = parseInt(RULERS_SIZE * MINOR_INTERVAL_RATIO, 10),
           tickWidth = parseInt(major / 10, 10),
-          html = "",
+          html = '',
           i;
   
         for (i = 0; i < TICKS_PER_MAJOR_INTERVAL; i += 1) {
@@ -65,8 +65,8 @@ angular.module('pedaleswitchApp')
         this.ctx = ctx;
         this.canvas = canvas;
 
-        this.ctx.fillStyle =  "#474747";
-        this.ctx.strokeStyle = "#ffffff";
+        this.ctx.fillStyle =  '#474747';
+        this.ctx.strokeStyle = '#ffffff';
 
   
         this.ctx.fillRect(0, 0, this.canvas.width, RULERS_SIZE);
@@ -84,7 +84,7 @@ angular.module('pedaleswitchApp')
         }.bind(this);
   
         svg = new Blob([svgdata], {
-          type: "image/svg+xml;charset=utf-8"
+          type: 'image/svg+xml;charset=utf-8'
         });
   
         url = DOMURL.createObjectURL(svg);

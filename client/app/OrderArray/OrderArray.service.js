@@ -29,7 +29,7 @@ angular.module('pedaleswitchApp')
       order: function(array, key) {
         var arrayTrie = {};
         array.forEach(function (element, index, array) {
-          if (typeof this[element[key]] != "undefined") {
+          if (typeof this[element[key]] !== 'undefined') {
             this[element[key]].push(element);
           }
           else {
@@ -41,25 +41,25 @@ angular.module('pedaleswitchApp')
       },
 
       /**
-       * Fonction qui cherche dans un tableau la valeur de la clé index_voulu qui est égale a la valeur val_voulu.
+       * Fonction qui cherche dans un tableau la valeur de la clé indexVoulu qui est égale a la valeur valVoulu.
        * Cette fonctionne retourne le path pour acceder à la premiere valeur.
        *
        *
        * @param ArrOrObj tableau ou objet dans lequel on recherche
-       * @param index_voulu clé du tableau que l'on veut comparé
-       * @param val_voulu valeur que l'on veut
+       * @param indexVoulu clé du tableau que l'on veut comparé
+       * @param valVoulu valeur que l'on veut
        * @param profondeur profondeur maximale a regarder.
        * @param init permet de reinitisaliser la fonction.
        * @returns Array tableau du chemin d'acces.
        */
-      boucle: function(ArrOrObj, index_voulu, val_voulu, profondeur, init) {
-        var objout,
-          arr,
-          arr_l,
-          i = 0,
-          index = '';
+      boucle: function(ArrOrObj, indexVoulu, valVoulu, profondeur, init) {
+        var arr,
+          arrL,
+          i;
 
-        if (typeof init == 'undefined') init = true;
+        if (typeof init === 'undefined') {
+          init = true;
+        }
 
         // Déclaration et initialisation d'une variable statique.
         if (init){
@@ -80,12 +80,12 @@ angular.module('pedaleswitchApp')
         }
 
         arr = Object.keys(ArrOrObj);
-        arr_l = arr.length;
+        arrL = arr.length;
 
-        for (i = 0; i < arr_l; ++i) {
-          if (ArrOrObj[index_voulu] === val_voulu) {
+        for (i = 0; i < arrL; ++i) {
+          if (ArrOrObj[indexVoulu] === valVoulu) {
             // console.log('deep :' + this.deep);
-            this.path[this.deep] = index_voulu;
+            this.path[this.deep] = indexVoulu;
             // console.log(this.path.slice(0, this.deep + 1));
             this.ok = true;
             this.pathok = this.path.slice(0, this.deep + 1);
@@ -95,7 +95,7 @@ angular.module('pedaleswitchApp')
           if (typeof ArrOrObj[arr[i]] === 'object') {
             this.path[this.deep] = arr[i];
             this.deep++;
-            this.boucle(ArrOrObj[arr[i]], index_voulu, val_voulu, profondeur, false);
+            this.boucle(ArrOrObj[arr[i]], indexVoulu, valVoulu, profondeur, false);
           }
         }
         this.deep--;
@@ -110,7 +110,7 @@ angular.module('pedaleswitchApp')
       supwithpath: function(obj, path){
         var arraytmp = obj,
           index = 0;
-        while (arraytmp != null && index < path.length-1) {
+        while (arraytmp !== null && index < path.length-1) {
           arraytmp = arraytmp[path[index]];
           index++;
         }

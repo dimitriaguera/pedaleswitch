@@ -8,7 +8,7 @@ angular.module('pedaleswitchApp')
 
       //@todo implementation ici du test du navigateur.
       init: function(){
-        if (typeof(Storage) !== "undefined") {
+        if (typeof(Storage) !== 'undefined') {
           // Code for localStorage/sessionStorage.
         } else {
           // Sorry! No Web Storage support..

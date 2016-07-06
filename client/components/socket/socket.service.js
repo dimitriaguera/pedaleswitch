@@ -27,8 +27,8 @@ angular.module('pedaleswitchApp')
        * @param {Function} cb
        */
       syncUpdates(modelName, array, cb) {
-        cb = cb || angular.noop;
         OrderArray;
+        cb = cb || angular.noop;
         /**
          * Syncs item creation/updates on 'model:save'
          */
@@ -58,10 +58,7 @@ angular.module('pedaleswitchApp')
           var test = _.remove(array, {_id: item._id});
 
           if (test.length === 0){
-            var path = [],
-              index = 0,
-              arraytmp = [];
-            path = OrderArray.boucle(array, '_id', item._id, 3);
+            var path = OrderArray.boucle(array, '_id', item._id, 3);
             if (path.length > 1) {
               OrderArray.supwithpath(array, path.slice(0,path.length-1));
             }
