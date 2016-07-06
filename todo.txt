@@ -3,14 +3,17 @@ Sous Safari
 Le drag&drop ne marche pas quand on prend directement le nom de l'effet du panier. Pour que cela marche il faut ajouter
 draggable='true' en attribut du span qui contient le titre.
 
+----------------
+
+dans /client/components/socket/socket.service.js
+le var index ne marche pas car indexOf (ver l36) n'existe par car maitenant le array n'est pas un array pour composant
+mais un obj avec composant.potar ou composant.cercle donc la sync ne marche pas.
+
+var oldItem = _.find(array, {_id: item._id});
+          var index = array.indexOf(oldItem);
+          var event = 'created';
 Directive droppable : Virer les evenement inutile (dragenter, dragleave)
 
+------------------
+
 Box-dessin.controller.js : Pk il est dans une fonctionne anonyme contrairement a tout les autres ?
-
-Texte :
-
-
-Rotation :
-
-  Quand on tourne un obj trop pret du canvas l'est composant qui le compose bouge...
-
