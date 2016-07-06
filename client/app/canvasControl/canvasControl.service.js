@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('pedaleswitchApp')
-  .factory('canvasControl', function (canvasGeneration, canvasConversion, checkCollision, rulers, $rootScope) {
+  .factory('canvasControl', function (canvasGeneration, canvasConversion, checkCollision, rulers) {
     // Service logic
 
     var boite = {};
@@ -10,7 +10,7 @@ angular.module('pedaleswitchApp')
     var canvasSetting = {
       ctx: {},
       canvas: {},
-      canvas_window: {},
+      canvasWindow: {},
       marginCanvas: canvasConversion.convertToPixel(40),
       debrayable: false,
       viewState: 'up',
@@ -35,16 +35,13 @@ angular.module('pedaleswitchApp')
     //var marginCanvas = canvasConversion.convertToPixel(40);
     
     var thing = function(entity) {
-      switch (entity.item_info.shape){
+      switch (entity.itemInfo.shape){
         case 'Rect':
           return canvasGeneration.newRect(entity);
-          break;
         case 'Cercle':
           return canvasGeneration.newCercle(entity);
-          break;
         case 'Poly':
           return canvasGeneration.newPoly(entity);
-          break;
         default:
           console.log('Shape not match in canvasControl :' + entity.shape);
           return false;
@@ -68,21 +65,21 @@ angular.module('pedaleswitchApp')
         pos = pos || null;
 
         // if check si l'effet est deja dans le canvas.
-        if (!effet.in_canvas || bol) {
-          var tmp_eff = canvasGeneration.newRect(effet);
+        if (!effet.inCanvas || bol) {
+          var tmpEff = canvasGeneration.newRect(effet);
           var compos = effet.composants;
-          var tmp_comp;
+          var tmpComp;
 
           if (pos){
-            tmp_eff.moveTo(pos);
+            tmpEff.moveTo(pos);
             if (canvasSetting.debrayable){
-              tmp_eff.resetCompPos();
+              tmpEff.resetCompPos();
             }
           }
 
           // Créer le boitier de la pedale.
-          if(boite.constructor.name !== "Boite") {
-            this.setMasterBoite(canvasGeneration.newMasterBoite(tmp_eff));
+          if(boite.constructor.name !== 'Boite') {
+            this.setMasterBoite(canvasGeneration.newMasterBoite(tmpEff));
 
             // Créer les projections de la boite.
             masterBoite.createProjection();
@@ -91,10 +88,10 @@ angular.module('pedaleswitchApp')
             this.setBoite(masterBoite.projections[canvasSetting.viewState]);
 
             // Empeche que l'effet depasse du canvas.
-            tmp_eff.moveCloseBorder(canvasSetting.canvas, canvasSetting.marginCanvas, boite.margin);
+            tmpEff.moveCloseBorder(canvasSetting.canvas, canvasSetting.marginCanvas, boite.margin);
 
             // Initialise la position de la boite.
-            boite.initMoveBox(tmp_eff);
+            boite.initMoveBox(tmpEff);
 
             
             // Créer les flèches autour de la boite.
@@ -103,39 +100,39 @@ angular.module('pedaleswitchApp')
           }
           else {
             // Empeche que l'effet depasse du canvas.
-            tmp_eff.moveCloseBorder(canvasSetting.canvas, canvasSetting.marginCanvas, boite.margin);
+            tmpEff.moveCloseBorder(canvasSetting.canvas, canvasSetting.marginCanvas, boite.margin);
 
             // Redimensionne la boite si le nouvelle effet est en dehors.
-            masterBoite.checkBorderBoite(canvasSetting.viewState, tmp_eff);
+            masterBoite.checkBorderBoite(canvasSetting.viewState, tmpEff);
 
             // Repositionne les arraw.
             this.setArrowPos();
           }
 
           // Lie les effets et composants a la bonne projection de la boite.
-          masterBoite.projections[canvasSetting.viewState].effets.push(tmp_eff);
+          masterBoite.projections[canvasSetting.viewState].effets.push(tmpEff);
 
           // On créé les composants.
           for (var i = 0; i < compos.length; i++) {
-            tmp_comp = thing(compos[i]);
-            tableComposant.push(tmp_comp);
-            tmp_eff.composants.push(tmp_comp);
-            masterBoite.projections[canvasSetting.viewState].composants.push(tmp_comp);
+            tmpComp = thing(compos[i]);
+            tableComposant.push(tmpComp);
+            tmpEff.composants.push(tmpComp);
+            masterBoite.projections[canvasSetting.viewState].composants.push(tmpComp);
           }
 
           // Place bien les composants.
-          if (!effet.in_canvas) {
-            tmp_eff.resetCompPos();
+          if (!effet.inCanvas) {
+            tmpEff.resetCompPos();
           }
 
-          // Rajoute la propriété in_canvas a l'effet.
-          effet.in_canvas = true;
+          // Rajoute la propriété inCanvas a l'effet.
+          effet.inCanvas = true;
 
           // Rajoute l'effet a la table effet et le master dans la table MesterEffet.
-          tableEffet.push(tmp_eff);
+          tableEffet.push(tmpEff);
 
           // Empeche que l'effet depasse du canvas.
-          tmp_eff.moveCloseBorder(canvasSetting.canvas, canvasSetting.marginCanvas, boite.margin);
+          tmpEff.moveCloseBorder(canvasSetting.canvas, canvasSetting.marginCanvas, boite.margin);
 
           // Check les collisions entre tout les obj.
           checkCollision.checkAll(tableEffet);
@@ -143,7 +140,7 @@ angular.module('pedaleswitchApp')
           // Créé les limites des projections.
           masterBoite.createProjectionsLimits(canvasSetting.viewState);
 
-          return tmp_eff;
+          return tmpEff;
         }
       },
 
@@ -154,7 +151,7 @@ angular.module('pedaleswitchApp')
       removeToCanvas: function(effet) {
         var index = this.searchTabByIdReturnIndex(tableEffet, effet._id, effet.key);
         if(index !== false){
-          effet.in_canvas = false;
+          effet.inCanvas = false;
           var removeIndex = [];
           for (var i = 0  ; i < tableComposant.length ; i++) {
             if (effet.key === tableComposant[i].key) {
@@ -287,7 +284,6 @@ angular.module('pedaleswitchApp')
             this.setTableActive(active);
             this.setTableDrawThin(inactive);
             return (active.length > 0);
-            break;
 
           case 'composant':
             active = tableComposant;
@@ -298,7 +294,6 @@ angular.module('pedaleswitchApp')
             this.setTableActive(active);
             this.setTableDrawDashed(inactive);
             return (active.length > 0);
-            break;
 
           case 'deco':
             this.resetIsSelected(tableComposant);
@@ -308,7 +303,6 @@ angular.module('pedaleswitchApp')
             this.setTableActive(tableText);
             this.setTableDrawThin(tableComposant);
             return (tableText.length > 0);
-            break;
           
           default:
             return console.log('ERROR ' + state + ' is not a valid state');
@@ -334,7 +328,7 @@ angular.module('pedaleswitchApp')
         // Rajoute tout les effets au canvas.
         //@todo addToCanvas with load option car on peut pas faire incanvas...
         for (var i = 0 ; i < dessin.options.length ; i++){
-          if (dessin.options[i].in_canvas === true){
+          if (dessin.options[i].inCanvas === true){
             this.addToCanvas(dessin.options[i], true);
           }
         }
@@ -344,7 +338,7 @@ angular.module('pedaleswitchApp')
        * Agrandit/reduit le canvas pour qu'il soit au moins aussi grand que la boite.
        */
       resizeCanvas: function(){
-        if (boite.constructor.name === "Boite") {
+        if (boite.constructor.name === 'Boite') {
           var realmargin = 150;
 
           var canvasInitialSize = canvasConversion.getCanvasSize();
@@ -473,11 +467,11 @@ angular.module('pedaleswitchApp')
         canvasSetting.canvas = canv;
       },
 
-      setCanvasWindow: function(canv_window){
+      setCanvasWindow: function(canvasWindow){
         var canvasSize = canvasConversion.getCanvasSize();
-        canv_window.style.width = canvasSize.w.toString() + "px";
-        canv_window.style.height = canvasSize.h.toString() + "px";
-        canvasSetting.canvas_window = canv_window;
+        canvasWindow.style.width = canvasSize.w.toString() + 'px';
+        canvasWindow.style.height = canvasSize.h.toString() + 'px';
+        canvasSetting.canvasWindow = canvasWindow;
       },
 
       setMarginCanvas: function(margin){
@@ -494,7 +488,7 @@ angular.module('pedaleswitchApp')
 
       setIsActive: function(active){
         canvasSetting.isActive = active;
-        data.actualisePoints(value);
+        //data.actualisePoints(value);
       },
 
       getTableText: function() {
@@ -540,13 +534,13 @@ angular.module('pedaleswitchApp')
       updateComposantInCanvas: function(compo){
         var effet = this.searchEffetByKey(compo.key);
         if (effet) {
-          var index_effet = this.searchTabByIdReturnIndex(tableEffet, effet._id, effet.key);
-          var index_effet_compo = this.searchTabByIdReturnIndex(tableEffet[index_effet].composants, compo._id, compo.key);
-          var index_compo = this.searchTabByIdReturnIndex(tableComposant, compo._id, compo.key);
+          var indexEffet = this.searchTabByIdReturnIndex(tableEffet, effet._id, effet.key);
+          var indexEffetCompo = this.searchTabByIdReturnIndex(tableEffet[indexEffet].composants, compo._id, compo.key);
+          var indexCompo = this.searchTabByIdReturnIndex(tableComposant, compo._id, compo.key);
           // On genere une nouveau composant.
           // On met à jour le shapeObject.
-          tableEffet[index_effet].composants[index_effet_compo] = tableComposant[index_compo] = thing(compo);
-          tableEffet[index_effet].composants[index_effet_compo].changeShape();
+          tableEffet[indexEffet].composants[indexEffetCompo] = tableComposant[indexCompo] = thing(compo);
+          tableEffet[indexEffet].composants[indexEffetCompo].changeShape();
         }
       },
 
@@ -778,12 +772,12 @@ angular.module('pedaleswitchApp')
 
       // @todo a supprimer
       drawRulers: function() {
-        rulers.render(canvasSetting.canvas, canvasSettings.ctx, '#aaa', 'pixels', 100);
+        rulers.render(canvasSetting.canvas, canvasSetting.ctx, '#aaa', 'pixels', 100);
       },
 
       // @todo a supprimer
       drawGrid: function() {
-        rulers.drawGrid(canvasSetting.canvas, canvasSettings.ctx);
+        rulers.drawGrid(canvasSetting.canvas, canvasSetting.ctx);
       },
 
       // @todo a supprimer
@@ -799,7 +793,7 @@ angular.module('pedaleswitchApp')
           tableDrawShine: tableDrawShine,
           tableArrow:  tableArrow,
           tableText: tableText
-        }
+        };
       }
       
     };

@@ -16,18 +16,18 @@ angular.module('pedaleswitchApp')
        * Rotation d'un point par rapport à C
        */
       rotate(angle, C) {
-        var alpha_rad = angle * (2*Math.PI)/360.0;
-        var cos = Math.cos(alpha_rad);
-        var sin = Math.sin(alpha_rad);
-        var pos_c = {};
+        var alphaRad = angle * (2*Math.PI)/360.0;
+        var cos = Math.cos(alphaRad);
+        var sin = Math.sin(alphaRad);
+        var posC = {};
 
         // Calcul des coordonné du point dans le repère du baricentre C.
-        pos_c.x = this.getX() - C.x;
-        pos_c.y = this.getY() - C.y;
+        posC.x = this.getX() - C.x;
+        posC.y = this.getY() - C.y;
 
         // Calcul des coordonnées du point après rotation dans le repère d'origine.
-        this.setX(pos_c.x * cos + pos_c.y * sin + C.x);
-        this.setY(- pos_c.x * sin + pos_c.y * cos + C.y);
+        this.setX(posC.x * cos + posC.y * sin + C.x);
+        this.setY(- posC.x * sin + posC.y * cos + C.y);
       }
       getX(){
         return this.x;
@@ -53,13 +53,13 @@ angular.module('pedaleswitchApp')
           this.key = null;
         }
         this.titre = entity.titre || null;
-        this.titre_option = entity.titre_option || null;
-        this.titre_parent_effet = entity.titre_parent_effet || null;
-        this.titre_parent_option = entity.titre_parent_option || null;
+        this.titreOption = entity.titreOption || null;
+        this.titreParentEffet = entity.titreParentEffet || null;
+        this.titreParentOption = entity.titreParentOption || null;
         this.description = entity.description || null;
-        this.description_option = entity.description_option || null;
+        this.descriptionOption = entity.descriptionOption || null;
         this.composants = [];
-        this.item_info = entity.item_info || null;
+        this.itemInfo = entity.itemInfo || null;
         this.prix = entity.prix || null;
         
         this.isSelected = false;
@@ -70,9 +70,9 @@ angular.module('pedaleswitchApp')
         this.size = {};
         
         this.points = entity.points;
-        this.points_default = entity.points_default || null;
+        this.pointsDefault = entity.pointsDefault || null;
         this.initPoints(entity.points, this.points);
-        this.initPoints(entity.points_default, this.points_default);
+        this.initPoints(entity.pointsDefault, this.pointsDefault);
       }
       initPoints(points, tab){
         if (points) {
@@ -96,8 +96,8 @@ angular.module('pedaleswitchApp')
           for (var i = 0; i < compos.length ; i++) {
             // Pour chaque points j du composants i.
             for (var j = 0 ; j < compos[i].points.length ; j++){
-              compos[i].points[j].x = this.points[0].x + compos[i].points_default[j].x ;
-              compos[i].points[j].y = this.points[0].y + compos[i].points_default[j].y ;
+              compos[i].points[j].x = this.points[0].x + compos[i].pointsDefault[j].x ;
+              compos[i].points[j].y = this.points[0].y + compos[i].pointsDefault[j].y ;
             }
           }
         }
@@ -141,7 +141,7 @@ angular.module('pedaleswitchApp')
         return {
           x: xg,
           y: yg
-        }
+        };
       }
       getCenterX(){
         return this.getCenter().x;
@@ -206,7 +206,7 @@ angular.module('pedaleswitchApp')
       rotate(angle, C, debrayable){
         var i, l, j, l2;
         var point;
-        var old_p0 = new Point(this.points[0]);
+        var oldP0 = new Point(this.points[0]);
 
         debrayable = debrayable || false;
         // Barycentre.
@@ -227,8 +227,8 @@ angular.module('pedaleswitchApp')
               for (j = 0, l2 = this.composants[i].points.length; j < l2; j++) {
                 this.composants[i].points[j].rotate(angle, C);
                 // Re-initialise la position par defaut.
-                this.composants[i].points_default[j].setX(this.composants[i].points[j].getX() - this.points[0].getX());
-                this.composants[i].points_default[j].setY(this.composants[i].points[j].getY() - this.points[0].getY());
+                this.composants[i].pointsDefault[j].setX(this.composants[i].points[j].getX() - this.points[0].getX());
+                this.composants[i].pointsDefault[j].setY(this.composants[i].points[j].getY() - this.points[0].getY());
               }
             }
           }
@@ -239,11 +239,11 @@ angular.module('pedaleswitchApp')
             for (i = 0, l = this.composants.length; i < l; i++) {
               for (j = 0, l2 = this.composants[i].points.length; j < l2; j++) {
 
-                point = new Point(this.composants[i].points_default[j]);
+                point = new Point(this.composants[i].pointsDefault[j]);
 
                 // Coordonnée du pt dans le ref du barycentre OK.
-                point.setX(point.getX() + old_p0.getX() - C.x);
-                point.setY(point.getY() + old_p0.getY() - C.y);
+                point.setX(point.getX() + oldP0.getX() - C.x);
+                point.setY(point.getY() + oldP0.getY() - C.y);
 
                 // Rotation du pt par rapport au bary dans le repère du bary.
                 point.rotate(angle, {x:0,y:0});
@@ -253,8 +253,8 @@ angular.module('pedaleswitchApp')
                 point.setY(C.y + point.getY() - this.points[0].getY());
 
                 // Affectation.
-                this.composants[i].points_default[j].setX(point.getX());
-                this.composants[i].points_default[j].setY(point.getY());
+                this.composants[i].pointsDefault[j].setX(point.getX());
+                this.composants[i].pointsDefault[j].setY(point.getY());
               }
             }
           }
@@ -291,25 +291,25 @@ angular.module('pedaleswitchApp')
         };
 
         // Regarde si la figure sort du canvas.
-        var max_pos = this.findExtreme();
+        var maxPos = this.findExtreme();
 
         // Debordement par le haut.
-        if (max_pos.t < marginCanvas) {
-          this.move({x:0, y: marginCanvas - max_pos.t});
-          vector.y = marginCanvas - max_pos.t;
+        if (maxPos.t < marginCanvas) {
+          this.move({x:0, y: marginCanvas - maxPos.t});
+          vector.y = marginCanvas - maxPos.t;
         }
         // Debordement par la gauche.
-        if (max_pos.l < marginCanvas) {
-          this.move({x:marginCanvas - max_pos.l, y:0});
-          vector.x = marginCanvas - max_pos.l;
+        if (maxPos.l < marginCanvas) {
+          this.move({x:marginCanvas - maxPos.l, y:0});
+          vector.x = marginCanvas - maxPos.l;
         }
         // Debordement par la droite.
-        if (max_pos.r + marginCanvas + 150 > canvas.width) {
-          canvas.width = max_pos.r + marginCanvas + 150;
+        if (maxPos.r + marginCanvas + 150 > canvas.width) {
+          canvas.width = maxPos.r + marginCanvas + 150;
         }
         // Debordement par le bas.
-        if (max_pos.b + marginCanvas + 150 > canvas.height) {
-          canvas.height = max_pos.b + marginCanvas + 150;
+        if (maxPos.b + marginCanvas + 150 > canvas.height) {
+          canvas.height = maxPos.b + marginCanvas + 150;
         }
         return vector;
       }
@@ -317,13 +317,17 @@ angular.module('pedaleswitchApp')
 
 
     class Cercle extends Shape {
-      constructor(entity){
+      constructor(entity) {
         super(entity);
         this.shapeObject = 'Cercle';
       }
-      getRadius(){
-        return Math.sqrt((this.points[0].x - this.points[1].x) * (this.points[0].x - this.points[1].x) + (this.points[0].y - this.points[1].y) * (this.points[0].y - this.points[1].y)) / 2
+
+      getRadius() {
+        return Math.sqrt(
+            (this.points[0].x - this.points[1].x) * (this.points[0].x - this.points[1].x) +
+            (this.points[0].y - this.points[1].y) * (this.points[0].y - this.points[1].y)) / 2;
       }
+
       drawCanvas(ctx) {
         ctx.beginPath();
         ctx.arc(this.getCenterX(), this.getCenterY(), this.getRadius(), 0, 2*Math.PI);
@@ -332,7 +336,7 @@ angular.module('pedaleswitchApp')
         ctx.fillRect(this.getCenterX(),this.getCenterY(),1,1);
 
         if (this.isOverlapping) {
-          ctx.fillStyle = "rgba(255, 00, 00, 0.2)";
+          ctx.fillStyle = 'rgba(255, 00, 00, 0.2)';
           ctx.fill();
         }
         ctx.stroke();
@@ -358,1655 +362,8 @@ angular.module('pedaleswitchApp')
         ctx.fillRect(this.getCenterX(),this.getCenterY(),1,1);
 
         if (this.isOverlapping) {
-          ctx.fillStyle = "rgba(255, 00, 00, 0.2)";
+          ctx.fillStyle = 'rgba(255, 00, 00, 0.2)';
           ctx.fill();
-        }
-      }
-    }
-
-    /**
-     * Constructeur de la classe MasterBoite.
-     *
-     * La propriété 'projections' détient 6 proriétés, une pour chaque 'vue' du canvas.
-     * Chaqune des propriétés correspondates fait référence à une instance de l'objet 'Boite'.
-     *
-     *    -> VUE DESSUS  - viewState 'up':
-     *       masterBoite.projections.up
-     *    -> VUE DESSOUS  - viewState 'down':
-     *       masterBoite.projections.down
-     *    -> VUE COTE GAUCHE  - viewState 'left':
-     *       masterBoite.projections.left
-     *    -> VUE COTE DROIT  - viewState 'right':
-     *       masterBoite.projections.right
-     *    -> VUE COTE AVANT  - viewState 'bottom':
-     *       masterBoite.projections.bottom
-     *    -> VUE COTE ARRIERE  - viewState 'top':
-     *       masterBoite.projections.top
-     *
-     */
-    class MasterBoite {
-      constructor(entity) {
-        this.margin = 5;
-        this.initialHeight = 80;
-        this.convertMargin();
-        this.convertInitialHeight();
-        this.size = {
-          w: null,
-          h: null,
-          d: null,
-          d1: this.initialHeight,
-          d2: this.initialHeight
-        };
-        this.projections = {
-          up: null,
-          down: null,
-          left: null,
-          right: null,
-          top: null,
-          bottom: null
-        };
-        
-        this.fonction = 'MasterBoite';
-        this.shapeObject = 'Rect';
-        
-        this.initBoiteWithEffect(entity);
-      }
-
-      setSide(side, value){
-        this.size[side] = value;
-      }
-
-      getSide(side){
-        return this.size[side];
-      }
-
-      initBoiteWithEffect(entity){
-        var extremePos = entity.findExtreme();
-        var d = extremePos.size.h + 2 * this.margin;
-        var w = extremePos.size.w + 2 * this.margin;
-        var d3 = this.getSide('d2') - this.getSide('d1');
-        this.setSide('w', w);
-        this.setSide('d', d);
-        this.setSide('h', Math.sqrt(d*d - d3*d3));
-      }
-
-      convertMargin() {
-        this.margin = canvasConversion.convertToPixel(this.margin);
-      }
-
-      convertInitialHeight() {
-        this.initialHeight = canvasConversion.convertToPixel(this.initialHeight);
-      }
-
-      /**
-       * Teste les collisions axe Y boite/contenu sur chaque projection de la boite.
-       * La projection down (dessous de boite) n'est pas testée.
-       *
-       * @param state : état de la vue . up, down, lest, right, top, bottom.
-       * @param mousePos : position x et y  de la souris.
-       * @param index : index du point de référence - 0, 1, 2, 3.
-       *                Le point de référence est le sommet de la
-       *                projection de boite qui est bougé dans la
-       *                vue active.
-       * @returns {false || Number} si collision detectée, retourne une distance limite relative au point d'impact.
-       */
-      projectionsCollisionY(state, mousePos, index){
-
-        var delta, up, left, right, top, bottom, ref, move, func, i, hypo, old_hypo, adj, old_adj, height, cosinus;
-        var opp = (this.size.d2 - this.size.d1);
-        var test_tmp = 0;
-
-        var test = 0;
-        var execute = [];
-
-        up = this.projections.up;
-        left = this.projections.left;
-        right = this.projections.right;
-        top = this.projections.top;
-        bottom = this.projections.bottom;
-
-        var getTriangleSide = function(hypo, side){
-          return Math.sqrt(hypo * hypo - side * side);
-        };
-
-        var getTriangleHypo = function(adj, opp){
-          return Math.sqrt(adj * adj + opp * opp);
-        };
-
-        switch (state) {
-          case 'up':
-
-            // Test de la projection LEFT.
-            // On calcul le delta de deplacement de la bordure.
-
-            cosinus = (left.points[1].x - left.points[0].x)  / ((up.points[3].y - up.points[0].y) - (mousePos.y - up.points[index].y));
-            delta = (mousePos.y - up.points[index].y) * cosinus;
-            ref = ((index - 1) >= 0) ? index - 1 : 3;
-
-            // Si deplacement bord gauche de la projection LEFT.
-            if (ref === 0 || ref === 3) {
-
-              // On détermine le delta de mouvement à partir de la projection active.
-              move = left.points[ref].x + delta;
-
-              // On verifie si une limite est atteinte sur la projection testée.
-              // Si limite atteinte, on cherche l'épaisseur de la projection.
-              if (move > left.size_proj_mini.l - this.margin) {
-                up.setOverlapping(true);
-                test = Math.max(test, left.points[1].x - (left.size_proj_mini.l - this.margin));
-              }
-
-              // On construit la fonction qui sera exécutée en fin de block.
-              func = function(){
-                var m = move;
-                return function(value){
-                  // Si value = undefined : la projection est agrandie de la valeur delta 'm'.
-                  // Si value définie : la projection est agrandie en fonction de l'épaisseur passée en argument.
-                  var v = value ? left.points[1].x - value : value;
-                  left.points[0].setX(v || m);
-                  left.points[3].setX(v || m);
-                }
-              };
-
-              // La fonction anonyme retournée est chargée dans la table, prête à être exécutée.
-              execute.push(func());
-            }
-
-            // Si deplacement bord droit de la projection LEFT.
-            else {
-
-              move = left.points[ref].x + delta;
-
-              if (move < left.size_proj_mini.r + this.margin) {
-                up.setOverlapping(true);
-                test = Math.max(test, (left.size_proj_mini.r + this.margin) - left.points[0].x);
-              }
-
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? left.points[0].x + value : value;
-                  left.points[1].setX(v || m);
-                  left.points[2].setX(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-            // Test de la projection RIGHT.
-            // On calcul le delta de deplacement de la bordure.
-
-            ref = ((index + 1) < 4) ? index + 1 : 0;
-
-            // Si deplacement bord gauche de la projection RIGHT.
-            if (ref === 0 || ref === 3) {
-
-              // On détermine le delta de mouvement à partir de la projection active.
-              move = right.points[ref].x - delta;
-
-              // On verifie si une limite est atteinte sur la projection testée.
-              // Si limite atteinte, on cherche l'épaisseur de la projection.
-              if (move > right.size_proj_mini.l - this.margin) {
-                up.setOverlapping(true);
-                test = Math.max(test, right.points[1].x - (right.size_proj_mini.l - this.margin));
-              }
-
-              // On construit la fonction qui sera exécutée en fin de block.
-              func = function(){
-                var m = move;
-                return function(value){
-                  // Si value = undefined : la projection est agrandie de la valeur delta 'm'.
-                  // Si value définie : la projection est agrandie en fonction de l'épaisseur passée en argument.
-                  var v = value ? right.points[1].x - value : value;
-                  right.points[0].setX(v || m);
-                  right.points[3].setX(v || m);
-                }
-              };
-
-              // La fonction anonyme retournée est chargée dans la table, prête à être exécutée.
-              execute.push(func());
-            }
-
-            // Si deplacement bord droit de la projection RIGHT.
-            else {
-
-              move = right.points[ref].x - delta;
-
-              if (move < right.size_proj_mini.r + this.margin) {
-                up.setOverlapping(true);
-                test = Math.max(test, (right.size_proj_mini.r + this.margin) - right.points[0].x);
-              }
-
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? right.points[0].x + value : value;
-                  right.points[1].setX(v || m);
-                  right.points[2].setX(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-            // Exécution des mouvements de projections.
-            if (test !== 0){
-              for(var i in execute){
-                execute[i](test);
-              }
-              return getTriangleHypo(test, opp);
-            }
-            else {
-              for(var i in execute){
-                execute[i]();
-              }
-              up.setOverlapping(false);
-              return false;
-            }
-
-          case 'left':
-
-            old_adj = left.points[1].y - left.points[0].y;
-            adj = old_adj - (mousePos.y - left.points[index].y);
-            opp = left.points[2].x - left.points[3].x;
-            old_hypo = getTriangleHypo(old_adj, opp);
-            hypo = getTriangleHypo(adj, opp);
-            height = left.points[2].y - left.points[1].y;
-
-
-            // Test de la projection UP.
-            // test uniquement sur le bord haut de la projection UP.
-            delta = old_hypo - hypo;
-
-            ref = index;
-
-            if (ref === 0 || ref === 1) {
-
-              // On détermine le delta de mouvement à partir de la projection active.
-              move = up.points[ref].y + delta;
-
-              // On verifie si une limite est atteinte sur la projection testée.
-              // Si limite atteinte, on cherche l'épaisseur de la projection.
-              if (move > up.size_proj_mini.t - this.margin) {
-                left.setOverlapping(true);
-                test = up.points[3].y - (up.size_proj_mini.t - this.margin);
-              }
-
-              // On construit la fonction qui sera exécutée en fin de block.
-              func = function(){
-                var m = move;
-                return function(value){
-                  // Si value = undefined : la projection est agrandie de la valeur delta 'm'.
-                  // Si value définie : la projection est agrandie en fonction de l'épaisseur passée en argument.
-                  var v = value ? up.points[3].y - value : value;
-                  up.points[0].setY(v || m);
-                  up.points[1].setY(v || m);
-                }
-              };
-
-              // La fonction anonyme retournée est chargée dans la table, prête à être exécutée.
-              execute.push(func());
-            }
-
-            // Test de la projection TOP
-            // Si deplacement bord haut de la projection TOP.
-            delta = mousePos.y - left.points[index].y;
-
-            if (ref === 0 || ref === 1) {
-
-              // On détermine le delta de mouvement à partir de la projection active.
-              move = top.points[ref].y + delta;
-
-              // On verifie si une limite est atteinte sur la projection testée.
-              // Si limite atteinte, on cherche l'épaisseur de la projection.
-              if (move > top.size_proj_mini.t - this.margin) {
-                left.setOverlapping(true);
-                // On cherche l'équivalent hypothénuse sur up de la limite sur top.
-                adj = (top.points[3].y - (top.size_proj_mini.t - this.margin)) - height;
-                hypo = getTriangleHypo(adj, opp);
-                test = Math.max(test, hypo);
-              }
-
-              // On construit la fonction qui sera exécutée en fin de block.
-              func = function(){
-                var m = move;
-                return function(value){
-                  // Si value = undefined : la projection est agrandie de la valeur delta 'm'.
-                  // Si value définie : la projection est agrandie en fonction de l'épaisseur passée en argument.
-                  var v = value ? top.points[3].y - (getTriangleSide(value, opp) + height) : value;
-                  top.points[0].setY(v || m);
-                  top.points[1].setY(v || m);
-                }
-              };
-
-              // La fonction anonyme retournée est chargée dans la table, prête à être exécutée.
-              execute.push(func());
-            }
-
-            // Si deplacement bord bas de la projection TOP.
-            else {
-
-              move = top.points[ref].y + delta;
-
-              if (move < top.size_proj_mini.b + this.margin) {
-                left.setOverlapping(true);
-                test = Math.max(test, (top.size_proj_mini.b + this.margin) - top.points[0].y);
-              }
-
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? top.points[0].y + value : value;
-                  top.points[2].setY(v || m);
-                  top.points[3].setY(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-            // Test de la projection BOTTOM
-            // Si deplacement bord bas de la projection BOTTOM.
-            if (ref === 2 || ref === 3) {
-
-              move = bottom.points[ref].y + delta;
-
-              if (move < bottom.size_proj_mini.b + this.margin) {
-                left.setOverlapping(true);
-                test = Math.max(test, ((bottom.size_proj_mini.b + this.margin) - bottom.points[0].y) + old_adj);
-              }
-
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? bottom.points[0].y + (value - old_adj) : value;
-                  bottom.points[2].setY(v || m);
-                  bottom.points[3].setY(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-            // Test de la projection RIGHT
-            // Si deplacement sommet droit de la projection RIGHT.
-            // Pas besoin de test collision.
-            // On coordonne uniquement le déplacement du sommet.
-            if (ref === 0){
-              move = right.points[1].y + delta;
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? right.points[2].y - (getTriangleSide(value, opp) + height) : value;
-                  right.points[1].setY(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-
-            // Si deplacement bord bas de la projection RIGHT.
-            if (ref === 2 || ref === 3) {
-
-              move = right.points[ref].y + delta;
-
-              if (move < right.size_proj_mini.b + this.margin) {
-                left.setOverlapping(true);
-                test = Math.max(test, (right.size_proj_mini.b + this.margin) - right.points[1].y);
-              }
-
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? right.points[1].y + value : value;
-                  right.points[2].setY(v || m);
-                  right.points[3].setY(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-            // Exécution des mouvements de projections.
-            // Si mouvement côté haut sur Left.
-            if( test_tmp === 1 ) {
-              if (test !== 0) {
-                for (var i in execute) {
-                  execute[i](test);
-                }
-                return getTriangleSide(test, opp) + height;
-              }
-              else {
-                for (var i in execute) {
-                  execute[i]();
-                }
-                left.setOverlapping(false);
-                return false;
-              }
-            }
-          // Si mouvement côté bas sur Left.
-            else {
-              if (test !== 0) {
-                for (var i in execute) {
-                  execute[i](test);
-                }
-                return test
-              }
-              else {
-                for (var i in execute) {
-                  execute[i]();
-                }
-                left.setOverlapping(false);
-                return false;
-              }
-            }
-
-          case 'right':
-
-            old_adj = right.points[0].y - right.points[1].y;
-            adj = old_adj - (mousePos.y - right.points[index].y);
-            opp = right.points[2].x - right.points[3].x;
-            old_hypo = getTriangleHypo(old_adj, opp);
-            hypo = getTriangleHypo(adj, opp);
-            height = right.points[3].y - right.points[0].y;
-
-            // Test de la projection UP.
-            // test uniquement sur le bord haut de la projection UP.
-            delta = old_hypo - hypo;
-
-            ref = index;
-
-            if (ref === 0 || ref === 1) {
-
-              // On détermine le delta de mouvement à partir de la projection active.
-              move = up.points[ref].y + delta;
-
-              // On verifie si une limite est atteinte sur la projection testée.
-              // Si limite atteinte, on cherche l'épaisseur de la projection.
-              if (move > up.size_proj_mini.t - this.margin) {
-                right.setOverlapping(true);
-                //test = Math.max(test, up.points[3].y - (up.size_proj_mini.t - this.margin));
-                test = up.points[3].y - (up.size_proj_mini.t - this.margin);
-                test_tmp = 1;
-              }
-
-              // On construit la fonction qui sera exécutée en fin de block.
-              func = function(){
-                var m = move;
-                return function(value){
-                  // Si value = undefined : la projection est agrandie de la valeur delta 'm'.
-                  // Si value définie : la projection est agrandie en fonction de l'épaisseur passée en argument.
-                  var v = value ? up.points[3].y - value : value;
-                  up.points[0].setY(v || m);
-                  up.points[1].setY(v || m);
-                }
-              };
-
-              // La fonction anonyme retournée est chargée dans la table, prête à être exécutée.
-              execute.push(func());
-            }
-
-
-
-            // Test de la projection TOP
-            delta = mousePos.y - right.points[index].y;
-            ref = index;
-
-            // Si deplacement bord haut de la projection TOP.
-            if (ref === 0 || ref === 1) {
-
-              // On détermine le delta de mouvement à partir de la projection active.
-              move = top.points[ref].y + delta;
-
-              // On verifie si une limite est atteinte sur la projection testée.
-              // Si limite atteinte, on cherche l'épaisseur de la projection.
-              if (move > top.size_proj_mini.t - this.margin) {
-                right.setOverlapping(true);
-                adj = (top.points[3].y - (top.size_proj_mini.t - this.margin)) - height;
-                hypo = getTriangleHypo(adj, opp);
-                test = Math.max(test, hypo);
-                test_tmp = 1;
-              }
-
-              // On construit la fonction qui sera exécutée en fin de block.
-              func = function(){
-                var m = move;
-                return function(value){
-                  // Si value = undefined : la projection est agrandie de la valeur delta 'm'.
-                  // Si value définie : la projection est agrandie en fonction de l'épaisseur passée en argument.
-                  var v = value ? top.points[3].y - (getTriangleSide(value, opp) + height) : value;
-                  top.points[0].setY(v || m);
-                  top.points[1].setY(v || m);
-                }
-              };
-
-              // La fonction anonyme retournée est chargée dans la table, prête à être exécutée.
-              execute.push(func());
-            }
-
-            // Si deplacement bord bas de la projection TOP.
-            else {
-
-              move = top.points[ref].y + delta;
-
-              if (move < top.size_proj_mini.b + this.margin) {
-                right.setOverlapping(true);
-                test = Math.max(test, (top.size_proj_mini.b + this.margin) - top.points[0].y);
-              }
-
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? top.points[0].y + value : value;
-                  top.points[2].setY(v || m);
-                  top.points[3].setY(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-            // Test de la projection BOTTOM
-            // Si deplacement bord bas de la projection BOTTOM.
-            if (ref === 2 || ref === 3) {
-
-              move = bottom.points[ref].y + delta;
-
-              if (move < bottom.size_proj_mini.b + this.margin) {
-                right.setOverlapping(true);
-                test = Math.max(test, ((bottom.size_proj_mini.b + this.margin) - bottom.points[0].y) + old_adj);
-              }
-
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? bottom.points[0].y + (value - old_adj) : value;
-                  bottom.points[2].setY(v || m);
-                  bottom.points[3].setY(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-            // Test de la projection LEFT
-            // Si deplacement sommet gauche de la projection LEFT.
-            // Pas besoin de test collision.
-            // On coordonne uniquement le déplacement du sommet.
-            if (ref === 1){
-              move = left.points[0].y + delta;
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? left.points[3].y - (getTriangleSide(value, opp) + height) : value;
-                  left.points[0].setY(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-            // Si deplacement bord bas de la projection LEFT.
-            if (ref === 2 || ref === 3) {
-
-              move = left.points[ref].y + delta;
-
-              if (move < left.size_proj_mini.b + this.margin) {
-                right.setOverlapping(true);
-                test = Math.max(test, (left.size_proj_mini.b + this.margin) - left.points[0].y);
-              }
-
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? left.points[0].y + value : value;
-                  left.points[2].setY(v || m);
-                  left.points[3].setY(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-            // Exécution des mouvements de projections.
-            // Si mouvement côté haut sur Right.
-            if( test_tmp === 1 ) {
-              if (test !== 0) {
-                for (var i in execute) {
-                  execute[i](test);
-                }
-                return getTriangleSide(test, opp) + height;
-              }
-              else {
-                for (var i in execute) {
-                  execute[i]();
-                }
-                right.setOverlapping(false);
-                return false;
-              }
-            }
-            // Si mouvement côté bas sur Right.
-            else {
-              if (test !== 0) {
-                for (var i in execute) {
-                  execute[i](test);
-                }
-                return test
-              }
-              else {
-                for (var i in execute) {
-                  execute[i]();
-                }
-                right.setOverlapping(false);
-                return false;
-              }
-            }
-
-          case 'top':
-            return console.log('WARNING : "' + state + '" viewState is not yet implemented in box collision');
-          case 'bottom':
-            return console.log('WARNING : "' + state + '" viewState is not yet implemented in box collision');
-          default:
-            return console.log('ERROR : ' + state + ' is not a valid state');
-        }
-      }
-
-      /**
-       * Teste les collisions axe X boite/contenu sur chaque projection de la boite.
-       * La projection down (dessous de boite) n'est pas testée.
-       *
-       * @param state : état de la vue . up, down, lest, right, top, bottom.
-       * @param mousePos : position x et y  de la souris.
-       * @param index : index du point de référence - 0, 1, 2, 3.
-       *                Le point de référence est le sommet de la
-       *                projection de boite qui est bougé dans la
-       *                vue active.
-       * @returns {false || Number}
-       */
-      projectionsCollisionX(state, mousePos, index){
-
-        var delta, up, left, right, top, bottom, ref, move, func, i, test_tmp, old_adj, adj, opp, old_hypo, hypo;
-        var tmp_cos = 1;
-
-        var test = 0;
-        var execute = [];
-
-        var getTriangleSide = function(hypo, side){
-          return Math.sqrt(hypo * hypo - side * side);
-        };
-
-        var getTriangleHypo = function(adj, opp){
-          return Math.sqrt(adj * adj + opp * opp);
-        };
-
-        up = this.projections.up;
-        left = this.projections.left;
-        right = this.projections.right;
-        top = this.projections.top;
-        bottom = this.projections.bottom;
-
-        switch (state) {
-          case 'top':
-            // Test de la projection UP.
-            // On calcul le delta de deplacement de la bordure.
-            delta = mousePos.x - top.points[index].x;
-            ref = ((index - 2) >= 0) ? index - 2 : index + 2;
-
-            // Si deplacement bord gauche de la projection UP.
-            if (ref === 0 || ref === 3) {
-
-              move = up.points[ref].x - delta;
-
-              if (move > up.size_proj_mini.l - this.margin) {
-                top.setOverlapping(true);
-                test = Math.max(test, up.points[1].x - (up.size_proj_mini.l - this.margin));
-              }
-
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? up.points[1].x - value : value;
-                  up.points[0].setX(v || m);
-                  up.points[3].setX(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-            // Si deplacement bord droit de la projection UP.
-            else {
-
-              move = up.points[ref].x - delta;
-
-              if (move < up.size_proj_mini.r + this.margin) {
-                top.setOverlapping(true);
-                test = Math.max(test, (up.size_proj_mini.r + this.margin) - up.points[0].x);
-              }
-
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? up.points[0].x + value : value;
-                  up.points[1].setX(v || m);
-                  up.points[2].setX(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-            // Test de la projection BOTTOM.
-            // On calcul le delta de deplacement de la bordure.
-            ref = ((index - 2) >= 0) ? index - 2 : index + 2;
-
-            // Si deplacement bord gauche de la projection BOTTOM.
-            if (ref === 0 || ref === 3) {
-
-              move = bottom.points[ref].x - delta;
-
-              if (move > bottom.size_proj_mini.l - this.margin) {
-                top.setOverlapping(true);
-                test = Math.max(test, bottom.points[1].x - (bottom.size_proj_mini.l - this.margin));
-              }
-
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? bottom.points[1].x - value : value;
-                  bottom.points[0].setX(v || m);
-                  bottom.points[3].setX(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-            // Si deplacement bord droit de la projection BOTTOM.
-            else {
-
-              move = bottom.points[ref].x - delta;
-
-              if (move < bottom.size_proj_mini.r + this.margin) {
-                top.setOverlapping(true);
-                test = Math.max(test, (bottom.size_proj_mini.r + this.margin) - bottom.points[0].x);
-              }
-
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? bottom.points[0].x + value : value;
-                  bottom.points[1].setX(v || m);
-                  bottom.points[2].setX(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-            // Exécution des mouvements de projections.
-            if (test !== 0){
-              for(var i in execute){
-                execute[i](test);
-              }
-              return test;
-            }
-            else {
-              for(var i in execute){
-                execute[i]();
-              }
-              top.setOverlapping(false);
-              return false;
-            }
-
-          case 'bottom':
-            // Test de la projection UP.
-            // On calcul le delta de deplacement de la bordure.
-            delta = mousePos.x - bottom.points[index].x;
-            ref = index;
-
-            // Si deplacement bord gauche de la projection UP.
-            if (ref === 0 || ref === 3) {
-
-              move = up.points[ref].x + delta;
-
-              if (move > up.size_proj_mini.l - this.margin) {
-                top.setOverlapping(true);
-                test = Math.max(test, up.points[1].x - (up.size_proj_mini.l - this.margin));
-              }
-
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? up.points[1].x - value : value;
-                  up.points[0].setX(v || m);
-                  up.points[3].setX(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-            // Si deplacement bord droit de la projection UP.
-            else {
-
-              move = up.points[ref].x + delta;
-
-              if (move < up.size_proj_mini.r + this.margin) {
-                bottom.setOverlapping(true);
-                test = Math.max(test, (up.size_proj_mini.r + this.margin) - up.points[0].x);
-              }
-
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? up.points[0].x + value : value;
-                  up.points[1].setX(v || m);
-                  up.points[2].setX(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-            // Test de la projection TOP.
-            // On calcul le delta de deplacement de la bordure.
-            ref = ((index - 2) >= 0) ? index - 2 : index + 2;
-
-            // Si deplacement bord gauche de la projection TOP.
-            if (ref === 0 || ref === 3) {
-
-              move = top.points[ref].x - delta;
-
-              if (move > top.size_proj_mini.l - this.margin) {
-                bottom.setOverlapping(true);
-                test = Math.max(test, top.points[1].x - (top.size_proj_mini.l - this.margin));
-              }
-
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? top.points[1].x - value : value;
-                  top.points[0].setX(v || m);
-                  top.points[3].setX(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-            // Si deplacement bord droit de la projection TOP.
-            else {
-
-              move = top.points[ref].x - delta;
-
-              if (move < top.size_proj_mini.r + this.margin) {
-                bottom.setOverlapping(true);
-                test = Math.max(test, (top.size_proj_mini.r + this.margin) - top.points[0].x);
-              }
-
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? top.points[0].x + value : value;
-                  top.points[1].setX(v || m);
-                  top.points[2].setX(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-            // Exécution des mouvements de projections.
-            if (test !== 0){
-              for(var i in execute){
-                execute[i](test);
-              }
-              return test;
-            }
-            else {
-              for(var i in execute){
-                execute[i]();
-              }
-              bottom.setOverlapping(false);
-              return false;
-            }
-
-          case 'up':
-
-            // Test de la projection TOP.
-            // On calcul le delta de deplacement de la bordure.
-            delta = mousePos.x - up.points[index].x;
-            ref = ((index - 2) >= 0) ? index - 2 : index + 2;
-
-            // Si deplacement bord gauche de la projection TOP.
-            if (ref === 0 || ref === 3) {
-
-              // On détermine le delta de mouvement à partir de la projection active.
-              move = top.points[ref].x - delta;
-
-              // On verifie si une limite est atteinte sur la projection testée.
-              // Si limite atteinte, on cherche l'épaisseur de la projection.
-              if (move > top.size_proj_mini.l - this.margin) {
-                up.setOverlapping(true);
-                test = Math.max(test, top.points[1].x - (top.size_proj_mini.l - this.margin));
-              }
-
-              // On construit la fonction qui sera exécutée en fin de block.
-              func = function(){
-                var m = move;
-                return function(value){
-                  // Si value = undefined : la projection est agrandie de la valeur delta 'm'.
-                  // Si value définie : la projection est agrandie en fonction de l'épaisseur passée en argument.
-                  var v = value ? top.points[1].x - value : value;
-                  top.points[0].setX(v || m);
-                  top.points[3].setX(v || m);
-                }
-              };
-
-              // La fonction anonyme retournée est chargée dans la table, prête à être exécutée.
-              execute.push(func());
-            }
-
-            // Si deplacement bord droit de la projection TOP.
-            else {
-
-              move = top.points[ref].x - delta;
-
-              if (move < top.size_proj_mini.r + this.margin) {
-                up.setOverlapping(true);
-                test = Math.max(test, (top.size_proj_mini.r + this.margin) - top.points[0].x);
-              }
-
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? top.points[0].x + value : value;
-                  top.points[1].setX(v || m);
-                  top.points[2].setX(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-            // Test de la projection BOTTOM.
-            // On calcul le delta de deplacement de la bordure.
-            ref = index;
-
-            // Si deplacement bord gauche de la projection BOTTOM.
-            if (ref === 0 || ref === 3) {
-
-              move = bottom.points[ref].x + delta;
-
-              if (move > bottom.size_proj_mini.l - this.margin) {
-                up.setOverlapping(true);
-                test = Math.max(test, bottom.points[1].x - (bottom.size_proj_mini.l - this.margin));
-              }
-
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? bottom.points[1].x - value : value;
-                  bottom.points[0].setX(v || m);
-                  bottom.points[3].setX(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-            // Si deplacement bord droit de la projection BOTTOM.
-            else {
-
-              move = bottom.points[ref].x + delta;
-
-              if (move < bottom.size_proj_mini.r + this.margin) {
-                up.setOverlapping(true);
-                test = Math.max(test, (bottom.size_proj_mini.r + this.margin) - bottom.points[0].x);
-              }
-
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? bottom.points[0].x + value : value;
-                  bottom.points[1].setX(v || m);
-                  bottom.points[2].setX(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-            // Exécution des mouvements de projections.
-            if (test !== 0){
-              for(var i in execute){
-                execute[i](test);
-              }
-              return test;
-            }
-            else {
-              for(var i in execute){
-                execute[i]();
-              }
-              up.setOverlapping(false);
-              return false;
-            }
-
-          case 'left':
-            // Test de la projection UP.
-            // On calcul le delta de deplacement de la bordure.
-
-            old_adj = left.points[1].x - left.points[0].x;
-            adj = old_adj - (mousePos.x - left.points[index].x);
-            opp = left.points[1].y - left.points[0].y;
-            old_hypo = getTriangleHypo(old_adj, opp);
-            hypo = getTriangleHypo(adj, opp);
-
-            delta = old_hypo - hypo;
-            ref = ((index + 1) <= 3) ? index + 1 : 0;
-
-            // Si deplacement bord bas de la projection UP.
-            if (ref === 3 || ref === 2) {
-
-              move = up.points[ref].y + delta;
-
-              if (move < up.size_proj_mini.b + this.margin) {
-                left.setOverlapping(true);
-                test = Math.max(test, (up.size_proj_mini.b + this.margin) - up.points[0].y);
-                tmp_cos = getTriangleSide(test, opp) / test;
-              }
-
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? up.points[0].y + value : value;
-                  up.points[2].setY(v || m);
-                  up.points[3].setY(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-            // Si deplacement bord haut de la projection UP.
-            else {
-
-              move = up.points[ref].y + delta;
-
-              if (move > up.size_proj_mini.t - this.margin) {
-                left.setOverlapping(true);
-                test = Math.max(test, up.points[3].y - (up.size_proj_mini.t - this.margin));
-                tmp_cos = getTriangleSide(test, opp) / test;
-              }
-
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? up.points[3].y - value : value;
-                  up.points[0].setY(v || m);
-                  up.points[1].setY(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-            // Test de la projection RIGHT
-            // On calcul le delta de deplacement de la bordure.
-            delta = (mousePos.x - left.points[index].x);
-            ref = ((index - 2) >= 0) ? index - 2 : index + 2;
-
-            // Si deplacement bord gauche de la projection RIGHT.
-            if (ref === 0 || ref === 3) {
-
-              move = right.points[ref].x - delta;
-
-              if (move > right.size_proj_mini.l - this.margin) {
-                left.setOverlapping(true);
-                test_tmp = Math.max(test, getTriangleHypo(right.points[1].x - (right.size_proj_mini.l - this.margin), opp));
-                if (test_tmp > test) {
-                  tmp_cos = (right.points[1].x - (right.size_proj_mini.l - this.margin)) / test_tmp;
-                  test = test_tmp;
-                }
-              }
-
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? right.points[1].x - (value * tmp_cos) : value;
-                  right.points[0].setX(v || m);
-                  right.points[3].setX(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-            // Si deplacement bord droit de la projection RIGHT.
-            else {
-
-              move = right.points[ref].x - delta;
-
-              if (move < right.size_proj_mini.r + this.margin) {
-                left.setOverlapping(true);
-                test_tmp = Math.max(test, getTriangleHypo((right.size_proj_mini.r + this.margin) - right.points[0].x, opp));
-                if (test_tmp > test) {
-                  tmp_cos = ((right.size_proj_mini.r + this.margin) - right.points[0].x) / test_tmp;
-                  test = test_tmp;
-                }
-              }
-
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? right.points[0].x + (value * tmp_cos) : value;
-                  right.points[1].setX(v || m);
-                  right.points[2].setX(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-            // Exécution des mouvements de projections.
-            if (test !== 0){
-              for(var i in execute){
-                execute[i](test);
-              }
-              return test * tmp_cos;
-            }
-            else {
-              for(var i in execute){
-                execute[i]();
-              }
-              left.setOverlapping(false);
-              return false;
-            }
-
-          case 'right':
-            // Test de la projection UP.
-            // On calcul le delta de deplacement de la bordure.
-
-            old_adj = right.points[1].x - right.points[0].x;
-            adj = old_adj - (mousePos.x - right.points[index].x);
-            opp = right.points[0].y - right.points[1].y;
-            old_hypo = getTriangleHypo(old_adj, opp);
-            hypo = getTriangleHypo(adj, opp);
-
-            delta = old_hypo - hypo;
-            ref = ((index - 1) >= 0) ? index - 1 : 3;
-
-            // Si deplacement bord bas de la projection UP.
-            if (ref === 3 || ref === 2) {
-
-              move = up.points[ref].y - delta;
-
-              if (move < up.size_proj_mini.b + this.margin) {
-                right.setOverlapping(true);
-                test = Math.max(test, (up.size_proj_mini.b + this.margin) - up.points[0].y);
-                tmp_cos = getTriangleSide(test, opp) / test;
-              }
-
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? up.points[0].y + value : value;
-                  up.points[3].setY(v || m);
-                  up.points[2].setY(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-            // Si deplacement bord haut de la projection UP.
-            else {
-
-              move = up.points[ref].y - delta;
-
-              if (move > up.size_proj_mini.t - this.margin) {
-                right.setOverlapping(true);
-                test = Math.max(test, up.points[3].y - (up.size_proj_mini.t - this.margin));
-                tmp_cos = getTriangleSide(test, opp) / test;
-              }
-
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? up.points[3].y - value : value;
-                  up.points[0].setY(v || m);
-                  up.points[1].setY(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-            // Test de la projection LEFT.
-            // On calcul le delta de deplacement de la bordure.
-            delta = (mousePos.x - right.points[index].x);
-            ref = ((index - 2) >= 0) ? index - 2 : index + 2;
-
-            // Si deplacement bord gauche de la projection LEFT.
-            if (ref === 0 || ref === 3) {
-
-              move = left.points[ref].x - delta;
-
-              if (move > left.size_proj_mini.l - this.margin) {
-                right.setOverlapping(true);
-                test_tmp = Math.max(test, getTriangleHypo(left.points[1].x - (left.size_proj_mini.l - this.margin), opp));
-                if (test_tmp > test) {
-                  tmp_cos = (left.points[1].x - (left.size_proj_mini.l - this.margin)) / test_tmp;
-                  test = test_tmp;
-                }
-              }
-
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? left.points[1].x - (value * tmp_cos) : value;
-                  left.points[0].setX(v || m);
-                  left.points[3].setX(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-            // Si deplacement bord droit de la projection LEFT.
-            else {
-
-              move = left.points[ref].x - delta;
-
-              if (move < left.size_proj_mini.r + this.margin) {
-                right.setOverlapping(true);
-                test_tmp = Math.max(test, getTriangleHypo((left.size_proj_mini.r + this.margin) - left.points[0].x, opp));
-                if (test_tmp > test) {
-                  tmp_cos = ((left.size_proj_mini.r + this.margin) - left.points[0].x) / test_tmp;
-                  test = test_tmp;
-                }
-              }
-
-              func = function(){
-                var m = move;
-                return function(value){
-                  var v = value ? left.points[0].x + (value * tmp_cos) : value;
-                  left.points[1].setX(v || m);
-                  left.points[2].setX(v || m);
-                }
-              };
-
-              execute.push(func());
-            }
-
-            // Exécution des mouvements de projections.
-            if (test !== 0){
-              for(var i in execute){
-                execute[i](test);
-              }
-              return test * tmp_cos;
-            }
-            else {
-              for(var i in execute){
-                execute[i]();
-              }
-              right.setOverlapping(false);
-              return false;
-            }
-
-          default:
-            return console.log('ERROR ' + state + ' is not a valid state');
-        }
-      }
-
-      /**
-       * Redimensionne les projections si le nouvel effet pousse la projection active.
-       *
-       * @param state
-       * @param entity
-       */
-      checkBorderBoite(state, entity){
-
-        var posExt = entity.findExtreme(),
-            boite = this.projections[state],
-            posExtBoite = boite.findExtreme(),
-            position = {};
-
-        // L'obj est à haut de la boite.
-        // Si vue gauche ou droite, on bloque l'élargissement du top.
-        if (state === 'left' || state === 'right'){
-          var b1 = boite.points[2].y - boite.points[1].y;
-          var b2 = boite.points[3].y - boite.points[0].y;
-          var center = entity.getCenter();
-          // Si vue gauche, on bloque l'élément à la hauteur minimale d1.
-          if (state === 'left') {
-            posExtBoite.t =  posExtBoite.b - b1;
-            if (posExt.t < (posExtBoite.t + boite.margin)) {
-              entity.moveTo({x: center.x, y: posExtBoite.b - (b1 - (posExt.size.h / 2) - boite.margin)});
-              posExt = entity.findExtreme();
-            }
-          }
-          // Si vue droite, on bloque l'élément à la hauteur minimale d1.
-          else {
-            posExtBoite.t =  posExtBoite.b - b2;
-            if (posExt.t < (posExtBoite.t + boite.margin)) {
-              entity.moveTo({x: center.x, y: posExtBoite.b - (b2 - (posExt.size.h / 2) - boite.margin)});
-              posExt = entity.findExtreme();
-            }
-          }
-        }
-        // Si autre vue, on élargit la boite normalement.
-        else {
-          if (posExt.t < (posExtBoite.t + boite.margin)) {
-            position.y = posExt.t - boite.margin;
-            this.projectionsCollisionY(state, position, 0);
-            boite.points[0].setY(posExt.t - boite.margin);
-            boite.points[1].setY(posExt.t - boite.margin);
-          }
-        }
-        // L'obj est à gauche de la boite
-        if (posExt.l < (posExtBoite.l + boite.margin)){
-          position.x = posExt.l - boite.margin;
-          this.projectionsCollisionX(state, position, 0);
-          boite.points[0].setX(posExt.l - boite.margin);
-          boite.points[3].setX(posExt.l - boite.margin);
-        }
-        // L'obj est à droite de la boite
-        if (posExt.r > (posExtBoite.r - boite.margin)){
-          position.x = posExt.r + boite.margin;
-          this.projectionsCollisionX(state, position, 1);
-          boite.points[1].setX(posExt.r + boite.margin);
-          boite.points[2].setX(posExt.r + boite.margin);
-        }
-        // L'obj est en bas de la boite
-        if (posExt.b > (posExtBoite.b - boite.margin)){
-          position.y = posExt.b + boite.margin;
-          this.projectionsCollisionY(state, position, 3);
-          boite.points[2].setY(posExt.b + boite.margin);
-          boite.points[3].setY(posExt.b + boite.margin);
-        }
-      }
-
-      createProjectionsLimits(state){
-
-        // Definition des tailles limites minimales.
-        var limit_up, limit_down, limit_left, limit_right, limit_top, limit_bottom, size_proj_mini = {};
-
-        limit_up = this.projections.up.findAllExtreme();
-        limit_down = this.projections.down.findAllExtreme();
-        limit_left = this.projections.left.findAllExtreme();
-        limit_right = this.projections.right.findAllExtreme();
-        limit_top = this.projections.top.findAllExtreme();
-        limit_bottom = this.projections.bottom.findAllExtreme();
-
-        this.projections.top.size_proj_mini = limit_top;
-        this.projections.bottom.size_proj_mini = limit_bottom;
-        this.projections.up.size_proj_mini = limit_up;
-        this.projections.down.size_proj_mini = limit_down;
-        this.projections.left.size_proj_mini = limit_left;
-        this.projections.right.size_proj_mini = limit_right;
-
-      }
-
-      createProjectionsCoords(state) {
-        // Création des coordonnées de point des projections.
-        // A partir des dimensions de la MasterBoite.
-        var proj_points = {
-          top: {
-            points:[
-              {
-                x: 0,
-                y: 0
-              },
-              {
-                x: this.getSide('w'),
-                y: 0
-              },
-              {
-                x: this.getSide('w'),
-                y: this.getSide('d2')
-              },
-              {
-                x: 0,
-                y: this.getSide('d2')
-              }
-            ]
-          },
-          bottom: {
-            points: [
-              {
-                x: 0,
-                y: 0
-              },
-              {
-                x: this.getSide('w'),
-                y: 0
-              },
-              {
-                x: this.getSide('w'),
-                y: this.getSide('d1')
-              },
-              {
-                x: 0,
-                y: this.getSide('d1')
-              }
-            ]
-          },
-          up: {
-            points: [
-              {
-                x: 0,
-                y: 0
-              },
-              {
-                x: this.getSide('w'),
-                y: 0
-              },
-              {
-                x: this.getSide('w'),
-                y: this.getSide('d')
-              },
-              {
-                x: 0,
-                y: this.getSide('d')
-              }
-            ]
-          },
-          down: {
-            points: [
-              {
-                x: 0,
-                y: 0
-              },
-              {
-                x: this.getSide('w'),
-                y: 0
-              },
-              {
-                x: this.getSide('w'),
-                y: this.getSide('h')
-              },
-              {
-                x: 0,
-                y: this.getSide('h')
-              }
-            ]
-          },
-          left: {
-            points: [
-              {
-                x: 0,
-                y: 0
-              },
-              {
-                x: this.getSide('h'),
-                y: this.getSide('d2') - this.getSide('d1')
-              },
-              {
-                x: this.getSide('h'),
-                y: this.getSide('d2')
-              },
-              {
-                x: 0,
-                y: this.getSide('d2')
-              }
-            ]
-          },
-          right: {
-            points: [
-              {
-                x: 0,
-                y: 0
-              },
-              {
-                x: this.getSide('h'),
-                y: this.getSide('d1') - this.getSide('d2')
-              },
-              {
-                x: this.getSide('h'),
-                y: this.getSide('d1')
-              },
-              {
-                x: 0,
-                y: this.getSide('d1')
-              }
-            ]
-          }
-        };
-        switch (state) {
-          case 'top':
-            return proj_points.top;
-            break;
-          case 'bottom':
-            return proj_points.bottom;
-            break;
-          case 'up':
-            return proj_points.up;
-            break;
-          case 'down':
-            return proj_points.down;
-            break;
-          case 'left':
-            return proj_points.left;
-            break;
-          case 'right':
-            return proj_points.right;
-            break;
-          case 'all':
-            return proj_points;
-            break;
-          default:
-            return console.log('ERROR ' + state + ' is not a valid state');
-        }
-      }
-      createProjection() {
-        var proj_points = this.createProjectionsCoords('all');
-        this.projections.up = new Boite(this, proj_points.up);
-        this.projections.down = new Boite(this, proj_points.down);
-        this.projections.left = new Boite(this, proj_points.left);
-        this.projections.right = new Boite(this, proj_points.right);
-        this.projections.top = new Boite(this, proj_points.top);
-        this.projections.bottom = new Boite(this, proj_points.bottom);
-      }
-      updateProjection(state){
-        var vect;
-        var coords = this.createProjectionsCoords(state).points;
-        var points = this.projections[state].points;
-
-        // On récupère les anciennes coordonées du point p0.
-        vect = {
-          x: points[0].x,
-          y: points[0].y
-        };
-
-        // Si la coordonnées de positionne est de 0, on deplace la figure.
-        if (vect.x === 0 && vect.y === 0){
-          vect.x = 200;
-          vect.y = 200;
-        }
-
-        for (var i=0, l = points.length ; i < l ; i++) {
-          // On transmet les nouvelles coordonnées absolues.
-          points[i].setX(coords[i].x);
-          points[i].setY(coords[i].y);
-          // On bouge la forme selon les anciennes coordonnées.
-          points[i].translate(vect);
-        }
-      }
-      updateAllProjections(state){
-        this.updateMaster(state);
-        this.updateProjection('top');
-        this.updateProjection('bottom');
-        this.updateProjection('left');
-        this.updateProjection('right');
-        this.updateProjection('up');
-        this.updateProjection('down');
-      }
-
-      updateMaster(state){
-        var proj, h, d, d1, d2, d3;
-        switch (state) {
-          case 'top':
-            proj = this.projections[state];
-            this.setSide('w', proj.points[1].x - proj.points[0].x);
-            this.setSide('d2', proj.points[3].y - proj.points[0].y);
-            break;
-          case 'bottom':
-            proj = this.projections[state];
-            this.setSide('w', proj.points[1].x - proj.points[0].x);
-            this.setSide('d1', proj.points[3].y - proj.points[0].y);
-            break;
-          case 'up':
-            proj = this.projections[state];
-            d = proj.points[3].y - proj.points[0].y;
-            d1 = this.getSide('d1');
-            d2 = this.getSide('d2');
-            d3 = d2 - d1;
-            h = Math.sqrt(d * d - d3 * d3);
-            this.setSide('w', proj.points[1].x - proj.points[0].x);
-            this.setSide('d', d);
-            this.setSide('h', h);
-            break;
-          case 'down':
-            proj = this.projections[state];
-            h = proj.points[3].y - proj.points[0].y;
-            d1 = this.getSide('d1');
-            d2 = this.getSide('d2');
-            d3 = d2 - d1;
-            d = Math.sqrt(h * h + d3 * d3);
-            this.setSide('w', proj.points[1].x - proj.points[0].x);
-            this.setSide('d', d);
-            this.setSide('h', h);
-            break;
-          case 'left':
-            proj = this.projections[state];
-            h = proj.points[2].x - proj.points[3].x;
-            d2 = proj.points[3].y - proj.points[0].y;
-            d1 = proj.points[2].y - proj.points[1].y;
-            d3 = d2 - d1;
-            this.setSide('h', h);
-            this.setSide('d', Math.sqrt(h*h + d3*d3));
-            this.setSide('d1', d1);
-            this.setSide('d2', d2);
-            break;
-          case 'right':
-            proj = this.projections[state];
-            h = proj.points[2].x - proj.points[3].x;
-            d1 = proj.points[3].y - proj.points[0].y;
-            d2 = proj.points[2].y - proj.points[1].y;
-            d3 = d2 - d1;
-            this.setSide('h', h);
-            this.setSide('d', Math.sqrt(h*h + d3*d3));
-            this.setSide('d1', d1);
-            this.setSide('d2', d2);
-            break;
-          case 'all':
-            return false;
-            break;
-          default:
-            return console.log('ERROR ' + state + ' is not a valid state');
         }
       }
     }
@@ -2031,8 +388,8 @@ angular.module('pedaleswitchApp')
      *       masterBoite.projections.top
      */
     class Boite {
-      constructor (masterBoite, proj_points) {
-        
+      constructor (masterBoite, projPoints) {
+
         this.margin = masterBoite.margin;
         this.isSelected = false;
         this.isOverlapping = false;
@@ -2043,11 +400,11 @@ angular.module('pedaleswitchApp')
         this.textDeco = [];
         this.shapeDeco = [];
         this.imgDeco = [];
-        
+
         this.shapeObject = 'Rect';
         this.fonction = 'Boite';
-        
-        this.initPoints(proj_points.points, this.points);
+
+        this.initPoints(projPoints.points, this.points);
       }
 
       initPoints(points, tab){
@@ -2234,7 +591,7 @@ angular.module('pedaleswitchApp')
         return {
           x: xg,
           y: yg
-        }
+        };
       }
       getCenterX(){
         return this.getCenter().x;
@@ -2254,25 +611,25 @@ angular.module('pedaleswitchApp')
         };
 
         // Regarde si la figure sort du canvas.
-        var max_pos = this.findExtreme();
+        var maxPos = this.findExtreme();
 
         // Debordement par le haut.
-        if (max_pos.t < marginCanvas) {
-          this.move({x:0, y: marginCanvas - max_pos.t});
-          vector.y = marginCanvas - max_pos.t;
+        if (maxPos.t < marginCanvas) {
+          this.move({x:0, y: marginCanvas - maxPos.t});
+          vector.y = marginCanvas - maxPos.t;
         }
         // Debordement par la gauche.
-        if (max_pos.l < marginCanvas) {
-          this.move({x:marginCanvas - max_pos.l, y:0});
-          vector.x = marginCanvas - max_pos.l;
+        if (maxPos.l < marginCanvas) {
+          this.move({x:marginCanvas - maxPos.l, y:0});
+          vector.x = marginCanvas - maxPos.l;
         }
         // Debordement par la droite.
-        if (max_pos.r + marginCanvas + 150 > canvas.width) {
-          canvas.width = max_pos.r + marginCanvas + 150;
+        if (maxPos.r + marginCanvas + 150 > canvas.width) {
+          canvas.width = maxPos.r + marginCanvas + 150;
         }
         // Debordement par le bas.
-        if (max_pos.b + marginCanvas + 150 > canvas.height) {
-          canvas.height = max_pos.b + marginCanvas + 150;
+        if (maxPos.b + marginCanvas + 150 > canvas.height) {
+          canvas.height = maxPos.b + marginCanvas + 150;
         }
         return vector;
       }
@@ -2293,18 +650,1666 @@ angular.module('pedaleswitchApp')
         ctx.stroke();
       }
       drawCanvasLimits(ctx){
-        if(this.size_proj_mini.size.w > 0) {
+        if(this.sizeProjMini.size.w > 0) {
           ctx.beginPath();
-          ctx.rect(this.size_proj_mini.l, this.size_proj_mini.t, this.size_proj_mini.size.w, this.size_proj_mini.size.h);
+          ctx.rect(this.sizeProjMini.l, this.sizeProjMini.t, this.sizeProjMini.size.w, this.sizeProjMini.size.h);
           ctx.closePath();
           ctx.stroke();
         }
       }
     }
 
+    /**
+     * Constructeur de la classe MasterBoite.
+     *
+     * La propriété 'projections' détient 6 proriétés, une pour chaque 'vue' du canvas.
+     * Chaqune des propriétés correspondates fait référence à une instance de l'objet 'Boite'.
+     *
+     *    -> VUE DESSUS  - viewState 'up':
+     *       masterBoite.projections.up
+     *    -> VUE DESSOUS  - viewState 'down':
+     *       masterBoite.projections.down
+     *    -> VUE COTE GAUCHE  - viewState 'left':
+     *       masterBoite.projections.left
+     *    -> VUE COTE DROIT  - viewState 'right':
+     *       masterBoite.projections.right
+     *    -> VUE COTE AVANT  - viewState 'bottom':
+     *       masterBoite.projections.bottom
+     *    -> VUE COTE ARRIERE  - viewState 'top':
+     *       masterBoite.projections.top
+     *
+     */
+    class MasterBoite {
+      constructor(entity) {
+        this.margin = 5;
+        this.initialHeight = 80;
+        this.convertMargin();
+        this.convertInitialHeight();
+        this.size = {
+          w: null,
+          h: null,
+          d: null,
+          d1: this.initialHeight,
+          d2: this.initialHeight
+        };
+        this.projections = {
+          up: null,
+          down: null,
+          left: null,
+          right: null,
+          top: null,
+          bottom: null
+        };
+        
+        this.fonction = 'MasterBoite';
+        this.shapeObject = 'Rect';
+        
+        this.initBoiteWithEffect(entity);
+      }
+
+      setSide(side, value){
+        this.size[side] = value;
+      }
+
+      getSide(side){
+        return this.size[side];
+      }
+
+      initBoiteWithEffect(entity){
+        var extremePos = entity.findExtreme();
+        var d = extremePos.size.h + 2 * this.margin;
+        var w = extremePos.size.w + 2 * this.margin;
+        var d3 = this.getSide('d2') - this.getSide('d1');
+        this.setSide('w', w);
+        this.setSide('d', d);
+        this.setSide('h', Math.sqrt(d*d - d3*d3));
+      }
+
+      convertMargin() {
+        this.margin = canvasConversion.convertToPixel(this.margin);
+      }
+
+      convertInitialHeight() {
+        this.initialHeight = canvasConversion.convertToPixel(this.initialHeight);
+      }
+
+      /**
+       * Teste les collisions axe Y boite/contenu sur chaque projection de la boite.
+       * La projection down (dessous de boite) n'est pas testée.
+       *
+       * @param state : état de la vue . up, down, lest, right, top, bottom.
+       * @param mousePos : position x et y  de la souris.
+       * @param index : index du point de référence - 0, 1, 2, 3.
+       *                Le point de référence est le sommet de la
+       *                projection de boite qui est bougé dans la
+       *                vue active.
+       * @returns {false || Number} si collision detectée, retourne une distance limite relative au point d'impact.
+       */
+      projectionsCollisionY(state, mousePos, index){
+
+        var delta, up, left, right, top, bottom, ref, move, func, i, hypo, oldHypo, adj, oldAdj, height, cosinus;
+        var opp = (this.size.d2 - this.size.d1);
+        var testTmp = 0;
+
+        var test = 0;
+        var execute = [];
+
+        up = this.projections.up;
+        left = this.projections.left;
+        right = this.projections.right;
+        top = this.projections.top;
+        bottom = this.projections.bottom;
+
+        var getTriangleSide = function(hypo, side){
+          return Math.sqrt(hypo * hypo - side * side);
+        };
+
+        var getTriangleHypo = function(adj, opp){
+          return Math.sqrt(adj * adj + opp * opp);
+        };
+
+        switch (state) {
+          case 'up':
+
+            // Test de la projection LEFT.
+            // On calcul le delta de deplacement de la bordure.
+
+            cosinus = (left.points[1].x - left.points[0].x)  / ((up.points[3].y - up.points[0].y) - (mousePos.y - up.points[index].y));
+            delta = (mousePos.y - up.points[index].y) * cosinus;
+            ref = ((index - 1) >= 0) ? index - 1 : 3;
+
+            // Si deplacement bord gauche de la projection LEFT.
+            if (ref === 0 || ref === 3) {
+
+              // On détermine le delta de mouvement à partir de la projection active.
+              move = left.points[ref].x + delta;
+
+              // On verifie si une limite est atteinte sur la projection testée.
+              // Si limite atteinte, on cherche l'épaisseur de la projection.
+              if (move > left.sizeProjMini.l - this.margin) {
+                up.setOverlapping(true);
+                test = Math.max(test, left.points[1].x - (left.sizeProjMini.l - this.margin));
+              }
+
+              // On construit la fonction qui sera exécutée en fin de block.
+              func = function(){
+                var m = move;
+                return function(value){
+                  // Si value = undefined : la projection est agrandie de la valeur delta 'm'.
+                  // Si value définie : la projection est agrandie en fonction de l'épaisseur passée en argument.
+                  var v = value ? left.points[1].x - value : value;
+                  left.points[0].setX(v || m);
+                  left.points[3].setX(v || m);
+                };
+              };
+
+              // La fonction anonyme retournée est chargée dans la table, prête à être exécutée.
+              execute.push(func());
+            }
+
+            // Si deplacement bord droit de la projection LEFT.
+            else {
+
+              move = left.points[ref].x + delta;
+
+              if (move < left.sizeProjMini.r + this.margin) {
+                up.setOverlapping(true);
+                test = Math.max(test, (left.sizeProjMini.r + this.margin) - left.points[0].x);
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? left.points[0].x + value : value;
+                  left.points[1].setX(v || m);
+                  left.points[2].setX(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+            // Test de la projection RIGHT.
+            // On calcul le delta de deplacement de la bordure.
+
+            ref = ((index + 1) < 4) ? index + 1 : 0;
+
+            // Si deplacement bord gauche de la projection RIGHT.
+            if (ref === 0 || ref === 3) {
+
+              // On détermine le delta de mouvement à partir de la projection active.
+              move = right.points[ref].x - delta;
+
+              // On verifie si une limite est atteinte sur la projection testée.
+              // Si limite atteinte, on cherche l'épaisseur de la projection.
+              if (move > right.sizeProjMini.l - this.margin) {
+                up.setOverlapping(true);
+                test = Math.max(test, right.points[1].x - (right.sizeProjMini.l - this.margin));
+              }
+
+              // On construit la fonction qui sera exécutée en fin de block.
+              func = function(){
+                var m = move;
+                return function(value){
+                  // Si value = undefined : la projection est agrandie de la valeur delta 'm'.
+                  // Si value définie : la projection est agrandie en fonction de l'épaisseur passée en argument.
+                  var v = value ? right.points[1].x - value : value;
+                  right.points[0].setX(v || m);
+                  right.points[3].setX(v || m);
+                };
+              };
+
+              // La fonction anonyme retournée est chargée dans la table, prête à être exécutée.
+              execute.push(func());
+            }
+
+            // Si deplacement bord droit de la projection RIGHT.
+            else {
+
+              move = right.points[ref].x - delta;
+
+              if (move < right.sizeProjMini.r + this.margin) {
+                up.setOverlapping(true);
+                test = Math.max(test, (right.sizeProjMini.r + this.margin) - right.points[0].x);
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? right.points[0].x + value : value;
+                  right.points[1].setX(v || m);
+                  right.points[2].setX(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+            // Exécution des mouvements de projections.
+            if (test !== 0){
+              for(i in execute){
+                execute[i](test);
+              }
+              return getTriangleHypo(test, opp);
+            }
+            else {
+              for(i in execute){
+                execute[i]();
+              }
+              up.setOverlapping(false);
+              return false;
+            }
+            break;
+
+          case 'left':
+
+            oldAdj = left.points[1].y - left.points[0].y;
+            adj = oldAdj - (mousePos.y - left.points[index].y);
+            opp = left.points[2].x - left.points[3].x;
+            oldHypo = getTriangleHypo(oldAdj, opp);
+            hypo = getTriangleHypo(adj, opp);
+            height = left.points[2].y - left.points[1].y;
+
+
+            // Test de la projection UP.
+            // test uniquement sur le bord haut de la projection UP.
+            delta = oldHypo - hypo;
+
+            ref = index;
+
+            if (ref === 0 || ref === 1) {
+
+              // On détermine le delta de mouvement à partir de la projection active.
+              move = up.points[ref].y + delta;
+
+              // On verifie si une limite est atteinte sur la projection testée.
+              // Si limite atteinte, on cherche l'épaisseur de la projection.
+              if (move > up.sizeProjMini.t - this.margin) {
+                left.setOverlapping(true);
+                test = up.points[3].y - (up.sizeProjMini.t - this.margin);
+              }
+
+              // On construit la fonction qui sera exécutée en fin de block.
+              func = function(){
+                var m = move;
+                return function(value){
+                  // Si value = undefined : la projection est agrandie de la valeur delta 'm'.
+                  // Si value définie : la projection est agrandie en fonction de l'épaisseur passée en argument.
+                  var v = value ? up.points[3].y - value : value;
+                  up.points[0].setY(v || m);
+                  up.points[1].setY(v || m);
+                };
+              };
+
+              // La fonction anonyme retournée est chargée dans la table, prête à être exécutée.
+              execute.push(func());
+            }
+
+            // Test de la projection TOP
+            // Si deplacement bord haut de la projection TOP.
+            delta = mousePos.y - left.points[index].y;
+
+            if (ref === 0 || ref === 1) {
+
+              // On détermine le delta de mouvement à partir de la projection active.
+              move = top.points[ref].y + delta;
+
+              // On verifie si une limite est atteinte sur la projection testée.
+              // Si limite atteinte, on cherche l'épaisseur de la projection.
+              if (move > top.sizeProjMini.t - this.margin) {
+                left.setOverlapping(true);
+                // On cherche l'équivalent hypothénuse sur up de la limite sur top.
+                adj = (top.points[3].y - (top.sizeProjMini.t - this.margin)) - height;
+                hypo = getTriangleHypo(adj, opp);
+                test = Math.max(test, hypo);
+              }
+
+              // On construit la fonction qui sera exécutée en fin de block.
+              func = function(){
+                var m = move;
+                return function(value){
+                  // Si value = undefined : la projection est agrandie de la valeur delta 'm'.
+                  // Si value définie : la projection est agrandie en fonction de l'épaisseur passée en argument.
+                  var v = value ? top.points[3].y - (getTriangleSide(value, opp) + height) : value;
+                  top.points[0].setY(v || m);
+                  top.points[1].setY(v || m);
+                };
+              };
+
+              // La fonction anonyme retournée est chargée dans la table, prête à être exécutée.
+              execute.push(func());
+            }
+
+            // Si deplacement bord bas de la projection TOP.
+            else {
+
+              move = top.points[ref].y + delta;
+
+              if (move < top.sizeProjMini.b + this.margin) {
+                left.setOverlapping(true);
+                test = Math.max(test, (top.sizeProjMini.b + this.margin) - top.points[0].y);
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? top.points[0].y + value : value;
+                  top.points[2].setY(v || m);
+                  top.points[3].setY(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+            // Test de la projection BOTTOM
+            // Si deplacement bord bas de la projection BOTTOM.
+            if (ref === 2 || ref === 3) {
+
+              move = bottom.points[ref].y + delta;
+
+              if (move < bottom.sizeProjMini.b + this.margin) {
+                left.setOverlapping(true);
+                test = Math.max(test, ((bottom.sizeProjMini.b + this.margin) - bottom.points[0].y) + oldAdj);
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? bottom.points[0].y + (value - oldAdj) : value;
+                  bottom.points[2].setY(v || m);
+                  bottom.points[3].setY(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+            // Test de la projection RIGHT
+            // Si deplacement sommet droit de la projection RIGHT.
+            // Pas besoin de test collision.
+            // On coordonne uniquement le déplacement du sommet.
+            if (ref === 0){
+              move = right.points[1].y + delta;
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? right.points[2].y - (getTriangleSide(value, opp) + height) : value;
+                  right.points[1].setY(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+
+            // Si deplacement bord bas de la projection RIGHT.
+            if (ref === 2 || ref === 3) {
+
+              move = right.points[ref].y + delta;
+
+              if (move < right.sizeProjMini.b + this.margin) {
+                left.setOverlapping(true);
+                test = Math.max(test, (right.sizeProjMini.b + this.margin) - right.points[1].y);
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? right.points[1].y + value : value;
+                  right.points[2].setY(v || m);
+                  right.points[3].setY(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+            // Exécution des mouvements de projections.
+            // Si mouvement côté haut sur Left.
+            if( testTmp === 1 ) {
+              if (test !== 0) {
+                for (i in execute) {
+                  execute[i](test);
+                }
+                return getTriangleSide(test, opp) + height;
+              }
+              else {
+                for (i in execute) {
+                  execute[i]();
+                }
+                left.setOverlapping(false);
+                return false;
+              }
+            }
+          // Si mouvement côté bas sur Left.
+            else {
+              if (test !== 0) {
+                for (i in execute) {
+                  execute[i](test);
+                }
+                return test;
+              }
+              else {
+                for (i in execute) {
+                  execute[i]();
+                }
+                left.setOverlapping(false);
+                return false;
+              }
+            }
+            break;
+
+          case 'right':
+
+            oldAdj = right.points[0].y - right.points[1].y;
+            adj = oldAdj - (mousePos.y - right.points[index].y);
+            opp = right.points[2].x - right.points[3].x;
+            oldHypo = getTriangleHypo(oldAdj, opp);
+            hypo = getTriangleHypo(adj, opp);
+            height = right.points[3].y - right.points[0].y;
+
+            // Test de la projection UP.
+            // test uniquement sur le bord haut de la projection UP.
+            delta = oldHypo - hypo;
+
+            ref = index;
+
+            if (ref === 0 || ref === 1) {
+
+              // On détermine le delta de mouvement à partir de la projection active.
+              move = up.points[ref].y + delta;
+
+              // On verifie si une limite est atteinte sur la projection testée.
+              // Si limite atteinte, on cherche l'épaisseur de la projection.
+              if (move > up.sizeProjMini.t - this.margin) {
+                right.setOverlapping(true);
+                //test = Math.max(test, up.points[3].y - (up.sizeProjMini.t - this.margin));
+                test = up.points[3].y - (up.sizeProjMini.t - this.margin);
+                testTmp = 1;
+              }
+
+              // On construit la fonction qui sera exécutée en fin de block.
+              func = function(){
+                var m = move;
+                return function(value){
+                  // Si value = undefined : la projection est agrandie de la valeur delta 'm'.
+                  // Si value définie : la projection est agrandie en fonction de l'épaisseur passée en argument.
+                  var v = value ? up.points[3].y - value : value;
+                  up.points[0].setY(v || m);
+                  up.points[1].setY(v || m);
+                };
+              };
+
+              // La fonction anonyme retournée est chargée dans la table, prête à être exécutée.
+              execute.push(func());
+            }
+
+
+
+            // Test de la projection TOP
+            delta = mousePos.y - right.points[index].y;
+            ref = index;
+
+            // Si deplacement bord haut de la projection TOP.
+            if (ref === 0 || ref === 1) {
+
+              // On détermine le delta de mouvement à partir de la projection active.
+              move = top.points[ref].y + delta;
+
+              // On verifie si une limite est atteinte sur la projection testée.
+              // Si limite atteinte, on cherche l'épaisseur de la projection.
+              if (move > top.sizeProjMini.t - this.margin) {
+                right.setOverlapping(true);
+                adj = (top.points[3].y - (top.sizeProjMini.t - this.margin)) - height;
+                hypo = getTriangleHypo(adj, opp);
+                test = Math.max(test, hypo);
+                testTmp = 1;
+              }
+
+              // On construit la fonction qui sera exécutée en fin de block.
+              func = function(){
+                var m = move;
+                return function(value){
+                  // Si value = undefined : la projection est agrandie de la valeur delta 'm'.
+                  // Si value définie : la projection est agrandie en fonction de l'épaisseur passée en argument.
+                  var v = value ? top.points[3].y - (getTriangleSide(value, opp) + height) : value;
+                  top.points[0].setY(v || m);
+                  top.points[1].setY(v || m);
+                };
+              };
+
+              // La fonction anonyme retournée est chargée dans la table, prête à être exécutée.
+              execute.push(func());
+            }
+
+            // Si deplacement bord bas de la projection TOP.
+            else {
+
+              move = top.points[ref].y + delta;
+
+              if (move < top.sizeProjMini.b + this.margin) {
+                right.setOverlapping(true);
+                test = Math.max(test, (top.sizeProjMini.b + this.margin) - top.points[0].y);
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? top.points[0].y + value : value;
+                  top.points[2].setY(v || m);
+                  top.points[3].setY(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+            // Test de la projection BOTTOM
+            // Si deplacement bord bas de la projection BOTTOM.
+            if (ref === 2 || ref === 3) {
+
+              move = bottom.points[ref].y + delta;
+
+              if (move < bottom.sizeProjMini.b + this.margin) {
+                right.setOverlapping(true);
+                test = Math.max(test, ((bottom.sizeProjMini.b + this.margin) - bottom.points[0].y) + oldAdj);
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? bottom.points[0].y + (value - oldAdj) : value;
+                  bottom.points[2].setY(v || m);
+                  bottom.points[3].setY(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+            // Test de la projection LEFT
+            // Si deplacement sommet gauche de la projection LEFT.
+            // Pas besoin de test collision.
+            // On coordonne uniquement le déplacement du sommet.
+            if (ref === 1){
+              move = left.points[0].y + delta;
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? left.points[3].y - (getTriangleSide(value, opp) + height) : value;
+                  left.points[0].setY(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+            // Si deplacement bord bas de la projection LEFT.
+            if (ref === 2 || ref === 3) {
+
+              move = left.points[ref].y + delta;
+
+              if (move < left.sizeProjMini.b + this.margin) {
+                right.setOverlapping(true);
+                test = Math.max(test, (left.sizeProjMini.b + this.margin) - left.points[0].y);
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? left.points[0].y + value : value;
+                  left.points[2].setY(v || m);
+                  left.points[3].setY(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+            // Exécution des mouvements de projections.
+            // Si mouvement côté haut sur Right.
+            if( testTmp === 1 ) {
+              if (test !== 0) {
+                for (i in execute) {
+                  execute[i](test);
+                }
+                return getTriangleSide(test, opp) + height;
+              }
+              else {
+                for (i in execute) {
+                  execute[i]();
+                }
+                right.setOverlapping(false);
+                return false;
+              }
+            }
+            // Si mouvement côté bas sur Right.
+            else {
+              if (test !== 0) {
+                for (i in execute) {
+                  execute[i](test);
+                }
+                return test;
+              }
+              else {
+                for (i in execute) {
+                  execute[i]();
+                }
+                right.setOverlapping(false);
+                return false;
+              }
+            }
+            break;
+
+          case 'top':
+            return console.log('WARNING : "' + state + '" viewState is not yet implemented in box collision');
+          case 'bottom':
+            return console.log('WARNING : "' + state + '" viewState is not yet implemented in box collision');
+          default:
+            return console.log('ERROR : ' + state + ' is not a valid state');
+        }
+      }
+
+      /**
+       * Teste les collisions axe X boite/contenu sur chaque projection de la boite.
+       * La projection down (dessous de boite) n'est pas testée.
+       *
+       * @param state : état de la vue . up, down, lest, right, top, bottom.
+       * @param mousePos : position x et y  de la souris.
+       * @param index : index du point de référence - 0, 1, 2, 3.
+       *                Le point de référence est le sommet de la
+       *                projection de boite qui est bougé dans la
+       *                vue active.
+       * @returns {false || Number}
+       */
+      projectionsCollisionX(state, mousePos, index){
+
+        var delta, up, left, right, top, bottom, ref, move, func, i, testTmp, oldAdj, adj, opp, oldHypo, hypo;
+        var tmpCos = 1;
+
+        var test = 0;
+        var execute = [];
+
+        var getTriangleSide = function(hypo, side){
+          return Math.sqrt(hypo * hypo - side * side);
+        };
+
+        var getTriangleHypo = function(adj, opp){
+          return Math.sqrt(adj * adj + opp * opp);
+        };
+
+        up = this.projections.up;
+        left = this.projections.left;
+        right = this.projections.right;
+        top = this.projections.top;
+        bottom = this.projections.bottom;
+
+        switch (state) {
+          case 'top':
+            // Test de la projection UP.
+            // On calcul le delta de deplacement de la bordure.
+            delta = mousePos.x - top.points[index].x;
+            ref = ((index - 2) >= 0) ? index - 2 : index + 2;
+
+            // Si deplacement bord gauche de la projection UP.
+            if (ref === 0 || ref === 3) {
+
+              move = up.points[ref].x - delta;
+
+              if (move > up.sizeProjMini.l - this.margin) {
+                top.setOverlapping(true);
+                test = Math.max(test, up.points[1].x - (up.sizeProjMini.l - this.margin));
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? up.points[1].x - value : value;
+                  up.points[0].setX(v || m);
+                  up.points[3].setX(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+            // Si deplacement bord droit de la projection UP.
+            else {
+
+              move = up.points[ref].x - delta;
+
+              if (move < up.sizeProjMini.r + this.margin) {
+                top.setOverlapping(true);
+                test = Math.max(test, (up.sizeProjMini.r + this.margin) - up.points[0].x);
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? up.points[0].x + value : value;
+                  up.points[1].setX(v || m);
+                  up.points[2].setX(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+            // Test de la projection BOTTOM.
+            // On calcul le delta de deplacement de la bordure.
+            ref = ((index - 2) >= 0) ? index - 2 : index + 2;
+
+            // Si deplacement bord gauche de la projection BOTTOM.
+            if (ref === 0 || ref === 3) {
+
+              move = bottom.points[ref].x - delta;
+
+              if (move > bottom.sizeProjMini.l - this.margin) {
+                top.setOverlapping(true);
+                test = Math.max(test, bottom.points[1].x - (bottom.sizeProjMini.l - this.margin));
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? bottom.points[1].x - value : value;
+                  bottom.points[0].setX(v || m);
+                  bottom.points[3].setX(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+            // Si deplacement bord droit de la projection BOTTOM.
+            else {
+
+              move = bottom.points[ref].x - delta;
+
+              if (move < bottom.sizeProjMini.r + this.margin) {
+                top.setOverlapping(true);
+                test = Math.max(test, (bottom.sizeProjMini.r + this.margin) - bottom.points[0].x);
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? bottom.points[0].x + value : value;
+                  bottom.points[1].setX(v || m);
+                  bottom.points[2].setX(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+            // Exécution des mouvements de projections.
+            if (test !== 0){
+              for(i in execute){
+                execute[i](test);
+              }
+              return test;
+            }
+            else {
+              for(i in execute){
+                execute[i]();
+              }
+              top.setOverlapping(false);
+              return false;
+            }
+            break;
+
+          case 'bottom':
+            // Test de la projection UP.
+            // On calcul le delta de deplacement de la bordure.
+            delta = mousePos.x - bottom.points[index].x;
+            ref = index;
+
+            // Si deplacement bord gauche de la projection UP.
+            if (ref === 0 || ref === 3) {
+
+              move = up.points[ref].x + delta;
+
+              if (move > up.sizeProjMini.l - this.margin) {
+                top.setOverlapping(true);
+                test = Math.max(test, up.points[1].x - (up.sizeProjMini.l - this.margin));
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? up.points[1].x - value : value;
+                  up.points[0].setX(v || m);
+                  up.points[3].setX(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+            // Si deplacement bord droit de la projection UP.
+            else {
+
+              move = up.points[ref].x + delta;
+
+              if (move < up.sizeProjMini.r + this.margin) {
+                bottom.setOverlapping(true);
+                test = Math.max(test, (up.sizeProjMini.r + this.margin) - up.points[0].x);
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? up.points[0].x + value : value;
+                  up.points[1].setX(v || m);
+                  up.points[2].setX(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+            // Test de la projection TOP.
+            // On calcul le delta de deplacement de la bordure.
+            ref = ((index - 2) >= 0) ? index - 2 : index + 2;
+
+            // Si deplacement bord gauche de la projection TOP.
+            if (ref === 0 || ref === 3) {
+
+              move = top.points[ref].x - delta;
+
+              if (move > top.sizeProjMini.l - this.margin) {
+                bottom.setOverlapping(true);
+                test = Math.max(test, top.points[1].x - (top.sizeProjMini.l - this.margin));
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? top.points[1].x - value : value;
+                  top.points[0].setX(v || m);
+                  top.points[3].setX(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+            // Si deplacement bord droit de la projection TOP.
+            else {
+
+              move = top.points[ref].x - delta;
+
+              if (move < top.sizeProjMini.r + this.margin) {
+                bottom.setOverlapping(true);
+                test = Math.max(test, (top.sizeProjMini.r + this.margin) - top.points[0].x);
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? top.points[0].x + value : value;
+                  top.points[1].setX(v || m);
+                  top.points[2].setX(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+            // Exécution des mouvements de projections.
+            if (test !== 0){
+              for(i in execute){
+                execute[i](test);
+              }
+              return test;
+            }
+            else {
+              for(i in execute){
+                execute[i]();
+              }
+              bottom.setOverlapping(false);
+              return false;
+            }
+            break;
+
+          case 'up':
+
+            // Test de la projection TOP.
+            // On calcul le delta de deplacement de la bordure.
+            delta = mousePos.x - up.points[index].x;
+            ref = ((index - 2) >= 0) ? index - 2 : index + 2;
+
+            // Si deplacement bord gauche de la projection TOP.
+            if (ref === 0 || ref === 3) {
+
+              // On détermine le delta de mouvement à partir de la projection active.
+              move = top.points[ref].x - delta;
+
+              // On verifie si une limite est atteinte sur la projection testée.
+              // Si limite atteinte, on cherche l'épaisseur de la projection.
+              if (move > top.sizeProjMini.l - this.margin) {
+                up.setOverlapping(true);
+                test = Math.max(test, top.points[1].x - (top.sizeProjMini.l - this.margin));
+              }
+
+              // On construit la fonction qui sera exécutée en fin de block.
+              func = function(){
+                var m = move;
+                return function(value){
+                  // Si value = undefined : la projection est agrandie de la valeur delta 'm'.
+                  // Si value définie : la projection est agrandie en fonction de l'épaisseur passée en argument.
+                  var v = value ? top.points[1].x - value : value;
+                  top.points[0].setX(v || m);
+                  top.points[3].setX(v || m);
+                };
+              };
+
+              // La fonction anonyme retournée est chargée dans la table, prête à être exécutée.
+              execute.push(func());
+            }
+
+            // Si deplacement bord droit de la projection TOP.
+            else {
+
+              move = top.points[ref].x - delta;
+
+              if (move < top.sizeProjMini.r + this.margin) {
+                up.setOverlapping(true);
+                test = Math.max(test, (top.sizeProjMini.r + this.margin) - top.points[0].x);
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? top.points[0].x + value : value;
+                  top.points[1].setX(v || m);
+                  top.points[2].setX(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+            // Test de la projection BOTTOM.
+            // On calcul le delta de deplacement de la bordure.
+            ref = index;
+
+            // Si deplacement bord gauche de la projection BOTTOM.
+            if (ref === 0 || ref === 3) {
+
+              move = bottom.points[ref].x + delta;
+
+              if (move > bottom.sizeProjMini.l - this.margin) {
+                up.setOverlapping(true);
+                test = Math.max(test, bottom.points[1].x - (bottom.sizeProjMini.l - this.margin));
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? bottom.points[1].x - value : value;
+                  bottom.points[0].setX(v || m);
+                  bottom.points[3].setX(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+            // Si deplacement bord droit de la projection BOTTOM.
+            else {
+
+              move = bottom.points[ref].x + delta;
+
+              if (move < bottom.sizeProjMini.r + this.margin) {
+                up.setOverlapping(true);
+                test = Math.max(test, (bottom.sizeProjMini.r + this.margin) - bottom.points[0].x);
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? bottom.points[0].x + value : value;
+                  bottom.points[1].setX(v || m);
+                  bottom.points[2].setX(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+            // Exécution des mouvements de projections.
+            if (test !== 0){
+              for(i in execute){
+                execute[i](test);
+              }
+              return test;
+            }
+            else {
+              for(i in execute){
+                execute[i]();
+              }
+              up.setOverlapping(false);
+              return false;
+            }
+            break;
+
+          case 'left':
+            // Test de la projection UP.
+            // On calcul le delta de deplacement de la bordure.
+
+            oldAdj = left.points[1].x - left.points[0].x;
+            adj = oldAdj - (mousePos.x - left.points[index].x);
+            opp = left.points[1].y - left.points[0].y;
+            oldHypo = getTriangleHypo(oldAdj, opp);
+            hypo = getTriangleHypo(adj, opp);
+
+            delta = oldHypo - hypo;
+            ref = ((index + 1) <= 3) ? index + 1 : 0;
+
+            // Si deplacement bord bas de la projection UP.
+            if (ref === 3 || ref === 2) {
+
+              move = up.points[ref].y + delta;
+
+              if (move < up.sizeProjMini.b + this.margin) {
+                left.setOverlapping(true);
+                test = Math.max(test, (up.sizeProjMini.b + this.margin) - up.points[0].y);
+                tmpCos = getTriangleSide(test, opp) / test;
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? up.points[0].y + value : value;
+                  up.points[2].setY(v || m);
+                  up.points[3].setY(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+            // Si deplacement bord haut de la projection UP.
+            else {
+
+              move = up.points[ref].y + delta;
+
+              if (move > up.sizeProjMini.t - this.margin) {
+                left.setOverlapping(true);
+                test = Math.max(test, up.points[3].y - (up.sizeProjMini.t - this.margin));
+                tmpCos = getTriangleSide(test, opp) / test;
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? up.points[3].y - value : value;
+                  up.points[0].setY(v || m);
+                  up.points[1].setY(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+            // Test de la projection RIGHT
+            // On calcul le delta de deplacement de la bordure.
+            delta = (mousePos.x - left.points[index].x);
+            ref = ((index - 2) >= 0) ? index - 2 : index + 2;
+
+            // Si deplacement bord gauche de la projection RIGHT.
+            if (ref === 0 || ref === 3) {
+
+              move = right.points[ref].x - delta;
+
+              if (move > right.sizeProjMini.l - this.margin) {
+                left.setOverlapping(true);
+                testTmp = Math.max(test, getTriangleHypo(right.points[1].x - (right.sizeProjMini.l - this.margin), opp));
+                if (testTmp > test) {
+                  tmpCos = (right.points[1].x - (right.sizeProjMini.l - this.margin)) / testTmp;
+                  test = testTmp;
+                }
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? right.points[1].x - (value * tmpCos) : value;
+                  right.points[0].setX(v || m);
+                  right.points[3].setX(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+            // Si deplacement bord droit de la projection RIGHT.
+            else {
+
+              move = right.points[ref].x - delta;
+
+              if (move < right.sizeProjMini.r + this.margin) {
+                left.setOverlapping(true);
+                testTmp = Math.max(test, getTriangleHypo((right.sizeProjMini.r + this.margin) - right.points[0].x, opp));
+                if (testTmp > test) {
+                  tmpCos = ((right.sizeProjMini.r + this.margin) - right.points[0].x) / testTmp;
+                  test = testTmp;
+                }
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? right.points[0].x + (value * tmpCos) : value;
+                  right.points[1].setX(v || m);
+                  right.points[2].setX(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+            // Exécution des mouvements de projections.
+            if (test !== 0){
+              for(i in execute){
+                execute[i](test);
+              }
+              return test * tmpCos;
+            }
+            else {
+              for(i in execute){
+                execute[i]();
+              }
+              left.setOverlapping(false);
+              return false;
+            }
+            break;
+
+
+          case 'right':
+            // Test de la projection UP.
+            // On calcul le delta de deplacement de la bordure.
+
+            oldAdj = right.points[1].x - right.points[0].x;
+            adj = oldAdj - (mousePos.x - right.points[index].x);
+            opp = right.points[0].y - right.points[1].y;
+            oldHypo = getTriangleHypo(oldAdj, opp);
+            hypo = getTriangleHypo(adj, opp);
+
+            delta = oldHypo - hypo;
+            ref = ((index - 1) >= 0) ? index - 1 : 3;
+
+            // Si deplacement bord bas de la projection UP.
+            if (ref === 3 || ref === 2) {
+
+              move = up.points[ref].y - delta;
+
+              if (move < up.sizeProjMini.b + this.margin) {
+                right.setOverlapping(true);
+                test = Math.max(test, (up.sizeProjMini.b + this.margin) - up.points[0].y);
+                tmpCos = getTriangleSide(test, opp) / test;
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? up.points[0].y + value : value;
+                  up.points[3].setY(v || m);
+                  up.points[2].setY(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+            // Si deplacement bord haut de la projection UP.
+            else {
+
+              move = up.points[ref].y - delta;
+
+              if (move > up.sizeProjMini.t - this.margin) {
+                right.setOverlapping(true);
+                test = Math.max(test, up.points[3].y - (up.sizeProjMini.t - this.margin));
+                tmpCos = getTriangleSide(test, opp) / test;
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? up.points[3].y - value : value;
+                  up.points[0].setY(v || m);
+                  up.points[1].setY(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+            // Test de la projection LEFT.
+            // On calcul le delta de deplacement de la bordure.
+            delta = (mousePos.x - right.points[index].x);
+            ref = ((index - 2) >= 0) ? index - 2 : index + 2;
+
+            // Si deplacement bord gauche de la projection LEFT.
+            if (ref === 0 || ref === 3) {
+
+              move = left.points[ref].x - delta;
+
+              if (move > left.sizeProjMini.l - this.margin) {
+                right.setOverlapping(true);
+                testTmp = Math.max(test, getTriangleHypo(left.points[1].x - (left.sizeProjMini.l - this.margin), opp));
+                if (testTmp > test) {
+                  tmpCos = (left.points[1].x - (left.sizeProjMini.l - this.margin)) / testTmp;
+                  test = testTmp;
+                }
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? left.points[1].x - (value * tmpCos) : value;
+                  left.points[0].setX(v || m);
+                  left.points[3].setX(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+            // Si deplacement bord droit de la projection LEFT.
+            else {
+
+              move = left.points[ref].x - delta;
+
+              if (move < left.sizeProjMini.r + this.margin) {
+                right.setOverlapping(true);
+                testTmp = Math.max(test, getTriangleHypo((left.sizeProjMini.r + this.margin) - left.points[0].x, opp));
+                if (testTmp > test) {
+                  tmpCos = ((left.sizeProjMini.r + this.margin) - left.points[0].x) / testTmp;
+                  test = testTmp;
+                }
+              }
+
+              func = function(){
+                var m = move;
+                return function(value){
+                  var v = value ? left.points[0].x + (value * tmpCos) : value;
+                  left.points[1].setX(v || m);
+                  left.points[2].setX(v || m);
+                };
+              };
+
+              execute.push(func());
+            }
+
+            // Exécution des mouvements de projections.
+            if (test !== 0){
+              for(i in execute){
+                execute[i](test);
+              }
+              return test * tmpCos;
+            }
+            else {
+              for(i in execute){
+                execute[i]();
+              }
+              right.setOverlapping(false);
+              return false;
+            }
+            break;
+
+          default:
+            return console.log('ERROR ' + state + ' is not a valid state');
+        }
+      }
+
+      /**
+       * Redimensionne les projections si le nouvel effet pousse la projection active.
+       *
+       * @param state
+       * @param entity
+       */
+      checkBorderBoite(state, entity){
+
+        var posExt = entity.findExtreme(),
+            boite = this.projections[state],
+            posExtBoite = boite.findExtreme(),
+            position = {};
+
+        // L'obj est à haut de la boite.
+        // Si vue gauche ou droite, on bloque l'élargissement du top.
+        if (state === 'left' || state === 'right'){
+          var b1 = boite.points[2].y - boite.points[1].y;
+          var b2 = boite.points[3].y - boite.points[0].y;
+          var center = entity.getCenter();
+          // Si vue gauche, on bloque l'élément à la hauteur minimale d1.
+          if (state === 'left') {
+            posExtBoite.t =  posExtBoite.b - b1;
+            if (posExt.t < (posExtBoite.t + boite.margin)) {
+              entity.moveTo({x: center.x, y: posExtBoite.b - (b1 - (posExt.size.h / 2) - boite.margin)});
+              posExt = entity.findExtreme();
+            }
+          }
+          // Si vue droite, on bloque l'élément à la hauteur minimale d1.
+          else {
+            posExtBoite.t =  posExtBoite.b - b2;
+            if (posExt.t < (posExtBoite.t + boite.margin)) {
+              entity.moveTo({x: center.x, y: posExtBoite.b - (b2 - (posExt.size.h / 2) - boite.margin)});
+              posExt = entity.findExtreme();
+            }
+          }
+        }
+        // Si autre vue, on élargit la boite normalement.
+        else {
+          if (posExt.t < (posExtBoite.t + boite.margin)) {
+            position.y = posExt.t - boite.margin;
+            this.projectionsCollisionY(state, position, 0);
+            boite.points[0].setY(posExt.t - boite.margin);
+            boite.points[1].setY(posExt.t - boite.margin);
+          }
+        }
+        // L'obj est à gauche de la boite
+        if (posExt.l < (posExtBoite.l + boite.margin)){
+          position.x = posExt.l - boite.margin;
+          this.projectionsCollisionX(state, position, 0);
+          boite.points[0].setX(posExt.l - boite.margin);
+          boite.points[3].setX(posExt.l - boite.margin);
+        }
+        // L'obj est à droite de la boite
+        if (posExt.r > (posExtBoite.r - boite.margin)){
+          position.x = posExt.r + boite.margin;
+          this.projectionsCollisionX(state, position, 1);
+          boite.points[1].setX(posExt.r + boite.margin);
+          boite.points[2].setX(posExt.r + boite.margin);
+        }
+        // L'obj est en bas de la boite
+        if (posExt.b > (posExtBoite.b - boite.margin)){
+          position.y = posExt.b + boite.margin;
+          this.projectionsCollisionY(state, position, 3);
+          boite.points[2].setY(posExt.b + boite.margin);
+          boite.points[3].setY(posExt.b + boite.margin);
+        }
+      }
+
+      createProjectionsLimits(state){
+
+        // Definition des tailles limites minimales.
+        var limitUp, limitDown, limitLeft, limitRight, limitTop, limitBottom;
+
+        limitUp = this.projections.up.findAllExtreme();
+        limitDown = this.projections.down.findAllExtreme();
+        limitLeft = this.projections.left.findAllExtreme();
+        limitRight = this.projections.right.findAllExtreme();
+        limitTop = this.projections.top.findAllExtreme();
+        limitBottom = this.projections.bottom.findAllExtreme();
+
+        this.projections.top.sizeProjMini = limitTop;
+        this.projections.bottom.sizeProjMini = limitBottom;
+        this.projections.up.sizeProjMini = limitUp;
+        this.projections.down.sizeProjMini = limitDown;
+        this.projections.left.sizeProjMini = limitLeft;
+        this.projections.right.sizeProjMini = limitRight;
+
+      }
+
+      createProjectionsCoords(state) {
+        // Création des coordonnées de point des projections.
+        // A partir des dimensions de la MasterBoite.
+        var projPoints = {
+          top: {
+            points:[
+              {
+                x: 0,
+                y: 0
+              },
+              {
+                x: this.getSide('w'),
+                y: 0
+              },
+              {
+                x: this.getSide('w'),
+                y: this.getSide('d2')
+              },
+              {
+                x: 0,
+                y: this.getSide('d2')
+              }
+            ]
+          },
+          bottom: {
+            points: [
+              {
+                x: 0,
+                y: 0
+              },
+              {
+                x: this.getSide('w'),
+                y: 0
+              },
+              {
+                x: this.getSide('w'),
+                y: this.getSide('d1')
+              },
+              {
+                x: 0,
+                y: this.getSide('d1')
+              }
+            ]
+          },
+          up: {
+            points: [
+              {
+                x: 0,
+                y: 0
+              },
+              {
+                x: this.getSide('w'),
+                y: 0
+              },
+              {
+                x: this.getSide('w'),
+                y: this.getSide('d')
+              },
+              {
+                x: 0,
+                y: this.getSide('d')
+              }
+            ]
+          },
+          down: {
+            points: [
+              {
+                x: 0,
+                y: 0
+              },
+              {
+                x: this.getSide('w'),
+                y: 0
+              },
+              {
+                x: this.getSide('w'),
+                y: this.getSide('h')
+              },
+              {
+                x: 0,
+                y: this.getSide('h')
+              }
+            ]
+          },
+          left: {
+            points: [
+              {
+                x: 0,
+                y: 0
+              },
+              {
+                x: this.getSide('h'),
+                y: this.getSide('d2') - this.getSide('d1')
+              },
+              {
+                x: this.getSide('h'),
+                y: this.getSide('d2')
+              },
+              {
+                x: 0,
+                y: this.getSide('d2')
+              }
+            ]
+          },
+          right: {
+            points: [
+              {
+                x: 0,
+                y: 0
+              },
+              {
+                x: this.getSide('h'),
+                y: this.getSide('d1') - this.getSide('d2')
+              },
+              {
+                x: this.getSide('h'),
+                y: this.getSide('d1')
+              },
+              {
+                x: 0,
+                y: this.getSide('d1')
+              }
+            ]
+          }
+        };
+        switch (state) {
+          case 'top':
+            return projPoints.top;
+          case 'bottom':
+            return projPoints.bottom;
+          case 'up':
+            return projPoints.up;
+          case 'down':
+            return projPoints.down;
+          case 'left':
+            return projPoints.left;
+          case 'right':
+            return projPoints.right;
+          case 'all':
+            return projPoints;
+          default:
+            return console.log('ERROR ' + state + ' is not a valid state');
+        }
+      }
+      createProjection() {
+        var projPoints = this.createProjectionsCoords('all');
+        this.projections.up = new Boite(this, projPoints.up);
+        this.projections.down = new Boite(this, projPoints.down);
+        this.projections.left = new Boite(this, projPoints.left);
+        this.projections.right = new Boite(this, projPoints.right);
+        this.projections.top = new Boite(this, projPoints.top);
+        this.projections.bottom = new Boite(this, projPoints.bottom);
+      }
+      updateProjection(state){
+        var vect;
+        var coords = this.createProjectionsCoords(state).points;
+        var points = this.projections[state].points;
+
+        // On récupère les anciennes coordonées du point p0.
+        vect = {
+          x: points[0].x,
+          y: points[0].y
+        };
+
+        // Si la coordonnées de positionne est de 0, on deplace la figure.
+        if (vect.x === 0 && vect.y === 0){
+          vect.x = 200;
+          vect.y = 200;
+        }
+
+        for (var i=0, l = points.length ; i < l ; i++) {
+          // On transmet les nouvelles coordonnées absolues.
+          points[i].setX(coords[i].x);
+          points[i].setY(coords[i].y);
+          // On bouge la forme selon les anciennes coordonnées.
+          points[i].translate(vect);
+        }
+      }
+      updateAllProjections(state){
+        this.updateMaster(state);
+        this.updateProjection('top');
+        this.updateProjection('bottom');
+        this.updateProjection('left');
+        this.updateProjection('right');
+        this.updateProjection('up');
+        this.updateProjection('down');
+      }
+
+      updateMaster(state){
+        var proj, h, d, d1, d2, d3;
+        switch (state) {
+          case 'top':
+            proj = this.projections[state];
+            this.setSide('w', proj.points[1].x - proj.points[0].x);
+            this.setSide('d2', proj.points[3].y - proj.points[0].y);
+            break;
+          case 'bottom':
+            proj = this.projections[state];
+            this.setSide('w', proj.points[1].x - proj.points[0].x);
+            this.setSide('d1', proj.points[3].y - proj.points[0].y);
+            break;
+          case 'up':
+            proj = this.projections[state];
+            d = proj.points[3].y - proj.points[0].y;
+            d1 = this.getSide('d1');
+            d2 = this.getSide('d2');
+            d3 = d2 - d1;
+            h = Math.sqrt(d * d - d3 * d3);
+            this.setSide('w', proj.points[1].x - proj.points[0].x);
+            this.setSide('d', d);
+            this.setSide('h', h);
+            break;
+          case 'down':
+            proj = this.projections[state];
+            h = proj.points[3].y - proj.points[0].y;
+            d1 = this.getSide('d1');
+            d2 = this.getSide('d2');
+            d3 = d2 - d1;
+            d = Math.sqrt(h * h + d3 * d3);
+            this.setSide('w', proj.points[1].x - proj.points[0].x);
+            this.setSide('d', d);
+            this.setSide('h', h);
+            break;
+          case 'left':
+            proj = this.projections[state];
+            h = proj.points[2].x - proj.points[3].x;
+            d2 = proj.points[3].y - proj.points[0].y;
+            d1 = proj.points[2].y - proj.points[1].y;
+            d3 = d2 - d1;
+            this.setSide('h', h);
+            this.setSide('d', Math.sqrt(h*h + d3*d3));
+            this.setSide('d1', d1);
+            this.setSide('d2', d2);
+            break;
+          case 'right':
+            proj = this.projections[state];
+            h = proj.points[2].x - proj.points[3].x;
+            d1 = proj.points[3].y - proj.points[0].y;
+            d2 = proj.points[2].y - proj.points[1].y;
+            d3 = d2 - d1;
+            this.setSide('h', h);
+            this.setSide('d', Math.sqrt(h*h + d3*d3));
+            this.setSide('d1', d1);
+            this.setSide('d2', d2);
+            break;
+          case 'all':
+            return false;
+          default:
+            return console.log('ERROR ' + state + ' is not a valid state');
+        }
+      }
+    }
+
     class Texte {
       constructor(obj){
-
+        var myVar; // @todo a sup
         if (typeof obj === 'string' || myVar instanceof obj) {
           var str = obj;
           obj = {};
@@ -2325,8 +2330,9 @@ angular.module('pedaleswitchApp')
           family: obj.font.family || 'sans-serif',
 
           textAlign: 'center',
-          baseline: 'middle', // top" || "hanging" || "middle" || "alphabetic" || "ideographic" || "bottom",
+          baseline: 'middle', // top' || 'hanging' || 'middle' || 'alphabetic' || 'ideographic' || 'bottom',
 
+          sizeAbs: obj.font.sizeAbs || 50,
           color: obj.font.color || 'black',
           type: obj.type || 'fillText', // fillText, strokeText
           isVertical: obj.vertical || false // ecrire vertical ou horizontal
@@ -2347,11 +2353,11 @@ angular.module('pedaleswitchApp')
       }
 
       fontSettings(){
-        return this.font.style + ' '
-          + this.font.variant + ' '
-          + this.font.weight + ' '
-          + this.font.size + 'px' + ' '
-          + this.font.family;
+        return this.font.style + ' ' +
+               this.font.variant + ' ' +
+               this.font.weight + ' ' +
+               this.font.size + 'px' + ' ' +
+               this.font.family;
       }
 
       getSizeTxt(){
@@ -2459,7 +2465,7 @@ angular.module('pedaleswitchApp')
         return {
           x: xg,
           y: yg
-        }
+        };
       }
       getCenterX(){
         return this.getCenter().x;
@@ -2595,16 +2601,17 @@ angular.module('pedaleswitchApp')
         switch(this.type) {
           case 'fillText':
           default:
+            var i, l, center;
             if (this.isVertical) {
               ctx.translate(this.points[0].x, this.points[0].y);
               ctx.rotate(-this.angle * (2*Math.PI)/360.0);
               ctx.translate(this.sizeTxt.w/2, this.font.size/2);
-              for (var i=0, l = this.input.length ; i < l ; i++) {
+              for (i=0, l = this.input.length ; i < l ; i++) {
                 ctx.fillText(this.input[i], 0, (i * this.font.size));
               }
             }
             else {
-              var center = this.getCenter();
+              center = this.getCenter();
               ctx.translate(center.x, center.y);
               ctx.rotate(-this.angle * (2*Math.PI)/360.0);
               ctx.fillText(this.input, 0, 0);
@@ -2615,12 +2622,12 @@ angular.module('pedaleswitchApp')
               ctx.translate(this.points[0].x, this.points[0].y);
               ctx.rotate(-this.angle * (2*Math.PI)/360.0);
               ctx.translate(this.sizeTxt.w/2, this.font.size/2);
-              for (var i=0, l = this.input.length ; i < l ; i++) {
+              for (i=0, l = this.input.length ; i < l ; i++) {
                 ctx.strokeText(this.input[i], 0, (i * this.font.size));
               }
             }
             else {
-              var center = this.getCenter();
+              center = this.getCenter();
               ctx.translate(center.x, center.y);
               ctx.rotate(-this.angle * (2*Math.PI)/360.0);
               ctx.strokeText(this.input, 0, 0);
@@ -2648,7 +2655,7 @@ angular.module('pedaleswitchApp')
     class Arrow {
       constructor(entity, location) {
 
-        this.loc = location || 'argument "location" missing';
+        this.loc = location || 'argument (location) missing';
         this.entity = entity;
         this.margin = 30;
         this.isSelected = false;
@@ -2664,7 +2671,7 @@ angular.module('pedaleswitchApp')
               var posExtreme = this.entity.findExtreme();
               var newVal = canvasConversion.convertToPixel(value);
               this.entity.points[2].translate({x:0, y: newVal - posExtreme.size.h});
-              this.entity.points[3].translate({x:0, y: newVal - posExtreme.size.h})
+              this.entity.points[3].translate({x:0, y: newVal - posExtreme.size.h});
             };
             break;
           case 'bottom':
@@ -2672,7 +2679,7 @@ angular.module('pedaleswitchApp')
               var posExtreme = this.entity.findExtreme();
               var newVal = canvasConversion.convertToPixel(value);
               this.entity.points[1].translate({x:newVal - posExtreme.size.w, y: 0});
-              this.entity.points[2].translate({x:newVal - posExtreme.size.w, y: 0})
+              this.entity.points[2].translate({x:newVal - posExtreme.size.w, y: 0});
             };
             break;
           default:
@@ -2683,32 +2690,32 @@ angular.module('pedaleswitchApp')
       setPos(loc){
         switch(loc) {
           case 'right':
-            this.pos_start = new Point({
+            this.posStart = new Point({
               x: this.entity.points[1].x + this.margin,
               y: this.entity.points[1].y
             });
-            this.pos_end = new Point({
+            this.posEnd = new Point({
               x: this.entity.points[2].x + this.margin,
               y: this.entity.points[2].y
             });
-            this.pos_box = new Point ({
-              x: this.pos_start.x + 10,
-              y: this.pos_start.y + (this.pos_end.y - this.pos_start.y)/2
+            this.posBox = new Point ({
+              x: this.posStart.x + 10,
+              y: this.posStart.y + (this.posEnd.y - this.posStart.y)/2
             });
             this.value = canvasConversion.convertToMm(this.entity.points[2].y - this.entity.points[1].y);
             break;
           case 'bottom':
-            this.pos_start = new Point({
+            this.posStart = new Point({
               x: this.entity.points[3].x,
               y: this.entity.points[3].y + this.margin
             });
-            this.pos_end = new Point({
+            this.posEnd = new Point({
               x: this.entity.points[2].x,
               y: this.entity.points[2].y + this.margin
             });
-            this.pos_box = new Point({
-              x: this.pos_start.x + (this.pos_end.x - this.pos_start.x)/2,
-              y: this.pos_start.y + 20
+            this.posBox = new Point({
+              x: this.posStart.x + (this.posEnd.x - this.posStart.x)/2,
+              y: this.posStart.y + 20
             });
             this.value = canvasConversion.convertToMm(this.entity.points[2].x - this.entity.points[3].x);
             break;
@@ -2722,16 +2729,16 @@ angular.module('pedaleswitchApp')
           case 'right':
             this.drawTriangle = function(ctx){
               ctx.save();
-              ctx.fillStyle="gray";
+              ctx.fillStyle='gray';
               ctx.beginPath();
-              ctx.moveTo(this.pos_start.x, this.pos_start.y);
-              ctx.lineTo(this.pos_start.x - 5, this.pos_start.y + 10);
-              ctx.lineTo(this.pos_start.x + 5, this.pos_start.y + 10);
+              ctx.moveTo(this.posStart.x, this.posStart.y);
+              ctx.lineTo(this.posStart.x - 5, this.posStart.y + 10);
+              ctx.lineTo(this.posStart.x + 5, this.posStart.y + 10);
               ctx.closePath();
               ctx.fill();
-              ctx.moveTo(this.pos_end.x, this.pos_end.y);
-              ctx.lineTo(this.pos_end.x - 5, this.pos_end.y - 10);
-              ctx.lineTo(this.pos_end.x + 5, this.pos_end.y - 10);
+              ctx.moveTo(this.posEnd.x, this.posEnd.y);
+              ctx.lineTo(this.posEnd.x - 5, this.posEnd.y - 10);
+              ctx.lineTo(this.posEnd.x + 5, this.posEnd.y - 10);
               ctx.closePath();
               ctx.fill();
               ctx.restore();
@@ -2739,14 +2746,14 @@ angular.module('pedaleswitchApp')
 
             this.drawText = function(ctx){
               ctx.save();
-              ctx.font = "14px sans-serif";
-              ctx.fillText(this.value + ' mm', this.pos_box.x, this.pos_box.y);
+              ctx.font = '14px sans-serif';
+              ctx.fillText(this.value + ' mm', this.posBox.x, this.posBox.y);
               ctx.restore();
             };
 
             this.drawCanvas = function(ctx){
               ctx.beginPath();
-              ctx.fillRect(this.pos_start.x, this.pos_start.y + 5, 1, this.pos_end.y - this.pos_start.y - 5);
+              ctx.fillRect(this.posStart.x, this.posStart.y + 5, 1, this.posEnd.y - this.posStart.y - 5);
               ctx.closePath();
               this.drawTriangle(ctx);
               //this.drawText(ctx);
@@ -2755,16 +2762,16 @@ angular.module('pedaleswitchApp')
           case 'bottom':
             this.drawTriangle = function (ctx){
               ctx.save();
-              ctx.fillStyle="gray";
+              ctx.fillStyle='gray';
               ctx.beginPath();
-              ctx.moveTo(this.pos_start.x, this.pos_start.y);
-              ctx.lineTo(this.pos_start.x + 10, this.pos_start.y - 5);
-              ctx.lineTo(this.pos_start.x + 10, this.pos_start.y + 5);
+              ctx.moveTo(this.posStart.x, this.posStart.y);
+              ctx.lineTo(this.posStart.x + 10, this.posStart.y - 5);
+              ctx.lineTo(this.posStart.x + 10, this.posStart.y + 5);
               ctx.closePath();
               ctx.fill();
-              ctx.moveTo(this.pos_end.x, this.pos_end.y);
-              ctx.lineTo(this.pos_end.x - 10, this.pos_end.y - 5);
-              ctx.lineTo(this.pos_end.x - 10, this.pos_end.y + 5);
+              ctx.moveTo(this.posEnd.x, this.posEnd.y);
+              ctx.lineTo(this.posEnd.x - 10, this.posEnd.y - 5);
+              ctx.lineTo(this.posEnd.x - 10, this.posEnd.y + 5);
               ctx.closePath();
               ctx.fill();
               ctx.restore();
@@ -2772,14 +2779,14 @@ angular.module('pedaleswitchApp')
 
             this.drawText = function(ctx){
               ctx.save();
-              ctx.font = "14px sans-serif";
-              ctx.fillText(this.value + ' mm', this.pos_box.x, this.pos_box.y);
+              ctx.font = '14px sans-serif';
+              ctx.fillText(this.value + ' mm', this.posBox.x, this.posBox.y);
               ctx.restore();
             };
 
             this.drawCanvas = function(ctx){
               ctx.beginPath();
-              ctx.fillRect(this.pos_start.x + 5, this.pos_start.y, this.pos_end.x - this.pos_start.x - 5, 1);
+              ctx.fillRect(this.posStart.x + 5, this.posStart.y, this.posEnd.x - this.posStart.x - 5, 1);
               ctx.closePath();
               this.drawTriangle(ctx);
               //this.drawText(ctx);
@@ -2811,7 +2818,7 @@ angular.module('pedaleswitchApp')
               var posExtreme = this.entity.findExtreme();
               var newVal = canvasConversion.convertToPixel(value);
               this.entity.points[1].translate({x:newVal - posExtreme.size.w, y: 0});
-              this.entity.points[2].translate({x:newVal - posExtreme.size.w, y: 0})
+              this.entity.points[2].translate({x:newVal - posExtreme.size.w, y: 0});
             };
             break;
           default:
@@ -2850,9 +2857,9 @@ angular.module('pedaleswitchApp')
         return new Texte(obj, ctx);
       },
 
-      newPoly: function (entity) {
-        return new Poly(entity);
-      }
+      // newPoly: function (entity) {
+      //   return new Poly(entity);
+      // }
       
     };
 

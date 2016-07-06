@@ -20,7 +20,7 @@ angular.module('pedaleswitchApp')
 
         for (indexCounter = 0; indexCounter < outer; indexCounter++) {
           comparitor = items[indexCounter];
-          if (!(item._id == comparitor._id && item.key == comparitor.key)) {
+          if (!(item._id === comparitor._id && item.key === comparitor.key)) {
             comparitor.setOverlapping(false);
             if (intersect.polyInPoly(item, comparitor) === true) {
               item.setOverlapping(true);
@@ -44,7 +44,7 @@ angular.module('pedaleswitchApp')
 
         for (indexCounter = 0; indexCounter < outer; indexCounter++) {
           comparitor = items[indexCounter];
-          if (!(item._id == comparitor._id && item.key == comparitor.key)) {
+          if (!(item._id === comparitor._id && item.key === comparitor.key)) {
             comparitor.setOverlapping(false);
             if (intersect.check(item, comparitor) === true) {
               item.setOverlapping(true);
@@ -196,11 +196,11 @@ angular.module('pedaleswitchApp')
         var indexCounter,
           outer = items.length,
           comparitor;
-        var tab = {x: [], y: []}, k;
+        var tab = {x: [], y: []};
 
         for (indexCounter = 0; indexCounter < outer; indexCounter++) {
           comparitor = items[indexCounter];
-          if (!(item._id == comparitor._id && item.key == comparitor.key)) {
+          if (!(item._id === comparitor._id && item.key === comparitor.key)) {
 
             tab.y = tab.y.concat(intersect.pointInVertligne(item, comparitor, 10));
             tab.x = tab.x.concat(intersect.pointInHoriligne(item, comparitor, 10));

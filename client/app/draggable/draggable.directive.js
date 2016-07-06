@@ -28,11 +28,11 @@ angular.module('pedaleswitchApp')
             canvasimg.height = size.h;
 
             var  ctximg = canvasimg.getContext('2d'),
-              img = document.createElement("img");
+              img = document.createElement('img');
             
             ctximg.beginPath();
             ctximg.lineWidth = 5;
-            ctximg.strokeStyle = "red";
+            ctximg.strokeStyle = 'red';
             ctximg.moveTo(sc.effet.points[0].x, sc.effet.points[0].y);
             for (var i = 0, length = sc.effet.points.length ; i < length; i++) {
               ctximg.lineTo(sc.effet.points[i].x, sc.effet.points[i].y);
@@ -40,7 +40,7 @@ angular.module('pedaleswitchApp')
             ctximg.closePath();
             ctximg.stroke();
 
-            img.src = canvasimg.toDataURL("image/gif");
+            img.src = canvasimg.toDataURL('image/gif');
             e.dataTransfer.setDragImage(img, canvasimg.width/2, canvasimg.height/2);
 
             e.dataTransfer.effectAllowed = 'move';
@@ -60,5 +60,5 @@ angular.module('pedaleswitchApp')
           false
         );
       }
-    }
+    };
   });

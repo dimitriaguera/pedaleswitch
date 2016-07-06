@@ -293,10 +293,10 @@ angular.module('pedaleswitchApp')
 
         mousePos = {x: e.layerX, y: e.layerY};
 
-        var test_proj = false;
-        //var pos_max = canvasControl.findGlobalRect();
+        var testProj = false;
+        //var posMax = canvasControl.findGlobalRect();
         var masterBoite = canvasControl.getMasterBoite();
-        var pos_max = boite.findAllExtreme();
+        var posMax = boite.findAllExtreme();
 
         var marginBoite = canvasControl.getBoite().margin;
 
@@ -317,14 +317,14 @@ angular.module('pedaleswitchApp')
               }
 
               // Regarde si pas inferieur a un composant ou a effet.
-              if (mousePos.y > pos_max.t - marginBoite) {
-                mousePos.y = pos_max.t - marginBoite;
+              if (mousePos.y > posMax.t - marginBoite) {
+                mousePos.y = posMax.t - marginBoite;
               }
 
               // Regarde sur les autres projections si pas inférieur a un composant ou un effet.
-              test_proj = masterBoite.projectionsCollisionY(canvasSetting.viewState, mousePos, 0);
-              if(test_proj) {
-                mousePos.y = boite.points[3].y - test_proj;
+              testProj = masterBoite.projectionsCollisionY(canvasSetting.viewState, mousePos, 0);
+              if(testProj) {
+                mousePos.y = boite.points[3].y - testProj;
               }
 
               // Redimensionne la boite.
@@ -347,14 +347,14 @@ angular.module('pedaleswitchApp')
               }
 
               // Regarde si pas inferieur a un composant ou a effet.
-              if (mousePos.y > pos_max.t - marginBoite) {
-                mousePos.y = pos_max.t - marginBoite;
+              if (mousePos.y > posMax.t - marginBoite) {
+                mousePos.y = posMax.t - marginBoite;
               }
 
               // Regarde sur les autres projections si pas inférieur a un composant ou un effet.
-              test_proj = masterBoite.projectionsCollisionY(canvasSetting.viewState, mousePos, 1);
-              if(test_proj) {
-                mousePos.y = boite.points[2].y - test_proj;
+              testProj = masterBoite.projectionsCollisionY(canvasSetting.viewState, mousePos, 1);
+              if(testProj) {
+                mousePos.y = boite.points[2].y - testProj;
               }
 
               // Redimensionne la boite.
@@ -391,9 +391,9 @@ angular.module('pedaleswitchApp')
 
         mousePos = {x: e.layerX, y: e.layerY};
 
-        var test_proj = false;
-        //var pos_max = canvasControl.findGlobalRect();
-        var pos_max = boite.findAllExtreme();
+        var testProj = false;
+        //var posMax = canvasControl.findGlobalRect();
+        var posMax = boite.findAllExtreme();
         var masterBoite = canvasControl.getMasterBoite();
 
         var marginBoite = canvasControl.getBoite().margin;
@@ -412,8 +412,8 @@ angular.module('pedaleswitchApp')
             }
 
             // Regarde si pas inferieur a un composant ou a effet.
-            if (mousePos.y < pos_max.b + marginBoite) {
-              mousePos.y = pos_max.b + marginBoite;
+            if (mousePos.y < posMax.b + marginBoite) {
+              mousePos.y = posMax.b + marginBoite;
             }
 
             // Regarde si pas inferieur à une taille minimale.
@@ -432,13 +432,13 @@ angular.module('pedaleswitchApp')
             }
 
             // Regarde sur les autres projections si pas inférieur a un composant ou un effet.
-            test_proj = masterBoite.projectionsCollisionY(canvasSetting.viewState, mousePos, 3);
-            if(test_proj) {
+            testProj = masterBoite.projectionsCollisionY(canvasSetting.viewState, mousePos, 3);
+            if(testProj) {
               if (canvasSetting.viewState === 'right') {
-                mousePos.y = boite.points[1].y + test_proj;
+                mousePos.y = boite.points[1].y + testProj;
               }
               else {
-                mousePos.y = boite.points[0].y + test_proj;
+                mousePos.y = boite.points[0].y + testProj;
               }
             }
 
@@ -454,14 +454,14 @@ angular.module('pedaleswitchApp')
             }
 
             // Regarde si pas inferieur a un composant ou a effet.
-            if (mousePos.y > pos_max.t - marginBoite) {
-              mousePos.y = pos_max.t - marginBoite;
+            if (mousePos.y > posMax.t - marginBoite) {
+              mousePos.y = posMax.t - marginBoite;
             }
 
             // Regarde sur les autres projections si pas inférieur a un composant ou un effet.
-            test_proj = masterBoite.projectionsCollisionY(canvasSetting.viewState, mousePos, 0);
-            if(test_proj) {
-              mousePos.y = boite.points[3].y - test_proj;
+            testProj = masterBoite.projectionsCollisionY(canvasSetting.viewState, mousePos, 0);
+            if(testProj) {
+              mousePos.y = boite.points[3].y - testProj;
               //mousePos.x = boite.points[1].x;
             }
 
@@ -476,14 +476,14 @@ angular.module('pedaleswitchApp')
           if (drag.pointer.pos === 'right') {
 
             // Regarde si pas inferieur a un composant ou a effet.
-            if (mousePos.x < pos_max.r + marginBoite) {
-              mousePos.x = pos_max.r + marginBoite;
+            if (mousePos.x < posMax.r + marginBoite) {
+              mousePos.x = posMax.r + marginBoite;
             }
 
             // Regarde sur les autres projections si pas inférieur a un composant ou un effet.
-            test_proj = masterBoite.projectionsCollisionX(canvasSetting.viewState, mousePos, 1);
-            if(test_proj) {
-              mousePos.x = boite.points[0].x + test_proj;
+            testProj = masterBoite.projectionsCollisionX(canvasSetting.viewState, mousePos, 1);
+            if(testProj) {
+              mousePos.x = boite.points[0].x + testProj;
               //mousePos.x = boite.points[1].x;
             }
 
@@ -506,14 +506,14 @@ angular.module('pedaleswitchApp')
             }
 
             // Regarde si pas inferieur a un composant ou a effet.
-            if (mousePos.x > pos_max.l - marginBoite) {
-              mousePos.x = pos_max.l - marginBoite;
+            if (mousePos.x > posMax.l - marginBoite) {
+              mousePos.x = posMax.l - marginBoite;
             }
 
             // Regarde sur les autres projections si pas inférieur a un composant ou un effet.
-            test_proj = masterBoite.projectionsCollisionX(canvasSetting.viewState, mousePos, 0);
-            if(test_proj) {
-              mousePos.x = boite.points[1].x - test_proj;
+            testProj = masterBoite.projectionsCollisionX(canvasSetting.viewState, mousePos, 0);
+            if(testProj) {
+              mousePos.x = boite.points[1].x - testProj;
               //mousePos.x = boite.points[0].x;
             }
 

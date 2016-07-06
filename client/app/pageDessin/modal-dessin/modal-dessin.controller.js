@@ -26,7 +26,7 @@
             return self.selected;
           }
         },
-        size: size,
+        size: size
       });
       this.modalInstance.result.then(function (selected) {
         self.action({compo:self.data, value:selected});

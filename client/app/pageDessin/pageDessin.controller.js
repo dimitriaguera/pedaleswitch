@@ -174,7 +174,7 @@ class PageDessinComponent {
   // Appeler par panier dessin et quand on droppable directive
   addToTable(effet){
     // Ajouter l'effet au canvas si pas deja.
-    if (!effet.in_canvas) {this.canvasControl.addToCanvas(effet);}
+    if (!effet.inCanvas) {this.canvasControl.addToCanvas(effet);}
     // Initialise le boite dans l'instance de dessin.
     this.instanceDessin.setBoite(this.canvasControl.getMasterBoite());
     // Dessine.

@@ -16,10 +16,10 @@ angular.module('pedaleswitchApp')
 
 
         // Fait un tableau de tout les composants de l'option selectionne.
-        var arr_l = option.composants.length,
+        var arrL = option.composants.length,
             i;
         var newcompo = [];
-        for (i = 0; i < arr_l; ++i) {
+        for (i = 0; i < arrL; ++i) {
           newcompo = newcompo.concat(option.composants[i]['available_compo_id']);
         }
         

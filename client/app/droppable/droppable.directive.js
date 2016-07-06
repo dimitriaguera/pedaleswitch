@@ -56,7 +56,7 @@ angular.module('pedaleswitchApp')
             // Puis va chercher l'effet correspondant dans le modèle dessin.
             var effet = instanceDessin.searchEffetInDessin(obj._id, obj.key);
 
-            if(effet && !effet.in_canvas) {
+            if(effet && !effet.inCanvas) {
 
               var  mousePos = {x: e.layerX, y: e.layerY};
 

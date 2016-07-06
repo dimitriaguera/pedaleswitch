@@ -32,12 +32,9 @@ angular.module('pedaleswitchApp')
             switch (comparitor.shapeObject){
               case 'Rect':
                 return this.rectInRect(shape, comparitor);
-                break;
               case 'Cercle':
                 return this.rectInCircle(shape, comparitor);
-                break;
               case 'Poly':
-                break;
                 return this.polyInPoly(shape, comparitor);
               default:
                 console.log(comparitor.shapeObject + "---> Forme de l'element qui compare (comparitor) inconnue dans intersect");
@@ -47,13 +44,10 @@ angular.module('pedaleswitchApp')
             switch (comparitor.shapeObject){
               case 'Rect':
                 return this.circleInRect(shape, comparitor);
-                break;
               case 'Cercle':
                 return this.circleInCircle(shape, comparitor);
-                break;
               case 'Poly':
                 return this.circleInPoly(shape, comparitor);
-                break;
               default:
                 console.log(comparitor.shapeObject + "---> Forme de l'element qui compare (comparitor) inconnue dans intersect");
             }
@@ -62,13 +56,10 @@ angular.module('pedaleswitchApp')
             switch (comparitor.shapeObject){
               case 'Rect':
                 return this.polyInPoly(shape, comparitor);
-                break;
               case 'Cercle':
                 return this.polyInCircle(shape, comparitor);
-                break;
               case 'Poly':
                 return this.polyInPoly(shape, comparitor);
-                break;
               default:
                 console.log(comparitor.shapeObject + "---> Forme de l'element qui compare (comparitor) inconnue dans intersect");
             }
@@ -90,7 +81,7 @@ angular.module('pedaleswitchApp')
 
         result = this.betweenStrict(min, p, max);
         
-        if (p == min || p == max) {
+        if (p === min || p === max) {
           result = true;
         }
 
@@ -275,7 +266,7 @@ angular.module('pedaleswitchApp')
       
       /**
        * Tests if a point is Left|On|Right of an infinite line.
-       * See: Algorithm 1 "Area of Triangles and Polygons"
+       * See: Algorithm 1 'Area of Triangles and Polygons'
        *
        * @param P0 {x: , y:} point 0 defining the infinite line
        * @param P1 {x: , y:} point 1 defining the infinite line

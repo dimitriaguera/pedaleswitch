@@ -9,14 +9,15 @@ angular.module('pedaleswitchApp')
       boite: {}
     };
 
+    /*
     var polyTest = {
       _id: '11111',
       key: '555',
       shapeObject: 'Poly',
       titre: 'test poly',
-      titre_parent_effet: null,
-      titre_parent_option: null,
-      points_default: [
+      titreParentEffet: null,
+      titreParentOption: null,
+      pointsDefault: [
         {
           x: 50,         
           y: 50
@@ -56,7 +57,7 @@ angular.module('pedaleswitchApp')
         x: null,
         y: null
       },
-      pos_default: {
+      posDefault: {
         x: null,
         y: null
       },
@@ -65,16 +66,16 @@ angular.module('pedaleswitchApp')
         h: null,
         d: null
       },
-      old_size: {
+      oldSize: {
         w: null,
         h: null,
         d: null
       },
-      item_info: {
+      itemInfo: {
         shape: 'Rect'
       }
     };
-
+     */
     /**
      * Retour les coordonnées des quatres sommet de la forme.
      * @param size
@@ -160,43 +161,43 @@ angular.module('pedaleswitchApp')
 
         var stdPos = 0;
 
-        var nouv_effet = {
+        var nouvEffet = {
           _id: option._id,
           key: key,
-          item_info : {shape: null},
-          in_canvas: effet.in_canvas || false,
+          itemInfo : {shape: null},
+          inCanvas: effet.inCanvas || false,
           titre: effet.titre,
-          titre_option: option.titre,
+          titreOption: option.titre,
           description: effet.description,
-          description_option: option.description,
+          descriptionOption: option.description,
           prix: option.prix,
           points: {},
           composants: []
         };
-        nouv_effet.points = getPoints(option.size, {x: stdPos + option.size.w/2, y: stdPos + option.size.h/2});
+        nouvEffet.points = getPoints(option.size, {x: stdPos + option.size.w/2, y: stdPos + option.size.h/2});
         for(var i=0; i<option.composants.length; i++){
           var compo = {
             _id: option.composants[i]._id,
             key: key,
             titre: option.composants[i].titre,
-            titre_parent_effet: effet.titre,
-            titre_parent_option: option.titre,
-            points_default: getPoints(composantItems[option.composants[i].available_compo_id[0]].size, option.composants[i].pos),
+            titreParentEffet: effet.titre,
+            titreParentOption: option.titre,
+            pointsDefault: getPoints(composantItems[option.composants[i].available_compo_id[0]].size, option.composants[i].pos),
             points: getPoints(composantItems[option.composants[i].available_compo_id[0]].size, option.composants[i].pos),
-            item_info: {
-              id_item: composantItems[option.composants[i].available_compo_id[0]]._id,
+            itemInfo: {
+              idItem: composantItems[option.composants[i].available_compo_id[0]]._id,
               items: option.composants[i].available_compo_id,
               shape: composantItems[option.composants[i].available_compo_id[0]].shape,
-              titre_item: composantItems[option.composants[i].available_compo_id[0]].titre,
-              prix_add: composantItems[option.composants[i].available_compo_id[0]].prix_additionnel
+              titreItem: composantItems[option.composants[i].available_compo_id[0]].titre,
+              prixAdd: composantItems[option.composants[i].available_compo_id[0]].prix_additionnel
             }
           };
-          nouv_effet.composants.push(compo);
+          nouvEffet.composants.push(compo);
         }
-        //nouv_effet.composants.push(polyTest);
-        canvasConversion.convertEffetSize(nouv_effet);
-        canvasConversion.initializeEffetZoom(nouv_effet);
-        dessin.options.push(nouv_effet);
+        //nouvEffet.composants.push(polyTest);
+        canvasConversion.convertEffetSize(nouvEffet);
+        canvasConversion.initializeEffetZoom(nouvEffet);
+        dessin.options.push(nouvEffet);
       },
       
       //@todo a garder ?
@@ -210,7 +211,7 @@ angular.module('pedaleswitchApp')
       zoomChange: function(value){
         var okZoom = canvasConversion.setZoom(value);
         if (okZoom) {
-          if (dessin.boite.fonction === "MasterBoite") {
+          if (dessin.boite.fonction === 'MasterBoite') {
             canvasConversion.convertEffetZoom(dessin.boite);
           }
           for (var i = 0; i < dessin.options.length; i++) {
@@ -222,9 +223,9 @@ angular.module('pedaleswitchApp')
 
       //updateComposant: function(idOption, idCompo, idItem) {
       //  var data = {
-      //    titre_item: composantItems[idItem].titre,
+      //    titreItem: composantItems[idItem].titre,
       //    size: composantItems[idItem].size,
-      //    prix_add: composantItems[idItem].prix_additionnel
+      //    prixAdd: composantItems[idItem].prixAdditionnel
       //  };
       //  for(var i=0; i<dessin.options.length; i++){
       //    if(dessin.options[i]._id === idOption){
@@ -240,13 +241,13 @@ angular.module('pedaleswitchApp')
 
       updateComposant: function(compo, value) {
         var data = {
-            titre_item: composantItems[value].titre,
-            id_item: composantItems[value]._id,
+            titreItem: composantItems[value].titre,
+            idItem: composantItems[value]._id,
             size: composantItems[value].size,
-            prix_add: composantItems[value].prix_additionnel,
+            prixAdd: composantItems[value].prix_additionnel,
             shape: composantItems[value].shape
         };
-        compo = _.merge(compo.item_info, data);
+        compo = _.merge(compo.itemInfo, data);
       }
 
 

@@ -29,7 +29,7 @@ var CacheSchema = new mongoose.Schema({
   description: String,
   type: String,
   disponible: Boolean,
-  options: [CacheOptionSchema],
+  options: [CacheOptionSchema]
 });
 
 export default mongoose.model('Cache', CacheSchema);
