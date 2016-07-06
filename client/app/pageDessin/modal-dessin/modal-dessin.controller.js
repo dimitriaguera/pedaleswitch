@@ -8,7 +8,7 @@
 
     open(size) {
       var self = this;
-      this.modalInstance = this.modalServ.open({
+      self.modalInstance = self.modalServ.open({
         animation: true,
         templateUrl: function() {
           return 'app/pageDessin/modal-dessin/' + self.template + '.html' || 'app/pageDessin/modal-dessin/modalBox.html';
@@ -28,7 +28,7 @@
         },
         size: size
       });
-      this.modalInstance.result.then(function (selected) {
+      self.modalInstance.result.then(function (selected) {
         self.action({compo:self.data, value:selected});
       });
     }

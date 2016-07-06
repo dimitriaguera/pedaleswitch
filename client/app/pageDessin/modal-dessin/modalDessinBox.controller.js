@@ -7,15 +7,15 @@
       this.data = data;
       this.items = items;
       this.selected = selected;
-  };
+    }
 
     ok() {
       this.$uibModalInstance.close(this.selected);
-    };
+    }
 
     cancel() {
       this.$uibModalInstance.dismiss('cancel');
-    };
+    }
   }
 
   angular.module('pedaleswitchApp')
