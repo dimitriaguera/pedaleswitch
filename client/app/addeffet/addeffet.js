@@ -13,7 +13,7 @@ angular.module('pedaleswitchApp')
         params: {
           entity: null,
           types: null,
-          nouv: null,
-        },
+          nouv: null
+        }
       });
   });
