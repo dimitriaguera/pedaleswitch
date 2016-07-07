@@ -68,11 +68,13 @@ angular.module('pedaleswitchApp')
         this.fonction = entity.fonction || 'effet';
         this.angle = entity.angle || 0;
         this.size = {};
+        this.posBox = {};
         
         this.points = entity.points;
         this.pointsDefault = entity.pointsDefault || null;
         this.initPoints(entity.points, this.points);
         this.initPoints(entity.pointsDefault, this.pointsDefault);
+        this.posBox = this.points[0];
       }
       initPoints(points, tab){
         if (points) {
@@ -2368,6 +2370,7 @@ angular.module('pedaleswitchApp')
         this.sizeTxt = obj.sizeTxt || this.getSizeTxt();
         this.size = obj.size || {};
         this.points = obj.points || this.createPoints();
+        this.posBox = this.points[0];
       }
 
       fontSettings(){
