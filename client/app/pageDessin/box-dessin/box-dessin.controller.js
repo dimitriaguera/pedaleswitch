@@ -10,12 +10,8 @@
         templateUrl: 'app/pageDessin/box-dessin/box-dessin.html',
         bindToController: {
           data: '=',
-          datachange: '&',
+          actions: '=',
           items: '<',
-          boxAction: '&',
-          rotate: '&',
-          eyedropper: '&',
-          //changeFontSize: '&'
         },
         controller: function ($scope) {
 
@@ -28,20 +24,32 @@
           };
 
           this.$onInit = function () {
+
             // Si l'objet n'est pas un arrow, on ajoute une posBox, et on ajoute un template pour la popover.
             if (this.data.constructor.name !== 'Arrow' && this.data.constructor.name !== 'ArrowPoint') {
 
-              var posExt = this.data.findExtreme();
-              var C = this.data.getCenter();
-
-              // On calcule le point de référence du masque carré.
-              this.data.posBox = {
-                x: C.x - posExt.size.w / 2,
-                y: C.y - posExt.size.h / 2
-              };
+              this.data.posBox = this.data.getBoxPos();
 
               this.zIndex = '-2';
-              this.popUpUrl = 'app/pageDessin/box-dessin/option-box-popover.html';
+
+              // on cherche le bon template.
+              switch(this.data.fonction){
+                case 'effet':
+                  this.popUpUrl = 'app/pageDessin/box-dessin/option-box-popover-effet.html';
+                  break;
+                case 'composant':
+                  this.popUpUrl = 'app/pageDessin/box-dessin/option-box-popover-composant.html';
+                  break;
+                case 'texte':
+                  this.popUpUrl = 'app/pageDessin/box-dessin/option-box-popover-texte.html';
+                  break;
+                case 'image':
+                  this.popUpUrl = 'app/pageDessin/box-dessin/option-box-popover-image.html';
+                  break;
+                case 'forme':
+                  this.popUpUrl = 'app/pageDessin/box-dessin/option-box-popover-forme.html';
+                  break;
+              }
             }
             // Si l'objet est un Arrow, on remonte le z-index.
             else {
@@ -70,7 +78,7 @@
             }
             this.change = false;
             this.value = this.storeValue = null;
-            this.boxAction();
+            this.actions.arrowChangeValue();
           };
 
         },

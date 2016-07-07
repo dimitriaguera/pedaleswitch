@@ -28,8 +28,10 @@
         },
         size: size
       });
-      self.modalInstance.result.then(function (selected) {
-        self.action({compo:self.data, value:selected});
+
+      this.modalInstance.result.then(function (selected) {
+        self.actions.updateComposant(self.data, selected);
+
       });
     }
 
@@ -45,7 +47,7 @@
         template: '@',
         name: '@',
         classBtn: '@',
-        action: '&'
+        actions: '='
       },
       controller: ModalDessin
     });

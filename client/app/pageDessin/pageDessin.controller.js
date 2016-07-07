@@ -4,12 +4,13 @@
 class PageDessinComponent {
 
   constructor(instanceDessin, canvasConversion, canvasControl, canvasDraw, storage, $http, mouseHelper) {
+
+
     this.instanceDessin = instanceDessin;
     this.canvasControl = canvasControl;
     this.canvasConversion = canvasConversion;
     this.canvasDraw = canvasDraw;
     this.storage = storage;
-
     
     //@todo a sup verifier le oninit.
     this.mouseHelper = mouseHelper;
@@ -28,6 +29,31 @@ class PageDessinComponent {
     });
     
     this.initialisation();
+  }
+
+
+  // Object passé aux componants box-dessin.
+  // Permet de binder des fonctions.
+  funcMenuPopOver = {
+    self: this,
+    rotate: function(value, data){
+      this.self.rotate(value, data);
+    },
+    eyeDropper: function(){
+      this.self.mouseHelper.eyedropper();
+    },
+    updateComposant: function(compo, value){
+      this.self.updateComposant(compo, value);
+    },
+    dataChange: function(value, data){
+      this.self.dataChange(value, data);
+    },
+    changeFontSize: function(){
+
+    },
+    arrowChangeValue: function(){
+      this.self.arrowChangeValue();
+    }
   }
   
   initialisation() {
@@ -246,6 +272,7 @@ class PageDessinComponent {
     this.canvasControl.resizeCanvas();
     this.canvasDraw.drawStuff();
   }
+
 
   // @todo : implémenter quand on tourne
   // pret bord canvas. Les composants se deplace.

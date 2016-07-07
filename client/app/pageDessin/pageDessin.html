@@ -59,15 +59,11 @@
         <div class="col-xs-3">
 
           <table-dessin
-            items="$ctrl.items"
             datachange="$ctrl.dataChange(value, data)"
             table-data="$ctrl.tableArrow" 
             table-menu="$ctrl.activeItem"
-            update-composant="$ctrl.updateComposant(compo, value)"
-            rotate="$ctrl.rotate(value, data)"
-            eyedropper="$ctrl.eyedropper()"
-            change-font-size="changeFontSize({value:value, data:data})"
-            arrow-change="$ctrl.arrowChangeValue()">
+            items="$ctrl.items"
+            actions="$ctrl.funcMenuPopOver">
           </table-dessin>
 
         </div>

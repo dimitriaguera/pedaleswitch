@@ -12,10 +12,7 @@
       templateUrl: 'app/pageDessin/modif-dessin/modif-dessin.html',
       bindings: {
         data: '=',
-        rotate: '&',
-        eyedropper: '&',
-        datachange: '&'
-        //changeFontSize: 'changeFontSize({value:value, data:data})'
+        actions: '='
       },
       controller: ModifDessin
     });
