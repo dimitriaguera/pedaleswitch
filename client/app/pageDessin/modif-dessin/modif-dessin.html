@@ -8,24 +8,24 @@
   Texte :<input type="text"
                 class="form-control"
                 ng-model="$ctrl.data.input"
-                ng-blur="$ctrl.changeFontSize({value:value, data:data})"
+                ng-blur="$ctrl.actions.changeFontSize(value, $ctrl.data)"
                 required>
   Taille :<input type="text"
                  class="form-control"
                  placeholder="{{$ctrl.data.font.size}}"
                  ng-model="$ctrl.data.font.size"
-                 ng-blur="$ctrl.datachange({value: {size: $ctrl.size}})"
+                 ng-blur="$ctrl.actions.dataChange({size: $ctrl.size}, $ctrl.data)"
                  required>
   <color-picker
     ng-model='$ctrl.data.font.color'
     color-picker-disabled='false'
     color-picker-format="'hex'"
   ></color-picker>
-  <button type="button" class="btn btn-default" ng-click="$ctrl.eyedropper()">Pipette</button>
+  <button type="button" class="btn btn-default" ng-click="$ctrl.actions.eyedropper()">Pipette</button>
 
 </div>
 
 <div class="btn-group">
-  <button type="button" class="btn btn-default" ng-click="$ctrl.rotate({value:5, data:data})">Rotation Gauche</button>
-  <button type="button" class="btn btn-default" ng-click="$ctrl.rotate({value:-5, data:data})">Rotation Droite</button>
+  <button type="button" class="btn btn-default" ng-click="$ctrl.actions.rotate(5, $ctrl.data)">Rotation Gauche</button>
+  <button type="button" class="btn btn-default" ng-click="$ctrl.actions.rotate(-5, $ctrl.data)">Rotation Droite</button>
 </div>

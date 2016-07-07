@@ -65,7 +65,7 @@ angular.module('pedaleswitchApp')
         this.isSelected = false;
         this.isOverlapping = false;
 
-        this.fonction = 'effet';
+        this.fonction = entity.fonction || 'effet';
         this.angle = entity.angle || 0;
         this.size = {};
         
@@ -2339,7 +2339,6 @@ angular.module('pedaleswitchApp')
         // @todo a verifier si c vraiment un id unique.
         this._id = obj._id || Math.floor(Math.random() * (1e6 +1));
         this.key = 0;
-        
         this.font = {
           // Font propiété dans canvas affect by ctx.font =
           style: obj.font.style || 'normal', // normal, italic, oblique.
@@ -2363,7 +2362,7 @@ angular.module('pedaleswitchApp')
 
 
         this.shapeObject = obj.shape || 'Rect';
-        this.fonction = obj.fonction ||'deco';
+        this.fonction = obj.fonction ||'texte';
         this.angle = obj.angle || 0;
 
         this.sizeTxt = obj.sizeTxt || this.getSizeTxt();
@@ -2755,6 +2754,36 @@ angular.module('pedaleswitchApp')
           default:
             console.log(loc + '--> terme non reconnu par le constructeur Arrow');
         }
+      }
+
+      /**
+       * Retourne des coordonnées pour positionner une box-dessin.
+       * @returns {{x: number, y: number}}
+       */
+      getBoxPos(){
+        var posBox = {};
+        switch(this.loc) {
+
+          case 'right':
+            posBox = {
+              x: this.posStart.x + 10,
+              y: this.posStart.y + (this.posEnd.y - this.posStart.y)/2
+            };
+            this.value = canvasConversion.convertToMm(this.entity.points[2].y - this.entity.points[1].y);
+            break;
+
+          case 'bottom':
+            posBox = {
+              x: this.posStart.x + (this.posEnd.x - this.posStart.x)/2,
+              y: this.posStart.y + 20
+            };
+            this.value = canvasConversion.convertToMm(this.entity.points[2].x - this.entity.points[3].x);
+            break;
+
+          default:
+            console.log(loc + '--> terme non reconnu par le constructeur Arrow');
+        }
+        return posBox;
       }
 
       setTriangleDraw(loc){

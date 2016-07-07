@@ -166,6 +166,7 @@ angular.module('pedaleswitchApp')
           key: key,
           itemInfo : {shape: null},
           inCanvas: effet.inCanvas || false,
+          fonction: 'effet',
           titre: effet.titre,
           titreOption: option.titre,
           description: effet.description,
@@ -179,6 +180,7 @@ angular.module('pedaleswitchApp')
           var compo = {
             _id: option.composants[i]._id,
             key: key,
+            fonction: 'composant',
             titre: option.composants[i].titre,
             titreParentEffet: effet.titre,
             titreParentOption: option.titre,

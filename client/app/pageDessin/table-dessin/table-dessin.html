@@ -1,7 +1,7 @@
 <h3>Dessin</h3>
 <div id="canvas-window" style="overflow: scroll; position:relative;" ng-mousemove="" ng-click="">
 
-    <box-dessin ng-repeat="item in tableData" data="item" box-action="arrowChange()">
+    <box-dessin ng-repeat="item in tableData" data="item" actions="actions">
         <div class="input-group input-group-sm" style="width:140px;">
             <input type="number"
                    class="form-control"
@@ -25,19 +25,15 @@
 
     <box-dessin ng-repeat="menu in tableMenu"
                 data="menu"
-                datachange="datachange({value:value, data:data})"
-                box-action="updateComposant({compo:compo, value:value})"
-                rotate="rotate({value:value, data:data})"
-                eyedropper="eyedropper()"
-                change-font-size="changeFontSize({value:value, data:data})"
+                actions="actions"
                 items="items">
-        <div style="width:{{ $ctrl.data.size.w }}px;height:{{ $ctrl.data.size.h }}px; background:black;"
-             uib-popover-template="$ctrl.popUpUrl"
-             popover-append-to-body="true"
-             popover-is-open="true"
-             popover-title="{{ ::$ctrl.data.titre }}"
-             popover-placement="right">
-        </div>
+                            <div style="width:{{ $ctrl.data.size.w }}px;height:{{ $ctrl.data.size.h }}px; background:black;"
+                                 uib-popover-template="$ctrl.popUpUrl"
+                                 popover-append-to-body="true"
+                                 popover-is-open="true"
+                                 popover-title="{{ ::$ctrl.data.titre }}"
+                                 popover-placement="right">
+                            </div>
     </box-dessin>
 
     <canvas droppable id="canvas-dessin" style="position:relative;background-color:#f1f1f1;">Ooups, Votre navigateur ne supporte pas le html 5...</canvas>
