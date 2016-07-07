@@ -52,11 +52,11 @@ angular.module('pedaleswitchApp')
           i;
   
         for (i = 0; i < TICKS_PER_MAJOR_INTERVAL; i += 1) {
-          html += "<div xmlns='http://www.w3.org/1999/xhtml' style='position: absolute; bottom: 0px; width: " + tickWidth + "px; border-bottom: 1px solid #555; border-left: 1px solid #999;  height: " + ((i % 5 === 0) ? majorHeight : minorHeight)  + "px; left: "  + i * tickWidth + "px'></div>";
+          html += '<div xmlns="http://www.w3.org/1999/xhtml" style="position: absolute; bottom: 0px; width: ' + tickWidth + 'px; border-bottom: 1px solid #555; border-left: 1px solid #999;  height: ' + ((i % 5 === 0) ? majorHeight : minorHeight)  + 'px; left: '  + i * tickWidth + 'px"></div>';
         }
   
         // https://developer.mozilla.org/en-US/docs/HTML/Canvas/Drawing_DOM_objects_into_a_canvas
-        return "<svg xmlns='http://www.w3.org/2000/svg' width='" + major + "' height='" + RULERS_SIZE + "'><foreignObject width='100%' height='100%'>" + html + "</foreignObject></svg>";
+        return '<svg xmlns="http://www.w3.org/2000/svg" width="' + major + '" height="' + RULERS_SIZE + '"><foreignObject width="100%" height="100%">' + html + '</foreignObject></svg>';
       },
   
       render: function(canvas, ctx, color, units, major) {

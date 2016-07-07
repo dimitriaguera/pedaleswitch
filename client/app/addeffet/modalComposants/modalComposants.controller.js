@@ -28,7 +28,7 @@ class ModalComposants {
         thisOne.oneComposant.available_compo_id = selectedItems;
       },
       function () {
-        alert('Modal dismissed at: ' + new Date());
+        window.alert('Modal dismissed at: ' + new Date());
       });
   }
 }

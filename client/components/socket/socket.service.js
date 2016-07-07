@@ -15,7 +15,7 @@ angular.module('pedaleswitchApp')
     return {
       socket,
       OrderArray,
-      
+
       /**
        * Register listeners to sync an array with updates on a model
        *
@@ -27,23 +27,37 @@ angular.module('pedaleswitchApp')
        * @param {Function} cb
        */
       syncUpdates(modelName, array, cb) {
-        OrderArray;
         cb = cb || angular.noop;
+
+
         /**
          * Syncs item creation/updates on 'model:save'
          */
         socket.on(modelName + ':save', function (item) {
-          var oldItem = _.find(array, {_id: item._id});
-          var index = array.indexOf(oldItem);
-          var event = 'created';
-
+          var event;
+          // Find if the obj already existe in the tab array.
+          var oldItem = OrderArray.boucle(array, '_id', item._id, 3);
+          
           // replace oldItem if it exists
           // otherwise just add item to the collection
           if (oldItem) {
-            array.splice(index, 1, item);
+            // Find index of the obj in array.
+            oldItem.pop();
+            var index = oldItem[oldItem.length - 1];
+            oldItem.pop();
+            // Give the sub array.
+            var subArray = OrderArray.returnsubarray(array, oldItem);
+            // Update the obj.
+            subArray.splice(index, 1, item);
             event = 'updated';
           } else {
-            array.push(item);
+            event = 'created';
+            if (angular.isArray(array)) {
+              array.push(item);
+            } else {
+              array[item.type].push(item);
+            }
+
           }
 
           cb(event, item, array);
@@ -59,8 +73,9 @@ angular.module('pedaleswitchApp')
 
           if (test.length === 0){
             var path = OrderArray.boucle(array, '_id', item._id, 3);
+            path.pop();
             if (path.length > 1) {
-              OrderArray.supwithpath(array, path.slice(0,path.length-1));
+              OrderArray.supwithpath(array, path);
             }
           }
 

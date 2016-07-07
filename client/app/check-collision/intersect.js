@@ -30,14 +30,14 @@ angular.module('pedaleswitchApp')
         switch (shape.shapeObject){
           case 'Rect':
             switch (comparitor.shapeObject){
-              case 'Rect':
+              case 'Rect2':
                 return this.rectInRect(shape, comparitor);
-              case 'Cercle':
+              case 'Cercle2':
                 return this.rectInCircle(shape, comparitor);
-              case 'Poly':
+              case 'Poly2':
                 return this.polyInPoly(shape, comparitor);
               default:
-                console.log(comparitor.shapeObject + "---> Forme de l'element qui compare (comparitor) inconnue dans intersect");
+                console.log(comparitor.shapeObject + '---> Forme de l\'element qui compare (comparitor) inconnue dans intersect');
             }
             break;
           case 'Cercle':
@@ -49,7 +49,7 @@ angular.module('pedaleswitchApp')
               case 'Poly':
                 return this.circleInPoly(shape, comparitor);
               default:
-                console.log(comparitor.shapeObject + "---> Forme de l'element qui compare (comparitor) inconnue dans intersect");
+                console.log(comparitor.shapeObject + '---> Forme de l\'element qui compare (comparitor) inconnue dans intersect');
             }
             break;
           case 'Poly':
@@ -61,11 +61,11 @@ angular.module('pedaleswitchApp')
               case 'Poly':
                 return this.polyInPoly(shape, comparitor);
               default:
-                console.log(comparitor.shapeObject + "---> Forme de l'element qui compare (comparitor) inconnue dans intersect");
+                console.log(comparitor.shapeObject + '---> Forme de l\'element qui compare (comparitor) inconnue dans intersect');
             }
             break;
           default:
-            console.log(shape.shapeObject + "---> Forme de l'element à compare (shape) inconnue dans intersect");
+            console.log(shape.shapeObject + '---> Forme de l\'element qui compare (comparitor) inconnue dans intersect');
         }
       },
 
