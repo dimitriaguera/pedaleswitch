@@ -1,25 +1,28 @@
 <div ng-if="$ctrl.data.input">
-  <button type="button" class="btn btn-primary" ng-model="$ctrl.data.isVertical" ng-click="$ctrl.data.changeOrientation()" uib-btn-checkbox>
+  <span style="font-family:{{$ctrl.data.font.family}}">{{$ctrl.data.input}}</span>
+  <button type="button" class="btn btn-primary" ng-model="$ctrl.data.isVertical" ng-click="$ctrl.data.changeOrientation();$ctrl.actions.dataChange($ctrl.data)" uib-btn-checkbox>
     Vertical
   </button><br/>
 
-  <jd-fontselect stack="$ctrl.data.font.family" />
+  <jd-fontselect stack="$ctrl.data.font.family" on-change="$ctrl.actions.changeFont(font, $ctrl.data)" on-close="$ctrl.actions.dataChange($ctrl.data)" />
 
   Texte :<input type="text"
                 class="form-control"
                 ng-model="$ctrl.data.input"
-                ng-blur="$ctrl.actions.changeFontSize(value, $ctrl.data)"
+                ng-change="$ctrl.actions.dataChange($ctrl.data)"
                 required>
-  Taille :<input type="text"
+  Taille :<input type="number"
+                 min="1"
                  class="form-control"
                  placeholder="{{$ctrl.data.font.size}}"
                  ng-model="$ctrl.data.font.size"
-                 ng-blur="$ctrl.actions.dataChange({size: $ctrl.size}, $ctrl.data)"
+                 ng-change="$ctrl.actions.dataChange($ctrl.data)"
                  required>
   <color-picker
     ng-model='$ctrl.data.font.color'
     color-picker-disabled='false'
     color-picker-format="'hex'"
+    color-picker-on-change="$ctrl.actions.dataChange($ctrl.data)"
   ></color-picker>
   <button type="button" class="btn btn-default" ng-click="$ctrl.actions.eyedropper()">Pipette</button>
 

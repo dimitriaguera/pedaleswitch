@@ -45,14 +45,16 @@ class PageDessinComponent {
     updateComposant: function(compo, value){
       this.self.updateComposant(compo, value);
     },
-    dataChange: function(value, data){
-      this.self.dataChange(value, data);
-    },
-    changeFontSize: function(){
-
+    dataChange: function(data){
+      this.self.dataChange(data);
     },
     arrowChangeValue: function(){
       this.self.arrowChangeValue();
+    },
+    changeFont: function(font, data){
+      data.font.family = font.stack;
+      console.log(font.loaded);
+      setTimeout(function(){ this.self.dataChange(data) }, 3000);
     }
   }
   
@@ -212,8 +214,12 @@ class PageDessinComponent {
     this.canvasDraw.drawStuff();
   }
 
-  dataChange(value, data){
-    this.canvasControl.actualisePoints(value, data);
+  dataChange(data){
+    var x;
+    x = 4;
+    if (data.input == undefined) data.input = ' ';
+    if (data.font.size == undefined || data.font.size <= 0) data.font.size = 1;
+    this.canvasControl.actualisePoints(data);
     this.canvasDraw.drawStuff();
   }
   
@@ -287,6 +293,7 @@ class PageDessinComponent {
   // Fonction de pipette couleur appeler par modif-dessin
   eyedropper(){
     this.mouseHelper.eyedropper();
+    this.canvasDraw.drawStuff();
   }
 
   // Utiliser par table-dessin.
