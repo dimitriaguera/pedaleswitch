@@ -448,8 +448,8 @@ angular.module('pedaleswitchApp')
       //  data.actualisePoints(canvasSetting.ctx, value);
       //},
 
-      actualisePoints: function(value, data){
-        data.actualisePoints(value);
+      actualisePoints: function(data){
+        data.actualisePoints();
       },
 
       getCanvasSetting: function(){
