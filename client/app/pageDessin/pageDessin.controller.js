@@ -3,9 +3,9 @@
 
 class PageDessinComponent {
 
-  constructor(instanceDessin, canvasConversion, canvasControl, canvasDraw, storage, $http, mouseHelper) {
+  constructor(instanceDessin, canvasConversion, canvasControl, canvasDraw, storage, $http, mouseHelper, $timeout) {
 
-
+    this.$timeout = $timeout;
     this.instanceDessin = instanceDessin;
     this.canvasControl = canvasControl;
     this.canvasConversion = canvasConversion;
@@ -40,7 +40,7 @@ class PageDessinComponent {
       this.self.rotate(value, data);
     },
     eyeDropper: function(){
-      this.self.mouseHelper.eyedropper();
+      this.self.eyedropper();
     },
     updateComposant: function(compo, value){
       this.self.updateComposant(compo, value);
@@ -52,9 +52,14 @@ class PageDessinComponent {
       this.self.arrowChangeValue();
     },
     changeFont: function(font, data){
+      var self2 = this.self;
       data.font.family = font.stack;
-      console.log(font.loaded);
-      setTimeout(function(){ this.self.dataChange(data) }, 3000);
+      self2.$timeout(
+        function(){
+          self2.dataChange(data);
+        },
+        300
+      );
     }
   }
   

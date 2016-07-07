@@ -32,7 +32,7 @@ angular.module('pedaleswitchApp')
     var mouse = function(e) {
       // le +2 et le +21 depende de l'icone choisie.
       var mouse = {x: e.layerX + 2, y: e.layerY + 21};
-      var data = canvasControl.getCtx().getImageData(mouse.x, mouse.y, 1, 1).data;
+      var data = canvasSetting.ctx.getImageData(mouse.x, mouse.y, 1, 1).data;
       var rgba = 'rgba(' + data[0] + ',' + data[1] +
         ',' + data[2] + ',' + data[3] + ')';
       var hex = '#' + tinycolor(rgba).toHex();
