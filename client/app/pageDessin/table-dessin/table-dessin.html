@@ -1,26 +1,12 @@
 <h3>Dessin</h3>
 <div id="canvas-window" style="overflow: scroll; position:relative;" ng-mousemove="" ng-click="">
 
-    <box-dessin ng-repeat="item in tableData" data="item" actions="actions">
-        <div class="input-group input-group-sm" style="width:140px;">
-            <input type="number"
-                   class="form-control"
-                   ng-model="$ctrl.value"
-                   ng-focus="$ctrl.onFocus()"
-                   ng-blur="$ctrl.onBlur()"
-                   placeholder="{{item.value}}"
-                   min="20"
-                   max="1500"
-                   required>
-            <span class="input-group-addon" id="basic-addon1">mm</span>
-            <span class="input-group-btn">
-                <button type="submit"
-                        class="btn btn-primary"
-                        ng-click="$ctrl.validation()"
-                        ng-show="$ctrl.change">Ok
-                </button>
-            </span>
-        </div>
+    <box-dessin ng-repeat="item in tableData"
+                data="item"
+                actions="actions">
+                            <box-arrow datas="item"
+                                       actions="actions">
+                            </box-arrow>
     </box-dessin>
 
     <box-dessin ng-repeat="menu in tableMenu"

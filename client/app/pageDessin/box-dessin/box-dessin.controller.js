@@ -2,7 +2,7 @@
 (function(){
 
   angular.module('pedaleswitchApp')
-    .directive('boxDessin', function ($timeout) {
+    .directive('boxDessin', function () {
       
       return {
         restrict: 'EA',
@@ -15,21 +15,12 @@
         },
         controller: function ($scope) {
 
-          this.onBlur = function(){
-            $timeout.cancel(this.mypromise);
-            this.storeValue = this.value;
-            this.value = null;
-            var self = this;
-            this.mypromise = $timeout(function(){ self.change = false; }, 200, self);
-          };
-
           this.$onInit = function () {
 
             // Si l'objet n'est pas un arrow, on ajoute une posBox, et on ajoute un template pour la popover.
             if (this.data.constructor.name !== 'Arrow' && this.data.constructor.name !== 'ArrowPoint') {
 
-              this.data.posBox = this.data.getBoxPos();
-
+             // this.data.posBox = this.data.getBoxPos();
               this.zIndex = '-2';
 
               // on cherche le bon template.
@@ -57,29 +48,12 @@
             }
           };
 
-          this.$onDestroy = function() {
-            // Si l'objet n'est pas un arrow, on détruit sa posBox.
-            if (this.data.constructor.name !== 'Arrow') {
-              delete this.data.posBox;
-            }
-          };
-
-          this.onFocus = function () {
-            if (this.mypromise) {
-              $timeout.cancel(this.mypromise);
-            }
-            this.value = this.storeValue = this.data.value;
-            this.change = true;
-          };
-
-          this.validation = function () {
-            if (this.storeValue) {
-              this.data.setValue(this.storeValue);
-            }
-            this.change = false;
-            this.value = this.storeValue = null;
-            this.actions.arrowChangeValue();
-          };
+          //this.$onDestroy = function() {
+          //  // Si l'objet n'est pas un arrow, on détruit sa posBox.
+          //  if (this.data.constructor.name !== 'Arrow') {
+          //    delete this.data.posBox;
+          //  }
+          //};
 
         },
         controllerAs: '$ctrl'
