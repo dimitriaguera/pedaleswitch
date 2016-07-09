@@ -11,3 +11,4 @@ Gruntfile.js
 /travail/*
 /client/app/googleFontApiKey/*
 /client/app/googleFontApiKey
+.DS_Store
