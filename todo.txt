@@ -17,3 +17,16 @@ Directive droppable : Virer les evenement inutile (dragenter, dragleave)
 ------------------
 
 Box-dessin.controller.js : Pk il est dans une fonctionne anonyme contrairement a tout les autres ?
+
+
+------------
+
+// On peut definir var d'environent en js avec affectant la var process.env.NOM_DE_LA_VAR
+var env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+'development'
+'production'
+'test'
+
+on peut en shell
+export NODE_ENV='development'
+export NODE_ENV='production'
