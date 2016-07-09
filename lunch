@@ -1,6 +1,0 @@
-#!/bin/bash
-
-export NODE_ENV='development'
-cd server
-pwd
-node index.js
