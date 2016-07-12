@@ -30,3 +30,10 @@ var env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 on peut en shell
 export NODE_ENV='development'
 export NODE_ENV='production'
+
+
+npm install babel-register
+
+
+npm install babel-preset-es2015 --save
+npm install babel-plugin-transform-class-properties --save
