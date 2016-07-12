@@ -12,3 +12,7 @@ module.exports = {
   // Control debug level for modules using visionmedia/debug
   DEBUG: ''
 };
+
+angular.module('pedaleswitchApp').constant('jdFontselectConfig', {
+  googleApiKey: 'AIzaSyB8Mc4o5SV8DMxXM9otLzOMZmgxQnbcBvA'
+});
