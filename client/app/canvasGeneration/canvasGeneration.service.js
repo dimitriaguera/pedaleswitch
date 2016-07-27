@@ -65,7 +65,7 @@ angular.module('pedaleswitchApp')
         this.isSelected = false;
         this.isOverlapping = false;
 
-        this.fonction = entity.fonction || 'effet';
+        this.fonction = entity.fonction || 'Effet';
         this.angle = entity.angle || 0;
         this.size = {};
         this.posBox = {};
@@ -291,7 +291,7 @@ angular.module('pedaleswitchApp')
 
       changeShape(){
         // Change la forme de l'obj rectangle si pas // a l'axe.
-        if (this.constructor.name === 'Rect'){
+        if (this.fonction === 'Rect'){
           if (this.angle%90 === 0) {
             this.shapeObject = 'Rect';
           }
@@ -2364,7 +2364,7 @@ angular.module('pedaleswitchApp')
 
 
         this.shapeObject = obj.shape || 'Rect';
-        this.fonction = obj.fonction ||'texte';
+        this.fonction = obj.fonction ||'Texte';
         this.angle = obj.angle || 0;
 
         this.sizeTxt = obj.sizeTxt || this.getSizeTxt();
@@ -2579,7 +2579,7 @@ angular.module('pedaleswitchApp')
 
       changeShape(){
         // Change la forme de l'obj rectangle si pas // a l'axe.
-        if (this.constructor.name === 'Texte'){
+        if (this.fonction === 'Texte'){
           if (this.angle%90 === 0) {
             this.shapeObject = 'Rect';
           }
@@ -2697,6 +2697,8 @@ angular.module('pedaleswitchApp')
         this.setMethods(this.loc);
         this.setPos(this.loc);
         this.setTriangleDraw(this.loc);
+        this.fonction = 'Arrow';
+
       }
 
       setMethods(loc){
