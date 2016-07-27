@@ -25,19 +25,19 @@
 
               // on cherche le bon template.
               switch(this.data.fonction){
-                case 'effet':
+                case 'Effet':
                   this.popUpUrl = 'app/pageDessin/box-dessin/option-box-popover-effet.html';
                   break;
-                case 'composant':
+                case 'Composant':
                   this.popUpUrl = 'app/pageDessin/box-dessin/option-box-popover-composant.html';
                   break;
-                case 'texte':
+                case 'Texte':
                   this.popUpUrl = 'app/pageDessin/box-dessin/option-box-popover-texte.html';
                   break;
-                case 'image':
+                case 'Image':
                   this.popUpUrl = 'app/pageDessin/box-dessin/option-box-popover-image.html';
                   break;
-                case 'forme':
+                case 'Forme':
                   this.popUpUrl = 'app/pageDessin/box-dessin/option-box-popover-forme.html';
                   break;
               }

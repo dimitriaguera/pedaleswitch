@@ -14,7 +14,7 @@ angular.module('pedaleswitchApp')
       marginCanvas: canvasConversion.convertToPixel(40),
       debrayable: false,
       viewState: 'up',
-      isActive: 'effet'
+      isActive: 'Effet'
     };
 
     var tableEffet = [];
