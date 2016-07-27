@@ -27,14 +27,15 @@ angular.module('pedaleswitchApp')
        * @returns {*}
        */
       check: function (shape, comparitor) {
+        //console.log('shape:'+shape.shapeObject+' comparitor:'+comparitor.shapeObject);
         switch (shape.shapeObject){
           case 'Rect':
             switch (comparitor.shapeObject){
-              case 'Rect2':
+              case 'Rect':
                 return this.rectInRect(shape, comparitor);
-              case 'Cercle2':
+              case 'Cercle':
                 return this.rectInCircle(shape, comparitor);
-              case 'Poly2':
+              case 'Poly':
                 return this.polyInPoly(shape, comparitor);
               default:
                 console.log(comparitor.shapeObject + '---> Forme de l\'element qui compare (comparitor) inconnue dans intersect');

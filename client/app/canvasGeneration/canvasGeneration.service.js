@@ -291,7 +291,7 @@ angular.module('pedaleswitchApp')
 
       changeShape(){
         // Change la forme de l'obj rectangle si pas // a l'axe.
-        if (this.fonction === 'Rect'){
+        if (this.shapeObject === 'Rect' || this.shapeObject === 'Poly'){
           if (this.angle%90 === 0) {
             this.shapeObject = 'Rect';
           }
@@ -2579,7 +2579,7 @@ angular.module('pedaleswitchApp')
 
       changeShape(){
         // Change la forme de l'obj rectangle si pas // a l'axe.
-        if (this.fonction === 'Texte'){
+        if (this.shapeObject === 'Rect' || this.shapeObject === 'Poly'){
           if (this.angle%90 === 0) {
             this.shapeObject = 'Rect';
           }
