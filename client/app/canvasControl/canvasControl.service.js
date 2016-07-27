@@ -78,7 +78,7 @@ angular.module('pedaleswitchApp')
           }
 
           // Créer le boitier de la pedale.
-          if(boite.constructor.name !== 'Boite') {
+          if(boite.fonction !== 'Boite') {
             this.setMasterBoite(canvasGeneration.newMasterBoite(tmpEff));
 
             // Créer les projections de la boite.
@@ -338,7 +338,7 @@ angular.module('pedaleswitchApp')
        * Agrandit/reduit le canvas pour qu'il soit au moins aussi grand que la boite.
        */
       resizeCanvas: function(){
-        if (boite.constructor.name === 'Boite') {
+        if (boite.fonction === 'Boite') {
           var realmargin = 150;
 
           var canvasInitialSize = canvasConversion.getCanvasSize();

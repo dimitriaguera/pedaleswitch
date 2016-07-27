@@ -18,7 +18,7 @@
           this.$onInit = function () {
 
             // Si l'objet n'est pas un arrow, on ajoute une posBox, et on ajoute un template pour la popover.
-            if (this.data.constructor.name !== 'Arrow' && this.data.constructor.name !== 'ArrowPoint') {
+            if (this.data.fonction !== 'Arrow' && this.data.fonction !== 'ArrowPoint') {
 
              // this.data.posBox = this.data.getBoxPos();
               this.zIndex = '-2';
@@ -50,7 +50,7 @@
 
           //this.$onDestroy = function() {
           //  // Si l'objet n'est pas un arrow, on détruit sa posBox.
-          //  if (this.data.constructor.name !== 'Arrow') {
+          //  if (this.data.fonction !== 'Arrow') {
           //    delete this.data.posBox;
           //  }
           //};
