@@ -6,18 +6,27 @@
 
   <jd-fontselect stack="$ctrl.data.font.family" on-change="$ctrl.actions.changeFont(font, $ctrl.data)" on-close="$ctrl.actions.dataChange($ctrl.data)" />
 
-  Texte :<input type="text"
-                class="form-control"
-                ng-model="$ctrl.data.input"
-                ng-change="$ctrl.actions.dataChange($ctrl.data)"
-                required>
-  Taille :<input type="number"
-                 min="1"
-                 class="form-control"
-                 placeholder="{{$ctrl.data.font.size}}"
-                 ng-model="$ctrl.data.font.size"
-                 ng-change="$ctrl.actions.dataChange($ctrl.data)"
-                 required>
+
+  <label for="texte-deco">Texte :
+    <input id="texte-deco"
+           type="text"
+           class="form-control"
+           ng-model="$ctrl.data.input"
+           ng-change="$ctrl.actions.dataChange($ctrl.data)"
+           required />
+  </label>
+
+  <label for="taille-id">Taille :
+    <input id="taille-id"
+           type="number"
+           min="1"
+           class="form-control"
+           placeholder="{{$ctrl.data.font.size}}"
+           ng-model="$ctrl.data.font.size"
+           ng-change="$ctrl.actions.dataChange($ctrl.data)"
+           required />
+  </label>
+
   <color-picker
     ng-model='$ctrl.data.font.color'
     color-picker-disabled='false'
