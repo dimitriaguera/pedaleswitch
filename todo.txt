@@ -1,3 +1,21 @@
+Ce qu'il faut faire
+----------------------------
+
+
+1) Faire la fonction d'upload des photos
+2) Faire la fonction de save and restore
+3b) Faire la gestion des obj de decoration
+
+3) Refaire l'interface admin
+4) Faire une mockup pour savoir un peu le design
+5) Penser l'interface admin
+6) Sécuriser les api
+7) SSL
+8) Moyen de payment
+
+
+
+
 Sous Safari
 
 Le drag&drop ne marche pas quand on prend directement le nom de l'effet du panier. Pour que cela marche il faut ajouter
