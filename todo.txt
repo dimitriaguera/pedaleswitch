@@ -13,6 +13,22 @@ Ce qu'il faut faire
 7) SSL
 8) Moyen de payment
 
+9) CLeanner les attribut passer de pagedessin a autre depuis l'introduction de "actions".
+-----------------------
+Interogat diverse:
+
+dans pageDessin.html il y a
+<table-dessin
+            datachange="$ctrl.dataChange(value, data)"
+            table-data="$ctrl.tableArrow"
+            table-menu="$ctrl.activeItem"
+            items="$ctrl.items"
+            actions="$ctrl.funcMenuPopOver">
+ </table-dessin>
+
+          Or datachange n'est pas utiliser ni dans table-dessin.controleur ni dans sont template ?
+
+          Pourquoi on continue a passer autan d'argument ?
 
 
 
