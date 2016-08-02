@@ -4,7 +4,6 @@
 class PageDessinComponent {
 
   constructor(instanceDessin, canvasConversion, canvasControl, canvasDraw, storage, $http, mouseHelper, $timeout) {
-
     this.$timeout = $timeout;
     this.instanceDessin = instanceDessin;
     this.canvasControl = canvasControl;
@@ -15,40 +14,38 @@ class PageDessinComponent {
     //@todo a sup verifier le oninit.
     this.mouseHelper = mouseHelper;
     this.$http = $http; //@todo a supp et dans la declaration aussi
-
-
-    // Object passé aux componants box-dessin.
-    // Permet de binder des fonctions.
-    this.funcMenuPopOver = {
-      self: this,
-      rotate: function(value, data){
-        this.self.rotate(value, data);
-      },
-      eyeDropper: function(){
-        this.self.eyedropper();
-      },
-      updateComposant: function(compo, value){
-        this.self.updateComposant(compo, value);
-      },
-      dataChange: function(data){
-        this.self.dataChange(data);
-      },
-      arrowChangeValue: function(){
-        this.self.arrowChangeValue();
-      },
-      changeFont: function(font, data){
-        var self2 = this.self;
-        data.font.family = font.stack;
-        self2.$timeout(
-          function(){
-            self2.dataChange(data);
-          },
-          300
-        );
-      }
-    }
-
   }
+
+  // Object passé aux componants box-dessin.
+  // Permet de binder des fonctions.
+  funcMenuPopOver = {
+    self: this,
+    rotate: function(value, data){
+      this.self.rotate(value, data);
+    },
+    eyeDropper: function(){
+      this.self.eyedropper();
+    },
+    updateComposant: function(compo, value){
+      this.self.updateComposant(compo, value);
+    },
+    dataChange: function(data){
+      this.self.dataChange(data);
+    },
+    arrowChangeValue: function(){
+      this.self.arrowChangeValue();
+    },
+    changeFont: function(font, data){
+      var self2 = this.self;
+      data.font.family = font.stack;
+      self2.$timeout(
+        function(){
+          self2.dataChange(data);
+        },
+        300
+      );
+    }
+  };
 
   $onInit(){
     //@todo a supp et verifier dans le constructor de virer http et OrderArray.
@@ -58,7 +55,7 @@ class PageDessinComponent {
         this.instanceDessin.setEffet(this.effets[0], this.effets[0].options[0]);
     //    this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
        }
-    });
+    })
     this.initialisation();
   }
 
@@ -88,6 +85,7 @@ class PageDessinComponent {
     //@todo a sup.
     this.toutesTables = this.canvasControl.tableState();
   }
+
 
   load(){
     // Reset all Canvas.
