@@ -8,7 +8,7 @@
 
     open(size) {
       var self = this;
-      self.modalInstance = self.modalServ.open({
+      this.modalInstance = this.modalServ.open({
         animation: true,
         templateUrl: function() {
           return 'app/pageDessin/modal-dessin/' + self.template + '.html' || 'app/pageDessin/modal-dessin/modalBox.html';
@@ -26,11 +26,10 @@
             return self.selected;
           }
         },
-        size: size
+        size: size,
       });
-
       this.modalInstance.result.then(function (selected) {
-        self.actions.updateComposant(self.data, selected);
+        self.action({compo:self.data, value:selected});
       });
     }
 
@@ -46,7 +45,7 @@
         template: '@',
         name: '@',
         classBtn: '@',
-        actions: '='
+        action: '&'
       },
       controller: ModalDessin
     });

@@ -18,7 +18,8 @@
         updateComposant: '&',
         onCompo: '&',
         onEffet: '&',
-        leaveEffet: '&'
+        leaveEffet: '&',
+        actions: '='
       },
       controller: PanierDessin
     });
