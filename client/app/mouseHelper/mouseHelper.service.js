@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('pedaleswitchApp')
-  .factory('mouseHelper', function (canvasControl, canvasConversion, checkCollision, canvasDraw, $rootScope) {
+  .factory('mouseHelper', function (canvasControl, checkCollision, canvasDraw, $rootScope) {
 
     var drag = {};
     var tabActive = [];
@@ -373,10 +373,6 @@ angular.module('pedaleswitchApp')
 
       /**
        * On agrandie la boite.
-       *
-       * @todo un bonne partie est a metre dans canvasContol
-       * car par exemple les marges ne sont pas uniforme
-       * canvasConversion.convertToPixel(40)
        */
       mouseMoveBorderBoite: function(e){
 
