@@ -9,73 +9,6 @@ angular.module('pedaleswitchApp')
       boite: {}
     };
 
-    /*
-    var polyTest = {
-      _id: '11111',
-      key: '555',
-      shapeObject: 'Poly',
-      titre: 'test poly',
-      titreParentEffet: null,
-      titreParentOption: null,
-      pointsDefault: [
-        {
-          x: 50,         
-          y: 50
-        },
-        {
-          x: 60,
-          y: 70
-        },
-        {
-          x: 60,
-          y: 80
-        },
-        {
-          x: 30,
-          y: 70
-        }
-      ],
-      points: [
-        {
-          x: 50,
-          y: 50
-        },
-        {
-          x: 60,
-          y: 70
-        },
-        {
-          x: 60,
-          y: 80
-        },
-        {
-          x: 30,
-          y: 70
-        }
-      ],
-      pos: {
-        x: null,
-        y: null
-      },
-      posDefault: {
-        x: null,
-        y: null
-      },
-      size: {
-        w: null,
-        h: null,
-        d: null
-      },
-      oldSize: {
-        w: null,
-        h: null,
-        d: null
-      },
-      itemInfo: {
-        shape: 'Rect'
-      }
-    };
-     */
     /**
      * Retour les coordonnées des quatres sommet de la forme.
      * @param size
@@ -113,7 +46,6 @@ angular.module('pedaleswitchApp')
         composantItems[initialCompo[j]._id] = initialCompo[j];
       }
     });
-
 
     return {
 
@@ -200,27 +132,6 @@ angular.module('pedaleswitchApp')
         canvasConversion.convertEffetSize(nouvEffet);
         canvasConversion.initializeEffetZoom(nouvEffet);
         dessin.options.push(nouvEffet);
-      },
-      
-      //@todo a garder ?
-      zoomInitialize: function(value){
-        canvasConversion.setZoom(value);
-        for (var i = 0; i < dessin.options.length; i++) {
-          canvasConversion.initializeEffetZoom(dessin.options[i]);
-        }
-      },
-
-      zoomChange: function(value){
-        var okZoom = canvasConversion.setZoom(value);
-        if (okZoom) {
-          if (dessin.boite.fonction === 'MasterBoite') {
-            canvasConversion.convertEffetZoom(dessin.boite);
-          }
-          for (var i = 0; i < dessin.options.length; i++) {
-            canvasConversion.convertEffetZoom(dessin.options[i]);
-          }
-        }
-        return okZoom;
       },
 
       //updateComposant: function(idOption, idCompo, idItem) {

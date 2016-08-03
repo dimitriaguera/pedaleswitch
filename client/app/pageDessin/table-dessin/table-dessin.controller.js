@@ -17,8 +17,8 @@ angular.module('pedaleswitchApp')
           var canvWindow = document.getElementById('canvas-window');
           var canv = document.getElementById('canvas-dessin');
           var ctx = canv.getContext('2d');
-          canvasControl.setCanvasWindow(canvWindow);
           canvasControl.setCanvas(canv);
+          canvasControl.setCanvasWindow(canvWindow);
           canvasControl.setCtx(ctx);
 
           // Check canvas size.

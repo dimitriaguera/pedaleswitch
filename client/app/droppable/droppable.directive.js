@@ -42,15 +42,14 @@ angular.module('pedaleswitchApp')
           'drop',
           function(e) {
             // Stops some browsers from redirecting.
+            e.preventDefault();
             if (e.stopPropagation) e.stopPropagation();
 
             // Remove class over.
             this.classList.remove('over');
 
-
             //@todo modifier architecture panier et binder addEffet du controleur page dessin.
             var obj = JSON.parse(e.dataTransfer.getData('data'));
-
 
             // Lors du drop transmet l'id et le key de l'effet qui est draggé.
             // Puis va chercher l'effet correspondant dans le modèle dessin.

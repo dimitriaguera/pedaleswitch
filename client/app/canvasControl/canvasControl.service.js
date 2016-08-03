@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('pedaleswitchApp')
-  .factory('canvasControl', function (canvasGeneration, canvasConversion, checkCollision, rulers) {
+  .factory('canvasControl', function (canvasGeneration, canvasConversion, checkCollision, rulers, $window) {
     // Service logic
 
     var boite = {};
@@ -11,10 +11,18 @@ angular.module('pedaleswitchApp')
       ctx: {},
       canvas: {},
       canvasWindow: {},
-      marginCanvas: canvasConversion.convertToPixel(40),
+      marginCanvas: 40,
       debrayable: false,
       viewState: 'up',
-      isActive: 'Effet'
+      isActive: 'Effet',
+      zoomOption: {
+        resolution: 2,
+        resoInMm: 1,
+        oldZoom: 1,
+        zoom: 1,
+        ratioW: 3/4.2,
+        ratioH: 300
+      }
     };
 
     var tableEffet = [];
@@ -50,7 +58,7 @@ angular.module('pedaleswitchApp')
     
     // Public API here
     return{
-      
+
       /**
        * Cette fonction créé les objets du canvas à partir du modèle dessin.
        * Et l'ajoute dans tableEffet et tableComposant pour les composants correspondants.
@@ -93,7 +101,6 @@ angular.module('pedaleswitchApp')
             // Initialise la position de la boite.
             boite.initMoveBox(tmpEff);
 
-            
             // Créer les flèches autour de la boite.
             tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
             tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
@@ -172,7 +179,6 @@ angular.module('pedaleswitchApp')
        * @param state : string - 'top', 'bottom', 'up', 'down', 'left', 'right'
        */
       canvasViewState: function (state) {
-
         masterBoite.updateMaster(canvasSetting.viewState);
         switch (state) {
           case 'top':
@@ -340,8 +346,7 @@ angular.module('pedaleswitchApp')
       resizeCanvas: function(){
         if (boite.fonction === 'Boite') {
           var realmargin = 150;
-
-          var canvasInitialSize = canvasConversion.getCanvasSize();
+          var canvasInitialSize = this.getCanvasSize();
           var posExt = boite.findExtreme();
 
           // Test droite.
@@ -352,56 +357,26 @@ angular.module('pedaleswitchApp')
         }
       },
 
-      ///**
-      // * Donne les coordonnées d'un rectangle qui entoure tout les objs.
-      // *
-      // * Cette fonction retourne :
-      // * t : position la plus petite de l'obj le plus en haut.
-      // * r : position la plus grande de l'obj le plus à droite.
-      // * b : position la plus grande de l'obj le plus en bas.
-      // * l : la position la plus petite de l'obj le plus à gauche.
-      // *
-      // * @returns {{t: number, r: number, b: number, l: number}}
-      // */
-      //findGlobalRect: function (){
-      //  var saveMax = function(posmax, pos){
-      //    posmax.t = Math.min(posmax.t, pos.t);
-      //    posmax.r = Math.max(posmax.r, pos.r);
-      //    posmax.b = Math.max(posmax.b, pos.b);
-      //    posmax.l = Math.min(posmax.l, pos.l);
-      //  };
-      //
-      //  var i, j;
-      //
-      //  var effet;
-      //  var compos, compo;
-      //
-      //  var pos = {t:Infinity,r:-Infinity,b:-Infinity,l:Infinity},
-      //      posmax = {t:Infinity,r:-Infinity,b:-Infinity,l:Infinity};
-      //
-      //  for (i = 0 ; i < tableEffet.length ; i++) {
-      //    effet = tableEffet[i];
-      //
-      //    // Recupère les bords
-      //    pos = effet.findExtreme();
-      //    // Garde le maximum.
-      //    saveMax(posmax, pos);
-      //
-      //    if (canvasSetting.debrayable){
-      //      compos = effet.composants;
-      //      for (j = 0; j < compos.length; j++) {
-      //        compo = compos[j];
-      //        // Recupère les bords
-      //        pos = compo.findExtreme();
-      //        // Garde le maximum.
-      //        saveMax(posmax, pos);
-      //      }
-      //    }
-      //  }
-      //
-      //  return posmax;
-      //},
+      //@todo a garder ?
+      zoomInitialize: function(dessin, value){
+        canvasConversion.setZoom(value);
+        for (var i = 0; i < dessin.options.length; i++) {
+          canvasConversion.initializeEffetZoom(dessin.options[i]);
+        }
+      },
 
+      zoomChange: function(dessin, value){
+        var okZoom = canvasConversion.setZoom(value);
+        if (okZoom) {
+          if (dessin.boite.fonction === 'MasterBoite') {
+            canvasConversion.convertEffetZoom(dessin.boite);
+          }
+          for (var i = 0; i < dessin.options.length; i++) {
+            canvasConversion.convertEffetZoom(dessin.options[i]);
+          }
+        }
+        return okZoom;
+      },
 
       /**
        * Centre les élements dans le canvas.
@@ -419,8 +394,7 @@ angular.module('pedaleswitchApp')
        */
       checkBorderBoxRotate: function(entity){
         var vect;
-        var fonc = entity.fonction;
-        if (fonc === 'effet') {
+        if (entity.fonction === 'Effet') {
           masterBoite.checkBorderBoite(canvasSetting.viewState, entity);
           vect = boite.moveCloseBorder(canvasSetting.canvas, canvasSetting.marginCanvas);
           boite.moveEffetCompo(vect);
@@ -460,19 +434,56 @@ angular.module('pedaleswitchApp')
         canvasSetting.ctx = context;
       },
 
+      /*
+      getCanvasSize: function () {
+        return {
+          w: $window.innerWidth * ratioW,
+          h: $window.innerHeight - ratioH
+        };
+      },
+
+      getCanvasCenterInWindow: function () {
+        var center = this.getCanvasSize();
+        return {
+          x: center.w / 2,
+          y: center.h / 2
+        };
+      },
+
       setCanvas: function(canv){
-        var canvasSize = canvasConversion.getCanvasSize();
+        var canvasSize = this.getCanvasSize();
         canv.width = canvasSize.w;
         canv.height = canvasSize.h;
         canvasSetting.canvas = canv;
       },
 
       setCanvasWindow: function(canvasWindow){
-        var canvasSize = canvasConversion.getCanvasSize();
+        var canvasSize = this.getCanvasSize();
         canvasWindow.style.width = canvasSize.w.toString() + 'px';
         canvasWindow.style.height = canvasSize.h.toString() + 'px';
         canvasSetting.canvasWindow = canvasWindow;
       },
+      */
+
+      getCanvasSize: function () {
+        return {
+          w: canvasSetting.canvas.width,
+          h: canvasSetting.canvas.height
+        };
+      },
+
+      setCanvas: function(canv){
+        canv.width = $window.innerWidth * canvasSetting.zoomOption.ratioW;
+        canv.height = $window.innerHeight - canvasSetting.zoomOption.ratioH;
+        canvasSetting.canvas = canv;
+      },
+
+      setCanvasWindow: function(canvasWindow){
+        canvasWindow.style.width = canvasSetting.canvas.width.toString() + 'px';
+        canvasWindow.style.height = canvasSetting.canvas.height.toString() + 'px';
+        canvasSetting.canvasWindow = canvasWindow;
+      },
+
 
       setMarginCanvas: function(margin){
         canvasSetting.marginCanvas = margin;

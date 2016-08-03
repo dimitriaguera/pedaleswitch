@@ -17,6 +17,9 @@ class PageDessinComponent {
   }
 
   $onInit(){
+
+    this.initialisation();
+
     //@todo a supp et verifier dans le constructor de virer http et OrderArray.
     this.$http.get('/api/effets').then(response => {
       this.effets = response.data;
@@ -25,22 +28,25 @@ class PageDessinComponent {
     //    this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
        }
     })
-    this.initialisation();
   }
 
   initialisation() {
+
+    // Met les bonnes options.
+    this.canvasSetting = this.canvasControl.getCanvasSetting();
+    this.canvasConversion.setZoomOption(this.canvasSetting.zoomOption);
+    this.zoom = this.canvasControl.getZoom();
+    this.debrayable = this.canvasSetting.debrayable;
+    this.deco = false;
+
     // Link les tables.
     this.items = this.instanceDessin.getComposantItems();
     this.dessin = this.instanceDessin.getDessin();
     this.tableArrow = this.canvasControl.getTableArrow();
     this.tableText = this.canvasControl.getTableText();
     this.activeItem = this.canvasControl.getActiveItem();
-    
-    // Met les bonnes options.
-    this.canvasSetting = this.canvasControl.getCanvasSetting();
-    this.zoom = this.canvasControl.getZoom();
-    this.debrayable = this.canvasSetting.debrayable;
-    this.deco = false;
+
+
 
     // Active les effets et les dessines.
     this.activeEffet();
@@ -229,7 +235,7 @@ class PageDessinComponent {
   }
 
   zoomAdd(value){
-    this.instanceDessin.zoomChange(value);
+    this.canvasControl.zoomChange(this.dessin, value);
     this.canvasControl.centerInCanvas();
     this.canvasControl.resizeCanvas();
     this.canvasControl.setArrowPos();
@@ -241,6 +247,7 @@ class PageDessinComponent {
     this.canvasControl.canvasViewState('up');
     this.canvasControl.canvasDrawState(this.isActive);
     this.canvasControl.resizeCanvas();
+    this.canvasControl.centerInCanvas();
     this.canvasDraw.drawStuff();
   }
 
@@ -248,6 +255,7 @@ class PageDessinComponent {
     this.canvasControl.canvasViewState('down');
     this.canvasControl.canvasDrawState(this.isActive);
     this.canvasControl.resizeCanvas();
+    this.canvasControl.centerInCanvas();
     this.canvasDraw.drawStuff();
   }
 
@@ -255,6 +263,7 @@ class PageDessinComponent {
     this.canvasControl.canvasViewState('right');
     this.canvasControl.canvasDrawState(this.isActive);
     this.canvasControl.resizeCanvas();
+    this.canvasControl.centerInCanvas();
     this.canvasDraw.drawStuff();
   }
 
@@ -262,6 +271,7 @@ class PageDessinComponent {
     this.canvasControl.canvasViewState('left');
     this.canvasControl.canvasDrawState(this.isActive);
     this.canvasControl.resizeCanvas();
+    this.canvasControl.centerInCanvas();
     this.canvasDraw.drawStuff();
   }
 
@@ -269,6 +279,7 @@ class PageDessinComponent {
     this.canvasControl.canvasViewState('top');
     this.canvasControl.canvasDrawState(this.isActive);
     this.canvasControl.resizeCanvas();
+    this.canvasControl.centerInCanvas();
     this.canvasDraw.drawStuff();
   }
 
@@ -276,6 +287,7 @@ class PageDessinComponent {
     this.canvasControl.canvasViewState('bottom');
     this.canvasControl.canvasDrawState(this.isActive);
     this.canvasControl.resizeCanvas();
+    this.canvasControl.centerInCanvas();
     this.canvasDraw.drawStuff();
   }
 

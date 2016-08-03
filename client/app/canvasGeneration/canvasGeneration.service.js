@@ -466,7 +466,7 @@ angular.module('pedaleswitchApp')
        */
       moveToCenterWindow(canvasSetting){
         var vect;
-        var centerW = canvasConversion.getCanvasCenterInWindow();
+        var centerW = {x:Number(canvasSetting.canvasWindow.style.width.slice(0,-2))/2, y:Number(canvasSetting.canvasWindow.style.height.slice(0,-2))/2};
         var center = this.getCenter();
 
         var vector = {
@@ -481,6 +481,10 @@ angular.module('pedaleswitchApp')
         vector.y += vect.y;
 
         this.moveEffetCompo(vector);
+
+        // Reinitialise l'ascenceur dans la div contenant le canvas.
+        canvasSetting.canvasWindow.scrollTop = 0;
+        canvasSetting.canvasWindow.scrollLeft = 0;
       }
 
       /**
@@ -519,7 +523,7 @@ angular.module('pedaleswitchApp')
        * @returns {{t: Number, r: number, b: number, l: Number}}
        */
       findAllExtreme(){
-        var i, j, m, l, posExtreme = {}, saveExtreme;
+        var i, j, m, l, posExtreme, saveExtreme;
 
         posExtreme = {t:Infinity,r:-Infinity,b:-Infinity,l:Infinity};
 
