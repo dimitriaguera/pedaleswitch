@@ -126,7 +126,7 @@ angular.module('pedaleswitchApp')
        * @param effet
        */
       removeToCanvas: function(effet) {
-        var index = this.searchTabByIdReturnIndex(tables.tableEffet, effet._id, effet.key);
+        var index = canvasGlobalServ.searchTabByIdReturnIndex(tables.tableEffet, effet._id, effet.key);
         if(index !== false){
           effet.inCanvas = false;
           var removeIndex = [];

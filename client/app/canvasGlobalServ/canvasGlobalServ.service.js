@@ -193,9 +193,9 @@ angular.module('pedaleswitchApp')
       },
 
       searchEffetInSelections: function(id, key){
-        for(var i = 0; i < canvasGlobal.tables.selections.length; i++){
-          if(canvasGlobal.tables.selections[i]._id === id && canvasGlobal.tables.selections[i].key === key){
-            return canvasGlobal.tables.selections[i];
+        for(var i = 0; i < canvasGlobal.selections.length; i++){
+          if(canvasGlobal.selections[i]._id === id && canvasGlobal.selections[i].key === key){
+            return canvasGlobal.selections[i];
           }
         }
         return false;
