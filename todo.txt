@@ -30,7 +30,7 @@ dans pageDessin.html il y a
 
           Pourquoi on continue a passer autan d'argument ?
 
-
+-----------------------
 
 Sous Safari
 
@@ -46,28 +46,21 @@ mais un obj avec composant.potar ou composant.cercle donc la sync ne marche pas.
 var oldItem = _.find(array, {_id: item._id});
           var index = array.indexOf(oldItem);
           var event = 'created';
+
+-----------------------
+
 Directive droppable : Virer les evenement inutile (dragenter, dragleave)
 
 ------------------
 
 Box-dessin.controller.js : Pk il est dans une fonctionne anonyme contrairement a tout les autres ?
 
-
 ------------
 
-// On peut definir var d'environent en js avec affectant la var process.env.NOM_DE_LA_VAR
-var env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-'development'
-'production'
-'test'
+BUG
 
-on peut en shell
-export NODE_ENV='development'
-export NODE_ENV='production'
+quand on ajoute une effet sur le canvas et que l'on enlève par la suite en cliquant sur le moins (-) puis
+si on le rajoute de nouveau dans le canvas la fonciton de zoom pars en couille.
+C la meme chose avec la fonction save&restore.
 
 
-npm install babel-register
-
-
-npm install babel-preset-es2015 --save
-npm install babel-plugin-transform-class-properties --save

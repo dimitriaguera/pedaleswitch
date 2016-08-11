@@ -23,7 +23,7 @@ angular.module('pedaleswitchApp')
         ratioW: 3/4.2,
         ratioH: 300
       },
-      composantItems: [ ], // Liste de tout les composants dans la db
+      composantItems: { }, // Liste de tout les composants dans la db
       selections: [ ], // Liste de tout les effets que l'utilisateur à sélectionné dans la biblio.
       boite: {
         projBoite: {}, // Contient la projection de la boite pour la vue active.
@@ -51,15 +51,6 @@ angular.module('pedaleswitchApp')
       getCanvasGlobal: function(){
         return canvasGlobal;
       },
-
-      getSelections: function(){
-        return canvasGlobal.selections;
-      },
-
-      getComposantItems: function(){
-        return canvasGlobal.composantItems;
-      },
-
 
       /////// Canvas Part.
       getCanvasS: function(){
@@ -125,6 +116,29 @@ angular.module('pedaleswitchApp')
       },
       /////////// Fin ZoomOptions part.
 
+      //////// Selection part.
+      getSelections: function(){
+        return canvasGlobal.selections;
+      },
+
+      resetSelections: function(){
+        return this.reset(canvasGlobal.selections);
+      },
+
+      setSelections: function(tab){
+        return this.set(canvasGlobal.selections, tab);
+      },
+      ///////////////////////// Fin selection part.
+
+      getComposantItems: function(){
+        return canvasGlobal.composantItems;
+      },
+
+      setComposantItems: function(tab){
+        return this.set(canvasGlobal.composantItems, tab);
+      },
+
+
       //////// Boite part.
       getBoite: function(){
         return canvasGlobal.boite;
@@ -146,6 +160,11 @@ angular.module('pedaleswitchApp')
 
       getProjBoite: function(){
         return canvasGlobal.boite.projBoite;
+      },
+
+      resetBoite: function(){
+        canvasGlobal.boite.projBoite = {};
+        canvasGlobal.boite.masterBoite = {};
       },
       ///////////////// Fin boite part.
 
@@ -385,6 +404,10 @@ angular.module('pedaleswitchApp')
         this.resetTableArrow();
         this.resetActiveItem();
         this.resetTableDrawLimits();
+
+        this.resetSelections();
+        this.resetBoite();
+        //this.getComposantItems();
       }
       /////////////////////////////////////////// End getter & setter table part.
 

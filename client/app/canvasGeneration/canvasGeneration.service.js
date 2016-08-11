@@ -64,10 +64,11 @@ angular.module('pedaleswitchApp')
         
         this.isSelected = false;
         this.isOverlapping = false;
+        this.inCanvas = entity.inCanvas || false;
 
         this.fonction = entity.fonction || 'Effet';
         this.angle = entity.angle || 0;
-        this.size = {};
+        this.size = entity.size || {};
         this.posBox = {};
         
         this.points = entity.points;
@@ -417,7 +418,7 @@ angular.module('pedaleswitchApp')
         this.titre = 'Boite';
         this.effets = [];
         this.composants = [];
-        this.points = [];
+
         this.textDeco = [];
         this.shapeDeco = [];
         this.imgDeco = [];
@@ -425,6 +426,7 @@ angular.module('pedaleswitchApp')
         this.shapeObject = 'Rect';
         this.fonction = 'Boite';
 
+        this.points = [];
         this.initPoints(projPoints.points, this.points);
       }
 
@@ -706,17 +708,23 @@ angular.module('pedaleswitchApp')
      */
     class MasterBoite {
       constructor(entity) {
-        this.margin = 5;
-        this.initialHeight = 80;
-        this.convertMargin();
-        this.convertInitialHeight();
-        this.size = {
-          w: null,
-          h: null,
-          d: null,
-          d1: this.initialHeight,
-          d2: this.initialHeight
-        };
+        this.margin = entity.margin || this.convertMargin(5);
+        this.initialHeight = entity.initialHeight || this.convertInitialHeight(80);
+
+        if (entity.fonction === 'MasterBoite') {
+          this.size = entity.size;
+        }
+        else {
+          this.size = {
+            w: null,
+            h: null,
+            d: null,
+            d1: this.initialHeight,
+            d2: this.initialHeight
+          };
+          this.initBoiteWithEffect(entity)
+        }
+
         this.projections = {
           up: null,
           down: null,
@@ -728,8 +736,6 @@ angular.module('pedaleswitchApp')
         
         this.fonction = 'MasterBoite';
         this.shapeObject = 'Rect';
-        
-        this.initBoiteWithEffect(entity);
       }
 
       setSide(side, value){
@@ -750,12 +756,12 @@ angular.module('pedaleswitchApp')
         this.setSide('h', Math.sqrt(d*d - d3*d3));
       }
 
-      convertMargin() {
-        this.margin = canvasConversion.convertToPixel(this.margin);
+      convertMargin(value) {
+        return this.margin = canvasConversion.convertToPixel(value);
       }
 
-      convertInitialHeight() {
-        this.initialHeight = canvasConversion.convertToPixel(this.initialHeight);
+      convertInitialHeight(value) {
+        return this.initialHeight = canvasConversion.convertToPixel(value);
       }
 
       /**
@@ -2223,8 +2229,8 @@ angular.module('pedaleswitchApp')
             return console.log('ERROR ' + state + ' is not a valid state');
         }
       }
-      createProjection() {
-        var projPoints = this.createProjectionsCoords('all');
+      createProjection(projPoints) {
+        projPoints = projPoints || this.createProjectionsCoords('all');
         this.projections.up = new Boite(this, projPoints.up);
         this.projections.down = new Boite(this, projPoints.down);
         this.projections.left = new Boite(this, projPoints.left);
