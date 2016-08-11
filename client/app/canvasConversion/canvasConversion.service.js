@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('pedaleswitchApp')
-  .factory('canvasConversion', function () {
+  .factory('canvasConversion', function (canvasGlobalServ) {
 
-    var zoomOption = {};
+    var zoomOptions = canvasGlobalServ.getZoomOptions();
 
     var convertSizePoints = function (points, ratio){
       for (var i = 0, l = points.length; i < l ; i++){
@@ -64,32 +64,24 @@ angular.module('pedaleswitchApp')
     // Public API here
     return {
 
-      setZoomOption: function(zoomopt){
-        zoomOption = zoomopt;
-      },
-
-      getZoomRatio: function () {
-        return Math.round(zoomOption.zoom * 100);
-      },
-
       setZoom: function (increment) {
-        var newZoom = zoomOption.zoom + increment;
+        var newZoom = zoomOptions.zoom + increment;
         if(newZoom > 0.2 && newZoom <= 2) {
-          zoomOption.oldZoom = zoomOption.zoom;
-          zoomOption.zoom = newZoom;
+          zoomOptions.oldZoom = zoomOptions.zoom;
+          zoomOptions.zoom = newZoom;
           return true;
         }
         return false;
       },
       
       convertToPixel: function(value){
-        var newRatio = zoomOption.resolution / zoomOption.resoInMm;
-        return Math.round(zoomOption.zoom * newRatio * value);
+        var newRatio = zoomOptions.resolution / zoomOptions.resoInMm;
+        return Math.round(zoomOptions.zoom * newRatio * value);
       },
 
       convertToMm: function(value){
-        var newValue = value / zoomOption.zoom;
-        newValue = newValue / zoomOption.resolution/zoomOption.resoInMm;
+        var newValue = value / zoomOptions.zoom;
+        newValue = newValue / zoomOptions.resolution/zoomOptions.resoInMm;
         return Math.round(newValue);
       },
 
@@ -99,7 +91,7 @@ angular.module('pedaleswitchApp')
        */
       convertDessinToMm: function(dessin){
         
-        var ratio = 1 / (zoomOption.resoInMm * zoomOption.zoom * zoomOption.resolution);
+        var ratio = 1 / (zoomOptions.resoInMm * zoomOptions.zoom * zoomOptions.resolution);
 
         // Convertie la boite
         convertSize(dessin.boite, ratio);
@@ -113,7 +105,7 @@ angular.module('pedaleswitchApp')
       
       convertDessinToPixel: function(dessin){
 
-        var ratio = zoomOption.zoom * zoomOption.resolution * zoomOption.resoInMm;
+        var ratio = zoomOptions.zoom * zoomOptions.resolution * zoomOptions.resoInMm;
 
         // Convertie la boite
         convertSize(dessin.boite, ratio);
@@ -126,16 +118,16 @@ angular.module('pedaleswitchApp')
       },
 
       initializeEffetZoom: function (entity) {
-        convertSize(entity, zoomOption.zoom);
+        convertSize(entity, zoomOptions.zoom);
       },
 
       convertEffetZoom: function (entity) {
-        var newRatio = zoomOption.zoom / zoomOption.oldZoom;
+        var newRatio = zoomOptions.zoom / zoomOptions.oldZoom;
         convertSize(entity, newRatio);
       },
 
       convertEffetSize: function (entity) {
-        var newRatio = zoomOption.resolution/zoomOption.resoInMm;
+        var newRatio = zoomOptions.resolution/zoomOptions.resoInMm;
         convertSize(entity, newRatio);
       }
 

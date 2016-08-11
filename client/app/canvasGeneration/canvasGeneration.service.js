@@ -368,7 +368,7 @@ angular.module('pedaleswitchApp')
     class Rect extends Shape {
       constructor(entity){
         super(entity);
-        this.shapeObject = entity.shapeObject || 'Rect';
+        this.shapeObject = 'Rect';
       }
       drawCanvas(ctx){
         ctx.beginPath();
@@ -462,11 +462,11 @@ angular.module('pedaleswitchApp')
        * Centre la boite et les élements dans le canvas.
        * vérifie si les marges de canvas ne sont pas atteintes.
        * Si margin du canvas atteintes, la boite et les élements sont bougés.
-       * @param canvasSetting : object canvasSetting de canvasControl.
+       * @param canvasGobal : object canvasGobal de canvasControl.
        */
-      moveToCenterWindow(canvasSetting){
+      moveToCenterWindow(canvasGlobal){
         var vect;
-        var centerW = {x:Number(canvasSetting.canvasWindow.style.width.slice(0,-2))/2, y:Number(canvasSetting.canvasWindow.style.height.slice(0,-2))/2};
+        var centerW = {x:Number(canvasGlobal.canvas.canvasWindow.style.width.slice(0,-2))/2, y:Number(canvasGlobal.canvas.canvasWindow.style.height.slice(0,-2))/2};
         var center = this.getCenter();
 
         var vector = {
@@ -475,7 +475,7 @@ angular.module('pedaleswitchApp')
         };
 
         this.move(vector);
-        vect = this.moveCloseBorder(canvasSetting.canvas, canvasSetting.marginCanvas);
+        vect = this.moveCloseBorder(canvasGlobal.canvas.canvas, canvasGlobal.canvas.marginCanvas);
 
         vector.x += vect.x;
         vector.y += vect.y;
@@ -483,8 +483,8 @@ angular.module('pedaleswitchApp')
         this.moveEffetCompo(vector);
 
         // Reinitialise l'ascenceur dans la div contenant le canvas.
-        canvasSetting.canvasWindow.scrollTop = 0;
-        canvasSetting.canvasWindow.scrollLeft = 0;
+        canvasGlobal.canvas.canvasWindow.scrollTop = 0;
+        canvasGlobal.canvas.canvasWindow.scrollLeft = 0;
       }
 
       /**

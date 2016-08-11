@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('pedaleswitchApp')
-  .directive('droppable', function (canvasControl, canvasDraw, instanceDessin) {
+  .directive('droppable', function (canvasGlobalServ, canvasControl, canvasDraw) {
     return {
 
       link: function(scope, element) {
@@ -52,8 +52,8 @@ angular.module('pedaleswitchApp')
             var obj = JSON.parse(e.dataTransfer.getData('data'));
 
             // Lors du drop transmet l'id et le key de l'effet qui est draggé.
-            // Puis va chercher l'effet correspondant dans le modèle dessin.
-            var effet = instanceDessin.searchEffetInDessin(obj._id, obj.key);
+            // Puis va chercher l'effet correspondant dans la selection.
+            var effet = canvasGlobalServ.searchEffetInSelections(obj._id, obj.key);
 
             if(effet && !effet.inCanvas) {
 
@@ -61,9 +61,6 @@ angular.module('pedaleswitchApp')
 
               // Le rajoute au canvas avec les bonnes positions.
               canvasControl.addToCanvas(effet, false, mousePos);
-              
-              // Initialise le boite dans l'instance de dessin.
-              instanceDessin.setBoite(canvasControl.getMasterBoite());
 
               // Dessine.
               canvasDraw.drawStuff();
