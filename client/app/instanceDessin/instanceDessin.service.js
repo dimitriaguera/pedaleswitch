@@ -1,13 +1,10 @@
 'use strict';
 
 angular.module('pedaleswitchApp')
-  .factory('instanceDessin', function ($http, canvasConversion) {
-    var initialCompo = [];
-    var composantItems = {};
-    var dessin = {
-      options: [],
-      boite: {}
-    };
+  .factory('instanceDessin', function ($http, canvasGlobalServ, canvasConversion) {
+
+    var selections = canvasGlobalServ.getSelections();
+    var composantItems = canvasGlobalServ.getComposantItems();
 
     /**
      * Retour les coordonnées des quatres sommet de la forme.
@@ -32,7 +29,8 @@ angular.module('pedaleswitchApp')
           x: pos.x - size.w/2,
           y: pos.y + size.h/2
         }
-      ];    }
+      ];
+    }
 
     /**
      * @todo charger juste les composants des effets ajouter.
@@ -41,44 +39,13 @@ angular.module('pedaleswitchApp')
      * La clé de chq entrée du tableau est l'id de chq composant.
      */
     $http.get('/api/composants').then(response => {
-      initialCompo = response.data;
+      var initialCompo = response.data;
       for(var j=0; j<initialCompo.length; j++){
         composantItems[initialCompo[j]._id] = initialCompo[j];
       }
     });
 
     return {
-
-      reset: function() {
-        dessin.options = [];
-        dessin.boite = {};
-      },
-      
-      getDessin: function () {
-        return dessin;
-      },
-
-      setDessin: function(newdessin) {
-        dessin = newdessin;
-        return dessin;
-      },
-      
-      setBoite: function (boite) {
-        dessin.boite = boite;
-      },
-      
-      getComposantItems: function () {
-        return composantItems;
-      },
-
-      searchEffetInDessin: function(id, key){
-        for(var i = 0; i < dessin.options.length; i++){
-          if(dessin.options[i]._id === id && dessin.options[i].key === key){
-            return dessin.options[i];
-          }
-        }
-        return false;
-      },
 
       /**
        * Ajoute un effet dans l'instance dessin.
@@ -89,7 +56,7 @@ angular.module('pedaleswitchApp')
        * @param option
        */
       setEffet: function(effet, option) {
-        var key = dessin.options.length;
+        var key = selections.length;
 
         var stdPos = 0;
 
@@ -128,10 +95,9 @@ angular.module('pedaleswitchApp')
           };
           nouvEffet.composants.push(compo);
         }
-        //nouvEffet.composants.push(polyTest);
         canvasConversion.convertEffetSize(nouvEffet);
         canvasConversion.initializeEffetZoom(nouvEffet);
-        dessin.options.push(nouvEffet);
+        selections.push(nouvEffet);
       },
 
       //updateComposant: function(idOption, idCompo, idItem) {

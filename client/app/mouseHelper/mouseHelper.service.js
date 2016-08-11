@@ -1,11 +1,10 @@
 'use strict';
 
 angular.module('pedaleswitchApp')
-  .factory('mouseHelper', function (canvasControl, checkCollision, canvasDraw, $rootScope) {
+  .factory('mouseHelper', function (canvasGlobalServ, canvasControl, checkCollision, canvasDraw, $rootScope) {
 
     var drag = {};
-    var tabActive = [];
-    var boite = [];
+
 
     var timea, timeb;
     var DELAY_DRAG = 100;
@@ -13,10 +12,11 @@ angular.module('pedaleswitchApp')
 
     var olddragid = null;
 
-
     var mousePos = {};
 
-    var canvasSetting = canvasControl.getCanvasSetting();
+    var canvasGlobal = canvasGlobalServ.getCanvasGlobal();
+    var boite = canvasGlobalServ.getBoite();
+    var tables = canvasGlobalServ.getTables();
 
     /**
      * Change la forme du pointeur de la souris.
@@ -32,7 +32,7 @@ angular.module('pedaleswitchApp')
     var mouse = function(e) {
       // le +2 et le +21 depende de l'icone choisie.
       var mouse = {x: e.layerX + 2, y: e.layerY + 21};
-      var data = canvasSetting.ctx.getImageData(mouse.x, mouse.y, 1, 1).data;
+      var data = canvasGlobal.canvas.ctx.getImageData(mouse.x, mouse.y, 1, 1).data;
       var rgba = 'rgba(' + data[0] + ',' + data[1] +
         ',' + data[2] + ',' + data[3] + ')';
       var hex = '#' + tinycolor(rgba).toHex();
@@ -52,13 +52,11 @@ angular.module('pedaleswitchApp')
        */
       eyedropper: function(){
         // Stock l'id de l'item actif.
-        var tableText = canvasControl.getTableText();
-        var activeItem = canvasControl.getActiveItem();
         drag = {};
-        drag.id = canvasControl.searchTabByIdReturnIndex(tableText, activeItem[0]._id, 0);
+        drag.id = canvasGlobalServ.searchTabByIdReturnIndex(tables.tableText, tables.activeItem[0]._id, 0);
 
         // Enlever le pop-up.
-        canvasControl.resetActiveItem();
+        canvasGlobalServ.resetActiveItem();
 
         // Change le pointer de la souris
         update("url('assets/images/eyedropper-24x24.png'), auto");
@@ -71,8 +69,7 @@ angular.module('pedaleswitchApp')
         mousePos = mouse(e);
         
         // change la couleur de l'item actif.
-        var tableText = canvasControl.getTableText();
-        tableText[drag.id].font.color = mousePos.color;
+        tables.tableText[drag.id].font.color = mousePos.color;
 
         // Dessine.
         canvasDraw.drawStuff();
@@ -82,8 +79,7 @@ angular.module('pedaleswitchApp')
         mousePos = mouse(e);
 
         // change la couleur de l'item actif.
-        var tableText = canvasControl.getTableText();
-        tableText[drag.id].font.color = mousePos.color;
+        tables.tableText[drag.id].font.color = mousePos.color;
 
         // Dessine.
         canvasDraw.drawStuff();
@@ -99,21 +95,18 @@ angular.module('pedaleswitchApp')
        */
       mouseMove: function (e) {
         mousePos = {x: e.layerX, y: e.layerY};
-        
-        tabActive = canvasControl.getTableActive();
-        boite = canvasControl.getBoite();
 
         // Met le bon pointeur de souris
         update('default');
 
         // Si il y a des obj dans le canvas.
-        if (tabActive.length > 0) {
+        if (tables.tableActive.length > 0) {
           // Regarde si la souris est sur un effet ou un composant.
-          drag = checkCollision.checkMouseBox(mousePos, tabActive, 10);
+          drag = checkCollision.checkMouseBox(mousePos, tables.tableActive, 10);
           if (drag) {
             
             // On drague soit un obj soit un élément de déco.
-            if (tabActive[drag.id].input) {
+            if (tables.tableActive[drag.id].input) {
               drag.type = 'deco';
             } else {
               drag.type = 'thing';
@@ -122,9 +115,9 @@ angular.module('pedaleswitchApp')
             // Et enlève l'ancien sélectionner.
             // Redraw si nécessaire.
             if (olddragid !== drag.id && drag.type !== 'deco'){
-              tabActive[drag.id].setSelected(true);
+              tables.tableActive[drag.id].setSelected(true);
               if (olddragid !== null){
-                tabActive[olddragid].setSelected(false);
+                tables.tableActive[olddragid].setSelected(false);
               }
               olddragid = drag.id;
               canvasDraw.drawStuff();
@@ -136,13 +129,9 @@ angular.module('pedaleswitchApp')
             // qu'avant oui alors le désélectionner
             // et redessine.
             if (olddragid !== null){
-              tabActive[olddragid].setSelected(false);
-
-
+              tables.tableActive[olddragid].setSelected(false);
               // Enlève pop-up quand on deplace la souris hors zone
               //canvasControl.resetActiveItem();
-
-              
               canvasDraw.drawStuff();
             }
             olddragid = null;
@@ -150,13 +139,13 @@ angular.module('pedaleswitchApp')
         }
 
         // Si une boite existe.
-        if (boite.titre !== undefined){
+        if (boite.projBoite.titre !== undefined){
 
           // Selon la vue, on regarde si la souris est sur les corners ou les borders.
-          switch(canvasSetting.viewState){
+          switch(canvasGlobalServ.getViewState()){
 
             case 'up':
-              drag = checkCollision.checkMouseBorder(mousePos, [boite], 10);
+              drag = checkCollision.checkMouseBorder(mousePos, [boite.projBoite], 10);
               if (drag) {
                 drag.type = 'borderboite';
                 update(drag.pointer.type);
@@ -165,13 +154,13 @@ angular.module('pedaleswitchApp')
               break;
 
             case 'left' :
-              drag = checkCollision.checkMouseCorner(mousePos, [boite], 10, ['top-left']);
+              drag = checkCollision.checkMouseCorner(mousePos, [boite.projBoite], 10, ['top-left']);
               if (drag) {
                 drag.type = 'cornersideboite';
                 update(drag.pointer.type);
                 return;
               }
-              drag = checkCollision.checkMouseBorder(mousePos, [boite], 10);
+              drag = checkCollision.checkMouseBorder(mousePos, [boite.projBoite], 10);
               if (drag && drag.pointer.pos !== 'top'){
                 drag.type = 'borderboite';
                 update(drag.pointer.type);
@@ -180,13 +169,13 @@ angular.module('pedaleswitchApp')
               break;
 
             case 'right' :
-              drag = checkCollision.checkMouseCorner(mousePos, [boite], 10, ['top-right']);
+              drag = checkCollision.checkMouseCorner(mousePos, [boite.projBoite], 10, ['top-right']);
               if (drag) {
                 drag.type = 'cornersideboite';
                 update(drag.pointer.type);
                 return;
               }
-              drag = checkCollision.checkMouseBorder(mousePos, [boite], 10);
+              drag = checkCollision.checkMouseBorder(mousePos, [boite.projBoite], 10);
               if (drag && drag.pointer.pos !== 'top'){
                 drag.type = 'borderboite';
                 update(drag.pointer.type);
@@ -204,11 +193,11 @@ angular.module('pedaleswitchApp')
               break;
 
             default:
-              return console.log('ERROR ' + canvasSetting.viewState + ' is not a valid state');
+              return console.log('ERROR ' + canvasGlobalServ.getViewState() + ' is not a valid state');
           }
 
           // Regarde si la souris est sur la boite
-          drag = checkCollision.checkMouseBox(mousePos, [boite], 10);
+          drag = checkCollision.checkMouseBox(mousePos, [boite.projBoite], 10);
           if(drag){
             drag.type = 'boite';
           }
@@ -223,7 +212,7 @@ angular.module('pedaleswitchApp')
         mousePos = {x: e.layerX, y: e.layerY};
 
         // Cette ligne enlève les pop-up car on commence un drag.
-        canvasControl.resetActiveItem();
+        canvasGlobalServ.resetActiveItem();
 
         // Prend le temps actuel pour savoir si click ou drag.
         timea = (new Date()).getTime();
@@ -258,7 +247,7 @@ angular.module('pedaleswitchApp')
       mouseMoveDeco: function(e){
 
         // On verifie si l'item est selected.
-        if (tabActive[drag.id].isSelected === true) {
+        if (tables.tableActive[drag.id].isSelected === true) {
 
           // Delais avant le drag
           timeb = (new Date()).getTime() - timea;
@@ -267,7 +256,7 @@ angular.module('pedaleswitchApp')
           }
 
           // Affecte la nouvelle position.
-          tabActive[drag.id].move({x: e.layerX - mousePos.x, y: e.layerY - mousePos.y});
+          tables.tableActive[drag.id].move({x: e.layerX - mousePos.x, y: e.layerY - mousePos.y});
           mousePos = {x: e.layerX, y: e.layerY};
 
           // Met le bon pointeur de souris
@@ -295,25 +284,25 @@ angular.module('pedaleswitchApp')
 
         var testProj = false;
         //var posMax = canvasControl.findGlobalRect();
-        var masterBoite = canvasControl.getMasterBoite();
-        var posMax = boite.findAllExtreme();
 
-        var marginBoite = canvasControl.getBoite().margin;
+        var posMax = boite.projBoite.findAllExtreme();
+        var marginBoite = boite.projBoite.margin;
 
-        switch(canvasSetting.viewState){
+
+        switch(canvasGlobal.state.viewState){
 
           case 'left':
             // Coin haut-gauche.
             if (drag.pointer.type === 'nw-resize'){
 
               // La souris est plus haut que la marge.
-              if (mousePos.y < canvasSetting.marginCanvas){
-                mousePos.y = canvasSetting.marginCanvas;
+              if (mousePos.y < canvasGlobal.canvas.marginCanvas){
+                mousePos.y = canvasGlobal.canvas.marginCanvas;
               }
 
               // Regarde si pas inferieur au bord droit.
-              if (mousePos.y > boite.points[1].y) {
-                mousePos.y = boite.points[1].y;
+              if (mousePos.y > boite.projBoite.points[1].y) {
+                mousePos.y = boite.projBoite.points[1].y;
               }
 
               // Regarde si pas inferieur a un composant ou a effet.
@@ -322,13 +311,13 @@ angular.module('pedaleswitchApp')
               }
 
               // Regarde sur les autres projections si pas inférieur a un composant ou un effet.
-              testProj = masterBoite.projectionsCollisionY(canvasSetting.viewState, mousePos, 0);
+              testProj = boite.masterBoite.projectionsCollisionY(canvasGlobal.state.viewState, mousePos, 0);
               if(testProj) {
-                mousePos.y = boite.points[3].y - testProj;
+                mousePos.y = boite.projBoite.points[3].y - testProj;
               }
 
               // Redimensionne la boite.
-              boite.points[0].setY(mousePos.y);
+              boite.projBoite.points[0].setY(mousePos.y);
             }
             break;
 
@@ -337,8 +326,8 @@ angular.module('pedaleswitchApp')
             if (drag.pointer.type === 'ne-resize'){
 
               // La souris est plus haut que la marge.
-              if (mousePos.y < canvasSetting.marginCanvas){
-                mousePos.y = canvasSetting.marginCanvas;
+              if (mousePos.y < canvasGlobal.canvas.marginCanvas){
+                mousePos.y = canvasGlobal.canvas.marginCanvas;
               }
 
               // Regarde si pas inferieur au bord gauche.
@@ -352,18 +341,18 @@ angular.module('pedaleswitchApp')
               }
 
               // Regarde sur les autres projections si pas inférieur a un composant ou un effet.
-              testProj = masterBoite.projectionsCollisionY(canvasSetting.viewState, mousePos, 1);
+              testProj = masterBoite.projectionsCollisionY(canvasGlobal.state.viewState, mousePos, 1);
               if(testProj) {
-                mousePos.y = boite.points[2].y - testProj;
+                mousePos.y = boite.projBoite.points[2].y - testProj;
               }
 
               // Redimensionne la boite.
-              boite.points[1].setY(mousePos.y);
+              boite.projBoite.points[1].setY(mousePos.y);
             }
             break;
 
           default:
-            return console.log('ERROR ' + canvasSetting.viewState + ' is not a valid state. Only "left" or "right" allowed');
+            return console.log('ERROR ' + canvasGlobal.state.viewState + ' is not a valid state. Only "left" or "right" allowed');
         }
 
         // Recalcule les positions de fleches entourant la boite.
@@ -389,12 +378,10 @@ angular.module('pedaleswitchApp')
 
         var testProj = false;
         //var posMax = canvasControl.findGlobalRect();
-        var posMax = boite.findAllExtreme();
-        var masterBoite = canvasControl.getMasterBoite();
+        var posMax = boite.projBoite.findAllExtreme();
+        var marginBoite = boite.projBoite.margin;
 
-        var marginBoite = canvasControl.getBoite().margin;
-
-        limit = (canvasSetting.viewState === 'left' || canvasSetting.viewState === 'right') ? masterBoite.initialHeight : limit;
+        limit = (canvasGlobal.state.viewState === 'left' || canvasGlobal.state.viewState === 'right') ? boite.masterBoite.initialHeight : limit;
 
         // Bord haut ou bas.
         if (drag.pointer.type === 'ns-resize'){
@@ -403,8 +390,8 @@ angular.module('pedaleswitchApp')
           if (drag.pointer.pos === 'bottom'){
 
             // Agrendit le canvas.
-            if (mousePos.y > canvasSetting.canvas.height * 0.8) {
-              canvasSetting.canvas.height = mousePos.y * 1.2;
+            if (mousePos.y > canvasGlobal.canvas.canvas.height * 0.8) {
+              canvasGlobal.canvas.canvas.height = mousePos.y * 1.2;
             }
 
             // Regarde si pas inferieur a un composant ou a effet.
@@ -414,39 +401,39 @@ angular.module('pedaleswitchApp')
 
             // Regarde si pas inferieur à une taille minimale.
             // On determine le bord le plus court.
-            b1 = boite.points[3].y - boite.points[0].y;
-            b2 = boite.points[2].y - boite.points[1].y;
+            b1 = boite.projBoite.points[3].y - boite.projBoite.points[0].y;
+            b2 = boite.projBoite.points[2].y - boite.projBoite.points[1].y;
             if ( b1 <= b2 ) {
-              if (mousePos.y < boite.points[0].y + limit) {
-                mousePos.y = boite.points[0].y + limit;
+              if (mousePos.y < boite.projBoite.points[0].y + limit) {
+                mousePos.y = boite.projBoite.points[0].y + limit;
               }
             }
             else {
-              if (mousePos.y < boite.points[1].y + limit) {
-                mousePos.y = boite.points[1].y + limit;
+              if (mousePos.y < boite.projBoite.points[1].y + limit) {
+                mousePos.y = boite.projBoite.points[1].y + limit;
               }
             }
 
             // Regarde sur les autres projections si pas inférieur a un composant ou un effet.
-            testProj = masterBoite.projectionsCollisionY(canvasSetting.viewState, mousePos, 3);
+            testProj = boite.masterBoite.projectionsCollisionY(canvasGlobalServ.getViewState(), mousePos, 3);
             if(testProj) {
-              if (canvasSetting.viewState === 'right') {
-                mousePos.y = boite.points[1].y + testProj;
+              if (canvasGlobalServ.getViewState() === 'right') {
+                mousePos.y = boite.projBoite.points[1].y + testProj;
               }
               else {
-                mousePos.y = boite.points[0].y + testProj;
+                mousePos.y = boite.projBoite.points[0].y + testProj;
               }
             }
 
             // Redimensionne la boite.
-            boite.points[2].setY(mousePos.y);
-            boite.points[3].setY(mousePos.y);
+            boite.projBoite.points[2].setY(mousePos.y);
+            boite.projBoite.points[3].setY(mousePos.y);
           }
           //Bord haut.
           else {
             // La souris est plus haut que la marge.
-            if (mousePos.y < canvasSetting.marginCanvas){
-              mousePos.y = canvasSetting.marginCanvas;
+            if (mousePos.y < canvasGlobal.canvas.marginCanvas){
+              mousePos.y = canvasGlobal.canvas.marginCanvas;
             }
 
             // Regarde si pas inferieur a un composant ou a effet.
@@ -455,15 +442,15 @@ angular.module('pedaleswitchApp')
             }
 
             // Regarde sur les autres projections si pas inférieur a un composant ou un effet.
-            testProj = masterBoite.projectionsCollisionY(canvasSetting.viewState, mousePos, 0);
+            testProj = boite.masterBoite.projectionsCollisionY(canvasGlobal.state.viewState, mousePos, 0);
             if(testProj) {
-              mousePos.y = boite.points[3].y - testProj;
+              mousePos.y = boite.projBoite.points[3].y - testProj;
               //mousePos.x = boite.points[1].x;
             }
 
             // Redimensionne la boite.
-            boite.points[0].setY(mousePos.y);
-            boite.points[1].setY(mousePos.y);
+            boite.projBoite.points[0].setY(mousePos.y);
+            boite.projBoite.points[1].setY(mousePos.y);
           }
         }
         // Bord gauche ou droite.
@@ -477,28 +464,28 @@ angular.module('pedaleswitchApp')
             }
 
             // Regarde sur les autres projections si pas inférieur a un composant ou un effet.
-            testProj = masterBoite.projectionsCollisionX(canvasSetting.viewState, mousePos, 1);
+            testProj = boite.masterBoite.projectionsCollisionX(canvasGlobal.state.viewState, mousePos, 1);
             if(testProj) {
-              mousePos.x = boite.points[0].x + testProj;
+              mousePos.x = boite.projBoite.points[0].x + testProj;
               //mousePos.x = boite.points[1].x;
             }
 
             // Redimensionne la boite.
-            boite.points[1].setX(mousePos.x);
-            boite.points[2].setX(mousePos.x);
+            boite.projBoite.points[1].setX(mousePos.x);
+            boite.projBoite.points[2].setX(mousePos.x);
             //boite.size.w += mousePos.x - boite.getRight();
 
             // Agrendit le canvas.
-            if (mousePos.x > canvasSetting.canvas.width  * 0.8) {
-              canvasSetting.canvas.width = mousePos.x * 1.2;
+            if (mousePos.x > canvasGlobal.canvas.canvas.width  * 0.8) {
+              canvasGlobal.canvas.canvas.width = mousePos.x * 1.2;
             }
 
           }
           //Bord gauche.
           else {
             // La souris est plus à gauche que la marge.
-            if (mousePos.x < canvasSetting.marginCanvas) {
-              mousePos.x = canvasSetting.marginCanvas;
+            if (mousePos.x < canvasGlobal.canvas.marginCanvas) {
+              mousePos.x = canvasGlobal.canvas.marginCanvas;
             }
 
             // Regarde si pas inferieur a un composant ou a effet.
@@ -507,20 +494,20 @@ angular.module('pedaleswitchApp')
             }
 
             // Regarde sur les autres projections si pas inférieur a un composant ou un effet.
-            testProj = masterBoite.projectionsCollisionX(canvasSetting.viewState, mousePos, 0);
+            testProj = boite.masterBoite.projectionsCollisionX(canvasGlobal.state.viewState, mousePos, 0);
             if(testProj) {
-              mousePos.x = boite.points[1].x - testProj;
+              mousePos.x = boite.projBoite.points[1].x - testProj;
               //mousePos.x = boite.points[0].x;
             }
 
             // Redimensionne la boite.
-            boite.points[0].setX(mousePos.x);
-            boite.points[3].setX(mousePos.x);
+            boite.projBoite.points[0].setX(mousePos.x);
+            boite.projBoite.points[3].setX(mousePos.x);
 
 
             // Redimensionne la boite.
-            //boite.size.w += boite.getLeft() - mousePos.x;
-            //boite.setX(mousePos.x);
+            //boite.projBoite.size.w += boite.projBoite.getLeft() - mousePos.x;
+            //boite.projBoite.setX(mousePos.x);
           }
         }
 
@@ -542,16 +529,16 @@ angular.module('pedaleswitchApp')
         // Met le bon pointeur de souris
         update('move');
 
-        var delta = {x: boite.points[0].x, y: boite.points[0].y};
+        var delta = {x: boite.projBoite.points[0].x, y: boite.projBoite.points[0].y};
         // Deplace la boite.
-        boite.move({x: e.layerX - mousePos.x, y: e.layerY - mousePos.y});
+        boite.projBoite.move({x: e.layerX - mousePos.x, y: e.layerY - mousePos.y});
 
         // Deplace la boite si elle depasse depasse le canvas.
-        boite.moveCloseBorder(canvasSetting.canvas, canvasSetting.marginCanvas);
+        boite.projBoite.moveCloseBorder(canvasGlobal.canvas.canvas, canvasGlobal.canvas.marginCanvas);
 
         // Bouge les effets et les compos.
-        delta = {x: boite.points[0].x - delta.x, y: boite.points[0].y - delta.y};
-        boite.moveEffetCompo(delta);
+        delta = {x: boite.projBoite.points[0].x - delta.x, y: boite.projBoite.points[0].y - delta.y};
+        boite.projBoite.moveEffetCompo(delta);
 
         // Recalcule les positions de fleches entourant la boite.
         canvasControl.setArrowPos();
@@ -566,9 +553,6 @@ angular.module('pedaleswitchApp')
        * On deplace un obj
        */
       mouseMoveThing: function(e) {
-
-        var masterBoite = canvasControl.getMasterBoite();
-
         // Delais avant le drag
         timeb = (new Date()).getTime() - timea;
         if (timeb < DELAY_DRAG) {
@@ -576,26 +560,26 @@ angular.module('pedaleswitchApp')
         }
 
         // Deplace le thing.
-        tabActive[drag.id].move({x: e.layerX - mousePos.x, y: e.layerY - mousePos.y});
+        tables.tableActive[drag.id].move({x: e.layerX - mousePos.x, y: e.layerY - mousePos.y});
         mousePos = {x: e.layerX, y: e.layerY};
 
         // Met le bon pointeur de souris
         update('move');
 
         // Deplace l'obj si sa nouvelle position depasse le canvas.
-        tabActive[drag.id].moveCloseBorder(canvasSetting.canvas, canvasSetting.marginCanvas, boite.margin);
+        tables.tableActive[drag.id].moveCloseBorder(canvasGlobal.canvas.canvas, canvasGlobal.canvas.marginCanvas, boite.projBoite.margin);
 
         // Bouge les composants si non debraillable.
-        if (!canvasSetting.debrayable) {
-          tabActive[drag.id].resetCompPos();
+        if (!canvasGlobal.state.debrayable) {
+          tables.tableActive[drag.id].resetCompPos();
         }
 
         // Check les collisions entre l'item déplacé et la table active.
-        checkCollision.check(tabActive[drag.id], tabActive);
+        checkCollision.check(tables.tableActive[drag.id], tables.tableActive);
         // Check l'alignement des things.
-        canvasControl.setTableAlignLine(checkCollision.checkLine(tabActive[drag.id], tabActive));
+        canvasGlobalServ.setTableAlignLine(checkCollision.checkLine(tables.tableActive[drag.id], tables.tableActive));
         // Redimensionne la boite.
-        masterBoite.checkBorderBoite(canvasSetting.viewState, tabActive[drag.id]);
+        boite.masterBoite.checkBorderBoite(canvasGlobal.state.viewState, tables.tableActive[drag.id]);
         // Recalcule les positions de fleches entourant la boite.
         canvasControl.setArrowPos();
         // Dessine.
@@ -616,7 +600,7 @@ angular.module('pedaleswitchApp')
 
         // Si click, on enleve les selects et on redessine.
         if (timeb < DELAY_CLICK){
-          canvasControl.resetIsSelected(tabActive);
+          canvasGlobalServ.resetIsSelected(tables.tableActive);
           canvasDraw.drawStuff();
         }
       },
@@ -631,14 +615,14 @@ angular.module('pedaleswitchApp')
 
         // Si oui, on annule le isSelected.
         if (timeb < DELAY_CLICK) {
-          canvasControl.resetIsSelected(tabActive);
+          canvasGlobalServ.resetIsSelected(tables.tableActive);
         }
 
         // Si oui on click.
-        if (timeb < DELAY_CLICK && drag.type !=='boite' && tabActive[drag.id]){
-          canvasControl.setActiveItem(tabActive[drag.id]);
+        if (timeb < DELAY_CLICK && drag.type !=='boite' && tables.tableActive[drag.id]){
+          canvasGlobalServ.setActiveItem(tables.tableActive[drag.id]);
           if (drag.type === 'deco'){
-            tabActive[drag.id].setSelected(true);
+            tables.tableActive[drag.id].setSelected(true);
           }
         }
 
@@ -651,10 +635,10 @@ angular.module('pedaleswitchApp')
         $rootScope.$emit('no-click-on-element');
 
         // Check all collision.
-        checkCollision.checkAll(tabActive);
+        checkCollision.checkAll(tables.tableActive);
         
         // Enlève les lignes d'alignement.
-        canvasControl.setTableAlignLine([]);
+        canvasGlobalServ.setTableAlignLine([]);
 
         canvasDraw.drawStuff();
       }
