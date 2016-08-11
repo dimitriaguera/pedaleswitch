@@ -30,10 +30,10 @@ angular.module('pedaleswitchApp')
 
 
       /**
-       * Cette fonction créé les objets du canvas à partir du modèle dessin.
+       * Cette fonction créé les objets du canvas à partir de la selection.
        * Et l'ajoute dans tableEffet et tableComposant pour les composants correspondants.
        *
-       * @param effet : objet effet du modele dessin (entrée de la table option du panier).
+       * @param effet : objet effet dans la selection (entrée de la table selection de canvasGlobal).
        * @para bol : si true alors rajoute l'effet meme si il est deja dans le canvas
        *             sert au fonction de chargement depuis la db ou localstorage.
        * @para pos : met l'effet à la position donnée par pos.
@@ -42,7 +42,7 @@ angular.module('pedaleswitchApp')
         bol = bol || false;
         pos = pos || null;
 
-        // if check si l'effet est deja dans le canvas.
+        // check si l'effet est deja dans le canvas.
         if (!effet.inCanvas || bol) {
           var tmpEff = canvasGeneration.newRect(effet);
           var compos = effet.composants;
@@ -55,7 +55,7 @@ angular.module('pedaleswitchApp')
             }
           }
 
-          // Créer le boitier de la pedale.
+          // Créer le boitier de la pedale si il n'existe pas.
           if(boite.projBoite.fonction !== 'Boite') {
             canvasGlobalServ.setMasterBoite(canvasGeneration.newMasterBoite(tmpEff));
 
@@ -82,11 +82,11 @@ angular.module('pedaleswitchApp')
             // Redimensionne la boite si le nouvelle effet est en dehors.
             boite.masterBoite.checkBorderBoite(canvasGlobal.state.viewState, tmpEff);
 
-            // Repositionne les arraw.
+            // Repositionne les arrow.
             this.setArrowPos();
           }
 
-          // Lie les effets et composants a la bonne projection de la boite.
+          // Met le nouvel effet dans la bonne projection.
           boite.masterBoite.projections[canvasGlobal.state.viewState].effets.push(tmpEff);
 
           // On créé les composants.
@@ -103,7 +103,7 @@ angular.module('pedaleswitchApp')
           }
 
           // Rajoute la propriété inCanvas a l'effet.
-          effet.inCanvas = true;
+          tmpEff.inCanvas = true;
 
           // Rajoute l'effet a la table effet et le master dans la table MesterEffet.
           tables.tableEffet.push(tmpEff);
@@ -306,24 +306,42 @@ angular.module('pedaleswitchApp')
        * 
        * @param dessin
        */
-      restoreCanvas: function(dessin){
-        // Regénère la boite.
-        boite = canvasGeneration.newBoite();
-        boite.initBoiteWithBoite(dessin.boite);
-        boite.effets = tableEffet;
-        dessin.boite = boite;
-        this.resizeCanvas();
-        // Créer les flèches autour de la boite.
-        tableArrow.push(canvasGeneration.newArrow(boite, 'right'));
-        tableArrow.push(canvasGeneration.newArrow(boite, 'bottom'));
+      restoreCanvas: function(saveData){
+        var i,j, oldViewState = canvasGlobal.state.viewSate;
+        var viewPossible = ['bottom','down','left','right','top','up'];
 
-        // Rajoute tout les effets au canvas.
-        //@todo addToCanvas with load option car on peut pas faire incanvas...
-        for (var i = 0 ; i < dessin.options.length ; i++){
-          if (dessin.options[i].inCanvas === true){
-            this.addToCanvas(dessin.options[i], true);
+        // Regénère la masterboite.
+        canvasGlobalServ.setMasterBoite(canvasGeneration.newMasterBoite(saveData.boite.masterBoite));
+
+        // Regénére les points des projections de boite.
+        var projPoints = {};
+        for (i = 0 ; i < viewPossible.length ; i++) {
+          projPoints[viewPossible[i]] = {points: []};
+          for (j = 0; j < saveData.boite.masterBoite.projections[viewPossible[i]].points.length; j++) {
+            projPoints[viewPossible[i]].points[j] = {};
+            projPoints[viewPossible[i]].points[j].x = saveData.boite.masterBoite.projections[viewPossible[i]].points[j].x;
+            projPoints[viewPossible[i]].points[j].y = saveData.boite.masterBoite.projections[viewPossible[i]].points[j].y;
           }
         }
+
+        // Créer les projections de la boite avec les bon points.
+        boite.masterBoite.createProjection(projPoints);
+
+        // Va rajouter les effets, les composants au bonne projections de boites.
+        for (i = 0 ; i < viewPossible.length ; i++){
+          canvasGlobal.state.viewSate = viewPossible[i];
+          canvasGlobalServ.setProjBoite(boite.masterBoite.projections[viewPossible[i]]);
+          for (j = 0 ; j < saveData.boite.masterBoite.projections[viewPossible[i]].effets.length ; j++) {
+            this.addToCanvas(saveData.boite.masterBoite.projections[viewPossible[i]].effets[j], true);
+          }
+        }
+
+        // On sélectionne la bonne projection.
+        canvasGlobal.state.viewSate = oldViewState;
+        canvasGlobalServ.setProjBoite(boite.masterBoite.projections[canvasGlobal.state.viewState]);
+
+
+
       },
 
       /**

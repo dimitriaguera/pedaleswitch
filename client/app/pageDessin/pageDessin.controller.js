@@ -86,46 +86,42 @@ class PageDessinComponent {
   };
 
   load(){
+
     // Reset all Canvas.
-    this.canvasControl.resetAll();
+    this.canvasGlobalServ.resetAll();
     // Recupère dans le local storage.
-    var dessinStock = this.storage.get('dessin');
-    // Instancie le dessin et le stock dans this.dessin.
-    //this.dessin = this.instanceDessin.setDessin(dessinStock);
-    // Convertie les mM en pixel.
-    this.canvasConversion.convertDessinToPixel(this.dessin);
-    // Rajouter les things et la boite dans le canvas.
-    this.canvasControl.restoreCanvas(this.dessin);
-    // Remet les options de debrayable.
-    this.debrayable = this.dessin.debrayable;
-    this.switchDeb(this.debrayable);
-    // Link la tableau arrow.
-    this.tableArrow = this.canvasControl.getTableArrow();
+    var saveData = this.storage.get('saveData');
+
+    // Remet les options.
+    this.canvasGlobal.state.debrayable      = saveData.state.debrayable;
+    this.canvasGlobal.state.isActive        = saveData.state.isActive;
+    this.canvasGlobal.state.viewState       = saveData.state.viewState;
+    this.canvasGlobal.zoomOptions.oldZoom   = saveData.zoomOptions.oldZoom;
+    this.canvasGlobal.zoomOptions.ratioH    = saveData.zoomOptions.ratioH;
+    this.canvasGlobal.zoomOptions.ratioW    = saveData.zoomOptions.ratioW;
+    this.canvasGlobal.zoomOptions.resoInMm  = saveData.zoomOptions.resoInMm;
+    this.canvasGlobal.zoomOptions.zoom      = saveData.zoomOptions.zoom;
+
+    // Remet la selection.
+    // @todo check db pour voir si cela existe encore.
+    this.canvasGlobalServ.setSelections(saveData.selections);
+
+    // Remet les composantsItems
+    // @todo a refaire
+    //this.canvasGlobalServ.setComposantItems(saveData.composantItems);
+
+    // Re créer la masterboite, rajoute les effets, composants dans le canvas.
+    this.canvasControl.restoreCanvas(saveData);
+
+    this.canvasDraw.drawStuff();
+
     // Active la table effet et dessine.
     this.activeEffet();
   }
 
   save(){
-
-    // Convertie en mm.
-    //this.canvasConversion.convertDessinToMm(this.dessin);
-
-    // Initialise dessinStock.
-    //var dessinStock = JSON.parse(JSON.stringify(this.dessin));
-
-    // Convertie en pixel.
-    //this.canvasConversion.convertDessinToPixel(this.dessin);
-
-    // Conserve l'option debrayable.
-    //dessinStock.debrayable = this.canvasSetting.debrayable;
-
-
-    // Initialise dessinStock.
-    var dessinStock = JSON.parse(JSON.stringify(this.dessin));
-    dessinStock.canvasSetting = JSON.parse(JSON.stringify(this.canvasSetting));
-
     // Stock.
-    this.storage.put('dessin', dessinStock);
+    this.storage.put('saveData', this.canvasGlobal);
   }
 
   mouseOnEffet(value){
