@@ -106,7 +106,7 @@ angular.module('pedaleswitchApp')
           tmpEff.inCanvas = true;
 
           // Rajoute l'effet a la table effet et le master dans la table MesterEffet.
-          tables.tableEffet.push(tmpEff);
+          tables.tableEffet = boite.masterBoite.projections[canvasGlobal.state.viewState].effets;
 
           // Empeche que l'effet depasse du canvas.
           tmpEff.moveCloseBorder(canvasS.canvas, canvasS.marginCanvas, boite.projBoite.margin);
@@ -116,6 +116,11 @@ angular.module('pedaleswitchApp')
 
           // Créé les limites des projections.
           boite.masterBoite.createProjectionsLimits(canvasGlobal.state.viewState);
+
+          // Update de la selection.
+          canvasGlobalServ.affectEffetInSelections(tmpEff);
+
+          canvasGlobalServ.autoSetTableActive();
 
           return tmpEff;
         }
@@ -336,12 +341,17 @@ angular.module('pedaleswitchApp')
           }
         }
 
+        // Remet les flèches.
+
+
         // On sélectionne la bonne projection.
         canvasGlobal.state.viewSate = oldViewState;
         canvasGlobalServ.setProjBoite(boite.masterBoite.projections[canvasGlobal.state.viewState]);
 
 
-
+        // Remet les flèches.
+        tables.tableArrow.push(canvasGeneration.newArrow(boite.projBoite, 'right'));
+        tables.tableArrow.push(canvasGeneration.newArrow(boite.projBoite, 'bottom'));
       },
 
       /**
