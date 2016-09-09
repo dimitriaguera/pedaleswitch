@@ -18,26 +18,26 @@
           this.$onInit = function () {
 
             // Si l'objet n'est pas un arrow, on ajoute une posBox, et on ajoute un template pour la popover.
-            if (this.data.constructor.name !== 'Arrow' && this.data.constructor.name !== 'ArrowPoint') {
+            if (this.data.fonction !== 'Arrow' && this.data.fonction !== 'ArrowPoint') {
 
              // this.data.posBox = this.data.getBoxPos();
               this.zIndex = '-2';
 
               // on cherche le bon template.
               switch(this.data.fonction){
-                case 'effet':
+                case 'Effet':
                   this.popUpUrl = 'app/pageDessin/box-dessin/option-box-popover-effet.html';
                   break;
-                case 'composant':
+                case 'Composant':
                   this.popUpUrl = 'app/pageDessin/box-dessin/option-box-popover-composant.html';
                   break;
-                case 'texte':
+                case 'Texte':
                   this.popUpUrl = 'app/pageDessin/box-dessin/option-box-popover-texte.html';
                   break;
-                case 'image':
+                case 'Image':
                   this.popUpUrl = 'app/pageDessin/box-dessin/option-box-popover-image.html';
                   break;
-                case 'forme':
+                case 'Forme':
                   this.popUpUrl = 'app/pageDessin/box-dessin/option-box-popover-forme.html';
                   break;
               }
@@ -50,7 +50,7 @@
 
           //this.$onDestroy = function() {
           //  // Si l'objet n'est pas un arrow, on détruit sa posBox.
-          //  if (this.data.constructor.name !== 'Arrow') {
+          //  if (this.data.fonction !== 'Arrow') {
           //    delete this.data.posBox;
           //  }
           //};

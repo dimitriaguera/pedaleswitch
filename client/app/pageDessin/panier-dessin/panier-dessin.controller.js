@@ -11,14 +11,15 @@
     .component('panierDessin', {
       templateUrl: 'app/pageDessin/panier-dessin/panier-dessin.html',
       bindings: {
-        items: '<',
-        effets: '<',
+        composantItems: '<',
+        selections: '<',
         addToTable: '&',
         removeToTable: '&',
         updateComposant: '&',
         onCompo: '&',
         onEffet: '&',
-        leaveEffet: '&'
+        leaveEffet: '&',
+        actions: '='
       },
       controller: PanierDessin
     });

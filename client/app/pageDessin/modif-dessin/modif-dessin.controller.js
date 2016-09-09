@@ -3,7 +3,6 @@
 
   class ModifDessin {
     constructor() {
-      
     }
   }
 

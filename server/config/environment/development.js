@@ -8,7 +8,7 @@ module.exports = {
   mongo: {
     uri: 'mongodb://localhost/pedaleswitch-dev'
   },
-
+  
   // Seed database on startup
   seedDB: true
 

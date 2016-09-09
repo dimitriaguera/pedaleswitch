@@ -1,3 +1,37 @@
+Ce qu'il faut faire
+----------------------------
+
+
+1) Faire la fonction d'upload des photos
+2) Faire la fonction de save and restore
+3b) Faire la gestion des obj de decoration
+
+3) Refaire l'interface admin
+4) Faire une mockup pour savoir un peu le design
+5) Penser l'interface admin
+6) Sécuriser les api
+7) SSL
+8) Moyen de payment
+
+9) CLeanner les attribut passer de pagedessin a autre depuis l'introduction de "actions".
+-----------------------
+Interogat diverse:
+
+dans pageDessin.html il y a
+<table-dessin
+            datachange="$ctrl.dataChange(value, data)"
+            table-data="$ctrl.tableArrow"
+            table-menu="$ctrl.activeItem"
+            items="$ctrl.items"
+            actions="$ctrl.funcMenuPopOver">
+ </table-dessin>
+
+          Or datachange n'est pas utiliser ni dans table-dessin.controleur ni dans sont template ?
+
+          Pourquoi on continue a passer autan d'argument ?
+
+-----------------------
+
 Sous Safari
 
 Le drag&drop ne marche pas quand on prend directement le nom de l'effet du panier. Pour que cela marche il faut ajouter
@@ -12,8 +46,21 @@ mais un obj avec composant.potar ou composant.cercle donc la sync ne marche pas.
 var oldItem = _.find(array, {_id: item._id});
           var index = array.indexOf(oldItem);
           var event = 'created';
+
+-----------------------
+
 Directive droppable : Virer les evenement inutile (dragenter, dragleave)
 
 ------------------
 
 Box-dessin.controller.js : Pk il est dans une fonctionne anonyme contrairement a tout les autres ?
+
+------------
+
+BUG
+
+quand on ajoute une effet sur le canvas et que l'on enlève par la suite en cliquant sur le moins (-) puis
+si on le rajoute de nouveau dans le canvas la fonciton de zoom pars en couille.
+C la meme chose avec la fonction save&restore.
+
+

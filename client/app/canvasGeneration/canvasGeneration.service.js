@@ -64,10 +64,11 @@ angular.module('pedaleswitchApp')
         
         this.isSelected = false;
         this.isOverlapping = false;
+        this.inCanvas = entity.inCanvas || false;
 
-        this.fonction = entity.fonction || 'effet';
+        this.fonction = entity.fonction || 'Effet';
         this.angle = entity.angle || 0;
-        this.size = {};
+        this.size = entity.size || {};
         this.posBox = {};
         
         this.points = entity.points;
@@ -291,7 +292,7 @@ angular.module('pedaleswitchApp')
 
       changeShape(){
         // Change la forme de l'obj rectangle si pas // a l'axe.
-        if (this.constructor.name === 'Rect'){
+        if (this.shapeObject === 'Rect' || this.shapeObject === 'Poly'){
           if (this.angle%90 === 0) {
             this.shapeObject = 'Rect';
           }
@@ -368,7 +369,7 @@ angular.module('pedaleswitchApp')
     class Rect extends Shape {
       constructor(entity){
         super(entity);
-        this.shapeObject = entity.shapeObject || 'Rect';
+        this.shapeObject = 'Rect';
       }
       drawCanvas(ctx){
         ctx.beginPath();
@@ -417,7 +418,7 @@ angular.module('pedaleswitchApp')
         this.titre = 'Boite';
         this.effets = [];
         this.composants = [];
-        this.points = [];
+
         this.textDeco = [];
         this.shapeDeco = [];
         this.imgDeco = [];
@@ -425,6 +426,7 @@ angular.module('pedaleswitchApp')
         this.shapeObject = 'Rect';
         this.fonction = 'Boite';
 
+        this.points = [];
         this.initPoints(projPoints.points, this.points);
       }
 
@@ -462,11 +464,11 @@ angular.module('pedaleswitchApp')
        * Centre la boite et les élements dans le canvas.
        * vérifie si les marges de canvas ne sont pas atteintes.
        * Si margin du canvas atteintes, la boite et les élements sont bougés.
-       * @param canvasSetting : object canvasSetting de canvasControl.
+       * @param canvasGobal : object canvasGobal de canvasControl.
        */
-      moveToCenterWindow(canvasSetting){
+      moveToCenterWindow(canvasGlobal){
         var vect;
-        var centerW = canvasConversion.getCanvasCenterInWindow();
+        var centerW = {x:Number(canvasGlobal.canvas.canvasWindow.style.width.slice(0,-2))/2, y:Number(canvasGlobal.canvas.canvasWindow.style.height.slice(0,-2))/2};
         var center = this.getCenter();
 
         var vector = {
@@ -475,12 +477,16 @@ angular.module('pedaleswitchApp')
         };
 
         this.move(vector);
-        vect = this.moveCloseBorder(canvasSetting.canvas, canvasSetting.marginCanvas);
+        vect = this.moveCloseBorder(canvasGlobal.canvas.canvas, canvasGlobal.canvas.marginCanvas);
 
         vector.x += vect.x;
         vector.y += vect.y;
 
         this.moveEffetCompo(vector);
+
+        // Reinitialise l'ascenceur dans la div contenant le canvas.
+        canvasGlobal.canvas.canvasWindow.scrollTop = 0;
+        canvasGlobal.canvas.canvasWindow.scrollLeft = 0;
       }
 
       /**
@@ -519,7 +525,7 @@ angular.module('pedaleswitchApp')
        * @returns {{t: Number, r: number, b: number, l: Number}}
        */
       findAllExtreme(){
-        var i, j, m, l, posExtreme = {}, saveExtreme;
+        var i, j, m, l, posExtreme, saveExtreme;
 
         posExtreme = {t:Infinity,r:-Infinity,b:-Infinity,l:Infinity};
 
@@ -702,17 +708,23 @@ angular.module('pedaleswitchApp')
      */
     class MasterBoite {
       constructor(entity) {
-        this.margin = 5;
-        this.initialHeight = 80;
-        this.convertMargin();
-        this.convertInitialHeight();
-        this.size = {
-          w: null,
-          h: null,
-          d: null,
-          d1: this.initialHeight,
-          d2: this.initialHeight
-        };
+        this.margin = entity.margin || this.convertMargin(5);
+        this.initialHeight = entity.initialHeight || this.convertInitialHeight(80);
+
+        if (entity.fonction === 'MasterBoite') {
+          this.size = entity.size;
+        }
+        else {
+          this.size = {
+            w: null,
+            h: null,
+            d: null,
+            d1: this.initialHeight,
+            d2: this.initialHeight
+          };
+          this.initBoiteWithEffect(entity)
+        }
+
         this.projections = {
           up: null,
           down: null,
@@ -724,8 +736,6 @@ angular.module('pedaleswitchApp')
         
         this.fonction = 'MasterBoite';
         this.shapeObject = 'Rect';
-        
-        this.initBoiteWithEffect(entity);
       }
 
       setSide(side, value){
@@ -746,12 +756,12 @@ angular.module('pedaleswitchApp')
         this.setSide('h', Math.sqrt(d*d - d3*d3));
       }
 
-      convertMargin() {
-        this.margin = canvasConversion.convertToPixel(this.margin);
+      convertMargin(value) {
+        return this.margin = canvasConversion.convertToPixel(value);
       }
 
-      convertInitialHeight() {
-        this.initialHeight = canvasConversion.convertToPixel(this.initialHeight);
+      convertInitialHeight(value) {
+        return this.initialHeight = canvasConversion.convertToPixel(value);
       }
 
       /**
@@ -2219,8 +2229,8 @@ angular.module('pedaleswitchApp')
             return console.log('ERROR ' + state + ' is not a valid state');
         }
       }
-      createProjection() {
-        var projPoints = this.createProjectionsCoords('all');
+      createProjection(projPoints) {
+        projPoints = projPoints || this.createProjectionsCoords('all');
         this.projections.up = new Boite(this, projPoints.up);
         this.projections.down = new Boite(this, projPoints.down);
         this.projections.left = new Boite(this, projPoints.left);
@@ -2364,7 +2374,7 @@ angular.module('pedaleswitchApp')
 
 
         this.shapeObject = obj.shape || 'Rect';
-        this.fonction = obj.fonction ||'texte';
+        this.fonction = obj.fonction ||'Texte';
         this.angle = obj.angle || 0;
 
         this.sizeTxt = obj.sizeTxt || this.getSizeTxt();
@@ -2579,7 +2589,7 @@ angular.module('pedaleswitchApp')
 
       changeShape(){
         // Change la forme de l'obj rectangle si pas // a l'axe.
-        if (this.constructor.name === 'Texte'){
+        if (this.shapeObject === 'Rect' || this.shapeObject === 'Poly'){
           if (this.angle%90 === 0) {
             this.shapeObject = 'Rect';
           }
@@ -2697,6 +2707,8 @@ angular.module('pedaleswitchApp')
         this.setMethods(this.loc);
         this.setPos(this.loc);
         this.setTriangleDraw(this.loc);
+        this.fonction = 'Arrow';
+
       }
 
       setMethods(loc){

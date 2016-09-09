@@ -24,6 +24,9 @@ module.exports = function(config) {
       'client/bower_components/angular-validation-match/dist/angular-validation-match.min.js',
       'client/bower_components/tinycolor/tinycolor.js',
       'client/bower_components/angular-color-picker/dist/angularjs-color-picker.js',
+      'client/bower_components/weakmap-polyfill/weakmap-polyfill.js',
+      'client/bower_components/angular-fontselect/dist/libs/webfontloader.js',
+      'client/bower_components/angular-fontselect/dist/angular-fontselect.js',
       'client/bower_components/angular-mocks/angular-mocks.js',
       // endbower
       'node_modules/socket.io-client/socket.io.js',
