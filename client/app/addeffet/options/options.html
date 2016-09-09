@@ -1,14 +1,43 @@
 <uib-tabset active="0">
     <uib-tab index="$index" ng-repeat="option in $ctrl.effet.options track by $index" heading="Option {{$index + 1}} - {{option.titre}}">
-        <label>Nom de l'option :</label><input type="text" class="form-control" placeholder="nom de l'option" ng-model="$ctrl.effet.options[$index].titre">
-        <label>Description :</label><input type="text" class="form-control" placeholder="description" ng-model="$ctrl.effet.options[$index].description">
-        <label>Prix :</label><input type="text" class="form-control" placeholder="prix" ng-model="$ctrl.effet.options[$index].prix">
-        <label>Largueur :</label><input type="text" class="form-control" placeholder="largeur de l'option" ng-model="$ctrl.effet.options[$index].size.w">
-        <label>Hauteur :</label><input type="text" class="form-control" placeholder="hauteur de l'option" ng-model="$ctrl.effet.options[$index].size.h">
-        <option-composants one-option="$ctrl.effet.options[$index]" nouvoption="$ctrl.nouvoption"></option-composants>
-        <div class="btn-group">
-            <button type="submit" class="btn btn-primary" ng-click="$ctrl.newOption()" ng-hide="$ctrl.nouv">+ Option</button>
-            <button type="submit" class="btn btn-danger" ng-click="$ctrl.deleteOption($index)" ng-hide="$ctrl.nouv">- Option</button>
+
+        <!-- Champ nom de l'option  -->
+        <div class="form-group" show-errors>
+          <label>Nom de l'option :</label>
+          <input name="option-nom" type="text" class="form-control" placeholder="nom de l'option" ng-model="$ctrl.effet.options[$index].titre" required />
         </div>
+
+        <!-- Champ description de l'option  -->
+        <div class="form-group" show-errors>
+          <label>Description :</label>
+          <input name="option-description" type="text" class="form-control" placeholder="description" ng-model="$ctrl.effet.options[$index].description" required />
+        </div>
+
+        <!-- Champ prix de l'option  -->
+        <div class="form-group" show-errors>
+          <label>Prix :</label>
+          <input name="option-prix" type="number" class="form-control" placeholder="prix" ng-model="$ctrl.effet.options[$index].prix" required />
+        </div>
+
+        <!-- Champ largeur de l'option  -->
+        <div class="form-group" show-errors>
+          <label>Largueur :</label>
+          <input name="option-largeur" type="number" class="form-control" placeholder="largeur de l'option" ng-model="$ctrl.effet.options[$index].size.w" required />
+        </div>
+
+        <!-- Champ hauteur de l'option  -->
+        <div class="form-group" show-errors>
+          <label>Hauteur :</label>
+          <input name="option-hauteur" type="number" class="form-control" placeholder="hauteur de l'option" ng-model="$ctrl.effet.options[$index].size.h" required />
+        </div>
+
+        <!-- Injection du formulaire des composants d'option  -->
+        <option-composants one-option="$ctrl.effet.options[$index]" nouvoption="$ctrl.nouvoption"></option-composants>
+
+        <div class="btn-group">
+            <button type="button" class="btn btn-primary" ng-click="$ctrl.newOption()" ng-hide="$ctrl.nouv">+ Option</button>
+            <button type="button" class="btn btn-danger" ng-click="$ctrl.deleteOption($index)" ng-hide="$ctrl.nouv">- Option</button>
+        </div>
+
     </uib-tab>
 </uib-tabset>

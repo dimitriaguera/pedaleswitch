@@ -1,18 +1,36 @@
 <h1 class="page-header">EDITER EFFET</h1>
-    <form class="form">
-      <div class="form-group">
-        <div>Editer l'effet "{{$ctrl.entity.titre}}"</div>
+    <form  name="effetForm" class="form">
+
+        <!-- Button sortir formulaire edition effet  -->
         <a ui-sref="addeffet">
             <button type="button" class="close">&times;</button>
         </a>
-            <label>Nom :</label><input type="text" class="form-control" placeholder="nom de l'effet" ng-model="$ctrl.entity.titre">
-            <label>Description :</label><input type="text" class="form-control" placeholder="description de l'effet" ng-model="$ctrl.entity.description">
+
+        <!-- Champ titre de l'effet  -->
+        <div class="form-group" show-errors>
+            <label>Nom :</label>
+            <input name="effetTitre" type="text" class="form-control" placeholder="nom de l'effet" ng-model="$ctrl.entity.titre" required />
+        </div>
+
+        <!-- Champ description de l'effet  -->
+        <div class="form-group" show-errors>
+            <label>Description :</label>
+            <input name="effet-description" type="text" class="form-control" placeholder="description de l'effet" ng-model="$ctrl.entity.description" required />
+        </div>
+
+        <!-- Champ type d'effet  -->
+        <div class="form-group" show-errors>
             <label>Type :</label>
-            <select class="form-control" ng-model="$ctrl.entity.type">
+            <select name="effet-type" class="form-control" ng-model="$ctrl.entity.type" required>
                 <option ng-repeat="type in $ctrl.types" value="{{type.titre}}">{{type.titre}}</option>
             </select>
-            <options effet="$ctrl.entity" nouv-effet="$ctrl.nouv"></options>
-      </div>
+        </div>
+
+        <!-- Injection du formulaire d'options  -->
+        <options effet="$ctrl.entity" nouv-effet="$ctrl.nouv"></options>
+
+
+        <!-- Validation ou suppression de l'effet  -->
       <span class="input-group-btn">
         <button type="submit" class="btn btn-primary" ng-click="$ctrl.onAction($ctrl.nouv)">{{$ctrl.nouv ? 'Enregistrer' : 'Enregistrer'}}</button>
           <button type="submit" class="btn btn-danger" ng-click="$ctrl.deleteEffet($ctrl.entity)" ng-hide="$ctrl.nouv">Supprimer</button>
