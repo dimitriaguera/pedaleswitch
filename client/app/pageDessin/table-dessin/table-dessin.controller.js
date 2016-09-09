@@ -2,7 +2,7 @@
 (function(){
 
 angular.module('pedaleswitchApp')
-    .directive('tableDessin', function(canvasControl, canvasDraw, mouseHelper, $rootScope){
+    .directive('tableDessin', function(canvasGlobalServ, canvasControl, canvasDraw, mouseHelper, $rootScope){
       return {
         restrict: 'E',
         templateUrl: 'app/pageDessin/table-dessin/table-dessin.html',
@@ -17,15 +17,15 @@ angular.module('pedaleswitchApp')
           var canvWindow = document.getElementById('canvas-window');
           var canv = document.getElementById('canvas-dessin');
           var ctx = canv.getContext('2d');
-          canvasControl.setCanvasWindow(canvWindow);
-          canvasControl.setCanvas(canv);
-          canvasControl.setCtx(ctx);
+          canvasGlobalServ.setCanvas(canv);
+          canvasGlobalServ.setCanvasWindow(canvWindow);
+          canvasGlobalServ.setCtx(ctx);
 
           // Check canvas size.
           canvasControl.resizeCanvas();
 
           // Draw canvas.
-          if (canvasControl.getTableActive().length > 0){
+          if (canvasGlobalServ.getTableActive().length > 0){
             canvasDraw.drawStuff();
           }
           

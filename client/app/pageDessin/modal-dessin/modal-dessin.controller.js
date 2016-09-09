@@ -31,7 +31,6 @@
 
       this.modalInstance.result.then(function (selected) {
         self.actions.updateComposant(self.data, selected);
-
       });
     }
 

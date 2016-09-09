@@ -39,14 +39,15 @@
 
           <panier-dessin
             ng-hide="$ctrl.deco"
-            items="$ctrl.items"
-            effets="$ctrl.dessin.options"
+            composant-items="$ctrl.composantItems"
+            selections="$ctrl.selections"
             on-compo="$ctrl.mouseOnCompo(value)"
             on-effet="$ctrl.mouseOnEffet(value)"
             leave-effet="$ctrl.mouseLeaveEffet()"
             update-composant="$ctrl.updateComposant(compo, value)"
             add-to-table="$ctrl.addToTable(value)"
-            remove-to-table="$ctrl.removeToTable(value)">
+            remove-to-table="$ctrl.removeToTable(value)"
+            actions="$ctrl.funcMenuPopOver">
           </panier-dessin>
 
           <deco-dessin
@@ -62,7 +63,7 @@
             datachange="$ctrl.dataChange(value, data)"
             table-data="$ctrl.tableArrow" 
             table-menu="$ctrl.activeItem"
-            items="$ctrl.items"
+            items="$ctrl.composantItems"
             actions="$ctrl.funcMenuPopOver">
           </table-dessin>
 

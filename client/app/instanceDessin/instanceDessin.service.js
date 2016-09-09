@@ -1,81 +1,11 @@
 'use strict';
 
 angular.module('pedaleswitchApp')
-  .factory('instanceDessin', function ($http, canvasConversion) {
-    var initialCompo = [];
-    var composantItems = {};
-    var dessin = {
-      options: [],
-      boite: {}
-    };
+  .factory('instanceDessin', function ($http, canvasGlobalServ, canvasConversion) {
 
-    /*
-    var polyTest = {
-      _id: '11111',
-      key: '555',
-      shapeObject: 'Poly',
-      titre: 'test poly',
-      titreParentEffet: null,
-      titreParentOption: null,
-      pointsDefault: [
-        {
-          x: 50,         
-          y: 50
-        },
-        {
-          x: 60,
-          y: 70
-        },
-        {
-          x: 60,
-          y: 80
-        },
-        {
-          x: 30,
-          y: 70
-        }
-      ],
-      points: [
-        {
-          x: 50,
-          y: 50
-        },
-        {
-          x: 60,
-          y: 70
-        },
-        {
-          x: 60,
-          y: 80
-        },
-        {
-          x: 30,
-          y: 70
-        }
-      ],
-      pos: {
-        x: null,
-        y: null
-      },
-      posDefault: {
-        x: null,
-        y: null
-      },
-      size: {
-        w: null,
-        h: null,
-        d: null
-      },
-      oldSize: {
-        w: null,
-        h: null,
-        d: null
-      },
-      itemInfo: {
-        shape: 'Rect'
-      }
-    };
-     */
+    var selections = canvasGlobalServ.getSelections();
+    var composantItems = canvasGlobalServ.getComposantItems();
+
     /**
      * Retour les coordonnées des quatres sommet de la forme.
      * @param size
@@ -99,7 +29,8 @@ angular.module('pedaleswitchApp')
           x: pos.x - size.w/2,
           y: pos.y + size.h/2
         }
-      ];    }
+      ];
+    }
 
     /**
      * @todo charger juste les composants des effets ajouter.
@@ -108,45 +39,13 @@ angular.module('pedaleswitchApp')
      * La clé de chq entrée du tableau est l'id de chq composant.
      */
     $http.get('/api/composants').then(response => {
-      initialCompo = response.data;
+      var initialCompo = response.data;
       for(var j=0; j<initialCompo.length; j++){
         composantItems[initialCompo[j]._id] = initialCompo[j];
       }
     });
 
-
     return {
-
-      reset: function() {
-        dessin.options = [];
-        dessin.boite = {};
-      },
-      
-      getDessin: function () {
-        return dessin;
-      },
-
-      setDessin: function(newdessin) {
-        dessin = newdessin;
-        return dessin;
-      },
-      
-      setBoite: function (boite) {
-        dessin.boite = boite;
-      },
-      
-      getComposantItems: function () {
-        return composantItems;
-      },
-
-      searchEffetInDessin: function(id, key){
-        for(var i = 0; i < dessin.options.length; i++){
-          if(dessin.options[i]._id === id && dessin.options[i].key === key){
-            return dessin.options[i];
-          }
-        }
-        return false;
-      },
 
       /**
        * Ajoute un effet dans l'instance dessin.
@@ -157,7 +56,7 @@ angular.module('pedaleswitchApp')
        * @param option
        */
       setEffet: function(effet, option) {
-        var key = dessin.options.length;
+        var key = selections.length;
 
         var stdPos = 0;
 
@@ -166,7 +65,7 @@ angular.module('pedaleswitchApp')
           key: key,
           itemInfo : {shape: null},
           inCanvas: effet.inCanvas || false,
-          fonction: 'effet',
+          fonction: 'Effet',
           titre: effet.titre,
           titreOption: option.titre,
           description: effet.description,
@@ -180,7 +79,7 @@ angular.module('pedaleswitchApp')
           var compo = {
             _id: option.composants[i]._id,
             key: key,
-            fonction: 'composant',
+            fonction: 'Composant',
             titre: option.composants[i].titre,
             titreParentEffet: effet.titre,
             titreParentOption: option.titre,
@@ -196,31 +95,9 @@ angular.module('pedaleswitchApp')
           };
           nouvEffet.composants.push(compo);
         }
-        //nouvEffet.composants.push(polyTest);
         canvasConversion.convertEffetSize(nouvEffet);
         canvasConversion.initializeEffetZoom(nouvEffet);
-        dessin.options.push(nouvEffet);
-      },
-      
-      //@todo a garder ?
-      zoomInitialize: function(value){
-        canvasConversion.setZoom(value);
-        for (var i = 0; i < dessin.options.length; i++) {
-          canvasConversion.initializeEffetZoom(dessin.options[i]);
-        }
-      },
-
-      zoomChange: function(value){
-        var okZoom = canvasConversion.setZoom(value);
-        if (okZoom) {
-          if (dessin.boite.fonction === 'MasterBoite') {
-            canvasConversion.convertEffetZoom(dessin.boite);
-          }
-          for (var i = 0; i < dessin.options.length; i++) {
-            canvasConversion.convertEffetZoom(dessin.options[i]);
-          }
-        }
-        return okZoom;
+        selections.push(nouvEffet);
       },
 
       //updateComposant: function(idOption, idCompo, idItem) {

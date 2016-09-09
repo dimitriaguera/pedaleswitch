@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../server/lunch.js"],"names":[],"mappings":";;;;;AAGA,QAAQ,YAAR","file":"lunch.js","sourcesContent":["//process.env.NODE_ENV = 'development';\n//process.env.NODE_ENV = 'production';\n//process.env.PORT = 8080;\nrequire('./index.js');"]}
