@@ -1,16 +1,41 @@
 <uib-tabset active="0">
-    <uib-tab index="$index" ng-repeat="composant in $ctrl.oneOption.composants track by $index" heading="Comp. {{$index + 1}} - {{composant.titre}}">
-      <label>Type de composant :</label>
-      <select class="form-control" ng-model="$ctrl.oneOption.composants[$index].type">
-        <option ng-repeat="type in $ctrl.typeCompo" value="{{type.titre}}">{{type.titre}}</option>
-      </select>
-      <label>Nom du composant :</label><input type="text" class="form-control" placeholder="nom du composant" ng-model="$ctrl.oneOption.composants[$index].titre">
-      <label>Choix de composants possibles :</label><modal-composants one-composant="$ctrl.oneOption.composants[$index]"></modal-composants>
-      <label>Position x :</label><input type="text" class="form-control" placeholder="coord. X" ng-model="$ctrl.oneOption.composants[$index].pos.x">
-      <label>Position y :</label><input type="text" class="form-control" placeholder="coord. Y" ng-model="$ctrl.oneOption.composants[$index].pos.y">
+    <uib-tab index="$index" ng-repeat="composant in $ctrl.oneOption.composants track by $index" heading="Composant {{$index + 1}} - {{composant.titre}}">
+
+      <!-- Champ type du composant d'option  -->
+      <div class="form-group" show-errors>
+        <label>Type de composant :</label>
+        <select name="composant-type" class="form-control" ng-model="$ctrl.oneOption.composants[$index].type" required >
+          <option ng-repeat="type in $ctrl.typeCompo" value="{{type.titre}}">{{type.titre}}</option>
+        </select>
+      </div>
+
+      <!-- Champ nom du composant d'option  -->
+      <div class="form-group" show-errors>
+        <label>Nom du composant :</label>
+        <input name="composant-nom" type="text" class="form-control" placeholder="nom du composant" ng-model="$ctrl.oneOption.composants[$index].titre" required />
+      </div>
+
+      <!-- Injection boite modale choix du composant d'option  -->
+      <div class="form-group">
+        <label>Choix de composants possibles :</label>
+        <modal-composants one-composant="$ctrl.oneOption.composants[$index]"></modal-composants>
+      </div>
+
+      <!-- Champ positionx du composant d'option  -->
+      <div class="form-group" show-errors>
+        <label>Position x :</label>
+        <input name="composant-posx" type="number" class="form-control" placeholder="coord. X" ng-model="$ctrl.oneOption.composants[$index].pos.x" required />
+      </div>
+
+      <!-- Champ positiony du composant d'option  -->
+      <div class="form-group" show-errors>
+        <label>Position y :</label>
+        <input name="composant-posy" type="number" class="form-control" placeholder="coord. Y" ng-model="$ctrl.oneOption.composants[$index].pos.y" required />
+      </div>
+
       <div class="btn-group">
-        <button type="submit" class="btn btn-primary" ng-click="$ctrl.newComposant()">+ compo</button>
-        <button type="submit" class="btn btn-danger" ng-click="$ctrl.deleteComposant($index)">- compo</button>
+        <button type="button" class="btn btn-primary" ng-click="$ctrl.newComposant()">+ compo</button>
+        <button type="button" class="btn btn-danger" ng-click="$ctrl.deleteComposant($index)">- compo</button>
       </div>
     </uib-tab>
 </uib-tabset>
