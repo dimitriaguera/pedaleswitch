@@ -220,6 +220,15 @@ angular.module('pedaleswitchApp')
         return false;
       },
 
+      affectEffetInSelections: function(effet){
+        for(var i = 0; i < canvasGlobal.selections.length; i++){
+          if(canvasGlobal.selections[i]._id === effet._id && canvasGlobal.selections[i].key === effet.key){
+            canvasGlobal.selections[i] = effet;
+          }
+        }
+        return false;
+      },
+
       /////////////// Getter & Setter Tables part.
       /**
        * Fonction générique qui permet de supprimer les éléments
@@ -276,6 +285,20 @@ angular.module('pedaleswitchApp')
 
       setTableActive: function(tab){
         return canvasGlobal.tables.tableActive = tab;
+      },
+
+      autoSetTableActive: function(){
+        switch (canvasGlobal.state.isActive){
+          case 'Effet':
+            canvasGlobal.tables.tableActive = canvasGlobal.tables.tableEffet;
+            break;
+          case 'Composant':
+            canvasGlobal.tables.tableActive = canvasGlobal.tables.tableComposant;
+            break;
+          default:
+            canvasGlobal.tables.tableActive = canvasGlobal.tables.tableEffet;
+        }
+        return canvasGlobal.tables.tableActive;
       },
 
       getTableActive: function(){
@@ -405,8 +428,8 @@ angular.module('pedaleswitchApp')
         this.resetActiveItem();
         this.resetTableDrawLimits();
 
-        this.resetSelections();
-        this.resetBoite();
+        //this.resetSelections();
+        //this.resetBoite();
         //this.getComposantItems();
       }
       /////////////////////////////////////////// End getter & setter table part.

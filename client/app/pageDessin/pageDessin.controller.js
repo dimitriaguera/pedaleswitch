@@ -113,8 +113,6 @@ class PageDessinComponent {
     // Re créer la masterboite, rajoute les effets, composants dans le canvas.
     this.canvasControl.restoreCanvas(saveData);
 
-    this.canvasDraw.drawStuff();
-
     // Active la table effet et dessine.
     this.activeEffet();
   }
@@ -199,6 +197,7 @@ class PageDessinComponent {
   
   // Rajoute un effet au canvas
   // Appeler par panier dessin et quand on droppable directive
+  // Effet est en fait une selection
   addToTable(effet){
     // Ajouter l'effet au canvas si pas deja.
     if (!effet.inCanvas) {this.canvasControl.addToCanvas(effet);}
