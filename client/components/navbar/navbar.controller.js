@@ -10,7 +10,7 @@ class NavbarController {
     state: 'composant'
   },{
     title: 'Effets',
-    state: 'addeffet'
+    state: 'effets'
   },{
     title: 'RemplirDb',
     state: 'random'
