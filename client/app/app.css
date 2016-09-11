@@ -38,3 +38,8 @@
   padding: 0.2em 0;
 }
 
+.st-selected {
+  background: #216eff !important;
+  color: #ffffff !important;
+}
+

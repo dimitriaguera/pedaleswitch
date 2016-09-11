@@ -2,9 +2,10 @@
 (function(){
 
 class EffetComponent {
-  constructor($http, $scope, socket) {
+  constructor($http, $scope, $state, socket) {
     this.message = 'Hello';
     this.$http = $http;
+    this.$state = $state;
     this.socket = socket;
     this.indexEffets = [];
     $scope.$on('$destroy', function() {
@@ -17,6 +18,13 @@ class EffetComponent {
       this.socket.syncUpdates('effet', this.indexEffets);
     });
   }
+
+  deleteEffet(effet) {
+    if(effet._id) {
+      this.$http.delete('/api/effets/' + effet._id);
+    }
+  }
+
 }
 
 angular.module('pedaleswitchApp')

@@ -12,7 +12,8 @@ angular.module('pedaleswitchApp', [
   'ui.bootstrap',
   'validation.match',
   'color.picker',
-  'jdFontselect'
+  'jdFontselect',
+  'smart-table'
 ])
   .config(function($urlRouterProvider, $locationProvider) {
     $urlRouterProvider

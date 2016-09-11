@@ -4,7 +4,7 @@
       <!-- Champ type du composant d'option  -->
       <div class="form-group" show-errors>
         <label>Type de composant :</label>
-        <select name="composant-type" class="form-control" ng-model="$ctrl.oneOption.composants[$index].type" required >
+        <select name="composant-type-{{ $index }}" class="form-control" ng-model="$ctrl.oneOption.composants[$index].type" required >
           <option ng-repeat="type in $ctrl.typeCompo" value="{{type.titre}}">{{type.titre}}</option>
         </select>
       </div>
@@ -12,7 +12,7 @@
       <!-- Champ nom du composant d'option  -->
       <div class="form-group" show-errors>
         <label>Nom du composant :</label>
-        <input name="composant-nom" type="text" class="form-control" placeholder="nom du composant" ng-model="$ctrl.oneOption.composants[$index].titre" required />
+        <input name="composant-nom-{{ $index }}" type="text" class="form-control" placeholder="nom du composant" ng-model="$ctrl.oneOption.composants[$index].titre" required />
       </div>
 
       <!-- Injection boite modale choix du composant d'option  -->
@@ -24,13 +24,13 @@
       <!-- Champ positionx du composant d'option  -->
       <div class="form-group" show-errors>
         <label>Position x :</label>
-        <input name="composant-posx" type="number" class="form-control" placeholder="coord. X" ng-model="$ctrl.oneOption.composants[$index].pos.x" required />
+        <input name="composant-posx-{{ $index }}" type="number" class="form-control" placeholder="coord. X" ng-model="$ctrl.oneOption.composants[$index].pos.x" required />
       </div>
 
       <!-- Champ positiony du composant d'option  -->
       <div class="form-group" show-errors>
         <label>Position y :</label>
-        <input name="composant-posy" type="number" class="form-control" placeholder="coord. Y" ng-model="$ctrl.oneOption.composants[$index].pos.y" required />
+        <input name="composant-posy-{{ $index }}" type="number" class="form-control" placeholder="coord. Y" ng-model="$ctrl.oneOption.composants[$index].pos.y" required />
       </div>
 
       <div class="btn-group">

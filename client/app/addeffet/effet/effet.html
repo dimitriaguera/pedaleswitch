@@ -1,18 +1,96 @@
-g<div class="container">
-    <div ui-view></div>
-    <div class="row">
-        <div class="col-lg-12">
-            <div>
-                <h1 class="page-header">EFFETS</h1>
-                <a ui-sref="addeffet.edit({entity: {}, types: $ctrl.types, nouv: true})">
-                    <button type="button" class="btn btn-primary">Nouvel effet</button>
-                </a></div>
-            <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="effet in $ctrl.indexEffets">
-                <li><a ui-sref="addeffet.edit({entity: effet, types: $ctrl.types, nouv: false})" uib-tooltip="INFO: {{effet.description}} TYPE: {{effet.type}}">
-                    {{effet.titre}}
-                </a>
-                </li>
-            </ul>
+<!--<div class="container">-->
+    <!--<div ui-view></div>-->
+    <!--<div class="row">-->
+        <!--<div class="col-lg-12">-->
+            <!--<div>-->
+                <!--<h1 class="page-header">EFFETS</h1>-->
+                <!--<a ui-sref="editionEffet({entity: {}, types: $ctrl.types, nouv: true})">-->
+                    <!--<button type="button" class="btn btn-primary">Nouvel effet</button>-->
+                <!--</a></div>-->
+            <!--<ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="effet in $ctrl.indexEffets">-->
+                <!--<li><a ui-sref="editionEffet({entity: effet, types: $ctrl.types, nouv: false})" uib-tooltip="INFO: {{effet.description}} TYPE: {{effet.type}}">-->
+                    <!--{{effet.titre}}-->
+                <!--</a>-->
+                <!--</li>-->
+            <!--</ul>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
+
+<div class="container">
+
+        <h1 class="page-header">EFFETS</h1>
+
+        <div class="btn-group pull-left">
+            <button type="button" ng-click="" class="btn btn-danger">
+                Supprimer la selection
+            </button>
         </div>
-    </div>
+
+        <div class="pull-right">
+                    <button type="button" ng-click="$ctrl.$state.go('editionEffet', {entity: {}, types: $ctrl.types, nouv: true})" class="btn btn-primary">
+                        <i class="glyphicon glyphicon-plus">
+                        </i>
+                        Créer un nouvel effet
+                    </button>
+        </div>
+
+        <table class="table table-bordered" st-table="$ctrl.indexEffets">
+            <thead>
+                <tr class="">
+                    <th></th>
+                    <th>Effet</th>
+                    <th>Type</th>
+                    <th>Statut</th>
+                    <th>Options</th>
+                    <th>Editer</th>
+                </tr>
+                <!--<tr>-->
+                    <!--<th></th>-->
+                    <!--<th><input st-search="titre" class="input-sm form-control" type="search"/></th>-->
+                    <!--<th><input st-search="type" class="input-sm form-control" type="search"/></th>-->
+                    <!--<th></th>-->
+                    <!--<th></th>-->
+                    <!--<th></th>-->
+                 <!--</tr>-->
+            </thead>
+            <tbody>
+
+            <tr ng-repeat="effet in $ctrl.indexEffets">
+                <th scope="row" select-row="effet"></th>
+                <td>{{effet.titre}}</td>
+                <td>{{effet.type}}</td>
+                <td>Statut</td>
+                <td>
+                    <div style="min-height:50px;" ng-repeat="option in effet.options">
+                        <div class="pull-left">{{ option.titre }}</div>
+                        <div class="btn-group pull-right">
+                            <button type="button" ng-click="" class="btn btn-default">
+                                <i class="glyphicon glyphicon-ok">
+                                </i>
+                            </button>
+                            <button type="button" ng-click="$ctrl.deleteEffet(effet)" class="btn btn-default">
+                                <i class="glyphicon glyphicon-remove">
+                                </i>
+                            </button>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="btn-group pull-right">
+                            <button type="button" ng-click="$ctrl.$state.go('editionEffet', {entity: effet, types: $ctrl.types, nouv: false})" class="btn btn-default">
+                                <i class="glyphicon glyphicon-plus">
+                                </i>
+                            </button>
+                            <button type="button" ng-click="$ctrl.$state.go('editionEffet', {entity: effet, types: $ctrl.types, nouv: false})" class="btn btn-default">
+                                <i class="glyphicon glyphicon-pencil">
+                                </i>
+                            </button>
+                    </div>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+
 </div>

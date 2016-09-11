@@ -3,12 +3,12 @@
 angular.module('pedaleswitchApp')
   .config(function ($stateProvider) {
     $stateProvider
-      .state('addeffet', {
-        url: '/addeffet',
+      .state('effets', {
+        url: '/effets',
         template: '<addeffet></addeffet>'
       })
-      .state('addeffet.edit', {
-        url: '/edit',
+      .state('editionEffet', {
+        url: '/edition-effet',
         template: '<editeffet></editeffet>',
         params: {
           entity: null,
