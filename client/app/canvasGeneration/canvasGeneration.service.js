@@ -2340,8 +2340,8 @@ angular.module('pedaleswitchApp')
 
     class Texte {
       constructor(obj){
-        var myVar; // @todo a sup
-        if (typeof obj === 'string' || myVar instanceof obj) {
+
+        if (typeof obj === 'string') {
           var str = obj;
           obj = {};
           obj.input = str;
@@ -2357,7 +2357,7 @@ angular.module('pedaleswitchApp')
           variant: obj.font.variant || 'normal', //normal, small-caps.
           weight: obj.font.weight || 'normal', // normal, bold, bolder, lighter, 100, 200 ... 900.
           size: obj.font.size || 50,
-          family: obj.font.family || 'sans-serif',
+          family: obj.font.family || '"Lato", sans-serif, "google"',
 
           textAlign: 'center',
           baseline: 'middle', // top' || 'hanging' || 'middle' || 'alphabetic' || 'ideographic' || 'bottom',
@@ -2379,9 +2379,37 @@ angular.module('pedaleswitchApp')
 
         this.sizeTxt = obj.sizeTxt || this.getSizeTxt();
         this.size = obj.size || {};
+
         this.points = obj.points || this.createPoints();
+        this.initPoints(this.points, this.points);
+
         this.posBox = this.points[0];
       }
+
+      initPoints(points, tab){
+        if (points) {
+          var i;
+          var l = points.length;
+          var table = [];
+          for (i = 0; i < l; i++) {
+            table.push(new Point(points[i]));
+          }
+          tab.splice(0, tab.length);
+          for (i = 0; i < l; i++) {
+            tab.push(table[i]);
+          }
+        }
+      }
+
+      createPoints(){
+        return [
+          {x: 0, y: 0},
+          {x: this.sizeTxt.w, y: 0},
+          {x: this.sizeTxt.w, y: this.sizeTxt.h},
+          {x: 0, y: this.sizeTxt.h}
+        ];
+      }
+
 
       fontSettings(){
         return this.font.style + ' ' +
@@ -2393,8 +2421,8 @@ angular.module('pedaleswitchApp')
 
       getSizeTxt(){
         // Ceci crée un canvas virtuel qui va servir a calculer la taille.
-        var canvasimg = document.createElement('canvas');
-        var ctx = canvasimg.getContext('2d');
+        var canvasimg = document.createElement('canvas'),
+          ctx = canvasimg.getContext('2d');
         
         ctx.font = this.fontSettings();
 
@@ -2424,15 +2452,6 @@ angular.module('pedaleswitchApp')
           x: c.x - e.size.w / 2,
           y: c.y - e.size.h / 2
         };
-      }
-
-      createPoints(){
-        return [
-          new Point({x: 0, y: 0}),
-          new Point({x: this.sizeTxt.w, y: 0}),
-          new Point({x: this.sizeTxt.w, y: this.sizeTxt.h}),
-          new Point({x: 0, y: this.sizeTxt.h})
-        ];
       }
 
       actualisePoints(){
@@ -2930,8 +2949,8 @@ angular.module('pedaleswitchApp')
         return new MasterBoite(entity);
       },
 
-      newTexte: function(obj, ctx) {
-        return new Texte(obj, ctx);
+      newTexte: function(obj) {
+        return new Texte(obj);
       },
 
       // newPoly: function (entity) {
