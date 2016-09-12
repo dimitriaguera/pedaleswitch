@@ -114,10 +114,13 @@ angular.module('pedaleswitchApp')
           context.shadowOffsetY = 0;
           context.shadowBlur    = 2;
           boite.projBoite.drawCanvas(context);
-          if (colorFill){
-            context.fillStyle = colorFill;
-            context.fill();
-          }
+          context.fillStyle = boite.projBoite.color;
+          context.fill();
+
+          // if (colorFill){
+          //   context.fillStyle = colorFill;
+          //   context.fill();
+          // }
           if (boite.projBoite.isOverlapping) {
             context.fillStyle = 'rgba(255, 00, 00, 0.2)';
             context.fill();

@@ -349,7 +349,7 @@ angular.module('pedaleswitchApp')
 
         // Va rajouter les effets, les composants, les deco au bonne projections de boites.
         for (i = 0 ; i < viewPossible.length ; i++){
-          canvasGlobal.state.viewSate = viewPossible[i];
+          canvasGlobal.state.viewState = viewPossible[i];
           canvasGlobalServ.setProjBoite(boite.masterBoite.projections[viewPossible[i]]);
 
           // Va rajouter les effets, les composants
@@ -357,10 +357,14 @@ angular.module('pedaleswitchApp')
             this.addToCanvas(saveData.boite.masterBoite.projections[viewPossible[i]].effets[j], true);
           }
 
+          // Rajoute la couleur à la boite.
+          canvasGlobal.boite.projBoite.color = saveData.boite.masterBoite.projections[viewPossible[i]].color;
+
           // Va rajouter les textDeco
           for (j = 0 ; j < saveData.boite.masterBoite.projections[viewPossible[i]].textDeco.length ; j++) {
             this.addTextToCanvas(saveData.boite.masterBoite.projections[viewPossible[i]].textDeco[j]);
           }
+
 
           // // Va rajouter les imgDeco
           // for (j = 0 ; j < saveData.boite.masterBoite.projections[viewPossible[i]].imgDeco.length ; j++) {
