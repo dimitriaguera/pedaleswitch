@@ -331,8 +331,8 @@ angular.module('pedaleswitchApp')
               }
 
               // Regarde si pas inferieur au bord gauche.
-              if (mousePos.y > boite.points[0].y) {
-                mousePos.y = boite.points[0].y;
+              if (mousePos.y > boite.projBoite.points[0].y) {
+                mousePos.y = boite.projBoite.points[0].y;
               }
 
               // Regarde si pas inferieur a un composant ou a effet.
@@ -341,7 +341,7 @@ angular.module('pedaleswitchApp')
               }
 
               // Regarde sur les autres projections si pas inférieur a un composant ou un effet.
-              testProj = masterBoite.projectionsCollisionY(canvasGlobal.state.viewState, mousePos, 1);
+              testProj = boite.masterBoite.projectionsCollisionY(canvasGlobal.state.viewState, mousePos, 1);
               if(testProj) {
                 mousePos.y = boite.projBoite.points[2].y - testProj;
               }
@@ -445,7 +445,7 @@ angular.module('pedaleswitchApp')
             testProj = boite.masterBoite.projectionsCollisionY(canvasGlobal.state.viewState, mousePos, 0);
             if(testProj) {
               mousePos.y = boite.projBoite.points[3].y - testProj;
-              //mousePos.x = boite.points[1].x;
+              //mousePos.x = boite.projBoite.points[1].x;
             }
 
             // Redimensionne la boite.
@@ -467,13 +467,13 @@ angular.module('pedaleswitchApp')
             testProj = boite.masterBoite.projectionsCollisionX(canvasGlobal.state.viewState, mousePos, 1);
             if(testProj) {
               mousePos.x = boite.projBoite.points[0].x + testProj;
-              //mousePos.x = boite.points[1].x;
+              //mousePos.x = boite.projBoite.points[1].x;
             }
 
             // Redimensionne la boite.
             boite.projBoite.points[1].setX(mousePos.x);
             boite.projBoite.points[2].setX(mousePos.x);
-            //boite.size.w += mousePos.x - boite.getRight();
+            //boite.projBoite.size.w += mousePos.x - boite.projBoite.getRight();
 
             // Agrendit le canvas.
             if (mousePos.x > canvasGlobal.canvas.canvas.width  * 0.8) {
@@ -497,7 +497,7 @@ angular.module('pedaleswitchApp')
             testProj = boite.masterBoite.projectionsCollisionX(canvasGlobal.state.viewState, mousePos, 0);
             if(testProj) {
               mousePos.x = boite.projBoite.points[1].x - testProj;
-              //mousePos.x = boite.points[0].x;
+              //mousePos.x = boite.projBoite.points[0].x;
             }
 
             // Redimensionne la boite.
