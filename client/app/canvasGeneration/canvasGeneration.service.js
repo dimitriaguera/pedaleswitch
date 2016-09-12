@@ -425,6 +425,7 @@ angular.module('pedaleswitchApp')
 
         this.shapeObject = 'Rect';
         this.fonction = 'Boite';
+        this.color = 'grey';
 
         this.points = [];
         this.initPoints(projPoints.points, this.points);

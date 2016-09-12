@@ -52,8 +52,11 @@
 
           <deco-dessin
             ng-show="$ctrl.deco"
-            items="$ctrl.tableText"
-            add-text-to-table="$ctrl.addTextToTable(string)">
+            items="$ctrl.tables.tableText"
+            boite="$ctrl.canvasGlobal.boite.projBoite"
+            add-text-to-table="$ctrl.addTextToTable(string)"
+            draw="$ctrl.draw()"
+          >
           </deco-dessin>
 
         </div>
