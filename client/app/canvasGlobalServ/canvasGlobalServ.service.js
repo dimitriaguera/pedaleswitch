@@ -268,7 +268,7 @@ angular.module('pedaleswitchApp')
       },
 
       resetTableEffet: function(){
-        return this.reset(canvasGlobal.tables.tableEffet);
+        return canvasGlobal.tables.tableEffet = [];
       },
 
       setTableComposant: function(tab) {
