@@ -46,6 +46,7 @@ class PageDessinComponent {
     this.tableArrow = this.canvasGlobalServ.getTableArrow();
     this.selections = this.canvasGlobalServ.getSelections();
     this.activeItem = this.canvasGlobalServ.getActiveItem();
+    this.tables = this.canvasGlobalServ.getTables();
 
     //@todo a SUP
     this.toutesTables = [];
@@ -73,6 +74,9 @@ class PageDessinComponent {
     arrowChangeValue: function(){
       this.self.arrowChangeValue();
     },
+    // @todo a améliorer peut etre ajouter callback qd la font est chargé...
+    // Cette fonction permet d'attendre un peu qd on change de font
+    // pour etre sur qu'elle soit téléchargé.
     changeFont: function(font, data){
       var self2 = this.self;
       data.font.family = font.stack;
@@ -80,7 +84,7 @@ class PageDessinComponent {
         function(){
           self2.dataChange(data);
         },
-        300
+        500
       );
     }
   };
@@ -331,7 +335,11 @@ class PageDessinComponent {
     this.canvasGlobalServ.resetTableDrawShine();
     this.canvasDraw.drawStuff();
   }
-  
+
+  draw() {
+    this.canvasDraw.drawStuff();
+  }
+
   //@todo a supprimer.
   getTable(){
     this.toutesTables = this.canvasGlobal;

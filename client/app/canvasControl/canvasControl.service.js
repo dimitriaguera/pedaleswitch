@@ -151,17 +151,32 @@ angular.module('pedaleswitchApp')
        * Ajoute du texte au canvas.
        * @param string
        */
-      addTextToCanvas: function(string, pos) {
-        var texte, p;
-
-        p = pos || {x: 400, y: 400};
+      addTextToCanvas: function(string) {
+        var texte;
 
         texte = canvasGeneration.newTexte(string);
-        texte.moveTo(p);
         boite.masterBoite.projections[canvasGlobal.state.viewState].textDeco.push(texte);
 
         // Rajoute le texte à la table texte.
         tables.tableText.push(texte);
+
+        // Load automatiquement la font depuis google font.
+        // @todo a vérifier car assume que toute font vient de google.
+        // de plus police par défaut est lato qui est pas dl des le debut donc changement de police
+        // au milieu
+        var test = texte.font.family;
+        test = test.replace(/"/g,'');
+        test = test.split(',');
+        if (test.slice(-1)[0].indexOf('google') >= 0) {
+          test.pop();
+          WebFont.load({
+            google: {
+              families: [test[0] + ':' + test[1].replace(/ /g,'')]
+            }
+          });
+        }
+
+
       },
 
       /**
@@ -332,16 +347,40 @@ angular.module('pedaleswitchApp')
         // Créer les projections de la boite avec les bon points.
         boite.masterBoite.createProjection(projPoints);
 
-        // Va rajouter les effets, les composants au bonne projections de boites.
+        // Va rajouter les effets, les composants, les deco au bonne projections de boites.
         for (i = 0 ; i < viewPossible.length ; i++){
-          canvasGlobal.state.viewSate = viewPossible[i];
+          canvasGlobal.state.viewState = viewPossible[i];
           canvasGlobalServ.setProjBoite(boite.masterBoite.projections[viewPossible[i]]);
+
+          // Va rajouter les effets, les composants
           for (j = 0 ; j < saveData.boite.masterBoite.projections[viewPossible[i]].effets.length ; j++) {
             this.addToCanvas(saveData.boite.masterBoite.projections[viewPossible[i]].effets[j], true);
           }
+
+          // Rajoute la couleur à la boite.
+          canvasGlobal.boite.projBoite.color = saveData.boite.masterBoite.projections[viewPossible[i]].color;
+
+          // Va rajouter les textDeco
+          for (j = 0 ; j < saveData.boite.masterBoite.projections[viewPossible[i]].textDeco.length ; j++) {
+            this.addTextToCanvas(saveData.boite.masterBoite.projections[viewPossible[i]].textDeco[j]);
+          }
+
+
+          // // Va rajouter les imgDeco
+          // for (j = 0 ; j < saveData.boite.masterBoite.projections[viewPossible[i]].imgDeco.length ; j++) {
+          //   this.addToCanvas(saveData.boite.masterBoite.projections[viewPossible[i]].imgDeco[j], true);
+          // }
+          //
+          // // Va rajouter les shapeDeco
+          // for (j = 0 ; j < saveData.boite.masterBoite.projections[viewPossible[i]].shapeDeco.length ; j++) {
+          //   this.addToCanvas(saveData.boite.masterBoite.projections[viewPossible[i]].shapeDeco[j], true);
+          // }
+
+
+
         }
 
-        // Remet les flèches.
+
 
 
         // On sélectionne la bonne projection.

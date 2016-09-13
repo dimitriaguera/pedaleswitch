@@ -12,7 +12,9 @@
       templateUrl: 'app/pageDessin/deco-dessin/deco-dessin.html',
       bindings: {
         addTextToTable: '&',
-        items:'<'
+        items:'=',
+        boite:'<',
+        draw:'&'
       },
       controller: DecoDessin
     });
