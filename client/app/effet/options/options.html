@@ -1,0 +1,68 @@
+<h2>Les options</h2>
+<div class="btn-group pull-right">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.newOption()" ng-hide="$ctrl.nouv">
+        <i class="glyphicon glyphicon-plus">
+        </i>
+    </button>
+    <button type="button" class="btn btn-default" ng-click="$ctrl.deleteOption($index)" ng-hide="$ctrl.nouv">
+        <i class="glyphicon glyphicon-remove">
+        </i>
+    </button>
+</div>
+<uib-tabset>
+    <uib-tab ng-repeat="option in $ctrl.effet.options track by $index" heading="Option {{$index + 1}} - {{option.titre}}">
+
+        <!-- Champ nom de l'option  -->
+        <div class="form-group" show-errors>
+          <label>Nom de l'option :</label>
+          <input name="option-nom-{{ $index }}" type="text" class="form-control" placeholder="nom de l'option" ng-model="$ctrl.effet.options[$index].titre" required />
+        </div>
+
+        <!-- Champ description de l'option  -->
+        <div class="form-group" show-errors>
+          <label>Description :</label>
+          <input name="option-description-{{ $index }}" type="text" class="form-control" placeholder="description" ng-model="$ctrl.effet.options[$index].description" required />
+        </div>
+
+        <!-- Champ prix de l'option  -->
+        <div class="form-group" show-errors>
+          <label>Prix :</label>
+          <input name="option-prix-{{ $index }}" type="number" class="form-control" placeholder="prix" ng-model="$ctrl.effet.options[$index].prix" required />
+        </div>
+
+        <!-- Champ largeur de l'option  -->
+        <div class="form-group" show-errors>
+          <label>Largueur :</label>
+          <input name="option-largeur-{{ $index }}" type="number" class="form-control" placeholder="largeur de l'option" ng-model="$ctrl.effet.options[$index].size.w" required />
+        </div>
+
+        <!-- Champ hauteur de l'option  -->
+        <div class="form-group" show-errors>
+          <label>Hauteur :</label>
+          <input name="option-hauteur-{{ $index }}" type="number" class="form-control" placeholder="hauteur de l'option" ng-model="$ctrl.effet.options[$index].size.h" required />
+        </div>
+
+        <!-- Champ publie de d'option  -->
+        <div class="form-group">
+            <label>Publier cette option :</label>
+            <div class="btn-group">
+                <label class="btn btn-default" ng-model="$ctrl.effet.options[$index].publie" uib-btn-radio="true">Oui</label>
+                <label class="btn btn-default" ng-model="$ctrl.effet.options[$index].publie" uib-btn-radio="false">Non</label>
+            </div>
+        </div>
+
+        <!-- Champ stock de d'option  -->
+        <div class="form-group">
+            <label>Etat des stocks :</label>
+            <div class="btn-group">
+                <label class="btn btn-default" ng-model="$ctrl.effet.options[$index].disponibilite" uib-btn-radio="'enStock'">En stock</label>
+                <label class="btn btn-default" ng-model="$ctrl.effet.options[$index].disponibilite" uib-btn-radio="'enReap'">En réapprovisionnement</label>
+                <label class="btn btn-default" ng-model="$ctrl.effet.options[$index].disponibilite" uib-btn-radio="'enRupture'">Epuisé</label>
+            </div>
+        </div>
+
+        <!-- Injection du formulaire des composants d'option  -->
+        <option-composants one-option="$ctrl.effet.options[$index]" nouvoption="$ctrl.nouvoption"></option-composants>
+
+    </uib-tab>
+</uib-tabset>

@@ -36,10 +36,6 @@ var OptionSchema = new mongoose.Schema({
     type: String,
  //   required: [true, 'Champ description de l\'option requis']
   },
-  disponible: {
-    type: Boolean,
- //   required: [true, 'Champ disponible de l\'option requis']
-  },
   prix: {
     type: Number,
  //   required: [true, 'Champ prix de l\'option requis']
@@ -55,7 +51,21 @@ var OptionSchema = new mongoose.Schema({
    //   required: [true, 'Champ hauteur de l\'option requis']
     }
   },
-  composants: [ComposantEffetSchema]
+  composants: [ComposantEffetSchema],
+  publie: {
+    type: Boolean,
+    default: false,
+    //  required: [true, 'Champ publié de l\'option requis']
+  },
+  disponibilite: {
+    type: String,
+    enum: ['enStock', 'enReap', 'enRupture'],
+    default: 'enStock',
+    //   required: [true, 'Champ disponibilité de l\'option requis']
+  },
+  dateCreation: {
+    type: Date,
+    default: Date.now },
 });
 
 var EffetSchema = new mongoose.Schema({
@@ -70,10 +80,6 @@ var EffetSchema = new mongoose.Schema({
   description: {
     type: String,
     required: [true, 'Champ description de l\'effet requis']
-  },
-  disponible: {
-    type: Boolean,
-  //  required: [true, 'Champ disponible de l\'effet requis']
   },
   options: [OptionSchema]
 });

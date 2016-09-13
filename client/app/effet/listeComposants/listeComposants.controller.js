@@ -59,7 +59,7 @@ class ListeComposants {
 
 angular.module('pedaleswitchApp')
   .component('listeComposants', {
-    templateUrl: 'app/addeffet/listeComposants/listeComposants.html',
+    templateUrl: 'app/effet/listeComposants/listeComposants.html',
     controller: ListeComposants,
     bindings:{
       ok: '&',
