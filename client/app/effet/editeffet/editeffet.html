@@ -1,41 +1,63 @@
 <div class="container">
 
+    <div uib-alert ng-repeat="message in $ctrl.message" type="{{message.type}}" close="$ctrl.closeAlert($index)">{{message.body}}</div>
+
     <h1 class="page-header">EDITER EFFET</h1>
     <form  name="effetForm" class="form">
 
         <!-- Button sortir formulaire edition effet  -->
-        <a ui-sref="addeffet">
-            <button type="button" class="close">&times;</button>
+        <a ui-sref="effets">
+            <button type="button" class="close">Retour à la liste des effets</button>
         </a>
 
         <!-- Champ titre de l'effet  -->
         <div class="form-group" show-errors>
             <label>Nom :</label>
             <input name="effetTitre" type="text" class="form-control" placeholder="nom de l'effet" ng-model="$ctrl.entity.titre" required />
+            <div ng-if="effetForm.effetTitre.$touched" ng-messages="effetForm.effetTitre.$error" role="alert">
+                <div style="color:red;" ng-message="required">Champ requis</div>
+            </div>
         </div>
 
         <!-- Champ description de l'effet  -->
         <div class="form-group" show-errors>
             <label>Description :</label>
-            <input name="effet-description" type="text" class="form-control" placeholder="description de l'effet" ng-model="$ctrl.entity.description" required />
+            <input name="effetDescription" type="text" class="form-control" placeholder="description de l'effet" ng-model="$ctrl.entity.description" required />
+            <div ng-if="effetForm.effetDescription.$touched" ng-messages="effetForm.effetDescription.$error" role="alert">
+                <div style="color:red;" ng-message="required">Champ requis</div>
+            </div>
         </div>
 
         <!-- Champ type d'effet  -->
         <div class="form-group" show-errors>
             <label>Type :</label>
-            <select name="effet-type" class="form-control" ng-model="$ctrl.entity.type" required>
+            <select name="effetType" class="form-control" ng-model="$ctrl.entity.type" required>
                 <option ng-repeat="type in $ctrl.types" value="{{type.titre}}">{{type.titre}}</option>
             </select>
+            <div ng-if="effetForm.effetType.$touched" ng-messages="effetForm.effetType.$error" role="alert">
+                <div style="color:red;" ng-message="required">Champ requis</div>
+            </div>
         </div>
 
         <!-- Injection du formulaire d'options  -->
-        <options effet="$ctrl.entity" nouv-effet="$ctrl.nouv"></options>
+        <options effet="$ctrl.entity" nouv-effet="$ctrl.nouveau"></options>
 
 
         <!-- Validation ou suppression de l'effet  -->
       <span class="input-group-btn">
-        <button type="submit" class="btn btn-primary" ng-click="$ctrl.onAction($ctrl.nouv)">{{$ctrl.nouv ? 'Enregistrer' : 'Mettre à jour'}}</button>
-          <button type="submit" class="btn btn-danger" ng-click="$ctrl.deleteEffet($ctrl.entity)" ng-hide="$ctrl.nouv">Supprimer</button>
+          <button ng-confirm-message="Enregistrer les modifications de l'effet {{ effet.titre }} ?"
+                  ng-confirm-body="Cette action est irréversible."
+                  ng-confirm="$ctrl.addEffet()"
+                  type="submit"
+                  class="btn btn-primary"
+                  ng-if="!$ctrl.nouveau">Enregistrer les modifications</button>
+          <button type="submit" class="btn btn-primary" ng-click="$ctrl.addEffet()" ng-if="$ctrl.nouveau">Enregistrer</button>
+          <button ng-confirm-message="Supprimer l'effet {{ effet.titre }} ?"
+                  ng-confirm-body="L'effet et toutes ses options seront supprimés de la base de donnée. Cette action est irréversible."
+                  ng-confirm="$ctrl.deleteEffet($ctrl.entity)"
+                  type="button"
+                  class="btn btn-danger"
+                  ng-if="!$ctrl.nouveau">Supprimer</button>
       </span>
     </form>
 </div>

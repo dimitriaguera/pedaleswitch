@@ -13,7 +13,8 @@ angular.module('pedaleswitchApp', [
   'validation.match',
   'color.picker',
   'jdFontselect',
-  'smart-table'
+  'smart-table',
+  'ngMessages'
 ])
   .config(function($urlRouterProvider, $locationProvider) {
     $urlRouterProvider
