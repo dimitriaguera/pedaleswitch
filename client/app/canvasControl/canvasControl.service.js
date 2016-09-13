@@ -159,6 +159,7 @@ angular.module('pedaleswitchApp')
           texte.moveTo({x: 400, y: 400});
         }
 
+        // Rajoute à la prjBoite le texte.
         boite.masterBoite.projections[canvasGlobal.state.viewState].textDeco.push(texte);
 
         // Rajoute le texte à la table texte.
@@ -179,8 +180,12 @@ angular.module('pedaleswitchApp')
             }
           });
         }
+      },
 
-
+      removeTextToCanvas: function(index){
+        // Rajoute à la prjBoite le texte.
+        boite.projBoite.textDeco.splice(index,1);
+        tables.tableText.splice(index,1);
       },
 
       /**

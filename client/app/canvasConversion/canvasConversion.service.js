@@ -39,7 +39,7 @@ angular.module('pedaleswitchApp')
         // Convertit les points de la boite.
         convertSizePoints(entity.points, ratio);
 
-        // Converti les Texte de déco
+        // Converti les Textes de déco
         if (entity.textDeco.length !== 0){
           for (var j = 0; j < entity.textDeco.length; j++) {
             convertSizePoints(entity.textDeco[j].points, ratio);

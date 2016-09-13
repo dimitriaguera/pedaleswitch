@@ -86,6 +86,10 @@ class PageDessinComponent {
         },
         500
       );
+    },
+    removeTextToTable: function(data){
+      var index = this.self.canvasGlobalServ.searchTabByIdReturnIndex(this.self.tables.tableText, data._id, data.key);
+      this.self.removeTextToTable(index);
     }
   };
 
@@ -213,6 +217,11 @@ class PageDessinComponent {
 
   addTextToTable(string){
     this.canvasControl.addTextToCanvas(string);
+    this.canvasDraw.drawStuff();
+  }
+
+  removeTextToTable(index){
+    this.canvasControl.removeTextToCanvas(index);
     this.canvasDraw.drawStuff();
   }
 
