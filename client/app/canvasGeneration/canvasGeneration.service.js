@@ -425,7 +425,7 @@ angular.module('pedaleswitchApp')
 
         this.shapeObject = 'Rect';
         this.fonction = 'Boite';
-        this.color = 'grey';
+        this.color = '#f6f6f6';
 
         this.points = [];
         this.initPoints(projPoints.points, this.points);
@@ -2653,7 +2653,9 @@ angular.module('pedaleswitchApp')
         this.getSizeTxt();
 
         this.points = this.createPoints();
+        this.initPoints(this.points, this.points);
         this.moveTo(center);
+        this.posBox = this.points[0];
       }
 
       drawCanvas(ctx){
