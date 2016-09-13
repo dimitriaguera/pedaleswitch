@@ -25,7 +25,7 @@ class OptionsComposants {
 
 angular.module('pedaleswitchApp')
   .component('optionComposants', {
-    templateUrl: 'app/addeffet/optionComposants/optionComposants.html',
+    templateUrl: 'app/effet/optionComposants/optionComposants.html',
     controller: OptionsComposants,
     bindings: {
       oneOption: '=',
