@@ -1,5 +1,6 @@
 <div ng-if="$ctrl.data.input">
   <span style="font-family:{{$ctrl.data.font.family}}">{{$ctrl.data.input}}</span>
+  <br/>
   <button type="button" class="btn btn-primary" ng-model="$ctrl.data.isVertical" ng-click="$ctrl.data.changeOrientation();$ctrl.actions.dataChange($ctrl.data)" uib-btn-checkbox>
     Vertical
   </button><br/>

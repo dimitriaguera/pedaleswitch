@@ -114,13 +114,18 @@ angular.module('pedaleswitchApp')
           context.shadowOffsetY = 0;
           context.shadowBlur    = 2;
           boite.projBoite.drawCanvas(context);
-          context.fillStyle = boite.projBoite.color;
-          context.fill();
 
-          // if (colorFill){
-          //   context.fillStyle = colorFill;
-          //   context.fill();
-          // }
+
+          if (boite.projBoite.color) {
+            context.fillStyle = boite.projBoite.color;
+            context.fill();
+          } else {
+            if (colorFill){
+              context.fillStyle = colorFill;
+              context.fill();
+            }
+          }
+
           if (boite.projBoite.isOverlapping) {
             context.fillStyle = 'rgba(255, 00, 00, 0.2)';
             context.fill();
@@ -220,7 +225,7 @@ angular.module('pedaleswitchApp')
         this.drawTableAlignLine(canvasS.canvas, canvasS.ctx, '#d0d0d0', '#00bfff', [10, 3]);
         this.drawTableActive(canvasS.ctx, 'black', null, '1px');
         this.drawArrow(canvasS.ctx, 'gray');
-        
+
         //this.drawText(ctx);
       }
 
