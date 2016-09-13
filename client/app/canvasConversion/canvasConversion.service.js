@@ -39,17 +39,20 @@ angular.module('pedaleswitchApp')
         // Convertit les points de la boite.
         convertSizePoints(entity.points, ratio);
 
+        // Converti les Texte de déco
         if (entity.textDeco.length !== 0){
           for (var j = 0; j < entity.textDeco.length; j++) {
             convertSizePoints(entity.textDeco[j].points, ratio);
             entity.textDeco[j].font.size = Math.round(ratio * entity.textDeco[j].font.size);
+            entity.textDeco[j].getSizeTxt();
           }
         }
       }
-      // Entity est un effet.
+      // Entity est un effet, un texte.
       else {
         // Convertie les points de l'entity.
         convertSizePoints(entity.points, ratio);
+
 
         // Convertie les composants
         if (entity.composants && entity.fonction !== 'Boite') {
