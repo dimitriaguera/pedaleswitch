@@ -14,6 +14,14 @@ Ce qu'il faut faire
 8) Moyen de payment
 
 9) CLeanner les attribut passer de pagedessin a autre depuis l'introduction de "actions".
+
+-------------------------
+TEXTE
+
+l'ajout de texte au canvas ce fait par une position de 400,400 (cf canvas control addTextToCanvas, moveto)
+qui ne correspond a rien suremenet il faut rajouter l'obj texte au milieu de la portion du canvas actuellement visible
+
+rajouter une police a dl au chargement du site et la mettre par défaut dans l'insertion du texte dans le canvas.
 -----------------------
 Interogat diverse:
 
@@ -59,9 +67,6 @@ Box-dessin.controller.js : Pk il est dans une fonctionne anonyme contrairement a
 
 BUG
 
-quand on ajoute une effet sur le canvas et que l'on enlève par la suite en cliquant sur le moins (-) puis
-si on le rajoute de nouveau dans le canvas la fonciton de zoom pars en couille.
-C la meme chose avec la fonction save&restore.
 
 ---------------
 SI MODIFICATION MODELE EFFET
