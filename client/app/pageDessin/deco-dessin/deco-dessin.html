@@ -10,3 +10,13 @@
 
 <input type="text" name="text" ng-model="string"><br>
 <button type="submit" class="btn btn-primary btn-sm" ng-click="$ctrl.addTextToTable({string: string})">+</button>
+
+<div>
+  Couleur de la boite
+  <color-picker
+    ng-model='$ctrl.boite.color'
+    color-picker-disabled='false'
+    color-picker-format="'hex'"
+    color-picker-on-change="$ctrl.draw()"
+  ></color-picker>
+</div>
