@@ -63,4 +63,6 @@ quand on ajoute une effet sur le canvas et que l'on enlève par la suite en cliq
 si on le rajoute de nouveau dans le canvas la fonciton de zoom pars en couille.
 C la meme chose avec la fonction save&restore.
 
-
+---------------
+SI MODIFICATION MODELE EFFET
+-> modifier en conséquence le service dataPrepar.
