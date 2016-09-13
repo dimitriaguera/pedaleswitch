@@ -151,10 +151,14 @@ angular.module('pedaleswitchApp')
        * Ajoute du texte au canvas.
        * @param string
        */
-      addTextToCanvas: function(string) {
+      addTextToCanvas: function(strOrObj) {
         var texte;
 
-        texte = canvasGeneration.newTexte(string);
+        texte = canvasGeneration.newTexte(strOrObj);
+        if (typeof strOrObj === 'string'){
+          texte.moveTo({x: 400, y: 400});
+        }
+
         boite.masterBoite.projections[canvasGlobal.state.viewState].textDeco.push(texte);
 
         // Rajoute le texte à la table texte.
