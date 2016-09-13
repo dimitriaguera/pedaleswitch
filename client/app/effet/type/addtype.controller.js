@@ -3,7 +3,6 @@
 
   class AddtypeComponent {
     constructor($http, $scope, socket) {
-      this.message = 'Hello';
       this.$http = $http;
       this.socket = socket;
       $scope.$on('$destroy', function() {
@@ -32,13 +31,7 @@
 
   angular.module('pedaleswitchApp')
     .component('addtype', {
-      templateUrl: 'app/addeffet/type/addtype.html',
-      //require: {
-      //  ctrlEffet: '^addeffet',
-      //},
-      bindings: {
-        types: '=',
-      },
+      templateUrl: 'app/effet/type/addtype.html',
       controller: AddtypeComponent,
     });
 

@@ -2,17 +2,30 @@
 (function(){
 
 class OptionsComponent {
-  constructor() {
+  constructor($scope) {
     this.nouvoption = false;
   }
   $onInit(){
     if(this.nouvEffet){
-      this.effet.options = [{}];
+      this.effet.options = [{
+        disponibilite:'enStock',
+        publie: false,
+        composants: [{
+          titre:'A définir'
+        }]
+      }];
       this.nouvoption = true;
     }
   }
   newOption(){
-    this.effet.options.push({titre:'nouvelle option'});
+    this.effet.options.push({
+      titre:'nouvelle option',
+      disponibilite:'enStock',
+      publie: false,
+      composants: [{
+        titre:'A définir'
+      }]
+    });
     this.nouvoption = true;
   }
   deleteOption(index){
@@ -22,7 +35,7 @@ class OptionsComponent {
 
 angular.module('pedaleswitchApp')
   .component('options', {
-    templateUrl: 'app/addeffet/options/options.html',
+    templateUrl: 'app/effet/options/options.html',
     controller: OptionsComponent,
     bindings: {
       effet: '=',

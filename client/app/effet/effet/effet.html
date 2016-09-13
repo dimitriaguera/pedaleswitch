@@ -28,7 +28,7 @@
         </div>
 
         <div class="pull-right">
-                    <button type="button" ng-click="$ctrl.$state.go('editionEffet', {entity: {}, types: $ctrl.types, nouv: true})" class="btn btn-primary">
+                    <button type="button" ng-click="$ctrl.$state.go('editionEffet', {types: $ctrl.types, nouv: true})" class="btn btn-primary">
                         <i class="glyphicon glyphicon-plus">
                         </i>
                         Créer un nouvel effet
@@ -41,7 +41,6 @@
                     <th></th>
                     <th>Effet</th>
                     <th>Type</th>
-                    <th>Statut</th>
                     <th>Options</th>
                     <th>Editer</th>
                 </tr>
@@ -60,16 +59,19 @@
                 <th scope="row" select-row="effet"></th>
                 <td>{{effet.titre}}</td>
                 <td>{{effet.type}}</td>
-                <td>Statut</td>
                 <td>
                     <div style="min-height:50px;" ng-repeat="option in effet.options">
                         <div class="pull-left">{{ option.titre }}</div>
                         <div class="btn-group pull-right">
-                            <button type="button" ng-click="" class="btn btn-default">
+                            <button type="button" ng-click="$ctrl.updateOptionPublie(effet, $index, true)" ng-hide="option.publie" class="btn btn-default has-warning">
+                                <i class="glyphicon glyphicon-warning-sign">
+                                </i>
+                            </button>
+                            <button type="button" ng-click="$ctrl.updateOptionPublie(effet, $index, false)" ng-hide="!option.publie" class="btn btn-default has-success">
                                 <i class="glyphicon glyphicon-ok">
                                 </i>
                             </button>
-                            <button type="button" ng-click="$ctrl.deleteEffet(effet)" class="btn btn-default">
+                            <button type="button" ng-click="$ctrl.deleteOption(effet, $index)" class="btn btn-default">
                                 <i class="glyphicon glyphicon-remove">
                                 </i>
                             </button>
@@ -78,11 +80,7 @@
                 </td>
                 <td>
                     <div class="btn-group pull-right">
-                            <button type="button" ng-click="$ctrl.$state.go('editionEffet', {entity: effet, types: $ctrl.types, nouv: false})" class="btn btn-default">
-                                <i class="glyphicon glyphicon-plus">
-                                </i>
-                            </button>
-                            <button type="button" ng-click="$ctrl.$state.go('editionEffet', {entity: effet, types: $ctrl.types, nouv: false})" class="btn btn-default">
+                            <button type="button" ng-click="$ctrl.$state.go('editionEffet', {entity: effet, types: $ctrl.types, nouv: 'false'})" class="btn btn-default">
                                 <i class="glyphicon glyphicon-pencil">
                                 </i>
                             </button>

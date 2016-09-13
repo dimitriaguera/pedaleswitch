@@ -1,5 +1,17 @@
-<uib-tabset active="0">
-    <uib-tab index="$index" ng-repeat="composant in $ctrl.oneOption.composants track by $index" heading="Composant {{$index + 1}} - {{composant.titre}}">
+<h2>Les composants de l'option " {{ $ctrl.oneOption.titre || 'sans-titre' }} "</h2>
+<div class="btn-group pull-right">
+  <button type="button" class="btn btn-default" ng-click="$ctrl.newComposant()">
+    <i class="glyphicon glyphicon-plus">
+    </i>
+  </button>
+  <button type="button" class="btn btn-default" ng-click="$ctrl.deleteComposant($index)">
+    <i class="glyphicon glyphicon-remove">
+    </i>
+  </button>
+</div>
+
+<uib-tabset>
+    <uib-tab ng-repeat="composant in $ctrl.oneOption.composants track by $index" heading="Composant {{$index + 1}} - {{composant.titre}}">
 
       <!-- Champ type du composant d'option  -->
       <div class="form-group" show-errors>
@@ -31,11 +43,6 @@
       <div class="form-group" show-errors>
         <label>Position y :</label>
         <input name="composant-posy-{{ $index }}" type="number" class="form-control" placeholder="coord. Y" ng-model="$ctrl.oneOption.composants[$index].pos.y" required />
-      </div>
-
-      <div class="btn-group">
-        <button type="button" class="btn btn-primary" ng-click="$ctrl.newComposant()">+ compo</button>
-        <button type="button" class="btn btn-danger" ng-click="$ctrl.deleteComposant($index)">- compo</button>
       </div>
     </uib-tab>
 </uib-tabset>

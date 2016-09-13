@@ -12,7 +12,7 @@ class ModalComposants {
     var thisOne = this;
     this.modalInstance = this.modalServ.open({
       animation: true,
-      templateUrl: 'app/addeffet/modalComposants/modalBox.html',
+      templateUrl: 'app/effet/modalComposants/modalBox.html',
       controller: 'ModalBox',
       controllerAs: 'modal',
       resolve: {
@@ -35,7 +35,7 @@ class ModalComposants {
 
 angular.module('pedaleswitchApp')
   .component('modalComposants', {
-    templateUrl: 'app/addeffet/modalComposants/modalComposants.html',
+    templateUrl: 'app/effet/modalComposants/modalComposants.html',
     controller: ModalComposants,
     bindings: {
       oneComposant: '='
