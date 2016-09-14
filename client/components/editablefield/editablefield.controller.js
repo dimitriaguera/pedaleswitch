@@ -30,6 +30,9 @@
         fieldValue: '<',
         fieldType: '@?',
         onUpdate: '&',
+        onRemove: '&',
+        confirmMessage:'<',
+        confirmBody:'<'
       },
       controller: EditableField,
     });
