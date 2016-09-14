@@ -9,14 +9,14 @@ class EffetComponent {
     this.socket = socket;
     this.indexEffets = [];
     this.message = $stateParams.message || [];
-    $scope.$on('$destroy', function() {
-      socket.unsyncUpdates('effet');
-    });
+    //$scope.$on('$destroy', function() {
+    //  socket.unsyncUpdates('effet');
+    //});
   }
   $onInit(){
     this.$http.get('/api/effets').then(response => {
       this.indexEffets = response.data;
-      this.socket.syncUpdates('effet', this.indexEffets);
+    //  this.socket.syncUpdates('effet', this.indexEffets);
     });
   }
 
