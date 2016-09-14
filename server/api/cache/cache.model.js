@@ -2,34 +2,90 @@
 
 import mongoose from 'mongoose';
 
-var CacheComposantEffetSchema = new mongoose.Schema({
-  titre: String,
-  available_compo_id: [],
-  coordonnées: {
-    x:Number,
-    y:Number
-  }
+var ComposantEffetSchema = new mongoose.Schema({
+    type: {
+        type: String,
+        required: [true, 'Champ type du composant requis']
+    },
+    titre: {
+        type: String,
+        required: [true, 'Champ titre du composant requis']
+    },
+    available_compo_id: {
+        type: Array,
+        required: [true, 'Champ éléments autorisés requis']
+    },
+    pos: {
+        x:{
+            type: Number,
+            required: [true, 'Champ X du composant requis']
+        },
+        y:{
+            type: Number,
+            required: [true, 'Champ Y du composant requis']
+        }
+    }
 });
 
-var CacheOptionSchema = new mongoose.Schema({
-  titre: String,
-  description: String,
-  disponible: Boolean,
-  prix: Number,
-  media: [],
-  dimensions: {
-    w:Number,
-    h:Number
-  },
-  composants: [CacheComposantEffetSchema]
+var OptionSchema = new mongoose.Schema({
+    titre: {
+        type: String,
+        required: [true, 'Champ titre de l\'option requis']
+    },
+    description: {
+        type: String,
+        required: [true, 'Champ description de l\'option requis']
+    },
+    prix: {
+        type: Number,
+        required: [true, 'Champ prix de l\'option requis']
+    },
+    media: [],
+    size: {
+        w:{
+            type: Number,
+            required: [true, 'Champ largeur de l\'option requis']
+        },
+        h:{
+            type: Number,
+            required: [true, 'Champ hauteur de l\'option requis']
+        }
+    },
+    composants: [ComposantEffetSchema],
+    publie: {
+        type: Boolean,
+        default: false,
+        required: [true, 'Champ publié de l\'option requis']
+    },
+    disponibilite: {
+        type: String,
+        enum: ['enStock', 'enReap', 'enRupture'],
+        default: 'enStock',
+        required: [true, 'Champ disponibilité de l\'option requis']
+    },
+    dateCreation: {
+        type: Date,
+        default: Date.now },
 });
 
-var CacheSchema = new mongoose.Schema({
-  titre: String,
-  description: String,
-  type: String,
-  disponible: Boolean,
-  options: [CacheOptionSchema]
+var EffetSchema = new mongoose.Schema({
+    type: {
+        type: String,
+        required: [true, 'Champ type d\'effet requis']
+    },
+    titre: {
+        type: String,
+        required: [true, 'Champ titre de l\'effet requis']
+    },
+    description: {
+        type: String,
+        required: [true, 'Champ description de l\'effet requis']
+    },
+    creation: {
+        type: Date,
+        default: Date.now },
+    options: [OptionSchema]
 });
 
-export default mongoose.model('Cache', CacheSchema);
+
+export default mongoose.model('Cache', EffetSchema);

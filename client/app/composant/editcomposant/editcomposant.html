@@ -1,0 +1,96 @@
+<div class="container">
+
+    <div uib-alert ng-repeat="message in $ctrl.message" type="{{message.type}}" close="$ctrl.closeAlert($index)">{{message.body}}</div>
+
+    <!-- Button sortir formulaire edition effet  -->
+    <button type="button" class="close pull-right" ng-click="$ctrl.$state.go('composants')">Retour à la liste des composants</button>
+
+    <h1 class="page-header">EDITER COMPOSANT</h1>
+    <form  name="composantForm" class="form">
+
+        <!-- Champ titre du composant  -->
+        <div class="form-group" show-errors>
+            <label>Nom :</label>
+            <input name="composantTitre" type="text" class="form-control" placeholder="nom du composant" ng-model="$ctrl.entity.titre" required />
+        </div>
+
+        <!-- Champ type du composant  -->
+        <div class="form-group" show-errors>
+            <label>Type :</label>
+            <select name="composantType" class="form-control" ng-model="$ctrl.entity.type" required>
+                <option ng-repeat="type in $ctrl.types" value="{{type.titre}}">{{type.titre}}</option>
+            </select>
+        </div>
+
+        <!-- Champ forme du composant  -->
+        <div class="form-group">
+            <label>Forme du composant :</label>
+            <div class="btn-group">
+                <label class="btn btn-default" ng-model="$ctrl.entity.shape" uib-btn-radio="'Cercle'">Cercle</label>
+                <label class="btn btn-default" ng-model="$ctrl.entity.shape" uib-btn-radio="'Rect'">Rectangle</label>
+                <!--<label class="btn btn-default" ng-model="$$ctrl.entity.shape" uib-btn-radio="'Poly'">Polygone</label>-->
+            </div>
+        </div>
+
+        <!-- Champ largeur du composant  -->
+        <div class="form-group" show-errors>
+            <label>{{ $ctrl.entity.shape == 'Cercle'? 'Diamètre :' : 'Largeur :' }}</label>
+            <input name="composantLargeur" type="number" class="form-control" placeholder="largeur du composant" ng-model="$ctrl.entity.size.w" required />
+        </div>
+
+        <!-- Champ hauteur du composant  -->
+        <div class="form-group" show-errors ng-hide="$ctrl.entity.shape === 'Cercle'">
+            <label>Hauteur :</label>
+            <input name="composantHauteur" type="number" class="form-control" placeholder="hauteur du composant" ng-if="$ctrl.entity.shape !== 'Cercle'" ng-model="$ctrl.entity.size.h" required />
+        </div>
+
+        <!-- Champ prix du composant  -->
+        <div class="form-group" show-errors>
+            <label>Prix additionnel:</label>
+            <input name="composantPrixAdditionnel" type="number" class="form-control" placeholder="prix" ng-model="$ctrl.entity.prix_additionnel" required />
+        </div>
+
+        <!-- Champ description du composant  -->
+        <div class="form-group" show-errors>
+            <label>Description :</label>
+            <input name="composantDescription" type="text" class="form-control" placeholder="description du composant" ng-model="$ctrl.entity.description" required />
+        </div>
+
+        <!-- Champ disponible du composant  -->
+        <div class="form-group">
+            <label>Publier le composant :</label>
+            <div class="btn-group">
+                <label class="btn btn-default" ng-model="$ctrl.entity.publie" uib-btn-radio="true">Oui</label>
+                <label class="btn btn-default" ng-model="$ctrl.entity.publie" uib-btn-radio="false">Non</label>
+            </div>
+        </div>
+
+        <!-- Champ stock de d'option  -->
+        <div class="form-group">
+            <label>Etat des stocks :</label>
+            <div class="btn-group">
+                <label class="btn btn-default" ng-model="$ctrl.entity.disponibilite" uib-btn-radio="'enStock'">En stock</label>
+                <label class="btn btn-default" ng-model="$ctrl.entity.disponibilite" uib-btn-radio="'enReap'">En réapprovisionnement</label>
+                <label class="btn btn-default" ng-model="$ctrl.entity.disponibilite" uib-btn-radio="'enRupture'">Epuisé</label>
+            </div>
+        </div>
+
+
+        <!-- Validation ou suppression du composant  -->
+      <span class="input-group-btn">
+          <button ng-confirm-message="Enregistrer les modifications du composant {{ $ctrl.entity.titre }} ?"
+                  ng-confirm-body="Cette action est irréversible."
+                  ng-confirm="$ctrl.addComposant()"
+                  type="submit"
+                  class="btn btn-primary"
+                  ng-if="!$ctrl.nouveau">Enregistrer les modifications</button>
+          <button type="submit" class="btn btn-primary" ng-click="$ctrl.addComposant()" ng-if="$ctrl.nouveau">Enregistrer</button>
+          <button ng-confirm-message="Supprimer le composant {{ $ctrl.entity.titre }} ?"
+                  ng-confirm-body="Le composant sera supprimé de la base de donnée. Cette action est irréversible."
+                  ng-confirm="$ctrl.deleteComposant($ctrl.entity)"
+                  type="button"
+                  class="btn btn-danger"
+                  ng-if="!$ctrl.nouveau">Supprimer</button>
+      </span>
+    </form>
+</div>

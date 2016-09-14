@@ -1,0 +1,131 @@
+
+<!--<div class="container" loading3="$ctrl.loading">-->
+    <!--<composant-type composant-types="$ctrl.composantTypes"></composant-type>-->
+    <!--<h1 class="page-header">Liste de Composants : </h1>-->
+
+    <!--<uib-accordion>-->
+        <!--<uib-accordion-group heading="{{k}}" ng-repeat="(k, v) in $ctrl.composants">-->
+            <!--<ul ng-repeat="composant in v">-->
+                <!--<li><a href="#" uib-tooltip="{{composant.description}}">-->
+                    <!--{{composant.titre}}<br/>-->
+                    <!--Type : {{composant.type}}<br/>-->
+                    <!--Forme : {{composant.shape}}<br/>-->
+                    <!--Prix : {{composant.prix_additionnel}}euro<br/>-->
+                    <!--Dimension : {{composant.size.w}} x {{composant.size.h}}-->
+                    <!--<button type="button" class="close" ng-click="$ctrl.deleteComposant(composant)">&times;</button>-->
+                <!--</a></li>-->
+            <!--</ul>-->
+        <!--</uib-accordion-group>-->
+    <!--</uib-accordion>-->
+
+    <!--<form class="thing-form">-->
+        <!--<h2>Ajouter un composant dans la db</h2>-->
+        <!--<label>Nom :</label><input type="text" class="form-control" placeholder="Nom" ng-model="$ctrl.newComposant.titre">-->
+        <!--<label>Type de composant :</label>-->
+        <!--<select ng-model="$ctrl.newComposant.type">-->
+            <!--<option ng-repeat="composantType in $ctrl.composantTypes">{{composantType.titre}}</option>-->
+        <!--</select>-->
+        <!--</br>-->
+        <!--<label>Forme :</label><input type="text" class="form-control" placeholder="(Rect, Cercle, Poly)" ng-model="$ctrl.newComposant.shape">-->
+        <!--<label>Description :</label><input type="text" class="form-control" placeholder="Description." ng-model="$ctrl.newComposant.description">-->
+        <!--<label>Disponible :</label><input type="checkbox" ng-model="$ctrl.newComposant.disponible">-->
+        <!--</br>-->
+        <!--<label>Prix :</label><input type="text" class="form-control" placeholder="Prix." ng-model="$ctrl.newComposant.prix_additionnel">-->
+        <!--<label>Largueur :</label><input type="text" class="form-control" placeholder="Largueur" ng-model="$ctrl.newComposant.size.w">-->
+        <!--<label>Hauteur :</label><input type="text" class="form-control" placeholder="Hauteur" ng-model="$ctrl.newComposant.size.h">-->
+        <!--<button type="submit" class="btn btn-primary" ng-click="$ctrl.addComposant()">Add New</button>-->
+    <!--</form>-->
+<!--</div>-->
+
+<div class="container">
+
+        <!--<div class="bg-danger" ng-if="$ctrl.message.error">{{ $ctrl.message.error }}</div>-->
+        <!--<div class="bg-success" ng-if="$ctrl.message.ok">{{ $ctrl.message.ok }}</div>-->
+
+        <div uib-alert ng-repeat="message in $ctrl.message" type="{{message.type}}" close="$ctrl.closeAlert($index)">{{message.body}}</div>
+
+        <h1 class="page-header">COMPOSANTS</h1>
+
+        <div class="btn-group pull-left">
+            <button ng-confirm-message="Supprimer les composants sélectionnés?"
+                    ng-confirm-body="Les composants sélectionnés seront supprimés de la base de donnée. Cette action est irréversible."
+                    ng-confirm="$ctrl.deleteSelectComposants()"
+                    type="button" class="btn btn-danger">
+                Supprimer la selection
+            </button>
+        </div>
+
+        <div class="pull-right">
+                    <button type="button" ng-click="$ctrl.$state.go('editionComposant', {types: $ctrl.types})" class="btn btn-primary">
+                        <i class="glyphicon glyphicon-plus">
+                        </i>
+                        Créer un nouveau composant
+                    </button>
+        </div>
+
+        <table class="table table-bordered" st-table="$ctrl.composants">
+            <thead>
+                <tr class="">
+                    <th></th>
+                    <th>Nom</th>
+                    <th>Type</th>
+                    <th>Forme</th>
+                    <th>Disponible</th>
+                    <th>Prix</th>
+                    <th>Edition</th>
+                </tr>
+                <!--<tr>-->
+                    <!--<th></th>-->
+                    <!--<th><input st-search="titre" class="input-sm form-control" type="search"/></th>-->
+                    <!--<th><input st-search="type" class="input-sm form-control" type="search"/></th>-->
+                    <!--<th></th>-->
+                    <!--<th></th>-->
+                    <!--<th></th>-->
+                 <!--</tr>-->
+            </thead>
+            <tbody>
+
+            <tr ng-repeat="composant in $ctrl.composants">
+                <th scope="row" select-row="composant"></th>
+                <td>{{composant.titre}}</td>
+                <td>{{composant.type}}</td>
+                <td>{{composant.shape}}</td>
+                <td>{{composant.disponibilite}}</td>
+                <td>{{composant.prix_additionnel}}</td>
+                <td>
+                    <div class="btn-group pull-right">
+                        <button type="button" ng-class="{'btn-warning': !composant.publie, 'btn-success': composant.publie}" class="btn disabled">
+                            {{ composant.publie ? 'Publié' : 'Non-publié' }}
+                        </button>
+                        <button type="button" tooltip-popup-delay="400" uib-tooltip="Composant non publiée. Il n'apparaît pas dans la bibliothèque des effets. Cliquez pour publier le composant." ng-click="$ctrl.updateComposantPublie(composant, true)" ng-hide="composant.publie" class="btn btn-default has-warning">
+                            <i class="glyphicon glyphicon-warning-sign">
+                            </i>
+                        </button>
+                        <button type="button" tooltip-popup-delay="400" uib-tooltip="Composant publiée. Il apparaît dans la bibliothèque des effets. Cliquez pour dé-publier le composant." ng-click="$ctrl.updateComposantPublie(composant, false)" ng-hide="!composant.publie" class="btn btn-default has-success">
+                            <i class="glyphicon glyphicon-ok">
+                            </i>
+                        </button>
+                            <button type="button" ng-click="$ctrl.$state.go('editionComposant', {entity: composant})"
+                                    class="btn btn-default"
+                                    tooltip-popup-delay="400"
+                                    uib-tooltip="Editer le composant {{ composant.titre }}">
+                                <i class="glyphicon glyphicon-pencil">
+                                </i>
+                            </button>
+                            <button ng-confirm-message="Supprimer le composant - {{ composant.titre }}  ?"
+                                    ng-confirm-body="Le composant sera supprimée de la base de donnée. Cette action est irréversible."
+                                    ng-confirm="$ctrl.deleteComposant(composant)"
+                                    type="button"
+                                    class="btn btn-default"
+                                    uib-tooltip="Supprimer le composant {{ composant.titre }}" tooltip-placement="right" tooltip-popup-delay="400">
+                                <i class="glyphicon glyphicon-remove"></i>
+                            </button>
+
+                    </div>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+
+</div>

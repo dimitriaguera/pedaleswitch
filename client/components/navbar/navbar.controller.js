@@ -6,8 +6,8 @@ class NavbarController {
     'title': 'Home',
     'state': 'main'
   },{
-    title: 'Composant',
-    state: 'composant'
+    title: 'Composants',
+    state: 'composants'
   },{
     title: 'Effets',
     state: 'effets'

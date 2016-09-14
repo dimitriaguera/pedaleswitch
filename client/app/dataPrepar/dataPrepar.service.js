@@ -4,10 +4,9 @@ angular.module('pedaleswitchApp')
   .factory('dataPrepar', function () {
 
     return {
-        getDataEffet: function (entity){
 
-           // var data = angular.fromJson(angular.toJson(entity));
-            //angular.copy(entity, data);
+        // Formate l'objet effet pour l'envoie serveur.
+        getDataEffet: function (entity){
 
             var data = {
               titre: entity.titre,
@@ -64,6 +63,34 @@ angular.module('pedaleswitchApp')
                 }
                 data.options.push(option);
             }
+            return data;
+        },
+
+        // Formate l'objet composant pour l'envoie serveur.
+        getDataComposant: function (entity) {
+
+            var data = {
+                titre: entity.titre,
+                type: entity.type,
+                shape: entity.shape,
+                description: entity.description,
+                disponibilite: entity.disponibilite,
+                publie: entity.publie,
+                prix_additionnel: entity.prix_additionnel,
+                size: {
+                    w: entity.size.w,
+                    h: entity.size.h
+                },
+                media: []
+            };
+
+            if( entity._id ) {
+                data._id = entity._id;
+            }
+            if (data.shape === 'Cercle') {
+                data.size.h = data.size.w;
+            }
+
             return data;
         }
     };
