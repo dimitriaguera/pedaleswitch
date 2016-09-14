@@ -71,14 +71,14 @@ angular.module('pedaleswitchApp')
         this.size = entity.size || {};
         this.posBox = {};
         
-        this.points = entity.points;
-        this.pointsDefault = entity.pointsDefault || null;
+        this.points = entity.points || [];
+        this.pointsDefault = entity.pointsDefault || [];
         this.initPoints(entity.points, this.points);
         this.initPoints(entity.pointsDefault, this.pointsDefault);
         this.posBox = this.points[0];
       }
       initPoints(points, tab){
-        if (points) {
+        if (points){
           var i;
           var l = points.length;
           var table = [];
@@ -89,6 +89,12 @@ angular.module('pedaleswitchApp')
           for (i = 0; i < l; i++) {
             tab.push(table[i]);
           }
+        }
+        else {
+          tab.push(new Point({x:0,y:0}));
+          tab.push(new Point({x:10,y:0}));
+          tab.push(new Point({x:10,y:10}));
+          tab.push(new Point({x:0,y:10}));
         }
       }
       resetCompPos(){
@@ -2375,7 +2381,7 @@ angular.module('pedaleswitchApp')
 
 
         this.shapeObject = obj.shape || 'Rect';
-        this.fonction = obj.fonction ||'Texte';
+        this.fonction = obj.fonction || 'deco';
         this.angle = obj.angle || 0;
 
         this.sizeTxt = obj.sizeTxt || this.getSizeTxt();

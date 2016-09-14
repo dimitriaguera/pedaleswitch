@@ -19,11 +19,19 @@
 </color-picker>
 
 <h4>Ajouter des figures sur le boitier</h4>
-<input type="text" name="text" ng-model="shapeDeco">
-<span class="glyphicon glyphicon-plus" ng-click="$ctrl.addShapeToTable({string: shapeDeco})"></span>
+<div class="btn-group">
+  <label class="btn btn-primary" ng-model="shapeModel" uib-btn-radio="'Cercle'">Cercle</label>
+  <label class="btn btn-primary" ng-model="shapeModel" uib-btn-radio="'Rectangle'">Rectangle</label>
+</div>
+<color-picker
+  ng-model='shapeColor'
+  color-picker-disabled='false'
+  color-picker-format="'hex'">
+</color-picker>
+<div class="glyphicon glyphicon-plus" ng-click="$ctrl.addShapeToTable({string: shapeModel, color: shapeColor})"></div>
 <div>Figures(s) présent(s) :</div>
 <ul ng-repeat="item in $ctrl.shapeDeco">
   <li>
-    <span>{{item.input}}</span><span ng-click="$ctrl.removeShapeToTable({index:$index})" class="glyphicon glyphicon-remove"></span>
+    <span>$index</span><span ng-click="$ctrl.removeShapeToTable({index:$index})" class="glyphicon glyphicon-remove"></span>
   </li>
 </ul>

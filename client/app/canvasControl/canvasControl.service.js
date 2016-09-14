@@ -166,6 +166,9 @@ angular.module('pedaleswitchApp')
         // Rajoute le texte à la table texte.
         tables.tableTextDeco.push(texte);
 
+        // Rajoute le texte à la table active.
+        tables.tableActive.push(texte);
+
         // Load automatiquement la font depuis google font.
         // @todo a vérifier car assume que toute font vient de google.
         // de plus police par défaut est lato qui est pas dl des le debut donc changement de police
@@ -181,6 +184,8 @@ angular.module('pedaleswitchApp')
             }
           });
         }
+
+
       },
 
       /**
@@ -188,7 +193,6 @@ angular.module('pedaleswitchApp')
        * @param index
        */
       removeTextToCanvas: function(index){
-        // Rajoute à la prjBoite le texte.
         boite.projBoite.textDeco.splice(index,1);
         tables.tableTextDeco.splice(index,1);
       },
@@ -197,17 +201,39 @@ angular.module('pedaleswitchApp')
        * Ajouter une shapeDeco au canvas
        */
       addShapeToCanvas: function(obj){
+        var shape;
+        switch (obj.shape){
+          case 'Rectangle':
+            shape = new canvasGeneration.newRect(obj);
+            break;
+          case 'Cercle':
+            shape = new canvasGeneration.newCercle(obj);
+            break;
+        }
 
-        var shape = new canvasGeneration.newCercle(obj);
+        shape.fonction = 'deco';
+
+        shape.moveTo(canvasGlobalServ.getMiddleWinPos());
 
         // Rajoute à la prjBoite le texte.
         boite.masterBoite.projections[canvasGlobal.state.viewState].shapeDeco.push(shape);
 
         // Rajoute le texte à la table texte.
-        tables.tableTextDeco.push(texte);
+        tables.tableShapeDeco.push(shape);
+
+        // Rajoute le texte à la table active.
+        tables.tableActive.push(shape);
 
       },
 
+      /**
+       * Enlève une shapeDeco au canvas
+       * @param index
+       */
+      removeShapeToCanvas: function(index){
+        boite.projBoite.shapeDeco.splice(index,1);
+        tables.tableShapeDeco.splice(index,1);
+      },
 
       /**
        * Réorganise les tables maîtres canvas selon l'état passé en argument.
@@ -342,7 +368,7 @@ angular.module('pedaleswitchApp')
             canvasGlobalServ.resetIsSelected(tables.tableEffet);
             canvasGlobalServ.resetTableDrawDashed();
             canvasGlobalServ.resetTableDrawThin();
-            canvasGlobalServ.setTableActive(tables.tableTextDeco);
+            canvasGlobalServ.setTableActive(tables.tableTextDeco.concat(tables.tableShapeDeco));
             canvasGlobalServ.setTableDrawThin(tables.tableComposant);
             return (tables.tableTextDeco.length > 0);
           
