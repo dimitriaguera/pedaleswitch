@@ -155,8 +155,9 @@ angular.module('pedaleswitchApp')
         var texte;
 
         texte = canvasGeneration.newTexte(strOrObj);
+
         if (typeof strOrObj === 'string'){
-          texte.moveTo({x: 400, y: 400});
+          texte.moveTo(canvasGlobalServ.getMiddleWinPos());
         }
 
         // Rajoute à la prjBoite le texte.
