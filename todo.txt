@@ -75,11 +75,9 @@ A savoir
 -----------------
 
 
-
-
-BUG
-
-
----------------
-SI MODIFICATION MODELE EFFET
+--------------------------------------------
+>>>>>>>> ATTENTION SI MODIFICATION DANS L'API EFFET et COMPOSANT <<<<<<<<<
+----------------------------------------------
+API EFFET
 -> modifier en conséquence le service dataPrepar.
+-> modifier en conséquence le modèle CACHE

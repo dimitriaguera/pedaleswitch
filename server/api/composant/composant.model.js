@@ -5,8 +5,7 @@ import mongoose from 'mongoose';
 var ComposantSchema = new mongoose.Schema({
   titre: String,
   type: String,
-  description: String,
-  disponible: Boolean,
+  description: Boolean,
   prix_additionnel: Number,
   shape: String,
   size: {

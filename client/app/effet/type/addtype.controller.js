@@ -82,6 +82,9 @@
         });
       }
     }
+    closeAlert(index) {
+      this.message.splice(index, 1);
+    }
   }
 
   angular.module('pedaleswitchApp')

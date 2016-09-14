@@ -34,14 +34,14 @@
 
         <!-- Validation ou suppression de l'effet  -->
       <span class="input-group-btn">
-          <button ng-confirm-message="Enregistrer les modifications de l'effet {{ effet.titre }} ?"
+          <button ng-confirm-message="Enregistrer les modifications de l'effet {{ $ctrl.entity.titre }} ?"
                   ng-confirm-body="Cette action est irréversible."
                   ng-confirm="$ctrl.addEffet()"
                   type="submit"
                   class="btn btn-primary"
                   ng-if="!$ctrl.nouveau">Enregistrer les modifications</button>
           <button type="submit" class="btn btn-primary" ng-click="$ctrl.addEffet()" ng-if="$ctrl.nouveau">Enregistrer</button>
-          <button ng-confirm-message="Supprimer l'effet {{ effet.titre }} ?"
+          <button ng-confirm-message="Supprimer l'effet {{ $ctrl.entity.titre }} ?"
                   ng-confirm-body="L'effet et toutes ses options seront supprimés de la base de donnée. Cette action est irréversible."
                   ng-confirm="$ctrl.deleteEffet($ctrl.entity)"
                   type="button"
