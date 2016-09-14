@@ -36,6 +36,14 @@ angular.module('pedaleswitchApp')
                     composants: []
                 };
 
+                if( opt._id ) {
+                    option._id = opt._id;
+                }
+
+                if( opt.dateCreation ) {
+                    option.dateCreation = opt.dateCreation;
+                }
+
                 for(var j = 0; j < opt.composants.length; j++) {
                     var comp = opt.composants[j];
                     var composant = {
@@ -47,6 +55,11 @@ angular.module('pedaleswitchApp')
                             y: comp.pos.y
                         }
                     };
+
+                    if( comp._id ) {
+                        composant._id = comp._id;
+                    }
+
                     option.composants.push(composant);
                 }
                 data.options.push(option);

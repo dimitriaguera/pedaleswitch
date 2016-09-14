@@ -1,6 +1,36 @@
-<span ng-switch="$ctrl.editMode">
-  <input ng-switch-when="true" type="{{$ctrl.fieldType}}" ng-model="$ctrl.fieldValue">
-  <span ng-switch-default>{{$ctrl.fieldValue}}</span>
-</span>
-<button type="button" class="close" ng-click="$ctrl.handleModeChange()">{{$ctrl.editMode ? 'ok' : '+'}}</button>
+<form>
+
+  <div class="row">
+    <div ng-switch="$ctrl.editMode" class="form-group">
+      <div class="col-xs-8">
+        <input class="form-control" ng-switch-when="true" type="{{$ctrl.fieldType}}" ng-model="$ctrl.fieldValue">
+        <span ng-switch-default>{{$ctrl.fieldValue}}</span>
+      </div>
+
+      <div class="col-xs-4">
+        <div class="btn-group pull-right">
+
+          <button type="button"
+                  ng-click="$ctrl.handleModeChange()"
+                  class="btn btn-default"
+                  tooltip-popup-delay="400"
+                  uib-tooltip="{{ $ctrl.editMode ? 'Valider' : 'Modifier' }}">
+            <i ng-class="{'glyphicon-pencil':!$ctrl.editMode, 'glyphicon-ok':$ctrl.editMode}" class="glyphicon"></i>
+          </button>
+
+          <button type="button"
+                  class="btn btn-default"
+                  tooltip-popup-delay="400"
+                  uib-tooltip="Supprimer"
+                  ng-confirm-message="{{ $ctrl.confirmMessage }}"
+                  ng-confirm-body="{{ $ctrl.confirmBody }}"
+                  ng-confirm="$ctrl.onRemove(type)">
+            <i class="glyphicon glyphicon-remove"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+<!--<button type="button" class="close" ng-click="$ctrl.handleModeChange()">{{$ctrl.editMode ? 'ok' : '+'}}</button>-->
 
