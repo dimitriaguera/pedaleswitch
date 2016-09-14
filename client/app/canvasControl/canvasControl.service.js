@@ -157,7 +157,7 @@ angular.module('pedaleswitchApp')
         texte = canvasGeneration.newTexte(strOrObj);
 
         if (typeof strOrObj === 'string'){
-          texte.moveTo(canvasGlobalServ.getMiddleWinPos());
+          texte.moveTo(boite.masterBoite.projections[canvasGlobal.state.viewState].getCenter());
         }
 
         // Rajoute à la prjBoite le texte.
@@ -181,6 +181,8 @@ angular.module('pedaleswitchApp')
             }
           });
         }
+
+
       },
 
       /**
@@ -188,7 +190,6 @@ angular.module('pedaleswitchApp')
        * @param index
        */
       removeTextToCanvas: function(index){
-        // Rajoute à la prjBoite le texte.
         boite.projBoite.textDeco.splice(index,1);
         tables.tableTextDeco.splice(index,1);
       },
@@ -197,17 +198,60 @@ angular.module('pedaleswitchApp')
        * Ajouter une shapeDeco au canvas
        */
       addShapeToCanvas: function(obj){
+        var shape;
+        obj.fonction = 'deco';
+        switch (obj.shape){
+          case 'Rectangle':
+            shape = new canvasGeneration.newRect(obj);
+            break;
+          case 'Cercle':
+            shape = new canvasGeneration.newCercle(obj);
+            break;
+          default:
+            shape = new canvasGeneration.newRect(obj);
+        }
 
-        var shape = new canvasGeneration.newCercle(obj);
+        shape.moveTo(boite.masterBoite.projections[canvasGlobal.state.viewState].getCenter());
 
-        // Rajoute à la prjBoite le texte.
+        // Rajoute à la prjBoite
         boite.masterBoite.projections[canvasGlobal.state.viewState].shapeDeco.push(shape);
 
-        // Rajoute le texte à la table texte.
-        tables.tableTextDeco.push(texte);
+        // Rajoute à la table.
+        tables.tableShapeDeco.push(shape);
 
       },
 
+      /**
+       * Enlève une shapeDeco au canvas
+       * @param index
+       */
+      removeShapeToCanvas: function(index){
+        boite.projBoite.shapeDeco.splice(index,1);
+        tables.tableShapeDeco.splice(index,1);
+      },
+
+      /**
+       * Ajout d'image au canvas
+       */
+      addImgToCanvas: function(){
+        var canvasGeneration2 = canvasGeneration,
+            canvasGlobal2 = canvasGlobal,
+            img = new Image(),
+            boite2 = boite;
+        img.src = 'assets/images/yeoman.png';
+        img.onload = function(){
+          var points = [
+            {x:0,y:0},
+            {x:img.width,y:0},
+            {x:img.width,y:img.height},
+            {x:0,y:img.height}
+          ];
+          var tmpImg = canvasGeneration2.newImgDeco({img:img,points:points,fonction:'deco'});
+          tmpImg.move(boite.masterBoite.projections[canvasGlobal.state.viewState].getCenter());
+          boite2.projBoite.imgDeco.push(tmpImg);
+          canvasGlobal2.canvas.ctx.drawImage(img, tmpImg.points[0].x, tmpImg.points[0].y);
+        }
+      },
 
       /**
        * Réorganise les tables maîtres canvas selon l'état passé en argument.
@@ -342,7 +386,7 @@ angular.module('pedaleswitchApp')
             canvasGlobalServ.resetIsSelected(tables.tableEffet);
             canvasGlobalServ.resetTableDrawDashed();
             canvasGlobalServ.resetTableDrawThin();
-            canvasGlobalServ.setTableActive(tables.tableTextDeco);
+            canvasGlobalServ.setTableActive([]);
             canvasGlobalServ.setTableDrawThin(tables.tableComposant);
             return (tables.tableTextDeco.length > 0);
           

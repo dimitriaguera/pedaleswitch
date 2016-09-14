@@ -52,15 +52,18 @@
 
           <deco-dessin
             ng-show="$ctrl.deco"
-            text-deco="$ctrl.tables.tableTextDeco"
-            shape-deco="$ctrl.tables.tableshapeDeco"
             boite="$ctrl.canvasGlobal.boite.projBoite"
+            draw="$ctrl.draw()"
+            switch-deco-sub="$ctrl.switchDecoSub(mode)"
+            text-deco="$ctrl.canvasGlobal.boite.projBoite.textDeco"
             add-text-to-table="$ctrl.addTextToTable(string)"
             remove-text-to-table="$ctrl.removeTextToTable(items,index)"
-            add-shape-to-table="$ctrl.addShapeToTable(string)"
+            shape-deco="$ctrl.canvasGlobal.boite.projBoite.shapeDeco"
+            add-shape-to-table="$ctrl.addShapeToTable(shape,color,lineWidth,fillColor)"
             remove-shape-to-table="$ctrl.removeShapeToTable(items,index)"
-            draw="$ctrl.draw()"
-          >
+            img-deco="$ctrl.canvasGlobal.boite.projBoite.imgDeco"
+            add-img-to-table="$ctrl.addImgToTable()"
+            >
           </deco-dessin>
 
         </div>
