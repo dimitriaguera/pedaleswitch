@@ -1,10 +1,10 @@
 <h2>Les options</h2>
 <div class="btn-group pull-right">
-    <button type="button" class="btn btn-default" ng-click="$ctrl.newOption()" ng-hide="$ctrl.nouv">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.newOption()" ng-hide="$ctrl.nouv" uib-tooltip="Ajouter une nouvelle option" tooltip-popup-delay="400">
         <i class="glyphicon glyphicon-plus">
         </i>
     </button>
-    <button type="button" class="btn btn-default" ng-click="$ctrl.deleteOption($index)" ng-hide="$ctrl.nouv">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.deleteOption($index)" ng-hide="$ctrl.nouv" uib-tooltip="Supprimer l'option active" tooltip-popup-delay="400">
         <i class="glyphicon glyphicon-remove">
         </i>
     </button>
@@ -16,18 +16,12 @@
         <div class="form-group" show-errors>
           <label>Nom de l'option :</label>
           <input name="optionNom{{ $index }}" type="text" class="form-control" placeholder="nom de l'option" ng-model="$ctrl.effet.options[$index].titre" required />
-            <div ng-if="effetForm.optionNom{{ $index }}.$touched" ng-messages="effetForm.optionNom{{ $index }}.$error" role="alert">
-                <div style="color:red;" ng-message="required">Champ requis</div>
-            </div>
         </div>
 
         <!-- Champ description de l'option  -->
         <div class="form-group" show-errors>
           <label>Description :</label>
           <input name="optionDescription{{ $index }}" type="text" class="form-control" placeholder="description" ng-model="$ctrl.effet.options[$index].description" required />
-            <div ng-if="effetForm.optionDescription{{ $index }}.$touched" ng-messages="effetForm.optionDescription{{ $index }}.$error" role="alert">
-                <div style="color:red;" ng-message="required">Champ requis</div>
-            </div>
         </div>
 
         <!-- Champ prix de l'option  -->

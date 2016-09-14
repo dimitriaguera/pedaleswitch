@@ -41,7 +41,10 @@ class EditEffetComponent {
 
     // Si une erreur est detectée dans le formulaire, on stoppe l'envoie au serveur.
     if (this.$scope.effetForm.$invalid) {
-      alert('pas de valid form');
+      var message = {};
+      message.body = 'Tous les champs du formulaire n\'ont pas été correctement remplis. Veuillez vérifier votre saisie avant de valider à nouveau.';
+      message.type = 'danger';
+      this.message.push(message);
       return; }
 
     // Si l'effet n'est pas nouveau, on update.

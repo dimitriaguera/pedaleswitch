@@ -17,6 +17,13 @@ angular.module('pedaleswitchApp')
                     entity: null
                 }
             })
+            .state('typeEffet', {
+                url: '/type-effet',
+                template: '<addtype></addtype>',
+                params: {
+                    entity: null
+                }
+            })
             .state('editionTypeEffet', {
                 url: '/edition-type-effet',
                 template: '<addtype></addtype>',
