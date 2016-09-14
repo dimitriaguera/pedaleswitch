@@ -101,10 +101,10 @@ angular.module('pedaleswitchApp')
 
         // Si il y a des obj dans le canvas.
         if (tables.tableActive.length > 0) {
-          // Regarde si la souris est sur un effet ou un composant.
+          // Regarde si la souris est sur un effet ou un composant ou un element de deco.
           drag = checkCollision.checkMouseBox(mousePos, tables.tableActive, 10);
           if (drag) {
-            
+            drag.capue ='ok';
             // On drague soit un obj soit un élément de déco.
             if (tables.tableActive[drag.id].fonction === 'deco') {
               drag.type = 'deco';
