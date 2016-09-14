@@ -30,6 +30,7 @@
                     <th></th>
                     <th>Effet</th>
                     <th>Type</th>
+                    <th>Date création</th>
                     <th>Options</th>
                     <th>Editer</th>
                 </tr>
@@ -48,6 +49,7 @@
                 <th scope="row" select-row="effet"></th>
                 <td>{{effet.titre}}</td>
                 <td>{{effet.type}}</td>
+                <td>{{effet.creation | date:'shortDate'}}</td>
                 <td>
                     <div style="min-height:50px;" ng-repeat="option in effet.options">
                         <div class="pull-left">{{ option.titre }}</div>
