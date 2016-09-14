@@ -178,8 +178,8 @@ class PageDessinComponent {
     this.canvasDraw.drawStuff();
   }
 
-  addShapeToTable(string){
-    this.canvasControl.addShapeToCanvas({shape:string});
+  addShapeToTable(shape,color,lineWidth,fillColor){
+    this.canvasControl.addShapeToCanvas({shape:shape,color:color,lineWidth:lineWidth,fillColor:fillColor});
     this.canvasDraw.drawStuff();
   }
 
@@ -187,6 +187,12 @@ class PageDessinComponent {
     this.canvasControl.removeShapeToCanvas(index);
     this.canvasDraw.drawStuff();
   }
+
+  addImgToTable(){
+    this.canvasControl.addImgToCanvas();
+    //this.canvasDraw.drawStuff();
+  }
+
   ///////////////////////////////////////////////// FIN ADD & REmove EFFET et deco
 
 
@@ -224,6 +230,34 @@ class PageDessinComponent {
         this.canvasControl.canvasDrawState(this.canvasGlobal.state.isActive);
         this.canvasDraw.drawStuff();
       }
+    }
+  }
+
+  /**
+   * Met la bonne table active quand on est dans le mode
+   * deco et que l'on choisit soit imgDeco, soit textDeco ...
+   */
+  switchDecoSub(mode){
+
+    // Si il reste des items actifs donc qu'ils ont un rectangle dessiné autour d'eux
+    // le sup et redessine.
+    this.canvasGlobalServ.resetIsSelected(this.canvasGlobal.tables.tableActive);
+    this.canvasDraw.drawStuff();
+
+    switch(mode){
+      case 'colorBox':
+        this.canvasGlobalServ.setTableActive([]);
+        break;
+      case 'textDeco':
+        this.canvasGlobalServ.setTableActive(this.canvasGlobal.boite.projBoite.textDeco);
+        break;
+      case 'shapeDeco':
+        this.canvasGlobalServ.setTableActive(this.canvasGlobal.boite.projBoite.shapeDeco);
+        break;
+      case 'imgDeco':
+        this.canvasGlobalServ.setTableActive(this.canvasGlobal.boite.projBoite.imgDeco);
+        break;
+      default :
     }
   }
 

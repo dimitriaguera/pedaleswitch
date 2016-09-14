@@ -66,6 +66,10 @@ angular.module('pedaleswitchApp')
         this.isOverlapping = false;
         this.inCanvas = entity.inCanvas || false;
 
+        this.color = entity.color || null;
+        this.lineWidth = entity.lineWidth  || null;
+        this.fillColor = entity.fillColor || null;
+
         this.fonction = entity.fonction || 'Effet';
         this.angle = entity.angle || 0;
         this.size = entity.size || {};
@@ -357,18 +361,35 @@ angular.module('pedaleswitchApp')
       }
 
       drawCanvas(ctx) {
+
+        ctx.save();
+
+        if (this.color){
+          ctx.strokeStyle = this.color;
+        }
+        if (this.lineWidth){
+          ctx.lineWidth = this.lineWidth;
+        }
+
         ctx.beginPath();
         ctx.arc(this.getCenterX(), this.getCenterY(), this.getRadius(), 0, 2*Math.PI);
 
         // Draw center.
         ctx.fillRect(this.getCenterX(),this.getCenterY(),1,1);
 
+        if (this.fillColor) {
+          ctx.fillStyle = this.fillColor;
+          ctx.fill();
+        }
+
         if (this.isOverlapping) {
           ctx.fillStyle = 'rgba(255, 00, 00, 0.2)';
           ctx.fill();
         }
+
         ctx.stroke();
         ctx.closePath();
+        ctx.restore();
       }
     }
 
@@ -378,6 +399,16 @@ angular.module('pedaleswitchApp')
         this.shapeObject = 'Rect';
       }
       drawCanvas(ctx){
+
+        ctx.save();
+
+        if (this.color){
+          ctx.strokeStyle = this.color;
+        }
+        if (this.lineWidth){
+          ctx.lineWidth = this.lineWidth;
+        }
+
         ctx.beginPath();
         ctx.moveTo(this.points[0].x, this.points[0].y);
         for (var i = 0, length = this.points.length; i < length; i++) {
@@ -393,6 +424,13 @@ angular.module('pedaleswitchApp')
           ctx.fillStyle = 'rgba(255, 00, 00, 0.2)';
           ctx.fill();
         }
+
+        if (this.fillColor) {
+          ctx.fillStyle = this.fillColor;
+          ctx.fill();
+        }
+
+        ctx.restore();
       }
     }
 

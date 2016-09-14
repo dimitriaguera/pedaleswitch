@@ -187,6 +187,14 @@ angular.module('pedaleswitchApp')
         }
       },
 
+      drawImgDeco: function(ctx){
+        if(boite.projBoite.imgDeco.length !== 0) {
+          for (var i = 0; i < boite.projBoite.imgDeco.length; i++) {
+            ctx.drawImage(boite.projBoite.imgDeco[i], 0, 0);
+          }
+        }
+      },
+
       //@todo : table de travail, a supprimer.
       drawTableLimits: function (context, colorStroke, colorFill, lineWidth, dashArray) {
         if(tables.tableDrawLimits.length !== 0) {
@@ -217,6 +225,7 @@ angular.module('pedaleswitchApp')
         this.drawBoite(canvasS.ctx, 'gray', '#f6f6f6', '1px');
 
         if (canvasGlobal.state.isActive === 'deco') {
+          this.drawImgDeco(canvasS.ctx);
           this.drawTextDeco(canvasS.ctx);
           this.drawShapeDeco(canvasS.ctx);
         }
