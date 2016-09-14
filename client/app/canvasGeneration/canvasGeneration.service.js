@@ -434,6 +434,13 @@ angular.module('pedaleswitchApp')
       }
     }
 
+    class ImgDeco extends Shape {
+      constructor(obj){
+        super(obj);
+        this.img = obj.img;
+      }
+    }
+
     /**
      * Constructeur de la classe Boite.
      *
@@ -2998,6 +3005,10 @@ angular.module('pedaleswitchApp')
 
       newTexte: function(obj) {
         return new Texte(obj);
+      },
+
+      newImgDeco: function(obj){
+        return new ImgDeco(obj);
       },
 
       // newPoly: function (entity) {

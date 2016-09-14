@@ -157,7 +157,7 @@ angular.module('pedaleswitchApp')
         texte = canvasGeneration.newTexte(strOrObj);
 
         if (typeof strOrObj === 'string'){
-          texte.moveTo(canvasGlobalServ.getMiddleWinPos());
+          texte.moveTo(boite.masterBoite.projections[canvasGlobal.state.viewState].getCenter());
         }
 
         // Rajoute à la prjBoite le texte.
@@ -211,7 +211,7 @@ angular.module('pedaleswitchApp')
             shape = new canvasGeneration.newRect(obj);
         }
 
-        shape.moveTo(canvasGlobalServ.getMiddleWinPos());
+        shape.moveTo(boite.masterBoite.projections[canvasGlobal.state.viewState].getCenter());
 
         // Rajoute à la prjBoite
         boite.masterBoite.projections[canvasGlobal.state.viewState].shapeDeco.push(shape);
@@ -234,13 +234,22 @@ angular.module('pedaleswitchApp')
        * Ajout d'image au canvas
        */
       addImgToCanvas: function(){
-        var img = new Image();
-        var canvasGlobal2 = canvasGlobal;
-        var boite2 = boite;
+        var canvasGeneration2 = canvasGeneration,
+            canvasGlobal2 = canvasGlobal,
+            img = new Image(),
+            boite2 = boite;
         img.src = 'assets/images/yeoman.png';
         img.onload = function(){
-          boite2.projBoite.imgDeco.push(img);
-          canvasGlobal2.canvas.ctx.drawImage(img, 0, 0);
+          var points = [
+            {x:0,y:0},
+            {x:img.width,y:0},
+            {x:img.width,y:img.height},
+            {x:0,y:img.height}
+          ];
+          var tmpImg = canvasGeneration2.newImgDeco({img:img,points:points,fonction:'deco'});
+          tmpImg.move(boite.masterBoite.projections[canvasGlobal.state.viewState].getCenter());
+          boite2.projBoite.imgDeco.push(tmpImg);
+          canvasGlobal2.canvas.ctx.drawImage(img, tmpImg.points[0].x, tmpImg.points[0].y);
         }
       },
 
