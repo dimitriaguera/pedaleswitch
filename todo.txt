@@ -80,4 +80,6 @@ A savoir
 BUG
 
 
-
+---------------
+SI MODIFICATION MODELE EFFET
+-> modifier en conséquence le service dataPrepar.
