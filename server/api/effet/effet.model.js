@@ -81,6 +81,9 @@ var EffetSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Champ description de l\'effet requis']
   },
+  creation: {
+    type: Date,
+    default: Date.now },
   options: [OptionSchema]
 });
 
