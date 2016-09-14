@@ -1,12 +1,10 @@
 <h3>Edition graphique</h3>
 
-<h4>Ajouter du texte</h4>
+<h4>Ajouter du texte sur le boitier</h4>
 <input type="text" name="text" ng-model="string">
 <span class="glyphicon glyphicon-plus" ng-click="$ctrl.addTextToTable({string: string})"></span>
-
-
 <div>Texte(s) présent(s) :</div>
-<ul ng-repeat="item in $ctrl.items">
+<ul ng-repeat="item in $ctrl.textDeco">
   <li>
     <span>{{item.input}}</span><span ng-click="$ctrl.removeTextToTable({index:$index})" class="glyphicon glyphicon-remove"></span>
   </li>
@@ -17,5 +15,15 @@
     ng-model='$ctrl.boite.color'
     color-picker-disabled='false'
     color-picker-format="'hex'"
-    color-picker-on-change="$ctrl.draw()"
+    color-picker-on-change="$ctrl.draw()">
 </color-picker>
+
+<h4>Ajouter des figures sur le boitier</h4>
+<input type="text" name="text" ng-model="string">
+<span class="glyphicon glyphicon-plus" ng-click="$ctrl.addShapeToTable({string: string})"></span>
+<div>Figures(s) présent(s) :</div>
+<ul ng-repeat="item in $ctrl.shapeDeco">
+  <li>
+    <span>{{item.input}}</span><span ng-click="$ctrl.removeShapeToTable({index:$index})" class="glyphicon glyphicon-remove"></span>
+  </li>
+</ul>

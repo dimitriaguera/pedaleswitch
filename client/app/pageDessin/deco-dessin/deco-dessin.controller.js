@@ -11,9 +11,12 @@
     .component('decoDessin', {
       templateUrl: 'app/pageDessin/deco-dessin/deco-dessin.html',
       bindings: {
+        textDeco:'=',
         addTextToTable: '&',
         removeTextToTable: '&',
-        items:'=',
+        shapeDeco:'=',
+        addShapeToTable: '&',
+        removeShapeToTable: '&',
         boite:'<',
         draw:'&'
       },
