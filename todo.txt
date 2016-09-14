@@ -64,6 +64,18 @@ Directive droppable : Virer les evenement inutile (dragenter, dragleave)
 Box-dessin.controller.js : Pk il est dans une fonctionne anonyme contrairement a tout les autres ?
 
 ------------
+A savoir
+
+        var cansW = canvasGlobal.canvas.canvas.offsetWidth;
+        var cansH = canvasGlobal.canvas.canvas.offsetHeight;
+        var cansWinW = canvasGlobal.canvas.canvasWindow.offsetWidth;
+        var cansWinH = canvasGlobal.canvas.canvasWindow.offsetHeight;
+        var cansWinScrollT = canvasGlobal.canvas.canvasWindow.scrollTop;
+        var cansWinScrollL = canvasGlobal.canvas.canvasWindow.scrollLeft;
+-----------------
+
+
+
 
 BUG
 

@@ -80,6 +80,14 @@ angular.module('pedaleswitchApp')
       setMarginCanvas: function(margin){
         canvasGlobal.canvas.marginCanvas = margin;
       },
+
+      // Donne la position dans le repère du canvas du milieu de la fenetre en fonction des ascenseurs.
+      getMiddleWinPos: function(){
+        return {
+          x: (canvasGlobal.canvas.canvasWindow.offsetWidth)/2 + canvasGlobal.canvas.canvasWindow.scrollLeft,
+          y: (canvasGlobal.canvas.canvasWindow.offsetHeight)/2 + canvasGlobal.canvas.canvasWindow.scrollTop
+        };
+      },
       /////////////////////////////// Fin Canvas Part.
 
 
