@@ -37,7 +37,10 @@ angular.module('pedaleswitchApp')
         tableDrawThin: [],
         tableDrawShine: [],
         tableAlignLine: [],
-        tableText: [],
+
+        tableTextDeco: [],
+        tableShapeDeco: [],
+
         tableArrow: [],
         activeItem: [],
         // @todo a supprimer, table de travail.
@@ -371,16 +374,16 @@ angular.module('pedaleswitchApp')
         return canvasGlobal.tables.tableAlignLine = [];
       },
 
-      getTableText: function() {
-        return canvasGlobal.tables.tableText;
+      getTableTextDeco: function() {
+        return canvasGlobal.tables.tableTextDeco;
       },
 
-      setTableText: function(tab) {
-        return this.set(canvasGlobal.tables.tableText, tab);
+      setTableTextDeco: function(tab) {
+        return this.set(canvasGlobal.tables.tableTextDeco, tab);
       },
 
-      resetTableText: function() {
-        return this.reset(canvasGlobal.tables.tableText);
+      resetTableTextDeco: function() {
+        return this.reset(canvasGlobal.tables.tableTextDeco);
       },
 
       setTableArrow: function(tab) {
@@ -431,7 +434,7 @@ angular.module('pedaleswitchApp')
         this.resetTableDrawThin();
         this.resetTableDrawShine();
         this.resetTableAlignLine();
-        this.resetTableText();
+        this.resetTableTextDeco();
         this.resetTableArrow();
         this.resetActiveItem();
         this.resetTableDrawLimits();

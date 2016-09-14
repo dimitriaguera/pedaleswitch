@@ -148,7 +148,7 @@ angular.module('pedaleswitchApp')
       },
 
       /**
-       * Ajoute du texte au canvas.
+       * Ajoute du textDeco au canvas.
        * @param string
        */
       addTextToCanvas: function(strOrObj) {
@@ -164,7 +164,7 @@ angular.module('pedaleswitchApp')
         boite.masterBoite.projections[canvasGlobal.state.viewState].textDeco.push(texte);
 
         // Rajoute le texte à la table texte.
-        tables.tableText.push(texte);
+        tables.tableTextDeco.push(texte);
 
         // Load automatiquement la font depuis google font.
         // @todo a vérifier car assume que toute font vient de google.
@@ -183,11 +183,31 @@ angular.module('pedaleswitchApp')
         }
       },
 
+      /**
+       * Enlève du textDeco au canvas
+       * @param index
+       */
       removeTextToCanvas: function(index){
         // Rajoute à la prjBoite le texte.
         boite.projBoite.textDeco.splice(index,1);
-        tables.tableText.splice(index,1);
+        tables.tableTextDeco.splice(index,1);
       },
+
+      /**
+       * Ajouter une shapeDeco au canvas
+       */
+      addShapeToCanvas: function(obj){
+
+        var shape = new canvasGeneration.newCercle(obj);
+
+        // Rajoute à la prjBoite le texte.
+        boite.masterBoite.projections[canvasGlobal.state.viewState].shapeDeco.push(shape);
+
+        // Rajoute le texte à la table texte.
+        tables.tableTextDeco.push(texte);
+
+      },
+
 
       /**
        * Réorganise les tables maîtres canvas selon l'état passé en argument.
@@ -206,7 +226,7 @@ angular.module('pedaleswitchApp')
             canvasGlobalServ.setProjBoite(boite.masterBoite.projections.top);
             canvasGlobalServ.setTableEffet(boite.masterBoite.projections.top.effets);
             canvasGlobalServ.setTableComposant(boite.masterBoite.projections.top.composants);
-            canvasGlobalServ.setTableText(boite.masterBoite.projections.top.textDeco);
+            canvasGlobalServ.setTableTextDeco(boite.masterBoite.projections.top.textDeco);
             tables.tableArrow.push(canvasGeneration.newArrow(boite.projBoite, 'right'));
             tables.tableArrow.push(canvasGeneration.newArrow(boite.projBoite, 'bottom'));
             break;
@@ -219,7 +239,7 @@ angular.module('pedaleswitchApp')
             canvasGlobalServ.setProjBoite(boite.masterBoite.projections.bottom);
             canvasGlobalServ.setTableEffet(boite.masterBoite.projections.bottom.effets);
             canvasGlobalServ.setTableComposant(boite.masterBoite.projections.bottom.composants);
-            canvasGlobalServ.setTableText(boite.masterBoite.projections.bottom.textDeco);
+            canvasGlobalServ.setTableTextDeco(boite.masterBoite.projections.bottom.textDeco);
             tables.tableArrow.push(canvasGeneration.newArrow(boite.projBoite, 'right'));
             tables.tableArrow.push(canvasGeneration.newArrow(boite.projBoite, 'bottom'));
             break;
@@ -232,7 +252,7 @@ angular.module('pedaleswitchApp')
             canvasGlobalServ.setProjBoite(boite.masterBoite.projections.up);
             canvasGlobalServ.setTableEffet(boite.masterBoite.projections.up.effets);
             canvasGlobalServ.setTableComposant(boite.masterBoite.projections.up.composants);
-            canvasGlobalServ.setTableText(boite.masterBoite.projections.up.textDeco);
+            canvasGlobalServ.setTableTextDeco(boite.masterBoite.projections.up.textDeco);
             tables.tableArrow.push(canvasGeneration.newArrow(boite.projBoite, 'right'));
             tables.tableArrow.push(canvasGeneration.newArrow(boite.projBoite, 'bottom'));
 
@@ -250,7 +270,7 @@ angular.module('pedaleswitchApp')
             canvasGlobalServ.setProjBoite(boite.masterBoite.projections.down);
             canvasGlobalServ.setTableEffet(boite.masterBoite.projections.down.effets);
             canvasGlobalServ.setTableComposant(boite.masterBoite.projections.down.composants);
-            canvasGlobalServ.setTableText(boite.masterBoite.projections.down.textDeco);
+            canvasGlobalServ.setTableTextDeco(boite.masterBoite.projections.down.textDeco);
             tables.tableArrow.push(canvasGeneration.newArrow(boite.projBoite, 'right'));
             tables.tableArrow.push(canvasGeneration.newArrow(boite.projBoite, 'bottom'));
             break;
@@ -263,7 +283,7 @@ angular.module('pedaleswitchApp')
             canvasGlobalServ.setProjBoite(boite.masterBoite.projections.left);
             canvasGlobalServ.setTableEffet(boite.masterBoite.projections.left.effets);
             canvasGlobalServ.setTableComposant(boite.masterBoite.projections.left.composants);
-            canvasGlobalServ.setTableText(boite.masterBoite.projections.left.textDeco);
+            canvasGlobalServ.setTableTextDeco(boite.masterBoite.projections.left.textDeco);
             tables.tableArrow.push(canvasGeneration.newArrowPoint(boite.projBoite, 'right'));
             tables.tableArrow.push(canvasGeneration.newArrowPoint(boite.projBoite, 'bottom'));
             break;
@@ -276,7 +296,7 @@ angular.module('pedaleswitchApp')
             canvasGlobalServ.setProjBoite(boite.masterBoite.projections.right);
             canvasGlobalServ.setTableEffet(boite.masterBoite.projections.right.effets);
             canvasGlobalServ.setTableComposant(boite.masterBoite.projections.right.composants);
-            canvasGlobalServ.setTableText(boite.masterBoite.projections.right.textDeco);
+            canvasGlobalServ.setTableTextDeco(boite.masterBoite.projections.right.textDeco);
             tables.tableArrow.push(canvasGeneration.newArrowPoint(boite.projBoite, 'right'));
             tables.tableArrow.push(canvasGeneration.newArrowPoint(boite.projBoite, 'bottom'));
             break;
@@ -322,9 +342,9 @@ angular.module('pedaleswitchApp')
             canvasGlobalServ.resetIsSelected(tables.tableEffet);
             canvasGlobalServ.resetTableDrawDashed();
             canvasGlobalServ.resetTableDrawThin();
-            canvasGlobalServ.setTableActive(tables.tableText);
+            canvasGlobalServ.setTableActive(tables.tableTextDeco);
             canvasGlobalServ.setTableDrawThin(tables.tableComposant);
-            return (tables.tableText.length > 0);
+            return (tables.tableTextDeco.length > 0);
           
           default:
             return console.log('ERROR ' + state + ' is not a valid state');

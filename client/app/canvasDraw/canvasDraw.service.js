@@ -184,9 +184,9 @@ angular.module('pedaleswitchApp')
       },
 
       drawText: function(ctx){
-        if(tables.tableText.length !== 0) {
-          for (var i = 0; i < tables.tableText.length; i++) {
-            tables.tableText[i].drawCanvas(ctx);
+        if(tables.tableTextDeco.length !== 0) {
+          for (var i = 0; i < tables.tableTextDeco.length; i++) {
+            tables.tableTextDeco[i].drawCanvas(ctx);
           }
         }
       },
