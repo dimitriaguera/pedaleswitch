@@ -5,15 +5,16 @@ angular.module('pedaleswitchApp')
         $stateProvider
             .state('effets', {
                 url: '/effets',
-                template: '<effet></effet>'
+                template: '<effet></effet>',
+                params: {
+                    message: null
+                }
             })
             .state('editionEffet', {
                 url: '/edition-effet',
                 template: '<editeffet></editeffet>',
                 params: {
-                    entity: null,
-                    types: null,
-                    nouv: null
+                    entity: null
                 }
             })
             .state('editionTypeEffet', {
