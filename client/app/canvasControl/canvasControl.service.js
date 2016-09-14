@@ -166,9 +166,6 @@ angular.module('pedaleswitchApp')
         // Rajoute le texte à la table texte.
         tables.tableTextDeco.push(texte);
 
-        // Rajoute le texte à la table active.
-        tables.tableActive.push(texte);
-
         // Load automatiquement la font depuis google font.
         // @todo a vérifier car assume que toute font vient de google.
         // de plus police par défaut est lato qui est pas dl des le debut donc changement de police
@@ -202,6 +199,7 @@ angular.module('pedaleswitchApp')
        */
       addShapeToCanvas: function(obj){
         var shape;
+        obj.fonction = 'deco';
         switch (obj.shape){
           case 'Rectangle':
             shape = new canvasGeneration.newRect(obj);
@@ -209,20 +207,17 @@ angular.module('pedaleswitchApp')
           case 'Cercle':
             shape = new canvasGeneration.newCercle(obj);
             break;
+          default:
+            shape = new canvasGeneration.newRect(obj);
         }
-
-        shape.fonction = 'deco';
 
         shape.moveTo(canvasGlobalServ.getMiddleWinPos());
 
-        // Rajoute à la prjBoite le texte.
+        // Rajoute à la prjBoite
         boite.masterBoite.projections[canvasGlobal.state.viewState].shapeDeco.push(shape);
 
-        // Rajoute le texte à la table texte.
+        // Rajoute à la table.
         tables.tableShapeDeco.push(shape);
-
-        // Rajoute le texte à la table active.
-        tables.tableActive.push(shape);
 
       },
 
@@ -233,6 +228,20 @@ angular.module('pedaleswitchApp')
       removeShapeToCanvas: function(index){
         boite.projBoite.shapeDeco.splice(index,1);
         tables.tableShapeDeco.splice(index,1);
+      },
+
+      /**
+       * Ajout d'image au canvas
+       */
+      addImgToCanvas: function(){
+        var img = new Image();
+        var canvasGlobal2 = canvasGlobal;
+        var boite2 = boite;
+        img.src = 'assets/images/yeoman.png';
+        img.onload = function(){
+          boite2.projBoite.imgDeco.push(img);
+          canvasGlobal2.canvas.ctx.drawImage(img, 0, 0);
+        }
       },
 
       /**
@@ -368,7 +377,7 @@ angular.module('pedaleswitchApp')
             canvasGlobalServ.resetIsSelected(tables.tableEffet);
             canvasGlobalServ.resetTableDrawDashed();
             canvasGlobalServ.resetTableDrawThin();
-            canvasGlobalServ.setTableActive(tables.tableTextDeco.concat(tables.tableShapeDeco));
+            canvasGlobalServ.setTableActive([]);
             canvasGlobalServ.setTableDrawThin(tables.tableComposant);
             return (tables.tableTextDeco.length > 0);
           
