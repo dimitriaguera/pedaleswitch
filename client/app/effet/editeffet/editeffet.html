@@ -2,30 +2,22 @@
 
     <div uib-alert ng-repeat="message in $ctrl.message" type="{{message.type}}" close="$ctrl.closeAlert($index)">{{message.body}}</div>
 
+    <!-- Button sortir formulaire edition effet  -->
+    <button type="button" class="close pull-right" ng-click="$ctrl.$state.go('effets')">Retour à la liste des effets</button>
+
     <h1 class="page-header">EDITER EFFET</h1>
     <form  name="effetForm" class="form">
-
-        <!-- Button sortir formulaire edition effet  -->
-        <a ui-sref="effets">
-            <button type="button" class="close">Retour à la liste des effets</button>
-        </a>
 
         <!-- Champ titre de l'effet  -->
         <div class="form-group" show-errors>
             <label>Nom :</label>
             <input name="effetTitre" type="text" class="form-control" placeholder="nom de l'effet" ng-model="$ctrl.entity.titre" required />
-            <div ng-if="effetForm.effetTitre.$touched" ng-messages="effetForm.effetTitre.$error" role="alert">
-                <div style="color:red;" ng-message="required">Champ requis</div>
-            </div>
         </div>
 
         <!-- Champ description de l'effet  -->
         <div class="form-group" show-errors>
             <label>Description :</label>
             <input name="effetDescription" type="text" class="form-control" placeholder="description de l'effet" ng-model="$ctrl.entity.description" required />
-            <div ng-if="effetForm.effetDescription.$touched" ng-messages="effetForm.effetDescription.$error" role="alert">
-                <div style="color:red;" ng-message="required">Champ requis</div>
-            </div>
         </div>
 
         <!-- Champ type d'effet  -->
@@ -34,9 +26,6 @@
             <select name="effetType" class="form-control" ng-model="$ctrl.entity.type" required>
                 <option ng-repeat="type in $ctrl.types" value="{{type.titre}}">{{type.titre}}</option>
             </select>
-            <div ng-if="effetForm.effetType.$touched" ng-messages="effetForm.effetType.$error" role="alert">
-                <div style="color:red;" ng-message="required">Champ requis</div>
-            </div>
         </div>
 
         <!-- Injection du formulaire d'options  -->

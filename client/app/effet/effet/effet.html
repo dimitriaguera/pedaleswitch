@@ -49,16 +49,19 @@
                 <th scope="row" select-row="effet"></th>
                 <td>{{effet.titre}}</td>
                 <td>{{effet.type}}</td>
-                <td>{{effet.creation | date:'shortDate'}}</td>
+                <td>{{effet.creation | date:'dd/MM/yy'}}</td>
                 <td>
                     <div style="min-height:50px;" ng-repeat="option in effet.options">
                         <div class="pull-left">{{ option.titre }}</div>
                         <div class="btn-group pull-right">
-                            <button type="button" ng-click="$ctrl.updateOptionPublie(effet, $index, true)" ng-hide="option.publie" class="btn btn-default has-warning">
+                            <button type="button" ng-class="{'btn-warning': !option.publie, 'btn-success': option.publie}" class="btn disabled">
+                                {{ option.publie ? 'Publié' : 'Non-publié' }}
+                            </button>
+                            <button type="button" tooltip-popup-delay="400" uib-tooltip="Option non publiée. Elle n'apparaît pas dans la bibliothèque des effets. Cliquez pour publier l'option." ng-click="$ctrl.updateOptionPublie(effet, $index, true)" ng-hide="option.publie" class="btn btn-default has-warning">
                                 <i class="glyphicon glyphicon-warning-sign">
                                 </i>
                             </button>
-                            <button type="button" ng-click="$ctrl.updateOptionPublie(effet, $index, false)" ng-hide="!option.publie" class="btn btn-default has-success">
+                            <button type="button" tooltip-popup-delay="400" uib-tooltip="Option publiée. Elle apparaît dans la bibliothèque des effets. Cliquez pour dé-publier l'option." ng-click="$ctrl.updateOptionPublie(effet, $index, false)" ng-hide="!option.publie" class="btn btn-default has-success">
                                 <i class="glyphicon glyphicon-ok">
                                 </i>
                             </button>
@@ -66,7 +69,8 @@
                                     ng-confirm-body="L'option sera supprimée de la base de donnée. Cette action est irréversible."
                                     ng-confirm="$ctrl.deleteOption(effet, $index)"
                                     type="button"
-                                    class="btn btn-default">
+                                    class="btn btn-default"
+                                    uib-tooltip="Supprimer l'option" tooltip-placement="right" tooltip-popup-delay="400">
                                 <i class="glyphicon glyphicon-remove"></i>
                             </button>
                         </div>
@@ -74,7 +78,7 @@
                 </td>
                 <td>
                     <div class="btn-group pull-right">
-                            <button type="button" ng-click="$ctrl.$state.go('editionEffet', {entity: effet})" class="btn btn-default">
+                            <button type="button" ng-click="$ctrl.$state.go('editionEffet', {entity: effet})" class="btn btn-default" tooltip-popup-delay="400" uib-tooltip="Editer l'effet">
                                 <i class="glyphicon glyphicon-pencil">
                                 </i>
                             </button>
