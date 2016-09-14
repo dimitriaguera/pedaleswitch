@@ -4,22 +4,10 @@ angular.module('pedaleswitchApp')
   .factory('canvasDraw', function (canvasGlobalServ) {
 
     var canvasS = canvasGlobalServ.getCanvasS();
+    var canvasGlobal = canvasGlobalServ.getCanvasGlobal();
     var tables = canvasGlobalServ.getTables();
     var boite = canvasGlobalServ.getBoite();
 
-    /*
-    var canvasGlobal = canvasGlobalServ.getCanvasGlobal();
-    var boite = null;
-    var tableActive = [];
-    var tableDrawDashed = [];
-    var tableDrawThin = [];
-    //var tableDrawShine = [];
-    //var tableArrow = [];
-
-    //@todo: table de travail, a supprimer.
-    var tableDrawLimits = [];
-    //Fin todo.
-    */
 
     var selectDraw = function(context, item){
       if (item.isSelected) {
@@ -183,10 +171,26 @@ angular.module('pedaleswitchApp')
         }
       },
 
-      drawText: function(ctx){
-        if(tables.tableTextDeco.length !== 0) {
-          for (var i = 0; i < tables.tableTextDeco.length; i++) {
-            tables.tableTextDeco[i].drawCanvas(ctx);
+      drawTextDeco: function(ctx){
+        if(boite.projBoite.textDeco.length !== 0) {
+          for (var i = 0; i < boite.projBoite.textDeco.length; i++) {
+            boite.projBoite.textDeco[i].drawCanvas(ctx);
+          }
+        }
+      },
+
+      drawShapeDeco: function(ctx){
+        if(boite.projBoite.shapeDeco.length !== 0) {
+          for (var i = 0; i < boite.projBoite.shapeDeco.length; i++) {
+            boite.projBoite.shapeDeco[i].drawCanvas(ctx);
+          }
+        }
+      },
+
+      drawImgDeco: function(ctx){
+        if(boite.projBoite.imgDeco.length !== 0) {
+          for (var i = 0; i < boite.projBoite.imgDeco.length; i++) {
+            ctx.drawImage(boite.projBoite.imgDeco[i].img, boite.projBoite.imgDeco[i].points[0].x, boite.projBoite.imgDeco[i].points[0].y);
           }
         }
       },
@@ -219,14 +223,23 @@ angular.module('pedaleswitchApp')
         canvasS.ctx.clearRect(0, 0, canvasS.canvas.width, canvasS.canvas.height);
 
         this.drawBoite(canvasS.ctx, 'gray', '#f6f6f6', '1px');
+
+        if (canvasGlobal.state.isActive === 'deco') {
+          this.drawImgDeco(canvasS.ctx);
+          this.drawTextDeco(canvasS.ctx);
+          this.drawShapeDeco(canvasS.ctx);
+        }
+
         this.drawTableDashed(canvasS.ctx, 'gray', '#f6f6f6', '1px', [10, 3]);
         this.drawTableLimits(canvasS.ctx, 'gray', '#f6f6f6', '1px', [10, 3]);
-        this.drawTableThin(canvasS.ctx, 'gray', null, '1px');
+        this.drawTableThin(canvasS.ctx, 'gray', '#f6f6f6', '1px');
         this.drawTableAlignLine(canvasS.canvas, canvasS.ctx, '#d0d0d0', '#00bfff', [10, 3]);
-        this.drawTableActive(canvasS.ctx, 'black', null, '1px');
         this.drawArrow(canvasS.ctx, 'gray');
 
-        //this.drawText(ctx);
+        if (canvasGlobal.state.isActive !== 'deco') {
+          this.drawTableActive(canvasS.ctx, 'black', null, '1px');
+        }
+
       }
 
     };

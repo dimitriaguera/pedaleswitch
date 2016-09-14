@@ -135,7 +135,7 @@ class PageDessinComponent {
   }
   /////////////////////////////// FIN SAVE & LOAD
 
-  //////////////////// EFFET PART
+  //////////////////// ADD & REmove EFFET et deco
   /**
    * Rajoute un effet au canvas
    * Appeler par panier dessin et quand on droppable directive
@@ -155,11 +155,7 @@ class PageDessinComponent {
     this.canvasControl.removeToCanvas(effet);
     this.canvasDraw.drawStuff();
   }
-  //////////////////// FIN EFFET PART
 
-
-
-  /////////////////////////////////// DECO part
   addTextToTable(string){
     this.canvasControl.addTextToCanvas(string);
     this.canvasDraw.drawStuff();
@@ -170,6 +166,11 @@ class PageDessinComponent {
     this.canvasDraw.drawStuff();
   }
 
+  /**
+   * Fonction pour réactulasier les points de la box
+   * encandrant un texte
+   * @param data
+   */
   dataChange(data){
     if (data.input == undefined) data.input = ' ';
     if (data.font.size == undefined || data.font.size <= 0) data.font.size = 1;
@@ -177,16 +178,22 @@ class PageDessinComponent {
     this.canvasDraw.drawStuff();
   }
 
-  addShapeToTable(string){
-    this.canvasControl.addShapeToCanvas(string);
+  addShapeToTable(shape,color,lineWidth,fillColor){
+    this.canvasControl.addShapeToCanvas({shape:shape,color:color,lineWidth:lineWidth,fillColor:fillColor});
     this.canvasDraw.drawStuff();
   }
 
   removeShapeToTable(index) {
-    this.canvasControl.addShapeToCanvas(string);
+    this.canvasControl.removeShapeToCanvas(index);
     this.canvasDraw.drawStuff();
   }
-  ///////////////////////////// FIN DECO part
+
+  addImgToTable(){
+    this.canvasControl.addImgToCanvas();
+    //this.canvasDraw.drawStuff();
+  }
+
+  ///////////////////////////////////////////////// FIN ADD & REmove EFFET et deco
 
 
   ///////////////////////////// SWITCH, Active, View State part
@@ -208,21 +215,49 @@ class PageDessinComponent {
    */
   switchDeco(){
     if (this.deco) {
-      this.isActive = 'deco';
-      this.canvasControl.canvasDrawState('deco');
+      this.canvasGlobal.state.isActive = 'deco';
+      this.canvasControl.canvasDrawState(this.canvasGlobal.state.isActive);
       this.canvasDraw.drawStuff();
     }
     else {
       if (this.debrayable) {
-        this.isActive = 'composant';
-        this.canvasControl.canvasDrawState(this.isActive);
+        this.canvasGlobal.state.isActive = 'composant';
+        this.canvasControl.canvasDrawState(this.canvasGlobal.state.isActive);
         this.canvasDraw.drawStuff();
       }
       else {
-        this.isActive = 'effet';
-        this.canvasControl.canvasDrawState(this.isActive);
+        this.canvasGlobal.state.isActive = 'effet';
+        this.canvasControl.canvasDrawState(this.canvasGlobal.state.isActive);
         this.canvasDraw.drawStuff();
       }
+    }
+  }
+
+  /**
+   * Met la bonne table active quand on est dans le mode
+   * deco et que l'on choisit soit imgDeco, soit textDeco ...
+   */
+  switchDecoSub(mode){
+
+    // Si il reste des items actifs donc qu'ils ont un rectangle dessiné autour d'eux
+    // le sup et redessine.
+    this.canvasGlobalServ.resetIsSelected(this.canvasGlobal.tables.tableActive);
+    this.canvasDraw.drawStuff();
+
+    switch(mode){
+      case 'colorBox':
+        this.canvasGlobalServ.setTableActive([]);
+        break;
+      case 'textDeco':
+        this.canvasGlobalServ.setTableActive(this.canvasGlobal.boite.projBoite.textDeco);
+        break;
+      case 'shapeDeco':
+        this.canvasGlobalServ.setTableActive(this.canvasGlobal.boite.projBoite.shapeDeco);
+        break;
+      case 'imgDeco':
+        this.canvasGlobalServ.setTableActive(this.canvasGlobal.boite.projBoite.imgDeco);
+        break;
+      default :
     }
   }
 
@@ -232,8 +267,8 @@ class PageDessinComponent {
    * pas dessiner.
    */
   activeEffet(){
-    this.isActive = 'effet';
-    if (this.canvasControl.canvasDrawState('effet')) {
+    this.canvasGlobal.state.isActive = 'effet';
+    if (this.canvasControl.canvasDrawState(this.canvasGlobal.state.isActive)) {
       this.canvasDraw.drawStuff();
     }
   }
@@ -242,15 +277,15 @@ class PageDessinComponent {
    * Appeler par menu-dessin.html
    */
   activeCompo(){
-    this.isActive = 'composant';
-    if (this.canvasControl.canvasDrawState('composant')) {
+    this.canvasGlobal.state.isActive = 'composant';
+    if (this.canvasControl.canvasDrawState(this.canvasGlobal.state.isActive)) {
       this.canvasDraw.drawStuff();
     }
   }
 
   general(string){
     this.canvasControl.canvasViewState(string);
-    this.canvasControl.canvasDrawState(this.isActive);
+    this.canvasControl.canvasDrawState(this.canvasGlobal.state.isActive);
     this.canvasControl.resizeCanvas();
     this.canvasControl.centerInCanvas();
     this.canvasDraw.drawStuff();
@@ -288,7 +323,7 @@ class PageDessinComponent {
     var effets = [];
     var effet = this.canvasGlobalServ.searchEffetById(value._id, value.key);
     if (effet) {
-      switch(this.isActive) {
+      switch(this.canvasGlobal.state.isActive) {
         case 'effet' :
           effets.push(effet);
           this.canvasGlobalServ.setTableDrawShine(effets);
@@ -303,7 +338,7 @@ class PageDessinComponent {
         case 'deco' :
           break;
         default:
-          return console.log('Variable "isActive" not defined in pageDessin.controller.js : ' + this.isActive);
+          return console.log('Variable "isActive" not defined in pageDessin.controller.js : ' + this.canvasGlobal.state.isActive);
       }
       this.canvasDraw.drawStuff();
     }

@@ -101,12 +101,12 @@ angular.module('pedaleswitchApp')
 
         // Si il y a des obj dans le canvas.
         if (tables.tableActive.length > 0) {
-          // Regarde si la souris est sur un effet ou un composant.
+          // Regarde si la souris est sur un effet ou un composant ou un element de deco.
           drag = checkCollision.checkMouseBox(mousePos, tables.tableActive, 10);
           if (drag) {
-            
+            drag.capue ='ok';
             // On drague soit un obj soit un élément de déco.
-            if (tables.tableActive[drag.id].input) {
+            if (tables.tableActive[drag.id].fonction === 'deco') {
               drag.type = 'deco';
             } else {
               drag.type = 'thing';
@@ -272,7 +272,7 @@ angular.module('pedaleswitchApp')
        * En vue LEFT ou RIGHT, agrandi une seule hauteur par le coin.
        * @param e
        */
-      mouseMouveCornerSideBoite: function(e){
+      mouseMoveCornerSideBoite: function(e){
 
         // Delais avant le drag
         timeb = (new Date()).getTime() - timea;
@@ -635,8 +635,10 @@ angular.module('pedaleswitchApp')
         $rootScope.$emit('no-click-on-element');
 
         // Check all collision.
-        checkCollision.checkAll(tables.tableActive);
-        
+        if (drag.type !== 'deco'){
+          checkCollision.checkAll(tables.tableActive);
+        }
+
         // Enlève les lignes d'alignement.
         canvasGlobalServ.setTableAlignLine([]);
 
