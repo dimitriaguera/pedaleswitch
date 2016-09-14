@@ -31,6 +31,9 @@ class PageDessinComponent {
     })
   }
 
+  /**
+   * Fonction d'initisalisation
+   */
   initialisation() {
 
     // Met les bonnes options.
@@ -38,8 +41,6 @@ class PageDessinComponent {
     this.zoom = this.canvasGlobalServ.getZoom();
     this.debrayable = this.canvasGlobalServ.getDeb();
     this.deco = false;
-
-    // Link les tables.
 
     // On en a besoin dans panier-dessin et dans le pop-up de composantItems
     this.composantItems = this.canvasGlobalServ.getComposantItems();
@@ -55,8 +56,10 @@ class PageDessinComponent {
     this.activeEffet();
   }
 
-  // Object passé aux componants box-dessin.
-  // Permet de binder des fonctions.
+  /**
+   * Object passé aux componants box-dessin.
+   * Permet de passer pleins de fonction d'un coup dans les different controleur.
+   */
   funcMenuPopOver = {
     self: this,
     rotate: function(value, data){
@@ -88,13 +91,14 @@ class PageDessinComponent {
       );
     },
     removeTextToTable: function(data){
-      var index = this.self.canvasGlobalServ.searchTabByIdReturnIndex(this.self.tables.tableText, data._id, data.key);
+      var index = this.self.canvasGlobalServ.searchTabByIdReturnIndex(this.self.tables.tableTextDeco, data._id, data.key);
       this.self.removeTextToTable(index);
     }
   };
 
-  load(){
 
+  /////////////////////////////// SAVE & LOAD
+  load(){
     // Reset all Canvas.
     this.canvasGlobalServ.resetAll();
     // Recupère dans le local storage.
@@ -129,7 +133,157 @@ class PageDessinComponent {
     // Stock.
     this.storage.put('saveData', this.canvasGlobal);
   }
+  /////////////////////////////// FIN SAVE & LOAD
 
+  //////////////////// EFFET PART
+  /**
+   * Rajoute un effet au canvas
+   * Appeler par panier dessin et quand on droppable directive
+   * Effet est en fait une selection (sortie DB) et pas encore un obj effet
+   * @param effet
+   */
+  addToTable(effet){
+    // Ajouter l'effet au canvas si pas deja.
+    if (!effet.inCanvas) {this.canvasControl.addToCanvas(effet);}
+    // Initialise le boite dans l'instance de dessin.
+    //this.instanceDessin.setBoite(this.canvasControl.getMasterBoite());
+    // Dessine.
+    this.canvasDraw.drawStuff();
+  }
+
+  removeToTable(effet){
+    this.canvasControl.removeToCanvas(effet);
+    this.canvasDraw.drawStuff();
+  }
+  //////////////////// FIN EFFET PART
+
+
+
+  /////////////////////////////////// DECO part
+  addTextToTable(string){
+    this.canvasControl.addTextToCanvas(string);
+    this.canvasDraw.drawStuff();
+  }
+
+  removeTextToTable(index){
+    this.canvasControl.removeTextToCanvas(index);
+    this.canvasDraw.drawStuff();
+  }
+
+  dataChange(data){
+    if (data.input == undefined) data.input = ' ';
+    if (data.font.size == undefined || data.font.size <= 0) data.font.size = 1;
+    data.actualisePoints();
+    this.canvasDraw.drawStuff();
+  }
+
+  addShapeToTable(string){
+    this.canvasControl.addShapeToCanvas(string);
+    this.canvasDraw.drawStuff();
+  }
+
+  removeShapeToTable(index) {
+    this.canvasControl.addShapeToCanvas(string);
+    this.canvasDraw.drawStuff();
+  }
+  ///////////////////////////// FIN DECO part
+
+
+  ///////////////////////////// SWITCH, Active, View State part
+  /**
+   * Active ou desactive le déplacement des composants.
+   * Appeler par menu-dessin.html
+   */
+  switchDeb(){
+    this.canvasGlobalServ.setDeb(this.debrayable);
+    this.canvasControl.resetCompPos(this.debrayable);
+    if(!this.debrayable){
+      this.activeEffet();
+    }
+  }
+
+  /**
+   * Active ou desactive le mode décoration.
+   * Appeler par menu-dessin.html
+   */
+  switchDeco(){
+    if (this.deco) {
+      this.isActive = 'deco';
+      this.canvasControl.canvasDrawState('deco');
+      this.canvasDraw.drawStuff();
+    }
+    else {
+      if (this.debrayable) {
+        this.isActive = 'composant';
+        this.canvasControl.canvasDrawState(this.isActive);
+        this.canvasDraw.drawStuff();
+      }
+      else {
+        this.isActive = 'effet';
+        this.canvasControl.canvasDrawState(this.isActive);
+        this.canvasDraw.drawStuff();
+      }
+    }
+  }
+
+  /**
+   * Appeler par menu-dessin.html
+   * @todo activeEffet est appele dans plusieur endroit ou l'on ne veut
+   * pas dessiner.
+   */
+  activeEffet(){
+    this.isActive = 'effet';
+    if (this.canvasControl.canvasDrawState('effet')) {
+      this.canvasDraw.drawStuff();
+    }
+  }
+
+  /**
+   * Appeler par menu-dessin.html
+   */
+  activeCompo(){
+    this.isActive = 'composant';
+    if (this.canvasControl.canvasDrawState('composant')) {
+      this.canvasDraw.drawStuff();
+    }
+  }
+
+  general(string){
+    this.canvasControl.canvasViewState(string);
+    this.canvasControl.canvasDrawState(this.isActive);
+    this.canvasControl.resizeCanvas();
+    this.canvasControl.centerInCanvas();
+    this.canvasDraw.drawStuff();
+  }
+
+  up(){
+    this.general('up');
+  }
+
+  down(){
+    this.general('down');
+  }
+
+  right(){
+    this.general('right');
+  }
+
+  left(){
+    this.general('left');
+  }
+
+  top(){
+    this.general('top');
+  }
+
+  bottom(){
+    this.general('bottom');
+  }
+  /////////////////////////// SWITCH, Active, View State part
+
+
+  ///////////////////////// MOUSE on part
+  // Fonction utiliser par panier-dessin
   mouseOnEffet(value){
     var effets = [];
     var effet = this.canvasGlobalServ.searchEffetById(value._id, value.key);
@@ -154,86 +308,27 @@ class PageDessinComponent {
       this.canvasDraw.drawStuff();
     }
   }
-    
-  // Appeler par menu-dessin.html
-  switchDeb(){
-    this.canvasGlobalServ.setDeb(this.debrayable);
-    this.canvasControl.resetCompPos(this.debrayable);
-    if(!this.debrayable){
-      this.activeEffet();
-    }
-  }
 
-  // Appeler par menu-dessin.html
-  switchDeco(){
-    if (this.deco) {
-      this.isActive = 'deco';
-      this.canvasControl.canvasDrawState('deco');
-      this.canvasDraw.drawStuff();
-    }
-    else {
-      if (this.debrayable) {
-        this.isActive = 'composant';
-        this.canvasControl.canvasDrawState(this.isActive);
-        this.canvasDraw.drawStuff();
-      }
-      else {
-        this.isActive = 'effet';
-        this.canvasControl.canvasDrawState(this.isActive);
-        this.canvasDraw.drawStuff();
-      }
-    }
-  }
-
-  // Appeler par menu-dessin.html
-  // @todo activeEffet est appele dans plusieur endroit ou l'on ne veut
-  // pas dessiner.
-  activeEffet(){
-    this.isActive = 'effet';
-    if (this.canvasControl.canvasDrawState('effet')) {
+  mouseOnCompo(value){
+    var compos = [];
+    var compo = this.canvasGlobalServ.searchCompoById(value._id, value.key);
+    if(compo) {
+      compos.push(compo);
+      this.canvasGlobalServ.resetTableDrawShine();
+      this.canvasGlobalServ.setTableDrawShine(compos);
+      this.tableDrawShine = this.canvasGlobalServ.getTableDrawShine();
       this.canvasDraw.drawStuff();
     }
   }
-  
-  // Appeler par menu-dessin.html
-  activeCompo(){
-    this.isActive = 'composant';
-    if (this.canvasControl.canvasDrawState('composant')) {
-      this.canvasDraw.drawStuff();
-    }
-  }
-  
-  // Rajoute un effet au canvas
-  // Appeler par panier dessin et quand on droppable directive
-  // Effet est en fait une selection
-  addToTable(effet){
-    // Ajouter l'effet au canvas si pas deja.
-    if (!effet.inCanvas) {this.canvasControl.addToCanvas(effet);}
-    // Initialise le boite dans l'instance de dessin.
-    //this.instanceDessin.setBoite(this.canvasControl.getMasterBoite());
-    // Dessine.
-    this.canvasDraw.drawStuff();
-  }
 
-  addTextToTable(string){
-    this.canvasControl.addTextToCanvas(string);
+  mouseLeaveEffet(){
+    this.canvasGlobalServ.resetTableDrawShine();
     this.canvasDraw.drawStuff();
   }
+  ////////////////////// FIN MOUSE ON PART
 
-  removeTextToTable(index){
-    this.canvasControl.removeTextToCanvas(index);
-    this.canvasDraw.drawStuff();
-  }
 
-  dataChange(data){
-    if (data.input == undefined) data.input = ' ';
-    if (data.font.size == undefined || data.font.size <= 0) data.font.size = 1;
-    data.actualisePoints();
-    this.canvasDraw.drawStuff();
-  }
-  
-  removeToTable(effet){
-    this.canvasControl.removeToCanvas(effet);
+  draw() {
     this.canvasDraw.drawStuff();
   }
 
@@ -246,57 +341,6 @@ class PageDessinComponent {
     this.canvasDraw.drawStuff();
   }
 
-  up(){
-    this.canvasControl.canvasViewState('up');
-    this.canvasControl.canvasDrawState(this.isActive);
-    this.canvasControl.resizeCanvas();
-    this.canvasControl.centerInCanvas();
-    this.canvasDraw.drawStuff();
-  }
-
-  down(){
-    this.canvasControl.canvasViewState('down');
-    this.canvasControl.canvasDrawState(this.isActive);
-    this.canvasControl.resizeCanvas();
-    this.canvasControl.centerInCanvas();
-    this.canvasDraw.drawStuff();
-  }
-
-  right(){
-    this.canvasControl.canvasViewState('right');
-    this.canvasControl.canvasDrawState(this.isActive);
-    this.canvasControl.resizeCanvas();
-    this.canvasControl.centerInCanvas();
-    this.canvasDraw.drawStuff();
-  }
-
-  left(){
-    this.canvasControl.canvasViewState('left');
-    this.canvasControl.canvasDrawState(this.isActive);
-    this.canvasControl.resizeCanvas();
-    this.canvasControl.centerInCanvas();
-    this.canvasDraw.drawStuff();
-  }
-
-  top(){
-    this.canvasControl.canvasViewState('top');
-    this.canvasControl.canvasDrawState(this.isActive);
-    this.canvasControl.resizeCanvas();
-    this.canvasControl.centerInCanvas();
-    this.canvasDraw.drawStuff();
-  }
-
-  bottom(){
-    this.canvasControl.canvasViewState('bottom');
-    this.canvasControl.canvasDrawState(this.isActive);
-    this.canvasControl.resizeCanvas();
-    this.canvasControl.centerInCanvas();
-    this.canvasDraw.drawStuff();
-  }
-
-
-  // @todo : implémenter quand on tourne
-  // pret bord canvas. Les composants se deplace.
   rotate(value, data){
     data.rotate(value, null, this.debrayable);
     this.canvasControl.checkBorderBoxRotate(data);
@@ -325,34 +369,12 @@ class PageDessinComponent {
     this.canvasControl.updateComposantInCanvas(compo);
     this.canvasDraw.drawStuff();
   }
-  
-  //Utiliser par panier-dessin.
-  mouseOnCompo(value){
-    var compos = [];
-    var compo = this.canvasGlobalServ.searchCompoById(value._id, value.key);
-    if(compo) {
-      compos.push(compo);
-      this.canvasGlobalServ.resetTableDrawShine();
-      this.canvasGlobalServ.setTableDrawShine(compos);
-      this.tableDrawShine = this.canvasGlobalServ.getTableDrawShine();
-      this.canvasDraw.drawStuff();
-    }
-  }
-
-  //Utiliser par panier-dessin.
-  mouseLeaveEffet(){
-    this.canvasGlobalServ.resetTableDrawShine();
-    this.canvasDraw.drawStuff();
-  }
-
-  draw() {
-    this.canvasDraw.drawStuff();
-  }
 
   //@todo a supprimer.
   getTable(){
     this.toutesTables = this.canvasGlobal;
   }
+
 }
 
 angular.module('pedaleswitchApp')
