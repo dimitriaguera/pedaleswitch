@@ -53,7 +53,7 @@ angular.module('pedaleswitchApp')
       eyedropper: function(){
         // Stock l'id de l'item actif.
         drag = {};
-        drag.id = canvasGlobalServ.searchTabByIdReturnIndex(tables.tableText, tables.activeItem[0]._id, 0);
+        drag.id = canvasGlobalServ.searchTabByIdReturnIndex(tables.tableTextDeco, tables.activeItem[0]._id, 0);
 
         // Enlever le pop-up.
         canvasGlobalServ.resetActiveItem();
@@ -69,7 +69,7 @@ angular.module('pedaleswitchApp')
         mousePos = mouse(e);
         
         // change la couleur de l'item actif.
-        tables.tableText[drag.id].font.color = mousePos.color;
+        tables.tableTextDeco[drag.id].font.color = mousePos.color;
 
         // Dessine.
         canvasDraw.drawStuff();
@@ -79,7 +79,7 @@ angular.module('pedaleswitchApp')
         mousePos = mouse(e);
 
         // change la couleur de l'item actif.
-        tables.tableText[drag.id].font.color = mousePos.color;
+        tables.tableTextDeco[drag.id].font.color = mousePos.color;
 
         // Dessine.
         canvasDraw.drawStuff();

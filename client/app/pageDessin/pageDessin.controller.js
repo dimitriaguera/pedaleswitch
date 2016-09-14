@@ -91,7 +91,7 @@ class PageDessinComponent {
       );
     },
     removeTextToTable: function(data){
-      var index = this.self.canvasGlobalServ.searchTabByIdReturnIndex(this.self.tables.tableText, data._id, data.key);
+      var index = this.self.canvasGlobalServ.searchTabByIdReturnIndex(this.self.tables.tableTextDeco, data._id, data.key);
       this.self.removeTextToTable(index);
     }
   };
@@ -178,11 +178,13 @@ class PageDessinComponent {
   }
 
   addShapeToTable(string){
-    alert('coucou');
+    this.canvasControl.addShapeToCanvas(string);
+    this.canvasDraw.drawStuff();
   }
 
   removeShapeToTable(index) {
-
+    this.canvasControl.addShapeToCanvas(string);
+    this.canvasDraw.drawStuff();
   }
   ///////////////////////////// FIN DECO part
 
@@ -246,36 +248,36 @@ class PageDessinComponent {
     }
   }
 
-  up(){
-    general('up');
-  }
-
-  down(){
-    general('down');
-  }
-
-  right(){
-    general('right');
-  }
-
-  left(){
-    general('left');
-  }
-
-  top(){
-    general('top');
-  }
-
-  bottom(){
-    general('bottom');
-  }
-
   general(string){
     this.canvasControl.canvasViewState(string);
     this.canvasControl.canvasDrawState(this.isActive);
     this.canvasControl.resizeCanvas();
     this.canvasControl.centerInCanvas();
     this.canvasDraw.drawStuff();
+  }
+
+  up(){
+    this.general('up');
+  }
+
+  down(){
+    this.general('down');
+  }
+
+  right(){
+    this.general('right');
+  }
+
+  left(){
+    this.general('left');
+  }
+
+  top(){
+    this.general('top');
+  }
+
+  bottom(){
+    this.general('bottom');
   }
   /////////////////////////// SWITCH, Active, View State part
 
