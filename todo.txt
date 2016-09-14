@@ -64,21 +64,20 @@ Directive droppable : Virer les evenement inutile (dragenter, dragleave)
 Box-dessin.controller.js : Pk il est dans une fonctionne anonyme contrairement a tout les autres ?
 
 ------------
-A savoir
+OPTIMISATION
 
-        var cansW = canvasGlobal.canvas.canvas.offsetWidth;
-        var cansH = canvasGlobal.canvas.canvas.offsetHeight;
-        var cansWinW = canvasGlobal.canvas.canvasWindow.offsetWidth;
-        var cansWinH = canvasGlobal.canvas.canvasWindow.offsetHeight;
-        var cansWinScrollT = canvasGlobal.canvas.canvasWindow.scrollTop;
-        var cansWinScrollL = canvasGlobal.canvas.canvasWindow.scrollLeft;
+Dans canvas generation virer les fonction getCenterX et getCEnterY er remplacer par getCenter.x getCenter.y
+
+
 -----------------
-
-
-
-
 BUG
 
+La fonction supprimer qui apparait dans la popover sur la boite ou les effets ou les composants
+ne marche pas car elle a été prévu que pour le texte il faut qu'elle ne s'affiche pas qd autre que du texte.
+
+
+La position de la popover est défois en dehors de la fenetre (par exemple si un on a un effet qui est plus long que la
+fenetre la pos box ce met a gauche de cet obj et n'est pas visible).
 
 ---------------
 SI MODIFICATION MODELE EFFET
