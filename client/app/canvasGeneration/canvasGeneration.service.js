@@ -440,8 +440,62 @@ angular.module('pedaleswitchApp')
       constructor(obj){
         super(obj);
         this.img = obj.img;
-        if (this.fonction === 'deco') {this.type = 'img'};
+        if (this.fonction === 'deco') {this.type = 'img';}
       }
+
+      drawCanvas(ctx){
+
+        var alphaRad = this.angle * (2*Math.PI)/360.0;
+
+        // save the current co-ordinate system
+        // before we screw with it
+        ctx.save();
+
+        var vect = this.getCenter();
+        // move to the middle of where we want to draw our image
+        ctx.translate(vect.x, vect.y);
+
+        // rotate around that point, converting our
+        // angle from degrees to radians
+        ctx.rotate(-alphaRad);
+
+        // draw it up and to the left by half the width
+        // and height of the image
+        ctx.drawImage(this.img, -(this.img.width/2), -(this.img.height/2));
+
+        // and restore the co-ords to how they were when we began
+        ctx.restore();
+
+        if (this.isSelected) {
+          this.drawHandler(ctx);
+        }
+      }
+
+      // Dessine la boite autour du texte.
+      drawHandler(ctx){
+        var i, j, l = this.points.length;
+
+        ctx.save();
+
+        ctx.beginPath();
+        ctx.moveTo(this.points[0].x, this.points[0].y);
+        for (i = 0; i < l; i++) {
+          ctx.lineTo(this.points[i].x, this.points[i].y);
+        }
+        ctx.closePath();
+        ctx.stroke();
+
+        ctx.fillStyle = 'white';
+        for (j = 0; j < l; j++) {
+          ctx.beginPath();
+          ctx.arc(this.points[j].x, this.points[j].y, 5, 0, 2 * Math.PI, false);
+          ctx.closePath();
+          ctx.stroke();
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+
     }
 
     /**

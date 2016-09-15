@@ -68,8 +68,10 @@ OPTIMISATION
 
 Dans canvas generation virer les fonction getCenterX et getCEnterY er remplacer par getCenter.x getCenter.y
 
+----------------
+Virer modif-dessin car plus utiliser (A verifier) ....
 
------------------
+----------------
 BUG
 
 La fonction supprimer qui apparait dans la popover sur la boite ou les effets ou les composants
