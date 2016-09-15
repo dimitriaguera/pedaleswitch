@@ -102,9 +102,23 @@ angular.module('pedaleswitchApp')
 
         // Si il y a des obj dans le canvas.
         if (tables.tableActive.length > 0) {
+
+          // Si en mode deco on peut agrandir les obj par les angles.
+          if (canvasGlobal.state.isActive === 'deco') {
+            drag = checkCollision.checkMouseCorner(mousePos, tables.tableActive, 10, ['all']);
+            if (drag) {
+              tables.tableActive[drag.id].setSelected(true);
+              drag.type = 'cornerdeco';
+              update(drag.pointer.type);
+              if (olddragid !== null){
+                tables.tableActive[olddragid].setSelected(false);
+              }
+              return;
+            }
+          }
+
           // Regarde si la souris est sur un effet ou un composant ou un element de deco.
           drag = checkCollision.checkMouseBox(mousePos, tables.tableActive, 10);
-
           if (drag) {
 
             // On drague soit un obj soit un élément de déco.
@@ -143,7 +157,7 @@ angular.module('pedaleswitchApp')
         }
 
         // Si une boite existe et que l'on est pas en mode déco.
-        if (boite.projBoite.titre !== undefined && tables.tableActive[drag.id].fonction !== 'deco'){
+        if (boite.projBoite.titre !== undefined && canvasGlobal.state.isActive !== 'deco'){
 
           // Selon la vue, on regarde si la souris est sur les corners ou les borders.
           switch(canvasGlobalServ.getViewState()){
@@ -199,13 +213,12 @@ angular.module('pedaleswitchApp')
             default:
               return console.log('ERROR ' + canvasGlobalServ.getViewState() + ' is not a valid state');
           }
-
           // Regarde si la souris est sur la boite pour permettre de la déplacer
           // drag = checkCollision.checkMouseBox(mousePos, [boite.projBoite], 10);
           // if(drag){
           //  drag.type = 'boite';
           // }
-
+          return;
         }
       },
       
@@ -240,6 +253,9 @@ angular.module('pedaleswitchApp')
           case 'deco':
             $rootScope.$emit('click-on-deco');
             break;
+          case 'cornerdeco':
+            $rootScope.$emit('click-on-corner-deco');
+            break;
           default:
             $rootScope.$emit('no-click-on-element');
             drag = {};
@@ -272,6 +288,16 @@ angular.module('pedaleswitchApp')
           canvasDraw.drawStuff();
         }
       },
+
+      /**
+       * On déplace de la deco
+       */
+      mouseMoveCornerDeco: function(e){
+
+        alert('cou');
+
+      },
+
 
       /**
        * En vue LEFT ou RIGHT, agrandi une seule hauteur par le coin.
