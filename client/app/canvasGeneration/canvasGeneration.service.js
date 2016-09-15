@@ -96,9 +96,9 @@ angular.module('pedaleswitchApp')
         }
         else {
           tab.push(new Point({x:0,y:0}));
-          tab.push(new Point({x:10,y:0}));
-          tab.push(new Point({x:10,y:10}));
-          tab.push(new Point({x:0,y:10}));
+          tab.push(new Point({x:30,y:0}));
+          tab.push(new Point({x:30,y:30}));
+          tab.push(new Point({x:0,y:30}));
         }
       }
       resetCompPos(){
@@ -345,6 +345,32 @@ angular.module('pedaleswitchApp')
         }
         return vector;
       }
+
+      // Dessine la boite autour du texte.
+      drawHandler(ctx){
+        var i, j, l = this.points.length;
+
+        ctx.save();
+
+        ctx.beginPath();
+        ctx.moveTo(this.points[0].x, this.points[0].y);
+        for (i = 0; i < l; i++) {
+          ctx.lineTo(this.points[i].x, this.points[i].y);
+        }
+        ctx.closePath();
+        ctx.stroke();
+
+        ctx.fillStyle = 'white';
+        for (j = 0; j < l; j++) {
+          ctx.beginPath();
+          ctx.arc(this.points[j].x, this.points[j].y, 5, 0, 2 * Math.PI, false);
+          ctx.closePath();
+          ctx.stroke();
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+
     }
 
 
@@ -352,7 +378,7 @@ angular.module('pedaleswitchApp')
       constructor(entity) {
         super(entity);
         this.shapeObject = 'Cercle';
-        if (this.fonction === 'deco') {this.type = 'shape'};
+        if (this.fonction === 'deco') {this.type = 'shape';}
       }
 
       getRadius() {
@@ -391,6 +417,11 @@ angular.module('pedaleswitchApp')
         ctx.stroke();
         ctx.closePath();
         ctx.restore();
+
+        if (this.isSelected && this.fonction === 'deco') {
+          this.drawHandler(ctx);
+        }
+
       }
     }
 
@@ -398,7 +429,7 @@ angular.module('pedaleswitchApp')
       constructor(entity){
         super(entity);
         this.shapeObject = 'Rect';
-        if (this.fonction === 'deco') {this.type = 'shape'};
+        if (this.fonction === 'deco') {this.type = 'shape';}
       }
       drawCanvas(ctx){
 
@@ -433,6 +464,11 @@ angular.module('pedaleswitchApp')
         }
 
         ctx.restore();
+
+        if (this.isSelected && this.fonction === 'deco') {
+          this.drawHandler(ctx);
+        }
+
       }
     }
 
@@ -469,31 +505,6 @@ angular.module('pedaleswitchApp')
         if (this.isSelected) {
           this.drawHandler(ctx);
         }
-      }
-
-      // Dessine la boite autour du texte.
-      drawHandler(ctx){
-        var i, j, l = this.points.length;
-
-        ctx.save();
-
-        ctx.beginPath();
-        ctx.moveTo(this.points[0].x, this.points[0].y);
-        for (i = 0; i < l; i++) {
-          ctx.lineTo(this.points[i].x, this.points[i].y);
-        }
-        ctx.closePath();
-        ctx.stroke();
-
-        ctx.fillStyle = 'white';
-        for (j = 0; j < l; j++) {
-          ctx.beginPath();
-          ctx.arc(this.points[j].x, this.points[j].y, 5, 0, 2 * Math.PI, false);
-          ctx.closePath();
-          ctx.stroke();
-          ctx.fill();
-        }
-        ctx.restore();
       }
 
     }
@@ -591,7 +602,7 @@ angular.module('pedaleswitchApp')
         vector.x += vect.x;
         vector.y += vect.y;
 
-        this.moveEffetCompo(vector);
+        this.moveEffetCompoDeco(vector);
 
         // Reinitialise l'ascenceur dans la div contenant le canvas.
         canvasGlobal.canvas.canvasWindow.scrollTop = 0;
@@ -602,17 +613,13 @@ angular.module('pedaleswitchApp')
        * Bouge les éléemnts de la boite selon le vecteur passé en argument.
        * @param delta
        */
-      moveEffetCompo(delta){
-        var effets, text, shape, img, compos, i, j;
-        effets = this.effets;
-        text = this.textDeco;
-        shape = this.shapeDeco;
-        img = this.imgDeco;
+      moveEffetCompoDeco(delta){
+        var compos, i, j;
 
-        if(effets.length !== 0) {
-          for (i = 0; i < effets.length; i++) {
-            effets[i].move(delta);
-            compos = effets[i].composants;
+        if(this.effets.length !== 0) {
+          for (i = 0; i < this.effets.length; i++) {
+            this.effets[i].move(delta);
+            compos = this.effets[i].composants;
             if (compos.length !== 0) {
               for (j = 0; j < compos.length; j++) {
                 compos[j].move(delta);
@@ -620,9 +627,19 @@ angular.module('pedaleswitchApp')
             }
           }
         }
-        if(text.length !== 0) {
-          for (i = 0; i < text.length; i++) {
-            text[i].move(delta);
+        if(this.textDeco.length !== 0) {
+          for (i = 0; i < this.textDeco.length; i++) {
+            this.textDeco[i].move(delta);
+          }
+        }
+        if(this.shapeDeco.length !== 0) {
+          for (i = 0; i < this.shapeDeco.length; i++) {
+            this.shapeDeco[i].move(delta);
+          }
+        }
+        if(this.imgDeco.length !== 0) {
+          for (i = 0; i < this.imgDeco.length; i++) {
+            this.imgDeco[i].move(delta);
           }
         }
       }

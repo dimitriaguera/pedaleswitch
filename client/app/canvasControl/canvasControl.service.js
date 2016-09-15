@@ -534,7 +534,7 @@ angular.module('pedaleswitchApp')
         if (entity.fonction === 'Effet') {
           boite.masterBoite.checkBorderBoite(canvasGlobal.state.viewState, entity);
           var vect = boite.projBoite.moveCloseBorder(canvasS.canvas, canvasS.marginCanvas);
-          boite.projBoite.moveEffetCompo(vect);
+          boite.projBoite.moveEffetCompoDeco(vect);
         }
       },
 

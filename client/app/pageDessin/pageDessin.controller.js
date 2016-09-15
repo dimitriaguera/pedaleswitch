@@ -227,6 +227,8 @@ class PageDessinComponent {
    * Appeler par menu-dessin.html
    */
   switchDeco(){
+    // Cette ligne est pour etre sur que le .clip du canvas ne soit plus actif.
+    this.canvasGlobal.canvas.canvas.width += 1;
     if (this.deco) {
       this.canvasGlobal.state.isActive = 'deco';
       this.canvasControl.canvasDrawState(this.canvasGlobal.state.isActive);
