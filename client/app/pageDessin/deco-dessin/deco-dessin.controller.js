@@ -23,7 +23,9 @@
         shapeDeco:'=',
         addShapeToTable: '&',
         removeShapeToTable: '&',
-        addImgToTable:'&'
+        imgDeco:'=',
+        addImgToTable:'&',
+        removeImgToTable: '&'
       },
       controller: DecoDessin
     });

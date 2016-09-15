@@ -93,6 +93,14 @@ class PageDessinComponent {
     removeTextToTable: function(data){
       var index = this.self.canvasGlobalServ.searchTabByIdReturnIndex(this.self.tables.tableTextDeco, data._id, data.key);
       this.self.removeTextToTable(index);
+    },
+    removeShapeToTable: function(data){
+      var index = this.self.canvasGlobalServ.searchTabByIdReturnIndex(this.self.tables.tableShapeDeco, data._id, data.key);
+      this.self.removeShapeToTable(index);
+    },
+    removeImgToTable: function(data){
+      var index = this.self.canvasGlobalServ.searchTabByIdReturnIndex(this.self.tables.tableImgDeco, data._id, data.key);
+      this.self.removeImgToTable(index);
     }
   };
 
@@ -167,14 +175,15 @@ class PageDessinComponent {
   }
 
   /**
-   * Fonction pour réactulasier les points de la box
-   * encandrant un texte
+   * Fonction pour appeler qd on modifie un obj dans la popOver
    * @param data
    */
   dataChange(data){
-    if (data.input == undefined) data.input = ' ';
-    if (data.font.size == undefined || data.font.size <= 0) data.font.size = 1;
-    data.actualisePoints();
+    if (data.type === 'text'){
+      if (data.input == undefined) data.input = ' ';
+      if (data.font.size == undefined || data.font.size <= 0) data.font.size = 1;
+      data.actualisePoints();
+    }
     this.canvasDraw.drawStuff();
   }
 
@@ -193,6 +202,10 @@ class PageDessinComponent {
     //this.canvasDraw.drawStuff();
   }
 
+  removeImgToTable(index) {
+    this.canvasControl.removeImgToCanvas(index);
+    this.canvasDraw.drawStuff();
+  }
   ///////////////////////////////////////////////// FIN ADD & REmove EFFET et deco
 
 

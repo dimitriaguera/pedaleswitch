@@ -238,7 +238,7 @@ angular.module('pedaleswitchApp')
             canvasGlobal2 = canvasGlobal,
             img = new Image(),
             boite2 = boite;
-        img.src = 'assets/images/yeoman.png';
+        img.src = 'assets/images/yeoman2.png';
         img.onload = function(){
           var points = [
             {x:0,y:0},
@@ -249,8 +249,18 @@ angular.module('pedaleswitchApp')
           var tmpImg = canvasGeneration2.newImgDeco({img:img,points:points,fonction:'deco'});
           tmpImg.move(boite.masterBoite.projections[canvasGlobal.state.viewState].getCenter());
           boite2.projBoite.imgDeco.push(tmpImg);
+          canvasGlobal2.tables.tableImgDeco.push(tmpImg);
           canvasGlobal2.canvas.ctx.drawImage(img, tmpImg.points[0].x, tmpImg.points[0].y);
         }
+      },
+
+      /**
+       * Enlève une imgDeco au canvas
+       * @param index
+       */
+      removeImgToCanvas: function(index) {
+        boite.projBoite.imgDeco.splice(index,1);
+        tables.tableImgDeco.splice(index,1);
       },
 
       /**

@@ -139,7 +139,7 @@ angular.module('pedaleswitchApp')
         }
 
         // Si une boite existe.
-        if (boite.projBoite.titre !== undefined){
+        if (boite.projBoite.titre !== undefined && canvasGlobal.state.isActive !== 'deco'){
 
           // Selon la vue, on regarde si la souris est sur les corners ou les borders.
           switch(canvasGlobalServ.getViewState()){
@@ -196,11 +196,11 @@ angular.module('pedaleswitchApp')
               return console.log('ERROR ' + canvasGlobalServ.getViewState() + ' is not a valid state');
           }
 
-          // Regarde si la souris est sur la boite
-          drag = checkCollision.checkMouseBox(mousePos, [boite.projBoite], 10);
-          if(drag){
-            drag.type = 'boite';
-          }
+          // Regarde si la souris est sur la boite pour permettre de la déplacer
+          //drag = checkCollision.checkMouseBox(mousePos, [boite.projBoite], 10);
+          //if(drag){
+          //  drag.type = 'boite';
+          //}
         }
       },
       
