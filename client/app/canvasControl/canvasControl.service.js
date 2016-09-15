@@ -250,7 +250,7 @@ angular.module('pedaleswitchApp')
           tmpImg.move(boite.masterBoite.projections[canvasGlobal.state.viewState].getCenter());
           boite2.projBoite.imgDeco.push(tmpImg);
           canvasGlobal2.tables.tableImgDeco.push(tmpImg);
-          canvasGlobal2.canvas.ctx.drawImage(img, tmpImg.points[0].x, tmpImg.points[0].y);
+          tmpImg.drawCanvas(canvasGlobal2.canvas.ctx);
         }
       },
 

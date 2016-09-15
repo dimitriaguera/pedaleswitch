@@ -190,7 +190,7 @@ angular.module('pedaleswitchApp')
       drawImgDeco: function(ctx){
         if(boite.projBoite.imgDeco.length !== 0) {
           for (var i = 0; i < boite.projBoite.imgDeco.length; i++) {
-            ctx.drawImage(boite.projBoite.imgDeco[i].img, boite.projBoite.imgDeco[i].points[0].x, boite.projBoite.imgDeco[i].points[0].y);
+            boite.projBoite.imgDeco[i].drawCanvas(ctx);
           }
         }
       },
