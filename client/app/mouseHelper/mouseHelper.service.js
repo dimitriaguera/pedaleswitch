@@ -26,6 +26,7 @@ angular.module('pedaleswitchApp')
     };
 
     /**
+     * Fonction pour eyedropper donne la vouleur sous la souris
      * @param e event
      * @return {object} x,y, color in hex
      */
@@ -103,18 +104,20 @@ angular.module('pedaleswitchApp')
         if (tables.tableActive.length > 0) {
           // Regarde si la souris est sur un effet ou un composant ou un element de deco.
           drag = checkCollision.checkMouseBox(mousePos, tables.tableActive, 10);
+
           if (drag) {
-            drag.capue ='ok';
+
             // On drague soit un obj soit un élément de déco.
             if (tables.tableActive[drag.id].fonction === 'deco') {
               drag.type = 'deco';
             } else {
               drag.type = 'thing';
             }
-            // Met isSelect a l'objet en cours si ce n'est pas un deco.
+
+            // Met isSelect a l'objet en cours.
             // Et enlève l'ancien sélectionner.
             // Redraw si nécessaire.
-            if (olddragid !== drag.id && drag.type !== 'deco'){
+            if (olddragid !== drag.id){
               tables.tableActive[drag.id].setSelected(true);
               if (olddragid !== null){
                 tables.tableActive[olddragid].setSelected(false);
@@ -128,6 +131,7 @@ angular.module('pedaleswitchApp')
             // Si on est pas sur un obj mais
             // qu'avant oui alors le désélectionner
             // et redessine.
+            // @todo vérifier que cela sert a qqch
             if (olddragid !== null){
               tables.tableActive[olddragid].setSelected(false);
               // Enlève pop-up quand on deplace la souris hors zone
@@ -138,8 +142,8 @@ angular.module('pedaleswitchApp')
           }
         }
 
-        // Si une boite existe.
-        if (boite.projBoite.titre !== undefined && canvasGlobal.state.isActive !== 'deco'){
+        // Si une boite existe et que l'on est pas en mode déco.
+        if (boite.projBoite.titre !== undefined && tables.tableActive[drag.id].fonction !== 'deco'){
 
           // Selon la vue, on regarde si la souris est sur les corners ou les borders.
           switch(canvasGlobalServ.getViewState()){
@@ -197,10 +201,11 @@ angular.module('pedaleswitchApp')
           }
 
           // Regarde si la souris est sur la boite pour permettre de la déplacer
-          //drag = checkCollision.checkMouseBox(mousePos, [boite.projBoite], 10);
-          //if(drag){
+          // drag = checkCollision.checkMouseBox(mousePos, [boite.projBoite], 10);
+          // if(drag){
           //  drag.type = 'boite';
-          //}
+          // }
+
         }
       },
       
@@ -538,7 +543,7 @@ angular.module('pedaleswitchApp')
 
         // Bouge les effets et les compos.
         delta = {x: boite.projBoite.points[0].x - delta.x, y: boite.projBoite.points[0].y - delta.y};
-        boite.projBoite.moveEffetCompo(delta);
+        boite.projBoite.moveEffetCompoDeco(delta);
 
         // Recalcule les positions de fleches entourant la boite.
         canvasControl.setArrowPos();
@@ -608,7 +613,7 @@ angular.module('pedaleswitchApp')
       /**
        * Mouse up.
        */
-      mouseUp: function (e) {
+      mouseUp: function () {
 
         // Verifier si on click ou si on draggue pour l'affichage des pop-up.
         timeb = (new Date()).getTime() - timea;

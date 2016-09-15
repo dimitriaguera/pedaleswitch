@@ -9,165 +9,169 @@ angular.module('pedaleswitchApp')
     var boite = canvasGlobalServ.getBoite();
 
 
-    var selectDraw = function(context, item){
+    var selectDraw = function(ctx, item){
       if (item.isSelected) {
-        context.font = '16px sans-serif';
-        context.strokeStyle = '#00bfff';
-        context.fillStyle = '#00bfff';
-        //context.textAlign = 'center';
-        //context.fillText(item.titre, item.getCenterX(), item.findExtreme().t - canvasConversion.convertToPixel(5));
-        context.shadowColor   = '#666';
-        context.shadowOffsetX = 1;
-        context.shadowOffsetY = 1;
-        context.shadowBlur    = 2;
+        ctx.font = '16px sans-serif';
+        ctx.strokeStyle = '#00bfff';
+        ctx.fillStyle = '#00bfff';
+        //ctx.textAlign = 'center';
+        //ctx.fillText(item.titre, item.getCenterX(), item.findExtreme().t - canvasConversion.convertToPixel(5));
+        ctx.shadowColor   = '#666';
+        ctx.shadowOffsetX = 1;
+        ctx.shadowOffsetY = 1;
+        ctx.shadowBlur    = 2;
       }
     };
-    //var overlappingDraw = function (context, item){
+    //var overlappingDraw = function (ctx, item){
     //  if (item.isOverlapping) {
-    //    context.fillStyle = 'rgba(255, 00, 00, 0.2)';
-    //    context.fill();
+    //    ctx.fillStyle = 'rgba(255, 00, 00, 0.2)';
+    //    ctx.fill();
     //  }
     //};
 
     return {
 
-      drawTableDashed: function (context, colorStroke, colorFill, lineWidth, dashArray) {
-        if(tables.tableDrawDashed.length !== 0) {
-          context.save();
-          context.lineWidth = lineWidth;
-          context.strokeStyle = colorStroke;
-          context.setLineDash(dashArray);
-          for (var k = 0; k < tables.tableDrawDashed.length; k++) {
-            context.save();
-            selectDraw(context, tables.tableDrawDashed[k]);
-            //overlappingDraw(context, tableDrawDashed[k]);
-            tables.tableDrawDashed[k].drawCanvas(context);
-            if (colorFill){
-              context.fillStyle = colorFill;
-              context.fill();
-            }
-            context.restore();
-          }
-          context.restore();
-        }
-      },
-
-      drawTableThin: function (context, colorStroke, colorFill, lineWidth) {
-        if(tables.tableDrawThin.length !== 0) {
-          context.save();
-          context.lineWidth = lineWidth;
-          context.strokeStyle = colorStroke;
-          for (var j = 0; j < tables.tableDrawThin.length; j++) {
-            context.save();
-            selectDraw(context, tables.tableDrawThin[j]);
-            //overlappingDraw(context, tableDrawThin[j]);
-            tables.tableDrawThin[j].drawCanvas(context);
-            if (colorFill){
-              context.fillStyle = colorFill;
-              context.fill();
-            }
-            context.restore();
-          }
-          context.restore();
-        }
-      },
-
-      drawTableActive: function (context, colorStroke, colorFill, lineWidth) {
-        if(tables.tableActive !== 0) {
-          context.save();
-          context.lineWidth = lineWidth;
-          context.strokeStyle = colorStroke;
-          for (var i = 0; i < tables.tableActive.length; i++) {
-            context.save();
-            selectDraw(context, tables.tableActive);
-            //overlappingDraw(context, tables.tableActive[i]);
-            tables.tableActive[i].drawCanvas(context);
-            if (colorFill){
-              context.fillStyle = colorFill;
-              context.fill();
-            }
-            context.restore();
-          }
-          context.restore();
-        }
-      },
-
-      drawBoite: function (context, colorStroke, colorFill, lineWidth) {
+      drawBoite: function (ctx, colorStroke, colorFill, lineWidth) {
         if(boite.projBoite.fonction === 'Boite') {
-          context.save();
-          context.lineWidth = lineWidth;
-          context.strokeStyle = colorStroke;
-          context.shadowColor   = '#666';
-          context.shadowOffsetX = 0;
-          context.shadowOffsetY = 0;
-          context.shadowBlur    = 2;
-          boite.projBoite.drawCanvas(context);
+          ctx.save();
+          ctx.lineWidth = lineWidth;
+          ctx.strokeStyle = colorStroke;
+          ctx.shadowColor   = '#666';
+          ctx.shadowOffsetX = 0;
+          ctx.shadowOffsetY = 0;
+          ctx.shadowBlur    = 2;
+          boite.projBoite.drawCanvas(ctx);
 
 
           if (boite.projBoite.color) {
-            context.fillStyle = boite.projBoite.color;
-            context.fill();
+            ctx.fillStyle = boite.projBoite.color;
+            ctx.fill();
           } else {
             if (colorFill){
-              context.fillStyle = colorFill;
-              context.fill();
+              ctx.fillStyle = colorFill;
+              ctx.fill();
             }
           }
 
           if (boite.projBoite.isOverlapping) {
-            context.fillStyle = 'rgba(255, 00, 00, 0.2)';
-            context.fill();
+            ctx.fillStyle = 'rgba(255, 00, 00, 0.2)';
+            ctx.fill();
           }
-          context.restore();
+          ctx.restore();
+
+          // Cette fonction permet de ne pas dessiner les élements qui sont
+          // en dehors du canvas quand on est en mode deco.
+          if (canvasGlobal.state.isActive === 'deco') {ctx.clip()}
         }
       },
 
-      drawTableAlignLine: function (canvas, context, colorClose, colorAlign, dashArray) {
+      drawTableDashed: function (ctx, colorStroke, colorFill, lineWidth, dashArray) {
+        if(tables.tableDrawDashed.length !== 0) {
+          ctx.save();
+          ctx.lineWidth = lineWidth;
+          ctx.strokeStyle = colorStroke;
+          ctx.setLineDash(dashArray);
+          for (var k = 0; k < tables.tableDrawDashed.length; k++) {
+            ctx.save();
+            selectDraw(ctx, tables.tableDrawDashed[k]);
+            //overlappingDraw(ctx, tableDrawDashed[k]);
+            tables.tableDrawDashed[k].drawCanvas(ctx);
+            if (colorFill){
+              ctx.fillStyle = colorFill;
+              ctx.fill();
+            }
+            ctx.restore();
+          }
+          ctx.restore();
+        }
+      },
+
+      drawTableThin: function (ctx, colorStroke, colorFill, lineWidth) {
+        if(tables.tableDrawThin.length !== 0) {
+          ctx.save();
+          ctx.lineWidth = lineWidth;
+          ctx.strokeStyle = colorStroke;
+          for (var j = 0; j < tables.tableDrawThin.length; j++) {
+            ctx.save();
+            selectDraw(ctx, tables.tableDrawThin[j]);
+            //overlappingDraw(ctx, tableDrawThin[j]);
+            tables.tableDrawThin[j].drawCanvas(ctx);
+            if (colorFill){
+              ctx.fillStyle = colorFill;
+              ctx.fill();
+            }
+            ctx.restore();
+          }
+          ctx.restore();
+        }
+      },
+
+      drawTableActive: function (ctx, colorStroke, colorFill, lineWidth) {
+        if(tables.tableActive !== 0) {
+          ctx.save();
+          ctx.lineWidth = lineWidth;
+          ctx.strokeStyle = colorStroke;
+          for (var i = 0; i < tables.tableActive.length; i++) {
+            ctx.save();
+            selectDraw(ctx, tables.tableActive);
+            //overlappingDraw(ctx, tables.tableActive[i]);
+            tables.tableActive[i].drawCanvas(ctx);
+            if (colorFill){
+              ctx.fillStyle = colorFill;
+              ctx.fill();
+            }
+            ctx.restore();
+          }
+          ctx.restore();
+        }
+      },
+
+      drawTableAlignLine: function (canvas, ctx, colorClose, colorAlign, dashArray) {
         var i;
         if (tables.tableAlignLine.length !== 0) {
-          context.save();
-          context.setLineDash(dashArray);
+          ctx.save();
+          ctx.setLineDash(dashArray);
           // Ligne Horizontale.
           for (i = 0 ; i < tables.tableAlignLine.x.length ; i++) {
-            context.strokeStyle = colorClose;
-            context.beginPath();
+            ctx.strokeStyle = colorClose;
+            ctx.beginPath();
             if (tables.tableAlignLine.x[i].isPile) {
-              context.strokeStyle = colorAlign;
+              ctx.strokeStyle = colorAlign;
             }
-            context.moveTo(tables.tableAlignLine.x[i].x,0);
-            context.lineTo(tables.tableAlignLine.x[i].x,canvas.height);
-            context.stroke();
-            context.closePath();
+            ctx.moveTo(tables.tableAlignLine.x[i].x,0);
+            ctx.lineTo(tables.tableAlignLine.x[i].x,canvas.height);
+            ctx.stroke();
+            ctx.closePath();
           }
 
           // Ligne Verticale.
           for (i = 0 ; i < tables.tableAlignLine.y.length ; i++) {
-            context.strokeStyle = colorClose;
-            context.beginPath();
+            ctx.strokeStyle = colorClose;
+            ctx.beginPath();
             if (tables.tableAlignLine.y[i].isPile) {
-              context.strokeStyle = colorAlign;
+              ctx.strokeStyle = colorAlign;
             }
-            context.moveTo(0,tables.tableAlignLine.y[i].y);
-            context.lineTo(canvas.width,tables.tableAlignLine.y[i].y);
-            context.stroke();
-            context.closePath();
+            ctx.moveTo(0,tables.tableAlignLine.y[i].y);
+            ctx.lineTo(canvas.width,tables.tableAlignLine.y[i].y);
+            ctx.stroke();
+            ctx.closePath();
           }
-          context.restore();
+          ctx.restore();
         }
       },
 
-      drawArrow: function (context, colorFill) {
+      drawArrow: function (ctx, colorFill) {
         if(tables.tableArrow.length !== 0) {
-          context.save();
-          context.shadowColor   = 'gray';
-          context.shadowOffsetX = 0;
-          context.shadowOffsetY = 0;
-          context.shadowBlur    = 1;
-          context.fillStyle = colorFill;
+          ctx.save();
+          ctx.shadowColor   = 'gray';
+          ctx.shadowOffsetX = 0;
+          ctx.shadowOffsetY = 0;
+          ctx.shadowBlur    = 1;
+          ctx.fillStyle = colorFill;
           for (var i = 0; i < tables.tableArrow.length; i++) {
-            tables.tableArrow[i].drawCanvas(context);
+            tables.tableArrow[i].drawCanvas(ctx);
           }
-          context.restore();
+          ctx.restore();
         }
       },
 
@@ -196,24 +200,24 @@ angular.module('pedaleswitchApp')
       },
 
       //@todo : table de travail, a supprimer.
-      drawTableLimits: function (context, colorStroke, colorFill, lineWidth, dashArray) {
+      drawTableLimits: function (ctx, colorStroke, colorFill, lineWidth, dashArray) {
         if(tables.tableDrawLimits.length !== 0) {
-          context.save();
-          context.lineWidth = lineWidth;
-          context.strokeStyle = colorStroke;
-          context.setLineDash(dashArray);
+          ctx.save();
+          ctx.lineWidth = lineWidth;
+          ctx.strokeStyle = colorStroke;
+          ctx.setLineDash(dashArray);
           for (var k = 0; k < tables.tableDrawLimits.length; k++) {
-            context.save();
-            selectDraw(context, tables.tableDrawLimits[k]);
-            //overlappingDraw(context, tableDrawDashed[k]);
-            tables.tableDrawLimits[k].drawCanvasLimits(context);
+            ctx.save();
+            selectDraw(ctx, tables.tableDrawLimits[k]);
+            //overlappingDraw(ctx, tableDrawDashed[k]);
+            tables.tableDrawLimits[k].drawCanvasLimits(ctx);
             if (colorFill){
-              context.fillStyle = colorFill;
-              context.fill();
+              ctx.fillStyle = colorFill;
+              ctx.fill();
             }
-            context.restore();
+            ctx.restore();
           }
-          context.restore();
+          ctx.restore();
         }
       },
       // Fin todo.
