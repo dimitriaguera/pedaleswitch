@@ -45,12 +45,12 @@ angular.module('pedaleswitchApp')
 
     class Shape {
       constructor (entity) {
-        this._id = entity._id || null;
+        this._id = entity._id || Math.floor(Math.random() * (1e6 +1));
 
         if (Number.isInteger(entity.key)) {
           this.key = entity.key;
         } else {
-          this.key = null;
+          this.key = 0;
         }
         this.titre = entity.titre || null;
         this.titreOption = entity.titreOption || null;
@@ -352,6 +352,7 @@ angular.module('pedaleswitchApp')
       constructor(entity) {
         super(entity);
         this.shapeObject = 'Cercle';
+        if (this.fonction === 'deco') {this.type = 'shape'};
       }
 
       getRadius() {
@@ -397,6 +398,7 @@ angular.module('pedaleswitchApp')
       constructor(entity){
         super(entity);
         this.shapeObject = 'Rect';
+        if (this.fonction === 'deco') {this.type = 'shape'};
       }
       drawCanvas(ctx){
 
@@ -438,6 +440,7 @@ angular.module('pedaleswitchApp')
       constructor(obj){
         super(obj);
         this.img = obj.img;
+        if (this.fonction === 'deco') {this.type = 'img'};
       }
     }
 
@@ -2427,6 +2430,7 @@ angular.module('pedaleswitchApp')
 
         this.shapeObject = obj.shape || 'Rect';
         this.fonction = obj.fonction || 'deco';
+        this.type = obj.type || 'text';
         this.angle = obj.angle || 0;
 
         this.sizeTxt = obj.sizeTxt || this.getSizeTxt();
@@ -2716,7 +2720,7 @@ angular.module('pedaleswitchApp')
         ctx.textBaseline = this.font.baseline;
         ctx.textAlign = this.font.textAlign;
 
-        switch(this.type) {
+        switch(this.font.type) {
           case 'fillText':
           default:
             var i, l, center;
@@ -2769,7 +2773,6 @@ angular.module('pedaleswitchApp')
      *   'rigth' : fleche a droite de l'objet Thing.
      *   'bottom' : fleche en bas de l'objet Thing.
      */
-
     class Arrow {
       constructor(entity, location) {
 

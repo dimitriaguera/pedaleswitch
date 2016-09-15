@@ -226,8 +226,8 @@ angular.module('pedaleswitchApp')
 
         if (canvasGlobal.state.isActive === 'deco') {
           this.drawImgDeco(canvasS.ctx);
-          this.drawTextDeco(canvasS.ctx);
           this.drawShapeDeco(canvasS.ctx);
+          this.drawTextDeco(canvasS.ctx);
         }
 
         this.drawTableDashed(canvasS.ctx, 'gray', '#f6f6f6', '1px', [10, 3]);
