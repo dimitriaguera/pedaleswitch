@@ -33,31 +33,48 @@ angular.module('pedaleswitchApp')
         /**
          * Syncs item creation/updates on 'model:save'
          */
+        //socket.on(modelName + ':save', function (item) {
+        //  var event;
+        //  // Find if the obj already existe in the tab array.
+        //  var oldItem = OrderArray.boucle(array, '_id', item._id, 3);
+        //
+        //  // replace oldItem if it exists
+        //  // otherwise just add item to the collection
+        //  if (oldItem) {
+        //    // Find index of the obj in array.
+        //    oldItem.pop();
+        //    var index = oldItem[oldItem.length - 1];
+        //    oldItem.pop();
+        //    // Give the sub array.
+        //    var subArray = OrderArray.returnsubarray(array, oldItem);
+        //    // Update the obj.
+        //    subArray.splice(index, 1, item);
+        //    event = 'updated';
+        //  } else {
+        //    event = 'created';
+        //    if (angular.isArray(array)) {
+        //      array.push(item);
+        //    } else {
+        //      array[item.type].push(item);
+        //    }
+        //
+        //  }
+        //
+        //  cb(event, item, array);
+        //});
+
         socket.on(modelName + ':save', function (item) {
-          var event;
-          // Find if the obj already existe in the tab array.
-          var oldItem = OrderArray.boucle(array, '_id', item._id, 3);
-          
+          var oldItem = _.find(array, {_id: item._id});
+          var index = array.indexOf(oldItem);
+          var event = 'created';
+
           // replace oldItem if it exists
           // otherwise just add item to the collection
           if (oldItem) {
-            // Find index of the obj in array.
-            oldItem.pop();
-            var index = oldItem[oldItem.length - 1];
-            oldItem.pop();
-            // Give the sub array.
-            var subArray = OrderArray.returnsubarray(array, oldItem);
-            // Update the obj.
-            subArray.splice(index, 1, item);
+            array.splice(index, 1, item);
             event = 'updated';
           } else {
-            event = 'created';
-            if (angular.isArray(array)) {
-              array.push(item);
-            } else {
-              array[item.type].push(item);
-            }
-
+            array.push(item);
           }
 
           cb(event, item, array);

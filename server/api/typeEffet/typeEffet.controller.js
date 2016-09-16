@@ -13,6 +13,7 @@ import _ from 'lodash';
 import TypeEffet from './typeEffet.model';
 import Effet from '../effet/effet.model';
 import Cache from '../cache/cache.model';
+import backUpAll from '../../backup/backup.model';
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -135,12 +136,13 @@ export function update(req, res) {
   if (req.body._id) {
     delete req.body._id;
   }
-  TypeEffet.findById(req.params.id).exec()
-    .then(handleEntityNotFound(res))
-    .then(saveInCache(req))
-    .then(saveUpdates(req.body))
-    .then(respondWithResult(res))
-    .catch(handleError(res));
+  var test = backUpAll(['effet', 'composant'], req.params.id);
+  console.log(test);
+    //.then(handleEntityNotFound(res))
+    //.then(saveInCache(req))
+    //.then(saveUpdates(req.body))
+    //.then(respondWithResult(res))
+    //.catch(handleError(res));
 }
 
 // Deletes a TypeEffet from the DB
