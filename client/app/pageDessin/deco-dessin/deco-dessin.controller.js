@@ -3,7 +3,10 @@
 
   class DecoDessin {
     constructor() {
-
+      this.shape = "'Rectangle'";
+      this.color = '#FF0000';
+      this.lineWidth = 1;
+      this.fillColor = '#000000';
     }
   }
 
@@ -11,14 +14,18 @@
     .component('decoDessin', {
       templateUrl: 'app/pageDessin/deco-dessin/deco-dessin.html',
       bindings: {
+        boite:'<',
+        draw:'&',
+        switchDecoSub:'&',
         textDeco:'=',
         addTextToTable: '&',
         removeTextToTable: '&',
         shapeDeco:'=',
         addShapeToTable: '&',
         removeShapeToTable: '&',
-        boite:'<',
-        draw:'&'
+        imgDeco:'=',
+        addImgToTable:'&',
+        removeImgToTable: '&'
       },
       controller: DecoDessin
     });

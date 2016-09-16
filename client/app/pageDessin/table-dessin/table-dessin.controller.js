@@ -73,7 +73,14 @@ angular.module('pedaleswitchApp')
           var handler5 = $rootScope.$on('click-on-corner-side-boite', function(){
             canv.removeEventListener('mouseup', mouseHelper.mouseUpDefault);
             canv.removeEventListener('mousemove', mouseHelper.mouseMove);
-            canv.addEventListener('mousemove', mouseHelper.mouseMouveCornerSideBoite);
+            canv.addEventListener('mousemove', mouseHelper.mouseMoveCornerSideBoite);
+            canv.addEventListener('mouseup', mouseHelper.mouseUp);
+          });
+
+          var handler6 = $rootScope.$on('click-on-corner-deco', function(){
+            canv.removeEventListener('mouseup', mouseHelper.mouseUpDefault);
+            canv.removeEventListener('mousemove', mouseHelper.mouseMove);
+            canv.addEventListener('mousemove', mouseHelper.mouseMoveCornerDeco);
             canv.addEventListener('mouseup', mouseHelper.mouseUp);
           });
 
@@ -82,7 +89,7 @@ angular.module('pedaleswitchApp')
             canv.removeEventListener('mousemove', mouseHelper.mouseMoveBoite);
             canv.removeEventListener('mousemove', mouseHelper.mouseMoveThing);
             canv.removeEventListener('mousemove', mouseHelper.mouseMoveDeco);
-            canv.removeEventListener('mousemove', mouseHelper.mouseMouveCornerSideBoite);
+            canv.removeEventListener('mousemove', mouseHelper.mouseMoveCornerSideBoite);
             canv.removeEventListener('mouseup', mouseHelper.mouseUp);
 
             canv.removeEventListener('mousemove', mouseHelper.mouseMoveColor);
@@ -110,6 +117,7 @@ angular.module('pedaleswitchApp')
             handler3();
             handler4();
             handler5();
+            handler6();
             nohandler();
             colorHandler();
           });

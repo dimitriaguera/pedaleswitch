@@ -1,0 +1,44 @@
+<div>
+  <span style="font-family:{{$ctrl.data.font.family}}">{{$ctrl.data.input}}</span>
+  <br/>
+  <button type="button" class="btn btn-primary" ng-model="$ctrl.data.isVertical" ng-click="$ctrl.data.changeOrientation();$ctrl.actions.dataChange($ctrl.data)" uib-btn-checkbox>
+    Vertical
+  </button><br/>
+
+  <jd-fontselect stack="$ctrl.data.font.family" on-change="$ctrl.actions.changeFont(font, $ctrl.data)" on-close="$ctrl.actions.dataChange($ctrl.data)" />
+
+  <label for="texte-deco">Texte :
+    <input id="texte-deco"
+           type="text"
+           class="form-control"
+           ng-model="$ctrl.data.input"
+           ng-change="$ctrl.actions.dataChange($ctrl.data)"
+           required />
+  </label>
+
+  <label for="taille-id">Taille :
+    <input id="taille-id"
+           type="number"
+           min="1"
+           class="form-control"
+           placeholder="{{$ctrl.data.font.size}}"
+           ng-model="$ctrl.data.font.size"
+           ng-change="$ctrl.actions.dataChange($ctrl.data)"
+           required />
+  </label>
+
+  <color-picker
+    ng-model='$ctrl.data.font.color'
+    color-picker-disabled='false'
+    color-picker-format="'hex'"
+    color-picker-on-change="$ctrl.actions.dataChange($ctrl.data)"
+  ></color-picker>
+  <button type="button" class="btn btn-default" ng-click="$ctrl.actions.eyeDropper()">Pipette</button>
+
+</div>
+
+<div class="btn-group">
+  <button type="button" class="btn btn-default" ng-click="$ctrl.actions.rotate(5, $ctrl.data)">Rotation Gauche</button>
+  <button type="button" class="btn btn-default" ng-click="$ctrl.actions.rotate(-5, $ctrl.data)">Rotation Droite</button>
+  <button type="button" class="btn btn-default" ng-click="$ctrl.actions.removeTextToTable($ctrl.data)">Supprimer</button>
+</div>

@@ -52,24 +52,27 @@
 
           <deco-dessin
             ng-show="$ctrl.deco"
-            text-deco="$ctrl.tables.tableTextDeco"
-            shape-deco="$ctrl.tables.tableshapeDeco"
             boite="$ctrl.canvasGlobal.boite.projBoite"
-            add-text-to-table="$ctrl.addTextToTable(string)"
-            remove-text-to-table="$ctrl.removeTextToTable(items,index)"
-            add-shape-to-table="$ctrl.addShapeToTable(string)"
-            remove-shape-to-table="$ctrl.removeShapeToTable(items,index)"
             draw="$ctrl.draw()"
-          >
+            switch-deco-sub="$ctrl.switchDecoSub(mode)"
+            text-deco="$ctrl.canvasGlobal.boite.projBoite.textDeco"
+            add-text-to-table="$ctrl.addTextToTable(string)"
+            remove-text-to-table="$ctrl.removeTextToTable(index)"
+            shape-deco="$ctrl.canvasGlobal.boite.projBoite.shapeDeco"
+            add-shape-to-table="$ctrl.addShapeToTable(shape,color,lineWidth,fillColor)"
+            remove-shape-to-table="$ctrl.removeShapeToTable(index)"
+            img-deco="$ctrl.canvasGlobal.boite.projBoite.imgDeco"
+            add-img-to-table="$ctrl.addImgToTable()"
+            remove-img-to-table="$ctrl.removeImgToTable(index)"
+            >
           </deco-dessin>
 
         </div>
         <div class="col-xs-3">
 
           <table-dessin
-            datachange="$ctrl.dataChange(value, data)"
             table-data="$ctrl.tableArrow" 
-            table-menu="$ctrl.activeItem"
+            table-menu="$ctrl.canvasGlobal.tables.activeItem"
             items="$ctrl.composantItems"
             actions="$ctrl.funcMenuPopOver">
           </table-dessin>

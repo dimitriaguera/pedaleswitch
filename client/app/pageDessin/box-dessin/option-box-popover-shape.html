@@ -1,0 +1,34 @@
+<div class="btn-group">
+  <button type="button" class="btn btn-default" ng-click="$ctrl.actions.rotate(5, $ctrl.data)">Rotation Gauche</button>
+  <button type="button" class="btn btn-default" ng-click="$ctrl.actions.rotate(-5, $ctrl.data)">Rotation Droite</button>
+  <button type="button" class="btn btn-default" ng-click="$ctrl.actions.removeShapeToTable($ctrl.data)">Supprimer</button>
+</div>
+
+<h5>Couleur de ligne</h5>
+<color-picker
+  ng-model='$ctrl.data.color'
+  color-picker-disabled='false'
+  color-picker-format="'hex'"
+  color-picker-on-change="$ctrl.actions.dataChange($ctrl.data)"
+>
+</color-picker>
+
+<h5>Epaisseur de ligne</h5>
+<input
+  name="lineWidth"
+  type="number"
+  min="1"
+  class="form-control"
+  ng-model="$ctrl.data.lineWidth"
+  ng-change="$ctrl.actions.dataChange($ctrl.data)"
+  required
+/>
+
+<h5>Couleur de remplissage</h5>
+<color-picker
+  ng-model='$ctrl.data.fillColor'
+  color-picker-disabled='false'
+  color-picker-format="'hex'"
+  color-picker-on-change="$ctrl.actions.dataChange($ctrl.data)"
+>
+</color-picker>

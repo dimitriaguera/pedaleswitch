@@ -31,15 +31,18 @@
                 case 'Composant':
                   this.popUpUrl = 'app/pageDessin/box-dessin/option-box-popover-composant.html';
                   break;
-                case 'Texte':
-                  this.popUpUrl = 'app/pageDessin/box-dessin/option-box-popover-texte.html';
-                  break;
-                case 'Image':
-                  this.popUpUrl = 'app/pageDessin/box-dessin/option-box-popover-image.html';
-                  break;
-                case 'Forme':
-                  this.popUpUrl = 'app/pageDessin/box-dessin/option-box-popover-forme.html';
-                  break;
+                case 'deco':
+                  switch (this.data.type) {
+                    case 'text':
+                      this.popUpUrl = 'app/pageDessin/box-dessin/option-box-popover-text.html';
+                      break;
+                    case 'shape':
+                      this.popUpUrl = 'app/pageDessin/box-dessin/option-box-popover-shape.html';
+                      break;
+                    case 'img':
+                      this.popUpUrl = 'app/pageDessin/box-dessin/option-box-popover-img.html';
+                      break;
+                  }
               }
             }
             // Si l'objet est un Arrow, on remonte le z-index.

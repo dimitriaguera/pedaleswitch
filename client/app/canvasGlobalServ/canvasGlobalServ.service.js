@@ -40,6 +40,7 @@ angular.module('pedaleswitchApp')
 
         tableTextDeco: [],
         tableShapeDeco: [],
+        tableImgDeco: [],
 
         tableArrow: [],
         activeItem: [],
