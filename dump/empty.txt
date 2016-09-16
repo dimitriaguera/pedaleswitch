@@ -1,0 +1,23 @@
+Import export
+——————————
+
+mongodump --verbose --db pedaleswitch-dev
+cd dump
+tar -zcvf pedaleswitch.tar.gz --exclude ".DS_Store" pedaleswitch-dev
+rm -r pedaleswitch-dev
+
+il existe l’option --archive archive.tar.gz qui indique de faire une archive mais ne marche pas sur notre version de mongod
+et on decompresse avec l’option —archive aussi.
+
+
+
+sur le serveur
+sshgandi
+cd /srv/data/web/vhosts/default/dump
+tar zxvf pedaleswitch.tar.gz
+mongorestore --verbose --drop --db pedaleswitch pedaleswitch-dev
+rm -r pedaleswitch-dev
+
+
+le drop supprime la db avant
+le pedaleswitch-dev indique le path pour les fichier de db
