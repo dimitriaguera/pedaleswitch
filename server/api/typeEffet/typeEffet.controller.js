@@ -28,7 +28,7 @@ function saveUpdates(updates) {
   return function(entity) {
     var updated = _.merge(entity, updates);
     return updated.save()
-      .then(updated => {
+      .then( (updated) => {
         return updated;
       });
   };
@@ -36,45 +36,42 @@ function saveUpdates(updates) {
 
 // Save in cache.
 function saveInCache(req) {
+
   return function(entity) {
     if (entity && (req.body.titre !== '')) {
       console.log('Type effet chargé : OK');
       return Effet.find().lean().exec()
-          .then(data => {
-          console.log('Base effets trouvée : OK');
-      return Cache.remove({})
-          .then(en => {
-          console.log('Cache supprimé: OK');
-      return Cache.create(data)
-          .then(en => {
-          console.log('Effets mis en cache: OK');
-      return Cache.update({type: entity.titre}, {type: req.body.titre}, {multi: true})
-          .then(en => {
-          console.log('Cache updaté: OK');
-      return Effet.remove({})
-          .then(en => {
-          console.log('Base Effets effacée: OK');
-      return Cache.find().lean().exec()
-          .then(fromCache => {
-          console.log('Chargement du nouveau cache: OK');
-      return Effet.create(fromCache)
-          .then(en => {
-          console.log('Base effet réinjectée depuis le cache: OK');
-      return TypeEffet.findById(req.params.id).exec()
-          .then(entity => {
-          console.log('Debut de changement type effet: OK');
-      return entity;
-    });
-    });
-    });
-    });
-    });
-    });
-    });
-    });
-    }
-    else{
-      console.log('Aucune entité trouvée ou nouveau type vide');
+          .then( (data) => {
+             console.log('Base effets trouvée : OK');
+             return Cache.remove({})
+             .then( () => {
+                  console.log('Cache supprimé: OK');
+                  return Cache.create(data)
+                  .then( () => {
+                        console.log('Effets mis en cache: OK');
+                        return Cache.update({type: entity.titre}, {type: req.body.titre}, {multi: true})
+                        .then( () => {
+                              console.log('Cache updaté: OK');
+                              return Effet.remove({})
+                              .then( () => {
+                                    console.log('Base Effets effacée: OK');
+                                    return Cache.find().lean().exec()
+                                    .then( (fromCache) => {
+                                          console.log('Chargement du nouveau cache: OK');
+                                          return Effet.create(fromCache)
+                                          .then( () => {
+                                                console.log('Base effet réinjectée depuis le cache: OK');
+                                                return entity;
+                                          });
+                                    });
+                              });
+                        });
+                  });
+             });
+          });
+      }
+      else {
+          console.log('Aucune entité trouvée ou nouveau type vide');
       return null;
     }
   }
@@ -131,18 +128,19 @@ export function create(req, res) {
     .catch(handleError(res));
 }
 
+
 // Updates an existing TypeEffet in the DB
 export function update(req, res) {
   if (req.body._id) {
     delete req.body._id;
-  }
-  var test = backUpAll(['effet', 'composant'], req.params.id);
-  console.log(test);
-    //.then(handleEntityNotFound(res))
-    //.then(saveInCache(req))
-    //.then(saveUpdates(req.body))
-    //.then(respondWithResult(res))
-    //.catch(handleError(res));
+  };
+  TypeEffet.findById(req.params.id).exec()
+      .then(handleEntityNotFound(res))
+      .then(backUpAll(['effet', 'typeEffet'], true))
+      .then(saveInCache(req))
+      .then(saveUpdates(req.body))
+      .then(respondWithResult(res))
+      .catch(handleError(res));
 }
 
 // Deletes a TypeEffet from the DB
