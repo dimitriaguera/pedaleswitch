@@ -241,25 +241,25 @@ angular.module('pedaleswitchApp')
 
         if(all !== -1 || tl !== -1){
           if (this.pointInCircleLight(pos, comparitor.points[0], tol)){
-            return {pos: 'top-left', type: 'nw-resize'};
+            return {pos: 'top-left', type: 'nw-resize', pointNum: 0};
           }
         }
 
         if(all !== -1 || tr !== -1){
           if (this.pointInCircleLight(pos, comparitor.points[1], tol)){
-            return {pos: 'top-right', type: 'ne-resize'};
+            return {pos: 'top-right', type: 'ne-resize', pointNum: 1};
           }
         }
 
         if(all !== -1 || br !== -1){
           if (this.pointInCircleLight(pos, comparitor.points[2], tol)){
-            return {pos: 'bottom-right', type: 'se-resize'};
+            return {pos: 'bottom-right', type: 'se-resize', pointNum: 2};
           }
         }
 
         if(all !== -1 || bl !== -1){
           if (this.pointInCircleLight(pos, comparitor.points[3], tol)){
-            return {pos: 'bottom-left', type: 'sw-resize'};
+            return {pos: 'bottom-left', type: 'sw-resize', pointNum: 3};
           }
         }
         return false;

@@ -363,7 +363,13 @@ angular.module('pedaleswitchApp')
         ctx.fillStyle = 'white';
         for (j = 0; j < l; j++) {
           ctx.beginPath();
-          ctx.arc(this.points[j].x, this.points[j].y, 5, 0, 2 * Math.PI, false);
+          if (j === 0 ) {
+            ctx.fillStyle = 'red';
+            ctx.arc(this.points[j].x, this.points[j].y, 5, 0, 2 * Math.PI, false);
+          } else {
+            ctx.fillStyle = 'white';
+            ctx.arc(this.points[j].x, this.points[j].y, 5, 0, 2 * Math.PI, false);
+          }
           ctx.closePath();
           ctx.stroke();
           ctx.fill();
@@ -3053,6 +3059,11 @@ angular.module('pedaleswitchApp')
 
     // Public API here
     return {
+
+      newPoint: function (point){
+        return new Point(point);
+      },
+
       newCercle: function (entity) {
         return new Cercle(entity);
       },

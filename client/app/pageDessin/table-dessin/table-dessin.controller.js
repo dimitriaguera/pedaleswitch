@@ -90,6 +90,7 @@ angular.module('pedaleswitchApp')
             canv.removeEventListener('mousemove', mouseHelper.mouseMoveThing);
             canv.removeEventListener('mousemove', mouseHelper.mouseMoveDeco);
             canv.removeEventListener('mousemove', mouseHelper.mouseMoveCornerSideBoite);
+            canv.removeEventListener('mousemove', mouseHelper.mouseMoveCornerDeco);
             canv.removeEventListener('mouseup', mouseHelper.mouseUp);
 
             canv.removeEventListener('mousemove', mouseHelper.mouseMoveColor);

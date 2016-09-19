@@ -110,9 +110,6 @@ angular.module('pedaleswitchApp')
               tables.tableActive[drag.id].setSelected(true);
               drag.type = 'cornerdeco';
               update(drag.pointer.type);
-              if (olddragid !== null){
-                tables.tableActive[olddragid].setSelected(false);
-              }
               return;
             }
           }
@@ -290,12 +287,56 @@ angular.module('pedaleswitchApp')
       },
 
       /**
-       * On déplace de la deco
+       * On déplace de l'angle deco (agrendissement par les angle)
        */
       mouseMoveCornerDeco: function(e){
 
-        alert('cou');
+        // On verifie si l'item est selected.
+        if (tables.tableActive[drag.id].isSelected === true) {
+          mousePos = canvasControl.newPoint({x: e.layerX, y: e.layerY});
 
+          var num = drag.pointer.pointNum;
+          var movePoint = tables.tableActive[drag.id].points[num];
+          var prevPoint = tables.tableActive[drag.id].points[((num-1)+4)%4];
+          var nextPoint = tables.tableActive[drag.id].points[((num+1)+4)%4];
+          var nextnextPoint = tables.tableActive[drag.id].points[((num+2)+4)%4];
+
+          // Si le rect a une rotation le remet droit.
+          if (tables.tableActive[drag.id].angle !== 0) {
+            var oldangle = tables.tableActive[drag.id].angle;
+            tables.tableActive[drag.id].rotate(-oldangle, {x:0,y:0});
+            mousePos.rotate(-oldangle, {x:0,y:0});
+          }
+
+          // Affecte les nouvelles coordonnées.
+          // defois probleme d'arrondie après rotation erreur d'1 pixel fois 2.
+          if (Math.abs(movePoint.y - nextPoint.y) <= 2) {
+            // New coord pour point precedent.
+            prevPoint.setX(mousePos.x);
+            prevPoint.setY(nextnextPoint.y);// correction bug arrondie
+            // New coord pour point suivant.
+            nextPoint.setY(mousePos.y);
+            nextPoint.setX(nextnextPoint.x);// correction bug arrondie
+            // New coord pour point déplacé.
+            movePoint.setX(mousePos.x);
+            movePoint.setY(mousePos.y);
+          }
+          else {
+            // New coord pour point precedent.
+            prevPoint.setY(mousePos.y);
+            prevPoint.setX(nextnextPoint.x);// correction bug arrondie
+            // New coord pour point suivant.
+            nextPoint.setX(mousePos.x);
+            nextPoint.setY(nextnextPoint.y);// correction bug arrondie
+            // New coord pour point déplacé.
+            movePoint.setX(mousePos.x);
+            movePoint.setY(mousePos.y);
+          }
+          // Si le rect avait une rotation la remet.
+          if (oldangle) {tables.tableActive[drag.id].rotate(oldangle, {x:0,y:0});}
+
+          canvasDraw.drawStuff();
+        }
       },
 
 
