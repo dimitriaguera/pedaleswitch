@@ -301,6 +301,7 @@ angular.module('pedaleswitchApp')
           var nextPoint = tables.tableActive[drag.id].points[((num+1)+4)%4];
           var nextnextPoint = tables.tableActive[drag.id].points[((num+2)+4)%4];
 
+
           // Si le rect a une rotation le remet droit.
           if (tables.tableActive[drag.id].angle !== 0) {
             var oldangle = tables.tableActive[drag.id].angle;
@@ -332,6 +333,12 @@ angular.module('pedaleswitchApp')
             movePoint.setX(mousePos.x);
             movePoint.setY(mousePos.y);
           }
+
+          // Signale si carré
+          var norm1 = tables.tableActive[drag.id].norm(prevPoint, movePoint),
+              norm2 = tables.tableActive[drag.id].norm(movePoint, nextPoint);
+          tables.tableActive[drag.id].isCarre = (norm1 === norm2);
+
           // Si le rect avait une rotation la remet.
           if (oldangle) {tables.tableActive[drag.id].rotate(oldangle, {x:0,y:0});}
 

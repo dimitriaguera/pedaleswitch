@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('pedaleswitchApp')
-  .factory('canvasGeneration', function (canvasConversion) {
+  .factory('canvasGeneration', function (canvasConversion){
 
     class Point {
       constructor(point){
@@ -69,6 +69,8 @@ angular.module('pedaleswitchApp')
         this.color = entity.color || null;
         this.lineWidth = entity.lineWidth  || null;
         this.fillColor = entity.fillColor || null;
+
+        this.isCarre = entity.isCarre || true;
 
         this.fonction = entity.fonction || 'Effet';
         this.angle = entity.angle || 0;
@@ -197,10 +199,16 @@ angular.module('pedaleswitchApp')
       }
 
       /**
+       * Calcul la norme quand on donne 2 pt.
+       */
+      norm(pt1,pt2){
+        return Math.sqrt((pt2.x-pt1.x)*(pt2.x-pt1.x) + (pt2.y-pt1.y)*(pt2.y-pt1.y));
+      }
+
+      /**
        * Retourne les dimensions de l'objet sur le canvas.
        * @returns {{t: Number, r: number, b: number, l: Number}}
        */
-
       findExtreme(){
         var posExtreme = {t:Infinity,r:-Infinity,b:-Infinity,l:Infinity};
 
@@ -351,7 +359,13 @@ angular.module('pedaleswitchApp')
         var i, j, l = this.points.length;
 
         ctx.save();
-
+        ctx.setLineDash([10,3]);
+        ctx.strokeStyle = 'grey';
+        ctx.lineWidth = 3;
+        // Signale si carré
+        if (this.isCarre){
+          ctx.strokeStyle = '#00bfff';
+        }
         ctx.beginPath();
         ctx.moveTo(this.points[0].x, this.points[0].y);
         for (i = 0; i < l; i++) {
@@ -359,7 +373,9 @@ angular.module('pedaleswitchApp')
         }
         ctx.closePath();
         ctx.stroke();
+        ctx.restore();
 
+        ctx.save();
         ctx.fillStyle = 'white';
         for (j = 0; j < l; j++) {
           ctx.beginPath();
@@ -539,7 +555,17 @@ angular.module('pedaleswitchApp')
 
         // draw it up and to the left by half the width
         // and height of the image
-        ctx.drawImage(this.img, -(this.img.width/2), -(this.img.height/2));
+        // Si le rect a une rotation le remet droit.
+        if (this.angle !== 0) {
+          var oldangle = this.angle;
+          this.rotate(-oldangle, {x:0,y:0});
+          var posExt = this.findExtreme();
+          this.rotate(oldangle, {x:0,y:0});
+        }
+        else {
+          var posExt = this.findExtreme();
+        }
+        ctx.drawImage(this.img, -(posExt.size.w/2), -(posExt.size.h/2), posExt.size.w, posExt.size.h);
 
         // and restore the co-ords to how they were when we began
         ctx.restore();
