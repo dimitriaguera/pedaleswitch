@@ -200,10 +200,10 @@ angular.module('pedaleswitchApp')
        * Retourne les dimensions de l'objet sur le canvas.
        * @returns {{t: Number, r: number, b: number, l: Number}}
        */
-      
+
       findExtreme(){
         var posExtreme = {t:Infinity,r:-Infinity,b:-Infinity,l:Infinity};
-        
+
         var saveExtreme = function(posExtreme, pos){
           posExtreme.t = Math.min(posExtreme.t, pos.y);
           posExtreme.r = Math.max(posExtreme.r, pos.x);
@@ -212,7 +212,7 @@ angular.module('pedaleswitchApp')
         };
 
         for (var i = 0, l = this.points.length; i < l; i++){
-         saveExtreme(posExtreme, this.points[i]);
+          saveExtreme(posExtreme, this.points[i]);
         }
 
         posExtreme.size = {w: posExtreme.r - posExtreme.l, h: posExtreme.b - posExtreme.t};
@@ -379,7 +379,6 @@ angular.module('pedaleswitchApp')
 
     }
 
-
     class Cercle extends Shape {
       constructor(entity) {
         super(entity);
@@ -405,7 +404,34 @@ angular.module('pedaleswitchApp')
         }
 
         ctx.beginPath();
-        ctx.arc(this.getCenterX(), this.getCenterY(), this.getRadius(), 0, 2*Math.PI);
+
+        // polyfill
+        if (!ctx.ellipse) { // Si ellipse() n'existe pas, alors on crée notre méthode alternative :
+          ctx.ellipse = function(x, y, radiusX, radiusY, rotation, startAngle, endAngle) {
+            this.save(); // save state
+            this.beginPath();
+            this.translate(x-radiusX, y-radiusY);
+            this.rotate(rotation);
+            this.scale(radiusX, radiusY);
+            this.arc(1, 1, 1, startAngle, endAngle, false);
+            this.restore(); // restore to original state
+            };
+        }
+
+        // Si le rect a une rotation le remet droit.
+        if (this.angle !== 0) {
+          var oldangle = this.angle;
+          this.rotate(-oldangle, {x:0,y:0});
+          var posExt = this.findExtreme();
+          this.rotate(oldangle, {x:0,y:0});
+        }
+        else {
+          var posExt = this.findExtreme();
+        }
+
+        ctx.ellipse(this.getCenterX(), this.getCenterY(), posExt.size.w/2, posExt.size.h/2, -this.angle * (2*Math.PI)/360.0, 0, Math.PI*2);
+
+        //ctx.arc(this.getCenterX(), this.getCenterY(), this.getRadius(), 0, 2*Math.PI);
 
         // Draw center.
         ctx.fillRect(this.getCenterX(),this.getCenterY(),1,1);
@@ -428,6 +454,16 @@ angular.module('pedaleswitchApp')
           this.drawHandler(ctx);
         }
 
+      }
+    }
+
+    class Poly extends Shape {
+      constructor(entity) {
+        super(entity);
+        this.shapeObject = 'Poly';
+        if (this.fonction === 'deco') {
+          this.type = 'shape';
+        }
       }
     }
 
@@ -3096,10 +3132,10 @@ angular.module('pedaleswitchApp')
         return new ImgDeco(obj);
       },
 
-      // newPoly: function (entity) {
-      //   return new Poly(entity);
-      // }
-      
+      newPoly: function (entity) {
+       return new Poly(entity);
+      }
+
     };
 
   });
