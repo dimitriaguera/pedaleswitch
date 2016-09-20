@@ -27,7 +27,13 @@ angular.module('pedaleswitchApp')
     // Public API here
     return{
 
-
+      /**
+       * Creation de points.
+       *
+       */
+      newPoint: function(point){
+        return canvasGeneration.newPoint(point);
+      },
 
       /**
        * Cette fonction créé les objets du canvas à partir de la selection.

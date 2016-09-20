@@ -47,8 +47,15 @@ angular.module('pedaleswitchApp')
             entity.textDeco[j].getSizeTxt();
           }
         }
+        // Converti les shape de déco
+        if (entity.shapeDeco.length !== 0){
+          for (var j = 0; j < entity.shapeDeco.length; j++) {
+            convertSizePoints(entity.shapeDeco[j].points, ratio);
+          }
+        }
+
       }
-      // Entity est un effet, un texte.
+      // Entity est un effet
       else {
         // Convertie les points de l'entity.
         convertSizePoints(entity.points, ratio);
