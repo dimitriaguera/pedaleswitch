@@ -16,6 +16,13 @@ angular.module('pedaleswitchApp')
                 params: {
                     entity: null
                 }
+            })
+            .state('typeComposant', {
+                url: '/type-composant',
+                template: '<addtypecompo></addtypecompo>',
+                params: {
+                    entity: null
+                }
             });
 
     });

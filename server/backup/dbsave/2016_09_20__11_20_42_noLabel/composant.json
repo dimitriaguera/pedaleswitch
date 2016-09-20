@@ -1,0 +1,169 @@
+[
+    {
+        "_id": "5747386a2c85582834958697",
+        "titre": "LED Verte",
+        "type": "LED2",
+        "shape": "Cercle",
+        "description": "description de la LED verte",
+        "disponible": true,
+        "prix_additionnel": 0.5,
+        "media": [],
+        "size": {
+            "w": 10,
+            "h": 10
+        },
+        "__v": 0,
+        "disponibilite": "enStock",
+        "publie": true
+    },
+    {
+        "_id": "574738af2c85582834958698",
+        "titre": "LED rouge",
+        "type": "LED2",
+        "shape": "Cercle",
+        "description": "description LED rouge",
+        "disponible": true,
+        "prix_additionnel": 0.5,
+        "media": [],
+        "size": {
+            "w": 10,
+            "h": 10
+        },
+        "__v": 0,
+        "disponibilite": "enRupture",
+        "publie": false
+    },
+    {
+        "_id": "574738ca2c85582834958699",
+        "titre": "Potar standard",
+        "type": "Potar",
+        "shape": "Cercle",
+        "description": "description du potar standard",
+        "disponible": true,
+        "prix_additionnel": 1,
+        "media": [],
+        "size": {
+            "w": 30,
+            "h": 30
+        },
+        "__v": 0,
+        "disponibilite": "enStock",
+        "publie": true
+    },
+    {
+        "_id": "574738ef2c8558283495869a",
+        "titre": "Potard droit",
+        "type": "Potar",
+        "shape": "Rect",
+        "description": "description du potar droit",
+        "disponible": true,
+        "prix_additionnel": 1,
+        "media": [],
+        "size": {
+            "w": 30,
+            "h": 80
+        },
+        "__v": 0,
+        "disponibilite": "enStock",
+        "publie": true
+    },
+    {
+        "_id": "57473a322c855828349586a1",
+        "titre": "Switch standard",
+        "type": "Switch",
+        "shape": "Cercle",
+        "description": "description switch standard",
+        "disponible": true,
+        "prix_additionnel": 5,
+        "media": [],
+        "size": {
+            "w": 30,
+            "h": 30
+        },
+        "__v": 0,
+        "disponibilite": "enStock",
+        "publie": true
+    },
+    {
+        "_id": "5756f24cc36c39201d429038",
+        "titre": "LED Carre",
+        "type": "LED2",
+        "shape": "Rect",
+        "description": "led carrée",
+        "disponible": true,
+        "prix_additionnel": 1,
+        "media": [],
+        "size": {
+            "w": 10,
+            "h": 10
+        },
+        "__v": 0,
+        "disponibilite": "enStock",
+        "publie": true
+    },
+    {
+        "_id": "57d2d4def7c702bc23c5eae3",
+        "titre": "led de pépé",
+        "type": "LED2",
+        "shape": "Cercle",
+        "description": "qesfsdfgqes",
+        "disponible": true,
+        "prix_additionnel": 10,
+        "media": [],
+        "size": {
+            "w": 10,
+            "h": 10
+        },
+        "__v": 0,
+        "disponibilite": "enStock",
+        "publie": true
+    },
+    {
+        "_id": "57d9d81bff2dbcc8528aa9f7",
+        "titre": "ureue",
+        "type": "Potar",
+        "shape": "Cercle",
+        "description": true,
+        "prix_additionnel": 4444,
+        "disponibilite": "enStock",
+        "publie": true,
+        "media": [],
+        "size": {
+            "w": 10,
+            "h": 10
+        },
+        "__v": 0
+    },
+    {
+        "_id": "57d9d8c5ff2dbcc8528aa9f8",
+        "titre": "hjrtdju",
+        "type": "LED2",
+        "shape": "Cercle",
+        "description": true,
+        "prix_additionnel": 55,
+        "disponibilite": "enStock",
+        "publie": true,
+        "media": [],
+        "size": {
+            "w": 12,
+            "h": 12
+        },
+        "__v": 0
+    },
+    {
+        "_id": "57dacbf1e0ef5f941da01266",
+        "titre": "gdsg",
+        "type": "erygresy",
+        "shape": "Rect",
+        "description": true,
+        "prix_additionnel": 11,
+        "disponibilite": "enStock",
+        "publie": true,
+        "media": [],
+        "size": {
+            "w": 11,
+            "h": 11
+        },
+        "__v": 0
+    }
+]
