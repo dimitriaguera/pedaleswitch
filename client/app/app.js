@@ -14,7 +14,8 @@ angular.module('pedaleswitchApp', [
   'color.picker',
   'jdFontselect',
   'smart-table',
-  'ngMessages'
+  'ngMessages',
+  'ngFileUpload'
 ])
   .config(function($urlRouterProvider, $locationProvider) {
     $urlRouterProvider

@@ -197,8 +197,8 @@ class PageDessinComponent {
     this.canvasDraw.drawStuff();
   }
 
-  addImgToTable(){
-    this.canvasControl.addImgToCanvas();
+  addImgToTable(src){
+    this.canvasControl.addImgToCanvas(src);
     //this.canvasDraw.drawStuff();
   }
 
