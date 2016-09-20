@@ -49,7 +49,7 @@ angular.module('pedaleswitchApp')
         }
         // Converti les shape de déco
         if (entity.shapeDeco.length !== 0){
-          for (var j = 0; j < entity.shapeDeco.length; j++) {
+          for (j = 0; j < entity.shapeDeco.length; j++) {
             convertSizePoints(entity.shapeDeco[j].points, ratio);
           }
         }
