@@ -13,6 +13,7 @@ import _ from 'lodash';
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 var dateFormat = require('dateformat');
+var Promise = require('bluebird');
 
 // Extraction des Schemas.
 var effetSchem = Effet.schema;
@@ -57,42 +58,76 @@ function buildData (coll) {
         getData: function () {
           return data;
         },
-        write: function () {
+        write: function (label) {
+
+            //return new Promise(function(resolve, reject) {
+            //    fs.writeFile("<filename.type>", data, '<file-encoding>', function(err) {
+            //        if (err) reject(err);
+            //        else resolve(data);
+            //    });
+            //});
+
 
             // Date pour folder.
             var now = new Date();
-            var folder = dateFormat(now, "dd_mm_yyyy__H_M_ss");
+            var folder = dateFormat(now, "yyyy_mm_dd__H_M_ss") + '_' + label;
+            var promises = [];
+
+            function createFolder () {
+                return new Promise( (resolve, reject) => {
+                    mkdirp('./server/backup/dbsave/' + folder, function (err) {
+                            if ( err ) {
+                                console.log( err );
+                                reject( err );
+                            }
+                            else {
+                                console.log('Directory créé');
+                                resolve(true);
+                            }
+                    })
+                });
+            }
 
             // Creation du folder.
-            mkdirp('/dbsave/' + folder, function (err) {
+            promises.push(createFolder());
 
-                if (err) throw err;
-                // Export des files pour chaque base.
-                for (var prop in data) {
-                    var path = '/dbsave/' + folder + '/' + prop + '.json';
-                    exportJsonFile(path, data[prop]);
-                }
-            });
+                    for (var prop in data) {
+                        var path = './server/backup/dbsave/' + folder + '/' + prop + '.json';
+                        promises.push(exportJsonFile(path, data[prop]));
+                    }
+
+            return Promise.all(promises);
+
         }};
 };
 
 // Fonction d'export.
 function exportJsonFile (path, data) {
-
-    fs.writeFile(path, JSON.stringify(data, null, 4), (err) => {
-        if (err) throw err;
-        console.log("JSON sauvegarde dans le fichier " + path);
+    return new Promise( (resolve, reject) => {
+           fs.writeFile(path, JSON.stringify(data, null, 4), (err) => {
+            if ( err ) {
+                reject ( err );
+            }
+            else {
+                console.log("JSON enregistré");
+                resolve(true);
+            }
+        });
     });
 }
 
 
 // Exportation de la fonction de sauvegarde.
-export default function (back, write) {
+export default function (back, label) {
 
     return function(entity) {
 
         var exit = entity || true;
-        var w = write || false;
+        var lab = label || false;
+
+        if ( lab && typeof lab !== 'string' ) {
+            lab = 'noLabel';
+        }
 
         // Verification de l'argument back.
         if (back instanceof Array) {
@@ -106,39 +141,46 @@ export default function (back, write) {
 
         // On verifie la validité des arguments.
         if ( _.difference(backup, collections).length !== 0 ) {
-            console.log('ERREUR Backup : arret du backup - les valeurs passées en argument ne correspondent pas aux collections');
+            console.log('ERREUR Backup : les valeurs passées en argument ne correspondent pas aux collections');
             return exit;
         }
 
         var dataBuilder = buildData(backup);
 
-    return Effet.find().lean().exec()
-           .then( (val) => {
-                dataBuilder.store('effet', val);
-                return Composant.find().lean().exec()
-
-                .then( (val) => {
-                    dataBuilder.store('composant', val);
-                    return TypeEffet.find().lean().exec()
+        return Effet.find().lean().exec()
+               .then( (val) => {
+                    dataBuilder.store('effet', val);
+                    return Composant.find().lean().exec()
 
                     .then( (val) => {
-                        dataBuilder.store('typeEffet', val);
-                        return ComposantType.find().lean().exec()
+                        dataBuilder.store('composant', val);
+                        return TypeEffet.find().lean().exec()
 
                         .then( (val) => {
-                            dataBuilder.store('composantType', val);
-                            var data = dataBuilder.getData();
-                            return Backup.create(data)
+                            dataBuilder.store('typeEffet', val);
+                            return ComposantType.find().lean().exec()
 
-                            .then( () => {
-                                if( w ) { dataBuilder.write(); }
-                                console.log('Backup OK');
-                                return exit;
+                            .then( (val) => {
+                                dataBuilder.store('composantType', val);
+                                var data = dataBuilder.getData();
+                                return Backup.create(data)
+
+                                .then( () => {
+                                    if( lab !== false ) {
+                                        return dataBuilder.write(lab).then( () => {
+                                            console.log('Backup et sauvegarde des JSON OK');
+                                            return exit;
+                                        });
+                                    }
+                                    else {
+                                        console.log('Backup OK');
+                                        return exit;
+                                    }
+                                });
                             });
                         });
                     });
-                });
-           });
-    };
+               });
+        };
 };
 
