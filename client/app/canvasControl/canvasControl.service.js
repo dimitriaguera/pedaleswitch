@@ -239,12 +239,18 @@ angular.module('pedaleswitchApp')
       /**
        * Ajout d'image au canvas
        */
-      addImgToCanvas: function(){
+      addImgToCanvas: function(src){
         var canvasGeneration2 = canvasGeneration,
             canvasGlobal2 = canvasGlobal,
             img = new Image(),
             boite2 = boite;
-        img.src = 'assets/images/yeoman2.png';
+
+        if (src) {
+          img.src = src;
+        } else {
+          img.src = 'assets/images/yeoman2.png';
+        }
+
         img.onload = function(){
           var points = [
             {x:0,y:0},
