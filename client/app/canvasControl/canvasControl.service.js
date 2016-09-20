@@ -248,7 +248,7 @@ angular.module('pedaleswitchApp')
         if (src) {
           img.src = src;
         } else {
-          img.src = 'assets/images/yeoman2.png';
+          return;
         }
 
         img.onload = function(){
