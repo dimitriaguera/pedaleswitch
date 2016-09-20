@@ -1,0 +1,68 @@
+<!--<div class="container">-->
+    <!--<div class="row">-->
+        <!--<div class="col-lg-12">-->
+            <!--<h1 class="page-header">TYPES EFFETS</h1>-->
+            <!--<ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="type in $ctrl.types">-->
+                <!--<li ><a href="#" uib-tooltip="{{type.info}}"><button type="button" class="close" ng-click="$ctrl.deleteTypeEffet(type)">&times;</button><editablefield field-value="type.titre" field-type="text" on-update="$ctrl.updateTypeEffet(type, value)"></editablefield></a></li>-->
+            <!--</ul>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
+
+<div class="container">
+
+    <!--<div class="bg-danger" ng-if="$ctrl.message.error">{{ $ctrl.message.error }}</div>-->
+    <!--<div class="bg-success" ng-if="$ctrl.message.ok">{{ $ctrl.message.ok }}</div>-->
+
+    <div uib-alert ng-repeat="message in $ctrl.message" type="{{message.type}}" close="$ctrl.closeAlert($index)">{{message.body}}</div>
+
+    <h1 class="page-header">TYPES DE COMPOSANTS</h1>
+
+
+    <p>
+    <form class="typeForm">
+    <!-- Champ titre de l'effet  -->
+    <div class="form-group">
+        <div class="input-group">
+        <input name="titreTypeComposant" type="text" class="form-control" placeholder="Nouveau type de composant" ng-model="$ctrl.newTypeComposant.titre" required />
+            <span class="input-group-btn">
+                <button type="submit" class="btn btn-primary" ng-click="$ctrl.addTypeComposant()">Ajouter</button>
+            </span>
+        </div>
+    </div>
+    </form>
+    </p>
+
+    <table class="table table-bordered" st-table="$ctrl.types">
+        <thead>
+        <tr class="">
+            <th>Type de composant</th>
+            <th>ID</th>
+        </tr>
+        <!--<tr>-->
+        <!--<th></th>-->
+        <!--<th><input st-search="titre" class="input-sm form-control" type="search"/></th>-->
+        <!--<th><input st-search="type" class="input-sm form-control" type="search"/></th>-->
+        <!--<th></th>-->
+        <!--<th></th>-->
+        <!--<th></th>-->
+        <!--</tr>-->
+        </thead>
+        <tbody>
+
+        <tr ng-repeat="type in $ctrl.types">
+            <td><editablefield field-value="type.titre"
+                               field-type="text"
+                               on-remove="$ctrl.deleteTypeComposant(type)"
+                               on-update="$ctrl.updateTypeComposant(type, value)"
+                               confirm-message="'Supprimer le type de composant ' + type.titre + '?'"
+                               confirm-body="'Suppression définitive. Vérifiez qu\'aucun effet ou composant n\'est indexé à ce type de composant ' + type.titre + ' avant de confirmer.'">
+
+            </editablefield></td>
+            <td>{{ type._id }}</td>
+        </tr>
+
+        </tbody>
+    </table>
+
+</div>
