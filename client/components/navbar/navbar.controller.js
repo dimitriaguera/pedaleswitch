@@ -9,8 +9,14 @@ class NavbarController {
     title: 'Composants',
     state: 'composants'
   },{
+    title: 'Type composant',
+    state: 'typeComposant'
+  },{
     title: 'Effets',
     state: 'effets'
+  },{
+    title: 'Type Effets',
+    state: 'typeEffet'
   },{
     title: 'RemplirDb',
     state: 'random'
