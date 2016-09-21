@@ -1,10 +1,18 @@
 <h3>Edition graphique</h3>
 
 <div class="btn-group">
-  <label class="btn btn-primary" ng-model="$ctrl.choose" ng-click="$ctrl.switchDecoSub({mode:$ctrl.choose})" uib-btn-radio="'colorBox'">Changer la couleur du boitier</label>
-  <label class="btn btn-primary" ng-model="$ctrl.choose" ng-click="$ctrl.switchDecoSub({mode:$ctrl.choose})" uib-btn-radio="'textDeco'">Ajouter du texte sur le boitier</label>
-  <label class="btn btn-primary" ng-model="$ctrl.choose" ng-click="$ctrl.switchDecoSub({mode:$ctrl.choose})" uib-btn-radio="'shapeDeco'">Ajouter des figures sur le boitier</label>
-  <label class="btn btn-primary" ng-model="$ctrl.choose" ng-click="$ctrl.switchDecoSub({mode:$ctrl.choose})" uib-btn-radio="'imgDeco'">Ajouter des images sur le boitier</label>
+  <button class="btn btn-default" title="Changer la couleur du boitier" ng-model="$ctrl.choose" ng-click="$ctrl.switchDecoSub({mode:$ctrl.choose})" uib-btn-radio="'colorBox'">
+    <i class="glyphicon glyphicon-tint"></i>
+  </button>
+  <button class="btn btn-default" title="Ajouter du texte" ng-model="$ctrl.choose" ng-click="$ctrl.switchDecoSub({mode:$ctrl.choose})" uib-btn-radio="'textDeco'">
+    <i class="glyphicon glyphicon-font"></i>
+  </button>
+  <button class="btn btn-default" title="Ajouter des figures" ng-model="$ctrl.choose" ng-click="$ctrl.switchDecoSub({mode:$ctrl.choose})" uib-btn-radio="'shapeDeco'">
+    <i class="glyphicon glyphicon-th-large"></i>
+  </button>
+  <button class="btn btn-default" title="Ajouter des images" ng-model="$ctrl.choose" ng-click="$ctrl.switchDecoSub({mode:$ctrl.choose})" uib-btn-radio="'imgDeco'">
+    <i class="glyphicon glyphicon-picture"></i>
+  </button>
 </div>
 
 <div ng-if="$ctrl.choose === 'colorBox'">
