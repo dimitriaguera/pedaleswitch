@@ -76,18 +76,18 @@
   <h4>Ajouter des images sur le boitier
     <div>
       <button type="file" ngf-select="$ctrl.uploadFiles($file, $invalidFiles)" accept="image/*">Ajouter une image</button>
-      Fichier :
-      <div style="font:smaller">{{$ctrl.f.name}} {{$ctrl.errFile.name}} {{$ctrl.errFile.$error}} {{$ctrl.errFile.$errorParam}}
-        <span class="progress" ng-show="f.progress >= 0">
-            <div style="width:{{f.progress}}%"
-                 ng-bind="f.progress + '%'"></div>
+      <div style="font:smaller">{{$ctrl.errFile.name}} {{$ctrl.errFile.$error}} {{$ctrl.errFile.$errorParam}}
+        <span class="progress" ng-show="$ctrl.f.progress >= 0">
+            <div style="width:{{$ctrl.f.progress}}%"
+                 ng-bind="$ctrl.f.progress + '%'"></div>
         </span>
       </div>
     </div>
     <div>Images(s) présent(s) :</div>
     <ul ng-repeat="item in $ctrl.imgDeco">
       <li>
-        <span>{{$index}}</span><span ng-click="$ctrl.removeImgToTable({index:$index})" class="glyphicon glyphicon-remove"></span>
+        <img ngf-thumbnail="item.img.src" height="80" alt="" title="">
+        <span ng-click="$ctrl.removeImgToTable({index:$index})" class="glyphicon glyphicon-remove"></span>
       </li>
     </ul>
 </div>
