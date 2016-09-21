@@ -248,10 +248,36 @@ angular.module('pedaleswitchApp')
         if (src) {
           img.src = src;
         } else {
-          return;
+          img.src = 'assets/images/yeoman2.png';
+          // return;
         }
 
+
         img.onload = function(){
+          var boiteSize = boite2.projBoite.findExtreme().size;
+
+          var ratio = img.width/img.height;
+
+          if (img.height > boiteSize.h){
+            img.height = boiteSize.h;
+            img.width = img.height * ratio;
+            if (img.width > boiteSize.w){
+              img.width = boiteSize.w;
+              img.height = img.width / ratio;
+            }
+
+          }
+          else{
+            if (img.width > boiteSize.w){
+              img.width = boiteSize.w;
+              img.height = img.width / ratio;
+              if(img.height > boiteSize.h){
+                img.height = boiteSize.h;
+                img.width = img.height * ratio;
+              }
+            }
+          }
+
           var points = [
             {x:0,y:0},
             {x:img.width,y:0},
@@ -259,7 +285,10 @@ angular.module('pedaleswitchApp')
             {x:0,y:img.height}
           ];
           var tmpImg = canvasGeneration2.newImgDeco({img:img,points:points,fonction:'deco'});
-          tmpImg.move(boite.masterBoite.projections[canvasGlobal.state.viewState].getCenter());
+          var translate = boite.masterBoite.projections[canvasGlobal.state.viewState].getCenter();
+          translate.x -= img.width/2;
+          translate.y -= img.height/2;
+          tmpImg.move(translate);
           boite2.projBoite.imgDeco.push(tmpImg);
           canvasGlobal2.tables.tableImgDeco.push(tmpImg);
           tmpImg.drawCanvas(canvasGlobal2.canvas.ctx);
