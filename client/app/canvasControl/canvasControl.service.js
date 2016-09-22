@@ -530,20 +530,40 @@ angular.module('pedaleswitchApp')
       },
 
       /**
-       * Agrandit/reduit le canvas pour qu'il soit au moins aussi grand que la boite.
+       * Retourne la taille du conteneur du canvas.
+       * @returns {{w: (number|*), h: *}}
+       */
+      getCanvasWindowSize: function () {
+        return {
+          w: canvasS.canvasWindow.width(),
+          h: canvasS.canvasWindow.height()
+        };
+      },
+
+
+      /**
+       * Agrandit/reduit le canvas pour qu'il soit au moins aussi grand que la boite ou que le conteneur du canvas.
        */
       resizeCanvas: function(){
+
+        var canvasWindow = this.getCanvasWindowSize();
+        var w = canvasWindow.w,
+            h = canvasWindow.h;
+
         if (boite.projBoite.fonction === 'Boite') {
+
           var realmargin = 150;
-          var canvasInitialSize = this.getCanvasSize();
           var posExt = boite.projBoite.findExtreme();
 
           // Test droite.
-          canvasS.canvas.width = Math.max((posExt.r + realmargin), canvasInitialSize.w);
+          w = Math.max((posExt.r + realmargin), w);
 
           // Test bas.
-          canvasS.canvas.height = Math.max((posExt.b + realmargin), canvasInitialSize.h);
+          h = Math.max((posExt.b + realmargin), h);
         }
+
+        canvasS.canvas.width = w;
+        canvasS.canvas.height = h;
       },
 
       zoomChange: function(value){
