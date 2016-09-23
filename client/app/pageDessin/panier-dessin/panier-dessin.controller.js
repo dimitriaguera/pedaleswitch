@@ -15,6 +15,7 @@
         selections: '<',
         addToTable: '&',
         removeToTable: '&',
+        removeToSelection: '&',
         updateComposant: '&',
         onCompo: '&',
         onEffet: '&',

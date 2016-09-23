@@ -164,6 +164,10 @@ class PageDessinComponent {
     this.canvasDraw.drawStuff();
   }
 
+  removeToSelection(effet){
+    this.instanceDessin.removeEffet(effet);
+  }
+
   addTextToTable(string){
     this.canvasControl.addTextToCanvas(string);
     this.canvasDraw.drawStuff();
