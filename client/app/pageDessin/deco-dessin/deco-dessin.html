@@ -1,5 +1,4 @@
-<h3>Edition graphique</h3>
-
+<div class="panier-dessin-menu">
 <div class="btn-group">
   <button class="btn btn-default" title="Changer la couleur du boitier" ng-model="$ctrl.choose" ng-click="$ctrl.switchDecoSub({mode:$ctrl.choose})" uib-btn-radio="'colorBox'">
     <i class="glyphicon glyphicon-tint"></i>
@@ -14,7 +13,9 @@
     <i class="glyphicon glyphicon-picture"></i>
   </button>
 </div>
+</div>
 
+<div class="panier-dessin-content">
 <div ng-if="$ctrl.choose === 'colorBox'">
   <h4>Changer la couleur du boitier</h4>
   <color-picker
@@ -90,4 +91,5 @@
         <span ng-click="$ctrl.removeImgToTable({index:$index})" class="glyphicon glyphicon-remove"></span>
       </li>
     </ul>
+</div>
 </div>

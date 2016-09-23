@@ -1,87 +1,75 @@
-<button type="button" class="btn btn-primary" ng-click="$ctrl.getTable()">getTable</button>
-
-<div class="container-fluid">
-    <div class="col-xs-12">
-
-      <modal-dessin
-        name="Ajouter un effet"
-        class-btn="btn btn-default"
-        template="modalBiblioBox">
-      </modal-dessin>
-
-      <menu-dessin
-        deco="$ctrl.deco"
-        switch-deco="$ctrl.switchDeco()"
-        debrayable="$ctrl.debrayable"
-        switch-deb="$ctrl.switchDeb()"
-        active-effet="$ctrl.activeEffet()"
-        active-compo="$ctrl.activeCompo()"
-        is-active="$ctrl.isActive">
-      </menu-dessin>
-
-      <navigation-dessin
-        zoom="$ctrl.zoom"
-        zoom-add="$ctrl.zoomAdd(value)"
-        load="$ctrl.load()"
-        save="$ctrl.save()"
-        up="$ctrl.up()"
-        down="$ctrl.down()"
-        left="$ctrl.left()"
-        right="$ctrl.right()"
-        top="$ctrl.top()"
-        bottom="$ctrl.bottom()">
-      </navigation-dessin>
-
-    </div>
-
-    <div class="row">
-        <div class="col-xs-3">
-
-          <panier-dessin
-            ng-hide="$ctrl.deco"
-            composant-items="$ctrl.composantItems"
-            selections="$ctrl.selections"
-            on-compo="$ctrl.mouseOnCompo(value)"
-            on-effet="$ctrl.mouseOnEffet(value)"
-            leave-effet="$ctrl.mouseLeaveEffet()"
-            update-composant="$ctrl.updateComposant(compo, value)"
-            add-to-table="$ctrl.addToTable(value)"
-            remove-to-table="$ctrl.removeToTable(value)"
-            actions="$ctrl.funcMenuPopOver">
-          </panier-dessin>
-
-          <deco-dessin
-            ng-show="$ctrl.deco"
-            boite="$ctrl.canvasGlobal.boite.projBoite"
-            draw="$ctrl.draw()"
-            switch-deco-sub="$ctrl.switchDecoSub(mode)"
-            text-deco="$ctrl.canvasGlobal.boite.projBoite.textDeco"
-            add-text-to-table="$ctrl.addTextToTable(string)"
-            remove-text-to-table="$ctrl.removeTextToTable(index)"
-            shape-deco="$ctrl.canvasGlobal.boite.projBoite.shapeDeco"
-            add-shape-to-table="$ctrl.addShapeToTable(shape,color,lineWidth,fillColor)"
-            remove-shape-to-table="$ctrl.removeShapeToTable(index)"
-            img-deco="$ctrl.canvasGlobal.boite.projBoite.imgDeco"
-            add-img-to-table="$ctrl.addImgToTable(src)"
-            remove-img-to-table="$ctrl.removeImgToTable(index)"
-            >
-          </deco-dessin>
-
-        </div>
-        <div class="col-xs-3">
-
-          <table-dessin
-            table-data="$ctrl.tableArrow" 
+    <table-dessin
+            table-data="$ctrl.tableArrow"
             table-menu="$ctrl.canvasGlobal.tables.activeItem"
             items="$ctrl.composantItems"
             actions="$ctrl.funcMenuPopOver">
-          </table-dessin>
+    </table-dessin>
 
+    <div class="container-fluid">
+        <div class="col-xs-12">
+            <div style="margin-left:450px">
+
+                <menu-dessin
+                        deco="$ctrl.deco"
+                        switch-deco="$ctrl.switchDeco()"
+                        debrayable="$ctrl.debrayable"
+                        switch-deb="$ctrl.switchDeb()"
+                        active-effet="$ctrl.activeEffet()"
+                        active-compo="$ctrl.activeCompo()"
+                        is-active="$ctrl.isActive">
+                </menu-dessin>
+
+                <navigation-dessin
+                        zoom="$ctrl.zoom"
+                        zoom-add="$ctrl.zoomAdd(value)"
+                        load="$ctrl.load()"
+                        save="$ctrl.save()"
+                        up="$ctrl.up()"
+                        down="$ctrl.down()"
+                        left="$ctrl.left()"
+                        right="$ctrl.right()"
+                        top="$ctrl.top()"
+                        bottom="$ctrl.bottom()">
+                </navigation-dessin>
+            </div>
         </div>
     </div>
 
+    <div panel-left>
+        <panelhead>
+            <span ng-hide="$ctrl.deco">Sélection des effets</span>
+            <span ng-show="$ctrl.deco">Décorations</span>
+        </panelhead>
+        <panier-dessin
+                ng-hide="$ctrl.deco"
+                composant-items="$ctrl.composantItems"
+                selections="$ctrl.selections"
+                on-compo="$ctrl.mouseOnCompo(value)"
+                on-effet="$ctrl.mouseOnEffet(value)"
+                leave-effet="$ctrl.mouseLeaveEffet()"
+                update-composant="$ctrl.updateComposant(compo, value)"
+                add-to-table="$ctrl.addToTable(value)"
+                remove-to-table="$ctrl.removeToTable(value)"
+                actions="$ctrl.funcMenuPopOver">
+        </panier-dessin>
 
+        <deco-dessin
+                ng-show="$ctrl.deco"
+                boite="$ctrl.canvasGlobal.boite.projBoite"
+                draw="$ctrl.draw()"
+                switch-deco-sub="$ctrl.switchDecoSub(mode)"
+                text-deco="$ctrl.canvasGlobal.boite.projBoite.textDeco"
+                add-text-to-table="$ctrl.addTextToTable(string)"
+                remove-text-to-table="$ctrl.removeTextToTable(index)"
+                shape-deco="$ctrl.canvasGlobal.boite.projBoite.shapeDeco"
+                add-shape-to-table="$ctrl.addShapeToTable(shape,color,lineWidth,fillColor)"
+                remove-shape-to-table="$ctrl.removeShapeToTable(index)"
+                img-deco="$ctrl.canvasGlobal.boite.projBoite.imgDeco"
+                add-img-to-table="$ctrl.addImgToTable(src)"
+                remove-img-to-table="$ctrl.removeImgToTable(index)">
+        </deco-dessin>
+        <button type="button" class="btn btn-primary" ng-click="$ctrl.getTable()">getTable</button>
 
-</div>
+    </div>
 
 

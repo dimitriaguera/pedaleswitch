@@ -656,7 +656,9 @@ angular.module('pedaleswitchApp')
        */
       moveToCenterWindow(canvasGlobal){
         var vect;
-        var centerW = {x:Number(canvasGlobal.canvas.canvasWindow.style.width.slice(0,-2))/2, y:Number(canvasGlobal.canvas.canvasWindow.style.height.slice(0,-2))/2};
+        //var centerW = {x:Number(canvasGlobal.canvas.canvasWindow.style.width.slice(0,-2))/2, y:Number(canvasGlobal.canvas.canvasWindow.style.height.slice(0,-2))/2};
+        var centerW = {x:Number(canvasGlobal.canvas.canvasWindow.width())/2, y:Number(canvasGlobal.canvas.canvasWindow.height())/2};
+
         var center = this.getCenter();
 
         var vector = {

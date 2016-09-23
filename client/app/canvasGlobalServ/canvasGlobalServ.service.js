@@ -62,14 +62,14 @@ angular.module('pedaleswitchApp')
       },
 
       setCanvasWindow: function(canvasWindow){
-        canvasWindow.style.width = canvasGlobal.canvas.canvas.width.toString() + 'px';
-        canvasWindow.style.height = canvasGlobal.canvas.canvas.height.toString() + 'px';
+        //canvasWindow.style.width = canvasGlobal.canvas.canvas.width.toString() + 'px';
+        //canvasWindow.style.height = canvasGlobal.canvas.canvas.height.toString() + 'px';
         canvasGlobal.canvas.canvasWindow = canvasWindow;
       },
 
       setCanvas: function(canv){
-        canv.width = $window.innerWidth * canvasGlobal.zoomOptions.ratioW;
-        canv.height = $window.innerHeight - canvasGlobal.zoomOptions.ratioH;
+        //canv.width = $window.innerWidth * canvasGlobal.zoomOptions.ratioW;
+        //canv.height = $window.innerHeight - canvasGlobal.zoomOptions.ratioH;
         canvasGlobal.canvas.canvas = canv;
       },
 
