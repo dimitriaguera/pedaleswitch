@@ -6,3 +6,10 @@
     padding: 10px;
     background-color: rgba(130, 150, 239, 0.44);
 }
+
+.panier-dessin-bandeau{
+    text-align: center;
+    line-height: 2em;
+    color: white;
+    background: #3a3a3a;
+}
