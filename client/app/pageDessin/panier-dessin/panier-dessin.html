@@ -1,4 +1,11 @@
-<h3>Panier des effets</h3>
+<div class="panier-dessin-menu">
+<modal-dessin
+        name="Ajouter un effet"
+        class-btn="btn btn-default"
+        template="modalBiblioBox">
+</modal-dessin>
+</div>
+<div class="panier-dessin-content">
 <uib-accordion>
   <uib-accordion-group ng-repeat="effet in $ctrl.selections"
                        ng-mouseleave="$ctrl.leaveEffet()"
@@ -26,3 +33,4 @@
     <button ng-show="effet.inCanvas" type="submit" class="btn btn-primary btn-sm" ng-click="$ctrl.removeToTable({value: effet})">-</button>
   </uib-accordion-group>
 </uib-accordion>
+</div>

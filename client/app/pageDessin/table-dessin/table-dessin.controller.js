@@ -14,7 +14,8 @@ angular.module('pedaleswitchApp')
         },
         
         link: function(scope, element) {
-          var canvWindow = document.getElementById('canvas-window');
+          //var canvWindow = angular.element(document.getElementById('canvas-window'));
+          var canvWindow = $('#canvas-window');
           var canv = document.getElementById('canvas-dessin');
           var ctx = canv.getContext('2d');
           canvasGlobalServ.setCanvas(canv);
