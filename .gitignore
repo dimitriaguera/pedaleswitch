@@ -13,3 +13,4 @@ Gruntfile.js
 .DS_Store
 /workingprodtest/*
 /server/backup/dbsave/*
+/dist/*
