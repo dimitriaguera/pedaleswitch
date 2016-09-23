@@ -13,3 +13,41 @@
     color: white;
     background: #3a3a3a;
 }
+
+.selection-droppable{
+    border: 1px solid #9b9b9b;
+    cursor: move;
+    padding: 5px;
+    margin-bottom: 5px;
+    -moz-box-shadow: 1px 0px 3px 0px #9b9b9b;
+    -webkit-box-shadow: 1px 0px 3px 0px #9b9b9b;
+    -o-box-shadow: 1px 0px 3px 0px #9b9b9b;
+    box-shadow: 1px 0px 3px 0px #9b9b9b;
+    filter:progid:DXImageTransform.Microsoft.Shadow(color=#9b9b9b, Direction=90, Strength=3);
+}
+
+.selection-droppable table{
+    margin-bottom: 0;
+}
+
+.selection-droppable table > tbody > tr > td{
+    vertical-align: middle;
+    padding: 2px 5px;
+}
+
+.selection-titre {
+    font-size:1.5em;
+    color: #aa5500;
+}
+
+.selection-sous-titre {
+    font-size:1em;
+    color: #7c7c7e;
+}
+
+.label-table{
+    font-size: 0.7em;
+    text-transform: uppercase;
+    color: #7c7c7e;
+    margin-top: 20px;
+}
