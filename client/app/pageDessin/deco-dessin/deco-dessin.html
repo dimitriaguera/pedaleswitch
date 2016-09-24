@@ -17,9 +17,9 @@
 
 <div class="panier-dessin-content">
 <div ng-if="$ctrl.choose === 'colorBox'">
-  <h4>Changer la couleur du boitier</h4>
+  <h4>Couleur du boitier - facette {{ $ctrl.global.state.viewState }}</h4>
   <color-picker
-    ng-model='$ctrl.boite.color'
+    ng-model='$ctrl.global.boite.projBoite.color'
     color-picker-disabled='false'
     color-picker-format="'hex'"
     color-picker-on-change="$ctrl.draw()">
@@ -27,56 +27,66 @@
 </div>
 
 <div ng-if="$ctrl.choose === 'textDeco'">
-  <h4>Ajouter du texte sur le boitier</h4>
-  <input type="text" name="text" ng-model="textDeco">
-  <span class="glyphicon glyphicon-plus" ng-click="$ctrl.addTextToTable({string: textDeco})"></span>
-  <div>Texte(s) présent(s) :</div>
-  <ul ng-repeat="item in $ctrl.textDeco">
-    <li>
-      <span>{{item.input}}</span><span ng-click="$ctrl.removeTextToTable({index:$index})" class="glyphicon glyphicon-remove"></span>
-    </li>
-  </ul>
+  <div class="deco-dessin-header">
+    <form class="form-inline">
+      <div class="form-group">
+      <div class="input-group">
+        <input type="text" placeholder="Ajoutez un texte" class="form-control input-group" name="text" ng-model="textDeco">
+      </div>
+      </div>
+      <button type="submit" class="btn btn-default" ng-click="$ctrl.addTextToTable({string:textDeco}); textDeco='';">
+        <i class="glyphicon glyphicon-plus"></i>
+      </button>
+    </form>
+  </div>
+
+  <div class="selection-deco" ng-repeat="item in $ctrl.textDeco">
+    <div>
+      <div class="pull-right" ng-click="$ctrl.removeTextToTable({index:$index})"><i class="glyphicon glyphicon-remove"></i></div>
+      <div><i class="glyphicon glyphicon-font"></i></div>
+    </div>
+    <div>{{item.input}}</div>
+
+  </div>
 </div>
 
 
 <div ng-if="$ctrl.choose === 'shapeDeco'">
-  <h4>Ajouter des figures sur le boitier</h4>
-  <div class="btn-group">
-    <label class="btn btn-primary" ng-model="$ctrl.shape" uib-btn-radio="'Cercle'">Cercle</label>
-    <label class="btn btn-primary" ng-model="$ctrl.shape" uib-btn-radio="'Rectangle'">Rectangle</label>
+  <div class="deco-dessin-header">
+    <div class="btn-group">
+      <label class="btn btn-default" ng-model="$ctrl.shape" uib-btn-radio="'Cercle'">Cercle</label>
+      <label class="btn btn-default" ng-model="$ctrl.shape" uib-btn-radio="'Rectangle'">Rectangle</label>
+      <button type="submit" class="btn btn-default" ng-click="$ctrl.addShapeToTable({shape:$ctrl.shape,color:$ctrl.color,lineWidth:$ctrl.lineWidth,fillColor:$ctrl.fillColor})">Ajouter la forme</button>
+    </div>
+
+    <!--<h5>Couleur de ligne</h5>-->
+    <!--<color-picker-->
+            <!--ng-model='$ctrl.color'-->
+            <!--color-picker-disabled='false'-->
+            <!--color-picker-format="'hex'">-->
+    <!--</color-picker>-->
+
+    <!--<h5>Epaisseur de ligne</h5>-->
+    <!--<input name="lineWidth" type="number" class="form-control" ng-model="$ctrl.lineWidth"/>-->
+
+    <!--<h5>Couleur de remplissage</h5>-->
+    <!--<color-picker-->
+            <!--ng-model='$ctrl.fillColor'-->
+            <!--color-picker-disabled='false'-->
+            <!--color-picker-format="'hex'">-->
+    <!--</color-picker>-->
   </div>
 
-  <h5>Couleur de ligne</h5>
-  <color-picker
-    ng-model='$ctrl.color'
-    color-picker-disabled='false'
-    color-picker-format="'hex'">
-  </color-picker>
+  <div class="selection-deco" ng-repeat="item in $ctrl.shapeDeco">
+    <i class="glyphicon glyphicon-th-large"></i><span style="margin-left: 20px;">{{ item.shapeObject }}</span><span ng-click="$ctrl.removeShapeToTable({index:$index})" class="glyphicon glyphicon-remove pull-right"></span>
+  </div>
 
-  <h5>Epaisseur de ligne</h5>
-  <input name="lineWidth" type="number" class="form-control" ng-model="$ctrl.lineWidth"/>
-
-  <h5>Couleur de remplissage</h5>
-  <color-picker
-    ng-model='$ctrl.fillColor'
-    color-picker-disabled='false'
-    color-picker-format="'hex'">
-  </color-picker>
-
-  <div class="glyphicon glyphicon-plus" ng-click="$ctrl.addShapeToTable({shape:$ctrl.shape,color:$ctrl.color,lineWidth:$ctrl.lineWidth,fillColor:$ctrl.fillColor})"></div>
-  <div>Figures(s) présent(s) :</div>
-  <ul ng-repeat="item in $ctrl.shapeDeco">
-    <li>
-      <span>{{$index}}</span><span ng-click="$ctrl.removeShapeToTable({index:$index})" class="glyphicon glyphicon-remove"></span>
-    </li>
-  </ul>
 </div>
 
 
 <div ng-if="$ctrl.choose === 'imgDeco'">
-  <h4>Ajouter des images sur le boitier
-    <div>
-      <button type="file" ngf-select="$ctrl.uploadFiles($file, $invalidFiles)" accept="image/*">Ajouter une image</button>
+    <div class="deco-dessin-header">
+      <button type="file" class="btn btn-default" ngf-select="$ctrl.uploadFiles($file, $invalidFiles)" accept="image/*">Ajouter une image</button>
       <div style="font:smaller">{{$ctrl.errFile.name}} {{$ctrl.errFile.$error}} {{$ctrl.errFile.$errorParam}}
         <span class="progress" ng-show="$ctrl.f.progress >= 0">
             <div style="width:{{$ctrl.f.progress}}%"
@@ -84,12 +94,11 @@
         </span>
       </div>
     </div>
-    <div>Images(s) présent(s) :</div>
-    <ul ng-repeat="item in $ctrl.imgDeco">
-      <li>
+
+    <div class="selection-deco" ng-repeat="item in $ctrl.imgDeco">
         <img ngf-thumbnail="item.img.src" height="80" alt="" title="">
-        <span ng-click="$ctrl.removeImgToTable({index:$index})" class="glyphicon glyphicon-remove"></span>
-      </li>
-    </ul>
+        <span ng-click="$ctrl.removeImgToTable({index:$index})" class="glyphicon glyphicon-remove pull-right"></span>
+    </div>
+
 </div>
 </div>
