@@ -1,25 +1,25 @@
 <div class="panier-dessin-menu">
 <modal-dessin
-        name="Ajouter un effet"
+        name="Sélectionner un nouvel effet"
         class-btn="btn btn-default"
         template="modalBiblioBox">
 </modal-dessin>
-</div>
-<div class="panier-dessin-bandeau">
-    Votre sélection :
 </div>
 <div class="panier-dessin-content">
 
   <div class="selection-droppable" ng-repeat="effet in $ctrl.selections track by $index" draggable>
 
-      <span class="pull-right">
-          <button ng-show="effet.inCanvas" type="button" class="btn btn-danger btn-sm" ng-click="$ctrl.removeToTable({value: effet})" uib-tooltip="Retirer l'effet du dessin" tooltip-placement="right">
+      <div class="btn-group pull-right">
+          <button type="button" class="btn btn-default btn-sm" ng-click="">
+              <i class="glyphicon glyphicon-info-sign"></i>
+          </button>
+          <button ng-if="effet.inCanvas" type="button" class="btn btn-danger btn-sm" ng-click="$ctrl.removeToTable({value: effet})" uib-tooltip="Retirer l'effet du dessin" tooltip-placement="bottom">
               <i class="glyphicon glyphicon-remove"></i>
           </button>
-          <button ng-hide="effet.inCanvas" type="button" class="btn btn-default btn-sm" ng-click="$ctrl.removeToSelection({value: effet})" uib-tooltip="Retirer l'effet de la sélection" tooltip-placement="right">
+          <button ng-if="!effet.inCanvas" type="button" class="btn btn-default btn-sm" ng-click="$ctrl.removeToSelection({value: effet})" uib-tooltip="Retirer l'effet de la sélection" tooltip-placement="bottom">
               <i class="glyphicon glyphicon-remove"></i>
           </button>
-      </span>
+      </div>
 
       <div class="selection-titre">{{effet.titreOption}} #{{effet.key + 1}}</div>
       <div class="selection-sous-titre">{{effet.type}} - {{effet.titre}}</div>

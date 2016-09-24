@@ -863,12 +863,38 @@ angular.module('pedaleswitchApp')
       setOverlapping(overlap) {
         this.isOverlapping = overlap;
       }
-      drawCanvas(ctx){
+      drawCanvas(ctx) {
         ctx.beginPath();
         ctx.moveTo(this.points[0].x, this.points[0].y);
         for (var i = 0, length = this.points.length; i < length; i++) {
           ctx.lineTo(this.points[i].x, this.points[i].y);
         }
+        ctx.closePath();
+        ctx.stroke();
+      }
+      drawCanvasRoundBorder(ctx){
+
+        var x, y, w, h, r, b, radius;
+        x = this.points[0].x;
+        y = this.points[0].y;
+        r = this.points[1].x;
+        b = this.points[3].y;
+        w = r - x;
+        h = b - y;
+        radius = this.margin;
+
+        ctx.beginPath();
+
+        ctx.moveTo(x+radius, y);
+        ctx.lineTo(r-radius, y);
+        ctx.quadraticCurveTo(r, y, r, y+radius);
+        ctx.lineTo(r, y+h-radius);
+        ctx.quadraticCurveTo(r, b, r-radius, b);
+        ctx.lineTo(x+radius, b);
+        ctx.quadraticCurveTo(x, b, x, b-radius);
+        ctx.lineTo(x, y+radius);
+        ctx.quadraticCurveTo(x, y, x+radius, y);
+
         ctx.closePath();
         ctx.stroke();
       }

@@ -56,7 +56,7 @@
 
         <deco-dessin
                 ng-show="$ctrl.deco"
-                boite="$ctrl.canvasGlobal.boite.projBoite"
+                global="$ctrl.canvasGlobal"
                 draw="$ctrl.draw()"
                 switch-deco-sub="$ctrl.switchDecoSub(mode)"
                 text-deco="$ctrl.canvasGlobal.boite.projBoite.textDeco"
@@ -69,7 +69,7 @@
                 add-img-to-table="$ctrl.addImgToTable(src)"
                 remove-img-to-table="$ctrl.removeImgToTable(index)">
         </deco-dessin>
-        <button type="button" class="btn btn-primary" ng-click="$ctrl.getTable()">getTable</button>
+        <!--<button type="button" class="btn btn-primary" ng-click="$ctrl.getTable()">getTable</button>-->
 
     </div>
 
