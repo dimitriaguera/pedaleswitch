@@ -37,7 +37,6 @@ angular.module('pedaleswitchApp')
 
       /**
        * Cette fonction créé les objets du canvas à partir de la selection.
-       * Et l'ajoute dans tableEffet et tableComposant pour les composants correspondants.
        *
        * @param effet : objet effet dans la selection (entrée de la table selection de canvasGlobal).
        * @para bol : si true alors rajoute l'effet meme si il est deja dans le canvas
@@ -101,7 +100,6 @@ angular.module('pedaleswitchApp')
           // On créé les composants.
           for (var i = 0; i < compos.length; i++) {
             tmpComp = thing(compos[i]);
-            tables.tableComposant.push(tmpComp);
             tmpEff.composants.push(tmpComp);
             boite.masterBoite.projections[canvasGlobal.state.viewState].composants.push(tmpComp);
           }
@@ -114,14 +112,11 @@ angular.module('pedaleswitchApp')
           // Rajoute la propriété inCanvas a l'effet.
           tmpEff.inCanvas = true;
 
-          // Rajoute l'effet a la table effet et le master dans la table MesterEffet.
-          tables.tableEffet = boite.masterBoite.projections[canvasGlobal.state.viewState].effets;
-
           // Empeche que l'effet depasse du canvas.
           tmpEff.moveCloseBorder(canvasS.canvas, canvasS.marginCanvas, boite.projBoite.margin);
 
           // Check les collisions entre tout les obj.
-          checkCollision.checkAll(tables.tableEffet);
+          checkCollision.checkAll(boite.masterBoite.projections[canvasGlobal.state.viewState].effets);
 
           // Créé les limites des projections.
           boite.masterBoite.createProjectionsLimits(canvasGlobal.state.viewState);
@@ -130,6 +125,8 @@ angular.module('pedaleswitchApp')
           canvasGlobalServ.affectEffetInSelections(tmpEff);
 
           canvasGlobalServ.autoSetTableActive();
+
+          this.canvasDrawState(canvasGlobal.state.isActive);
 
           return tmpEff;
         }
@@ -140,27 +137,11 @@ angular.module('pedaleswitchApp')
        * @param effet
        */
       removeToCanvas: function(effet) {
-        // Pour table Effet
-        var index = canvasGlobalServ.searchTabByIdReturnIndex(tables.tableEffet, effet._id, effet.key);
-        if(index !== false){
-          effet.inCanvas = false;
-          var removeIndex = [];
-          for (var i = 0  ; i < tables.tableComposant.length ; i++) {
-            if (effet.key === tables.tableComposant[i].key) {
-              removeIndex.push(i);
-            }
-          }
-          for (i = removeIndex.length -1; i >= 0; i--){
-            tables.tableComposant.splice(removeIndex[i],1);
-          }
-          tables.tableEffet.splice(index,1);
-        }
-
         // Pour la bonne projection de table.
-        index = canvasGlobalServ.searchTabByIdReturnIndex(boite.masterBoite.projections[effet.projSide].effets, effet._id, effet.key);
+        var index = canvasGlobalServ.searchTabByIdReturnIndex(boite.masterBoite.projections[effet.projSide].effets, effet._id, effet.key);
         if (index !== false) {
           effet.inCanvas = false;
-          removeIndex = [];
+          var removeIndex = [];
           for (var i = 0  ; i < boite.masterBoite.projections[effet.projSide].composants.length ; i++) {
             if (effet.key === boite.masterBoite.projections[effet.projSide].composants[i].key) {
               removeIndex.push(i);
@@ -340,8 +321,6 @@ angular.module('pedaleswitchApp')
             boite.masterBoite.projections[canvasGlobal.state.viewState].moveToCenterWindow(canvasGlobal);
             canvasGlobalServ.resetAll();
             canvasGlobalServ.setProjBoite(boite.masterBoite.projections.top);
-            canvasGlobalServ.setTableEffet(boite.masterBoite.projections.top.effets);
-            canvasGlobalServ.setTableComposant(boite.masterBoite.projections.top.composants);
             canvasGlobalServ.setTableTextDeco(boite.masterBoite.projections.top.textDeco);
             tables.tableArrow.push(canvasGeneration.newArrow(boite.projBoite, 'right'));
             tables.tableArrow.push(canvasGeneration.newArrow(boite.projBoite, 'bottom'));
@@ -353,8 +332,6 @@ angular.module('pedaleswitchApp')
             boite.masterBoite.projections[canvasGlobal.state.viewState].moveToCenterWindow(canvasGlobal);
             canvasGlobalServ.resetAll();
             canvasGlobalServ.setProjBoite(boite.masterBoite.projections.bottom);
-            canvasGlobalServ.setTableEffet(boite.masterBoite.projections.bottom.effets);
-            canvasGlobalServ.setTableComposant(boite.masterBoite.projections.bottom.composants);
             canvasGlobalServ.setTableTextDeco(boite.masterBoite.projections.bottom.textDeco);
             tables.tableArrow.push(canvasGeneration.newArrow(boite.projBoite, 'right'));
             tables.tableArrow.push(canvasGeneration.newArrow(boite.projBoite, 'bottom'));
@@ -366,8 +343,6 @@ angular.module('pedaleswitchApp')
             boite.masterBoite.projections[canvasGlobal.state.viewState].moveToCenterWindow(canvasGlobal);
             canvasGlobalServ.resetAll();
             canvasGlobalServ.setProjBoite(boite.masterBoite.projections.up);
-            canvasGlobalServ.setTableEffet(boite.masterBoite.projections.up.effets);
-            canvasGlobalServ.setTableComposant(boite.masterBoite.projections.up.composants);
             canvasGlobalServ.setTableTextDeco(boite.masterBoite.projections.up.textDeco);
             tables.tableArrow.push(canvasGeneration.newArrow(boite.projBoite, 'right'));
             tables.tableArrow.push(canvasGeneration.newArrow(boite.projBoite, 'bottom'));
@@ -384,8 +359,6 @@ angular.module('pedaleswitchApp')
             boite.masterBoite.projections[canvasGlobal.state.viewState].moveToCenterWindow(canvasGlobal);
             canvasGlobalServ.resetAll();
             canvasGlobalServ.setProjBoite(boite.masterBoite.projections.down);
-            canvasGlobalServ.setTableEffet(boite.masterBoite.projections.down.effets);
-            canvasGlobalServ.setTableComposant(boite.masterBoite.projections.down.composants);
             canvasGlobalServ.setTableTextDeco(boite.masterBoite.projections.down.textDeco);
             tables.tableArrow.push(canvasGeneration.newArrow(boite.projBoite, 'right'));
             tables.tableArrow.push(canvasGeneration.newArrow(boite.projBoite, 'bottom'));
@@ -397,8 +370,6 @@ angular.module('pedaleswitchApp')
             boite.masterBoite.projections[canvasGlobal.state.viewState].moveToCenterWindow(canvasGlobal);
             canvasGlobalServ.resetAll();
             canvasGlobalServ.setProjBoite(boite.masterBoite.projections.left);
-            canvasGlobalServ.setTableEffet(boite.masterBoite.projections.left.effets);
-            canvasGlobalServ.setTableComposant(boite.masterBoite.projections.left.composants);
             canvasGlobalServ.setTableTextDeco(boite.masterBoite.projections.left.textDeco);
             tables.tableArrow.push(canvasGeneration.newArrowPoint(boite.projBoite, 'right'));
             tables.tableArrow.push(canvasGeneration.newArrowPoint(boite.projBoite, 'bottom'));
@@ -410,8 +381,6 @@ angular.module('pedaleswitchApp')
             boite.masterBoite.projections[canvasGlobal.state.viewState].moveToCenterWindow(canvasGlobal);
             canvasGlobalServ.resetAll();
             canvasGlobalServ.setProjBoite(boite.masterBoite.projections.right);
-            canvasGlobalServ.setTableEffet(boite.masterBoite.projections.right.effets);
-            canvasGlobalServ.setTableComposant(boite.masterBoite.projections.right.composants);
             canvasGlobalServ.setTableTextDeco(boite.masterBoite.projections.right.textDeco);
             tables.tableArrow.push(canvasGeneration.newArrowPoint(boite.projBoite, 'right'));
             tables.tableArrow.push(canvasGeneration.newArrowPoint(boite.projBoite, 'bottom'));
@@ -434,8 +403,8 @@ angular.module('pedaleswitchApp')
         switch(state) {
 
           case 'effet':
-            active = tables.tableEffet;
-            inactive = tables.tableComposant;
+            active = boite.projBoite.effets;
+            inactive = boite.projBoite.composants;
             canvasGlobalServ.resetIsSelected(active);
             canvasGlobalServ.resetIsSelected(inactive);
             canvasGlobalServ.resetTableDrawDashed();
@@ -444,8 +413,8 @@ angular.module('pedaleswitchApp')
             return (active.length > 0);
 
           case 'composant':
-            active = tables.tableComposant;
-            inactive = tables.tableEffet;
+            active = boite.projBoite.composants;
+            inactive = boite.projBoite.effets;
             canvasGlobalServ.resetIsSelected(active);
             canvasGlobalServ.resetIsSelected(inactive);
             canvasGlobalServ.resetTableDrawThin();
@@ -454,12 +423,12 @@ angular.module('pedaleswitchApp')
             return (active.length > 0);
 
           case 'deco':
-            canvasGlobalServ.resetIsSelected(tables.tableComposant);
-            canvasGlobalServ.resetIsSelected(tables.tableEffet);
+            canvasGlobalServ.resetIsSelected(boite.projBoite.composants);
+            canvasGlobalServ.resetIsSelected(boite.projBoite.effets);
             canvasGlobalServ.resetTableDrawDashed();
             canvasGlobalServ.resetTableDrawThin();
             canvasGlobalServ.setTableActive([]);
-            canvasGlobalServ.setTableDrawThin(tables.tableComposant);
+            canvasGlobalServ.setTableDrawThin(boite.projBoite.composants);
             return (tables.tableTextDeco.length > 0);
           
           default:
@@ -639,8 +608,8 @@ angular.module('pedaleswitchApp')
        */
       resetCompPos: function(value){
         if (!value) {
-          for (var i = 0; i < tables.tableEffet.length; i++) {
-            tables.tableEffet[i].resetCompPos();
+          for (var i = 0; i < boite.projBoite.effets.length; i++) {
+            boite.projBoite.effets[i].resetCompPos();
           }
         }
       },
@@ -654,13 +623,13 @@ angular.module('pedaleswitchApp')
       updateComposantInCanvas: function(compo){
         var effet = canvasGlobalServ.searchEffetByKey(compo.key);
         if (effet) {
-          var indexEffet = canvasGlobalServ.searchTabByIdReturnIndex(tables.tableEffet, effet._id, effet.key);
-          var indexEffetCompo = canvasGlobalServ.searchTabByIdReturnIndex(tables.tableEffet[indexEffet].composants, compo._id, compo.key);
-          var indexCompo = canvasGlobalServ.searchTabByIdReturnIndex(tables.tableComposant, compo._id, compo.key);
+          var indexEffet = canvasGlobalServ.searchTabByIdReturnIndex(boite.projBoite.effets, effet._id, effet.key);
+          var indexEffetCompo = canvasGlobalServ.searchTabByIdReturnIndex(boite.projBoite.effets[indexEffet].composants, compo._id, compo.key);
+          var indexCompo = canvasGlobalServ.searchTabByIdReturnIndex(boite.projBoite.composants, compo._id, compo.key);
           // On genere une nouveau composant.
           // On met à jour le shapeObject.
-          tables.tableEffet[indexEffet].composants[indexEffetCompo] = tables.tableComposant[indexCompo] = thing(compo);
-          tables.tableEffet[indexEffet].composants[indexEffetCompo].changeShape();
+          boite.projBoite.effets[indexEffet].composants[indexEffetCompo] = boite.projBoite.composants[indexCompo] = thing(compo);
+          boite.projBoite.effets[indexEffet].composants[indexEffetCompo].changeShape();
         }
       },
 

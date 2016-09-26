@@ -635,6 +635,8 @@ angular.module('pedaleswitchApp')
           return;
         }
 
+        drag.pasBouge = false;
+
         // Deplace le thing.
         tables.tableActive[drag.id].move({x: e.layerX - mousePos.x, y: e.layerY - mousePos.y});
         mousePos = {x: e.layerX, y: e.layerY};
@@ -695,7 +697,7 @@ angular.module('pedaleswitchApp')
           console.log('slected');
           canvasGlobalServ.resetIsSelected(tables.tableActive);
           // on ne reviens pas d'un deplacement de bordure de boite.
-          if (drag.type.indexOf('boite') < 0){
+          if (drag.type.indexOf('boite') < 0 && drag.pasBouge === false){
             tables.tableActive[drag.id].setSelected(true);
             canvasGlobalServ.setActiveItem(tables.tableActive[drag.id]);
           }

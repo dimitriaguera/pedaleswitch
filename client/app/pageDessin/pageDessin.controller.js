@@ -22,13 +22,13 @@ class PageDessinComponent {
     this.initialisation();
 
     //@todo a supp et verifier dans le constructor de virer http et OrderArray.
-    this.$http.get('/api/effets').then(response => {
-      this.effets = response.data;
-       if(this.selections.length === 0){
-        this.instanceDessin.setEffet(this.effets[0], this.effets[0].options[0]);
-    //    this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
-       }
-    })
+    // this.$http.get('/api/effets').then(response => {
+    //   this.effets = response.data;
+    //    if(this.selections.length === 0){
+    //     this.instanceDessin.setEffet(this.effets[0], this.effets[0].options[0]);
+    // //    this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
+    //    }
+    // })
   }
 
   /**

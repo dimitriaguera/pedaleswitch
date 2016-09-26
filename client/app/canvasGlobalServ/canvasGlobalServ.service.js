@@ -26,12 +26,13 @@ angular.module('pedaleswitchApp')
       composantItems: { }, // Liste de tout les composants dans la db
       selections: [ ], // Liste de tout les effets que l'utilisateur à sélectionné dans la biblio.
       boite: {
-        projBoite: {}, // Contient la projection de la boite pour la vue active.
+        projBoite: {
+          effets: [],
+          composants: []
+        }, // Contient la projection de la boite pour la vue active.
         masterBoite: {} // Contient l'objet masterboite qui lui même contient les projections des boites suivant les vues
       },
       tables: {
-        tableEffet: [],
-        tableComposant: [],
         tableActive: [],
         tableDrawDashed: [],
         tableDrawThin: [],
@@ -207,27 +208,27 @@ angular.module('pedaleswitchApp')
       },
 
       searchEffetByKey: function(key){
-        for(var i = 0; i < canvasGlobal.tables.tableEffet.length; i++){
-          if(canvasGlobal.tables.tableEffet[i].key === key) {
-            return canvasGlobal.tables.tableEffet[i];
+        for(var i = 0; i < canvasGlobal.boite.projBoite.effets.length; i++){
+          if(canvasGlobal.boite.projBoite.effets[i].key === key) {
+            return canvasGlobal.boite.projBoite.effets[i];
           }
         }
         return false;
       },
 
       searchEffetById: function(id, key){
-        for(var i = 0; i < canvasGlobal.tables.tableEffet.length; i++){
-          if(canvasGlobal.tables.tableEffet[i]._id === id && canvasGlobal.tables.tableEffet[i].key === key) {
-            return canvasGlobal.tables.tableEffet[i];
+        for(var i = 0; i < canvasGlobal.boite.projBoite.effets.length; i++){
+          if(canvasGlobal.boite.projBoite.effets[i]._id === id && canvasGlobal.boite.projBoite.effets[i].key === key) {
+            return canvasGlobal.boite.projBoite.effets[i];
           }
         }
         return false;
       },
 
       searchCompoById: function(id, key){
-        for(var i = 0; i < canvasGlobal.tables.tableComposant.length; i++){
-          if(canvasGlobal.tables.tableComposant[i]._id === id && canvasGlobal.tables.tableComposant[i].key === key) {
-            return canvasGlobal.tables.tableComposant[i];
+        for(var i = 0; i < canvasGlobal.boite.projBoite.composants.length; i++){
+          if(canvasGlobal.boite.projBoite.composants[i]._id === id && canvasGlobal.boite.projBoite.composants[i].key === key) {
+            return canvasGlobal.boite.projBoite.composants[i];
           }
         }
         return false;
@@ -281,30 +282,6 @@ angular.module('pedaleswitchApp')
         return canvasGlobal.tables;
       },
 
-      setTableEffet: function(tab) {
-        return this.set(canvasGlobal.tables.tableEffet, tab);
-      },
-
-      getTableEffet: function(){
-        return canvasGlobal.tables.tableEffet;
-      },
-
-      resetTableEffet: function(){
-        return canvasGlobal.tables.tableEffet = [];
-      },
-
-      setTableComposant: function(tab) {
-        return this.set(canvasGlobal.tables.tableComposant, tab);
-      },
-
-      getTableComposant: function(){
-        return canvasGlobal.tables.tableComposant;
-      },
-
-      resetTableComposant: function(){
-        return this.reset(canvasGlobal.tables.tableComposant);
-      },
-
       setTableActive: function(tab){
         return canvasGlobal.tables.tableActive = tab;
       },
@@ -312,13 +289,13 @@ angular.module('pedaleswitchApp')
       autoSetTableActive: function(){
         switch (canvasGlobal.state.isActive){
           case 'Effet':
-            canvasGlobal.tables.tableActive = canvasGlobal.tables.tableEffet;
+            canvasGlobal.tables.tableActive = canvasGlobal.boite.projBoite.effets;
             break;
           case 'Composant':
-            canvasGlobal.tables.tableActive = canvasGlobal.tables.tableComposant;
+            canvasGlobal.tables.tableActive = canvasGlobal.boite.projBoite.composants;
             break;
           default:
-            canvasGlobal.tables.tableActive = canvasGlobal.tables.tableEffet;
+            canvasGlobal.tables.tableActive = canvasGlobal.boite.projBoite.effets;
         }
         return canvasGlobal.tables.tableActive;
       },
@@ -438,8 +415,7 @@ angular.module('pedaleswitchApp')
       /////////////// Fin todo.
 
       resetAll: function(){
-        this.resetTableEffet();
-        this.resetTableComposant();
+
         this.resetTableActive();
         this.resetTableDrawDashed();
         this.resetTableDrawThin();
