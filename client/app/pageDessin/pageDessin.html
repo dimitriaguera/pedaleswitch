@@ -50,12 +50,13 @@
                 update-composant="$ctrl.updateComposant(compo, value)"
                 add-to-table="$ctrl.addToTable(value)"
                 remove-to-table="$ctrl.removeToTable(value)"
+                remove-to-selection="$ctrl.removeToSelection(value)"
                 actions="$ctrl.funcMenuPopOver">
         </panier-dessin>
 
         <deco-dessin
                 ng-show="$ctrl.deco"
-                boite="$ctrl.canvasGlobal.boite.projBoite"
+                global="$ctrl.canvasGlobal"
                 draw="$ctrl.draw()"
                 switch-deco-sub="$ctrl.switchDecoSub(mode)"
                 text-deco="$ctrl.canvasGlobal.boite.projBoite.textDeco"
@@ -68,7 +69,7 @@
                 add-img-to-table="$ctrl.addImgToTable(src)"
                 remove-img-to-table="$ctrl.removeImgToTable(index)">
         </deco-dessin>
-        <button type="button" class="btn btn-primary" ng-click="$ctrl.getTable()">getTable</button>
+        <!--<button type="button" class="btn btn-primary" ng-click="$ctrl.getTable()">getTable</button>-->
 
     </div>
 

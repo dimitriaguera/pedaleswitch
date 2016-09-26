@@ -1,21 +1,27 @@
-.panier-dessin-content{
+.deco-dessin-content{
     padding: 10px;
 }
 
-.panier-dessin-menu{
-    padding: 20px 10px;
+.deco-dessin-menu{
+    padding: 20px;
 }
 
-.panier-dessin-bandeau{
+.deco-dessin-bandeau{
     text-align: center;
     line-height: 2em;
     color: white;
     background: #3a3a3a;
 }
 
-.selection-droppable{
+.deco-dessin-header {
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #9b9b9b;
+}
+
+.selection-deco{
+    overflow: hidden;
     border: 1px solid #9b9b9b;
-    cursor: move;
     padding: 5px;
     margin-bottom: 10px;
     -moz-box-shadow: 1px 0px 3px 0px #9b9b9b;
@@ -23,11 +29,6 @@
     -o-box-shadow: 1px 0px 3px 0px #9b9b9b;
     box-shadow: 1px 0px 3px 0px #9b9b9b;
     filter:progid:DXImageTransform.Microsoft.Shadow(color=#9b9b9b, Direction=90, Strength=3);
-}
-
-.selection-droppable:hover {
-    border-color: #87b7e7;
-    box-shadow: 1px 0px 5px 0px #87b7e7;
 }
 
 .selection-droppable table{
