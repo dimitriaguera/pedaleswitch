@@ -1,45 +1,50 @@
 <div class="panier-dessin-menu">
 <modal-dessin
-        name="Ajouter un effet"
+        name="Sélectionner un nouvel effet"
         class-btn="btn btn-default"
         template="modalBiblioBox">
 </modal-dessin>
 </div>
-<div class="panier-dessin-bandeau">
-    Votre sélection :
-</div>
 <div class="panier-dessin-content">
-<uib-accordion>
-  <uib-accordion-group ng-repeat="effet in $ctrl.selections"
-                       ng-mouseleave="$ctrl.leaveEffet()"
-                       ng-mouseenter="$ctrl.onEffet({value:effet})"
-                       draggable>
 
-      <uib-accordion-heading>
-          <span class="col-xs-10">{{::effet.titre}} - {{::effet.titreOption}} #{{::effet.key + 1}}</span>
-          <span class="col-xs-2">
-              <!--<button ng-hide="effet.inCanvas" type="submit" class="btn btn-default btn-sm" ng-click="$ctrl.addToTable({value: effet})">+</button>-->
-              <button ng-show="effet.inCanvas" type="submit" class="btn btn-default btn-sm" ng-click="$ctrl.removeToTable({value: effet})">-</button>
-          </span>
-      </uib-accordion-heading>
+  <div class="selection-droppable" ng-repeat="effet in $ctrl.selections track by $index" draggable>
 
-    <div ng-mouseleave="$ctrl.leaveEffet()" ng-mouseenter="$ctrl.onCompo({value:compo})" ng-repeat="(k, compo) in effet.composants">
-        <p><label>{{compo.titre}}</label> - {{compo.itemInfo.titreItem}}</p>
-        <p>
-            <modal-dessin
-                    template="modalBox"
-                    name="Changer le composant"
-                    class-btn="btn btn-default btn-sm"
-                    action="$ctrl.updateComposant({compo:compo, value:value})"
-                    items="$ctrl.composantItems"
-                    data="compo"
-                    selected="compo.itemInfo.idItem"
-                    actions="$ctrl.actions">
-            </modal-dessin>
-        </p>
-    </div>
-    <p>{{effet.description}}</p>
-    <p>{{effet.descriptionOption}}</p>
-  </uib-accordion-group>
-</uib-accordion>
+      <div class="btn-group pull-right">
+          <button type="button" class="btn btn-default btn-sm" ng-click="">
+              <i class="glyphicon glyphicon-info-sign"></i>
+          </button>
+          <button ng-if="effet.inCanvas" type="button" class="btn btn-danger btn-sm" ng-click="$ctrl.removeToTable({value: effet})" uib-tooltip="Retirer l'effet du dessin" tooltip-placement="bottom">
+              <i class="glyphicon glyphicon-remove"></i>
+          </button>
+          <button ng-if="!effet.inCanvas" type="button" class="btn btn-default btn-sm" ng-click="$ctrl.removeToSelection({value: effet})" uib-tooltip="Retirer l'effet de la sélection" tooltip-placement="bottom">
+              <i class="glyphicon glyphicon-remove"></i>
+          </button>
+      </div>
+
+      <div class="selection-titre">{{effet.titreOption}} #{{effet.key + 1}}</div>
+      <div class="selection-sous-titre">{{effet.type}} - {{effet.titre}}</div>
+
+      <div class="label-table">composants</div>
+      <table class="table table-condensed table-bordered">
+          <tr ng-repeat="(k, compo) in effet.composants">
+              <td>{{compo.titre}}</td>
+              <td>{{compo.itemInfo.titreItem}}
+                  <div class="pull-right">
+                      <modal-dessin
+                              uib-tooltip="Changer de composant" tooltip-placement="right"
+                              template="modalBox"
+                              icone="cog"
+                              class-btn="btn btn-default btn-sm"
+                              items="$ctrl.composantItems"
+                              data="compo"
+                              selected="compo.itemInfo.idItem"
+                              actions="$ctrl.actions">
+                      </modal-dessin>
+                  </div>
+              </td>
+          </tr>
+      </table>
+
+
+</div>
 </div>

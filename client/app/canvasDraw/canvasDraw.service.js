@@ -40,7 +40,13 @@ angular.module('pedaleswitchApp')
           ctx.shadowOffsetX = 0;
           ctx.shadowOffsetY = 0;
           ctx.shadowBlur    = 2;
-          boite.projBoite.drawCanvas(ctx);
+
+          if (canvasGlobal.state.viewState === 'up' || canvasGlobal.state.viewState === 'down') {
+            boite.projBoite.drawCanvasRoundBorder(ctx);
+          }
+          else{
+            boite.projBoite.drawCanvas(ctx);
+          }
 
 
           if (boite.projBoite.color) {

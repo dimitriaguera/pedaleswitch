@@ -1,0 +1,44 @@
+<div class="panier-dessin-menu">
+<modal-dessin
+        name="Ajouter un effet"
+        class-btn="btn btn-default"
+        template="modalBiblioBox">
+</modal-dessin>
+</div>
+<div class="panier-dessin-bandeau">
+    Votre sélection :
+</div>
+<div class="panier-dessin-content">
+<uib-accordion>
+  <uib-accordion-group ng-repeat="effet in $ctrl.selections"
+                       ng-mouseleave="$ctrl.leaveEffet()"
+                       ng-mouseenter="$ctrl.onEffet({value:effet})"
+                       draggable>
+
+      <uib-accordion-heading>
+          <span class="col-xs-10">{{::effet.titre}} - {{::effet.titreOption}} #{{::effet.key + 1}}</span>
+          <span class="col-xs-2">
+              <!--<button ng-hide="effet.inCanvas" type="submit" class="btn btn-default btn-sm" ng-click="$ctrl.addToTable({value: effet})">+</button>-->
+              <button ng-show="effet.inCanvas" type="submit" class="btn btn-default btn-sm" ng-click="$ctrl.removeToTable({value: effet})">-</button>
+          </span>
+      </uib-accordion-heading>
+
+    <div ng-mouseleave="$ctrl.leaveEffet()" ng-mouseenter="$ctrl.onCompo({value:compo})" ng-repeat="(k, compo) in effet.composants">
+        <p><label>{{compo.titre}}</label> - {{compo.itemInfo.titreItem}}</p>
+        <p>
+            <modal-dessin
+                    template="modalBox"
+                    name="Changer le composant"
+                    class-btn="btn btn-default btn-sm"
+                    items="$ctrl.composantItems"
+                    data="compo"
+                    selected="compo.itemInfo.idItem"
+                    actions="$ctrl.actions">
+            </modal-dessin>
+        </p>
+    </div>
+    <p>{{effet.description}}</p>
+    <p>{{effet.descriptionOption}}</p>
+  </uib-accordion-group>
+</uib-accordion>
+</div>

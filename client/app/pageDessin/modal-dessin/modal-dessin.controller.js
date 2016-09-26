@@ -45,6 +45,7 @@
         selected: '<',
         template: '@',
         name: '@',
+        icone: '@',
         classBtn: '@',
         actions: '='
       },

@@ -68,6 +68,7 @@ angular.module('pedaleswitchApp')
           fonction: 'Effet',
           titre: effet.titre,
           titreOption: option.titre,
+          type: effet.type,
           description: effet.description,
           descriptionOption: option.description,
           prix: option.prix,
@@ -98,6 +99,21 @@ angular.module('pedaleswitchApp')
         canvasConversion.convertEffetSize(nouvEffet);
         canvasConversion.initializeEffetZoom(nouvEffet);
         selections.push(nouvEffet);
+      },
+
+      /**
+       * Supprime un effet dans l'instance dessin.
+       * Cette fonction est appelé depuis la sélection des effets.
+       *
+       * @param effet
+       */
+      removeEffet: function (effet) {
+        for ( var i = 0; i < selections.length; i++) {
+          var selection = selections[i];
+          if (selection._id == effet._id && selection.key == effet.key) {
+            selections.splice(i, 1);
+          }
+        }
       },
 
       //updateComposant: function(idOption, idCompo, idItem) {
