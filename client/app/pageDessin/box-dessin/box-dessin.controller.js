@@ -15,10 +15,19 @@
         },
         controller: function ($scope) {
 
+          var data = this.data;
+          var deregister;
+
           this.$onInit = function () {
 
             // Si l'objet n'est pas un arrow, on ajoute une posBox, et on ajoute un template pour la popover.
             if (this.data.fonction !== 'Arrow' && this.data.fonction !== 'ArrowPoint') {
+
+              // On observe tout changement de coordonnée de l'objet cible.
+              // Si changmeent de coordonnées, on recalcule la position de la popover;
+              deregister = $scope.$watch(function() { return data.points}, function(newValue, oldValue) {
+                data.getBoxPos();
+              }, true);
 
              // this.data.posBox = this.data.getBoxPos();
               this.zIndex = '-2';
@@ -49,14 +58,16 @@
             else {
               this.zIndex = '2';
             }
+
           };
 
-          //this.$onDestroy = function() {
-          //  // Si l'objet n'est pas un arrow, on détruit sa posBox.
-          //  if (this.data.fonction !== 'Arrow') {
-          //    delete this.data.posBox;
-          //  }
-          //};
+
+          this.$onDestroy = function() {
+            // Si l'objet n'est pas un arrow, on détruit sa posBox.
+            if (this.data.fonction !== 'Arrow') {
+              deregister();
+            }
+          };
 
         },
         controllerAs: '$ctrl'

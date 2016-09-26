@@ -1,29 +1,30 @@
 <div>
-    <div class="row">
-        <div class="col-lg-12">
-            <p><span ng-bind="::$ctrl.data.titreParentEffet"></span> - <span ng-bind="::$ctrl.data.titreParentOption"></span> #{{::$ctrl.data.key + 1}}</p>
-        </div>
-    </div>
 
     <div class="btn-group">
-      <button type="button" class="btn btn-default" ng-click="$ctrl.actions.rotate(5, $ctrl.data)">Rotation Gauche</button>
-      <button type="button" class="btn btn-default" ng-click="$ctrl.actions.rotate(-5, $ctrl.data)">Rotation Droite</button>
+        <button type="button" class="btn btn-default" ng-click="$ctrl.actions.rotate(5, $ctrl.data)">
+            <i class="fa fa-undo" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="btn btn-default" ng-click="$ctrl.actions.rotate(-5, $ctrl.data)">
+            <i class="fa fa-repeat" aria-hidden="true"></i>
+        </button>
+        <modal-dessin
+                icone="cog"
+                template="modalBox"
+                class-btn="btn btn-default"
+                actions="$ctrl.actions"
+                items="$ctrl.items"
+                data="$ctrl.data"
+                selected="$ctrl.data.itemInfo.idItem"
+                style="margin-left:20px;">
+        </modal-dessin>
     </div>
 
-    <div class="row">
-        <div class="col-lg-12">
-            <p><label>Composant:</label> <span ng-bind="::$ctrl.data.itemInfo.titreItem"></span></p>
-            <p>
-                <modal-dessin
-                    name="Changer le composant"
-                    template="modalBox"
-                    class-btn="btn btn-default btn-sm"
-                    actions="$ctrl.actions"
-                    items="$ctrl.items"
-                    data="$ctrl.data"
-                    selected="$ctrl.data.itemInfo.idItem">
-                </modal-dessin>
-            </p>
-        </div>
-    </div>
+    <div class="label-table">composant de l'effet : {{:: $ctrl.data.titreParentOption }} #{{:: $ctrl.data.key + 1 }} ({{:: $ctrl.data.titreParentEffet }}) </div>
+    <table class="table table-condensed table-bordered">
+        <tr>
+            <td>{{$ctrl.data.titre}}</td>
+            <td>{{$ctrl.data.itemInfo.titreItem}}</td>
+        </tr>
+    </table>
+
 </div>
