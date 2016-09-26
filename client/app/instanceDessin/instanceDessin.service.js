@@ -56,7 +56,12 @@ angular.module('pedaleswitchApp')
        * @param option
        */
       setEffet: function(effet, option) {
-        var key = selections.length;
+
+        if (selections.length>0){
+          var key = selections[selections.length-1].key + 1;
+        } else {
+          var key = 0;
+        }
 
         var stdPos = 0;
 

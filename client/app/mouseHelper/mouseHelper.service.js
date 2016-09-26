@@ -697,7 +697,7 @@ angular.module('pedaleswitchApp')
           console.log('slected');
           canvasGlobalServ.resetIsSelected(tables.tableActive);
           // on ne reviens pas d'un deplacement de bordure de boite.
-          if (drag.type.indexOf('boite') < 0 && drag.pasBouge === false){
+          if (drag.type.indexOf('boite') < 0){
             tables.tableActive[drag.id].setSelected(true);
             canvasGlobalServ.setActiveItem(tables.tableActive[drag.id]);
           }

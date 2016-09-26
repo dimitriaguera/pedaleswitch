@@ -49,6 +49,7 @@ angular.module('pedaleswitchApp')
 
         // Rajouter a l'effet dans quelle vue il a été ajouté.
         effet.projSide = (!effet.projSide) ? canvasGlobal.state.viewState : effet.projSide ;
+        effet.label = (!effet.label) ? 'Effet' : effet.label ;
 
         // check si l'effet est deja dans le canvas.
         if (!effet.inCanvas || bol) {
@@ -99,6 +100,7 @@ angular.module('pedaleswitchApp')
 
           // On créé les composants.
           for (var i = 0; i < compos.length; i++) {
+            compos[i].label = (compos[i].label) ? 'Composant' : compos[i].label;
             tmpComp = thing(compos[i]);
             tmpEff.composants.push(tmpComp);
             boite.masterBoite.projections[canvasGlobal.state.viewState].composants.push(tmpComp);
@@ -210,12 +212,15 @@ angular.module('pedaleswitchApp')
         obj.fonction = 'deco';
         switch (obj.shape){
           case 'Rectangle':
+            obj.label = 'Forme Rectangle';
             shape = new canvasGeneration.newRect(obj);
             break;
           case 'Cercle':
+            obj.label = 'Forme Ellipse';
             shape = new canvasGeneration.newCercle(obj);
             break;
           default:
+            obj.label = 'Forme Rectangle';
             shape = new canvasGeneration.newRect(obj);
         }
 

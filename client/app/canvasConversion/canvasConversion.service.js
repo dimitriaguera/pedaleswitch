@@ -53,6 +53,13 @@ angular.module('pedaleswitchApp')
             convertSizePoints(entity.shapeDeco[j].points, ratio);
           }
         }
+        // Converti les img de déco
+        if (entity.imgDeco.length !== 0){
+          for (j = 0; j < entity.imgDeco.length; j++) {
+            convertSizePoints(entity.imgDeco[j].points, ratio);
+          }
+        }
+
 
       }
       // Entity est un effet

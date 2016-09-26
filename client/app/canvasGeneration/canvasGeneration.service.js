@@ -75,6 +75,7 @@ angular.module('pedaleswitchApp')
         this.projSide = entity.projSide || null;
 
         this.label = entity.label || null;
+
         this.fonction = entity.fonction || 'Effet';
         this.angle = entity.angle || 0;
         this.size = entity.size || {};
@@ -534,6 +535,8 @@ angular.module('pedaleswitchApp')
     class ImgDeco extends Shape {
       constructor(obj){
         super(obj);
+
+        this.label = 'Image';
         this.img = obj.img;
         if (this.fonction === 'deco') {this.type = 'img';}
       }
@@ -2570,7 +2573,8 @@ angular.module('pedaleswitchApp')
           obj.input = str;
         }
         obj.font = obj.font || {};
-        
+
+
         // @todo a verifier si c vraiment un id unique.
         this._id = obj._id || Math.floor(Math.random() * (1e6 +1));
         this.key = 0;
@@ -2595,7 +2599,7 @@ angular.module('pedaleswitchApp')
 
         this.margin = obj.margin || 5;
 
-
+        this.label = 'Texte';
         this.shapeObject = obj.shape || 'Rect';
         this.fonction = obj.fonction || 'deco';
         this.type = obj.type || 'text';
@@ -2874,10 +2878,12 @@ angular.module('pedaleswitchApp')
 
         this.getSizeTxt();
 
-        this.points = this.createPoints();
-        this.initPoints(this.points, this.points);
+        var pointsNew = this.createPoints();
+        for (var i = 0; i < pointsNew.length ; i++){
+          this.points[i].x = pointsNew[i].x;
+          this.points[i].y = pointsNew[i].y;
+        }
         this.moveTo(center);
-        this.posBox = this.points[0];
       }
 
       drawCanvas(ctx){
