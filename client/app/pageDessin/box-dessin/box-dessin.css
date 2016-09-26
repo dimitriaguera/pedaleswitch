@@ -1,0 +1,12 @@
+.popover-title{
+    text-transform: uppercase;
+}
+
+.jdfs-main,
+.jdfs-window{
+    width: 100%;
+}
+
+.jdfs-main{
+    height: auto;
+}

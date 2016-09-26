@@ -81,7 +81,7 @@ angular.module('pedaleswitchApp')
         this.pointsDefault = entity.pointsDefault || [];
         this.initPoints(entity.points, this.points);
         this.initPoints(entity.pointsDefault, this.pointsDefault);
-        this.posBox = this.points[0];
+        this.getBoxPos();
       }
       initPoints(points, tab){
         if (points){
@@ -192,10 +192,8 @@ angular.module('pedaleswitchApp')
         var c = this.getCenter();
         var e = this.findExtreme();
 
-        return {
-          x: c.x - e.size.w / 2,
-          y: c.y - e.size.h / 2
-        };
+          this.posBox.x = c.x - e.size.w / 2;
+          this.posBox.y = c.y - e.size.h / 2;
       }
 
       /**
@@ -2602,11 +2600,12 @@ angular.module('pedaleswitchApp')
 
         this.sizeTxt = obj.sizeTxt || this.getSizeTxt();
         this.size = obj.size || {};
+        this.posBox = {};
 
         this.points = obj.points || this.createPoints();
         this.initPoints(this.points, this.points);
 
-        this.posBox = this.points[0];
+        this.getBoxPos();
       }
 
       initPoints(points, tab){
@@ -2671,10 +2670,8 @@ angular.module('pedaleswitchApp')
         var c = this.getCenter();
         var e = this.findExtreme();
 
-        return {
-          x: c.x - e.size.w / 2,
-          y: c.y - e.size.h / 2
-        };
+        this.posBox.x = c.x - e.size.w / 2;
+        this.posBox.y = c.y - e.size.h / 2;
       }
 
       actualisePoints(){

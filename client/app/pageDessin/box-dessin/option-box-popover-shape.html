@@ -1,7 +1,13 @@
 <div class="btn-group">
-  <button type="button" class="btn btn-default" ng-click="$ctrl.actions.rotate(5, $ctrl.data)">Rotation Gauche</button>
-  <button type="button" class="btn btn-default" ng-click="$ctrl.actions.rotate(-5, $ctrl.data)">Rotation Droite</button>
-  <button type="button" class="btn btn-default" ng-click="$ctrl.actions.removeShapeToTable($ctrl.data)">Supprimer</button>
+  <button type="button" class="btn btn-default" ng-click="$ctrl.actions.rotate(5, $ctrl.data)">
+    <i class="fa fa-undo" aria-hidden="true"></i>
+  </button>
+  <button type="button" class="btn btn-default" ng-click="$ctrl.actions.rotate(-5, $ctrl.data)">
+    <i class="fa fa-repeat" aria-hidden="true"></i>
+  </button>
+  <button type="button" class="btn btn-default" ng-click="$ctrl.actions.removeShapeToTable($ctrl.data)">
+    <i class="glyphicon glyphicon-remove"></i>
+  </button>
 </div>
 
 <h5>Couleur de ligne</h5>
