@@ -72,6 +72,9 @@ angular.module('pedaleswitchApp')
 
         this.isCarre = entity.isCarre || true;
 
+        this.projSide = entity.projSide || null;
+
+        this.label = entity.label || null;
         this.fonction = entity.fonction || 'Effet';
         this.angle = entity.angle || 0;
         this.size = entity.size || {};

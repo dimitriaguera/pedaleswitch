@@ -48,6 +48,9 @@ angular.module('pedaleswitchApp')
         bol = bol || false;
         pos = pos || null;
 
+        // Rajouter a l'effet dans quelle vue il a été ajouté.
+        effet.projSide = (!effet.projSide) ? canvasGlobal.state.viewState : effet.projSide ;
+
         // check si l'effet est deja dans le canvas.
         if (!effet.inCanvas || bol) {
           var tmpEff = canvasGeneration.newRect(effet);
@@ -137,6 +140,7 @@ angular.module('pedaleswitchApp')
        * @param effet
        */
       removeToCanvas: function(effet) {
+        // Pour table Effet
         var index = canvasGlobalServ.searchTabByIdReturnIndex(tables.tableEffet, effet._id, effet.key);
         if(index !== false){
           effet.inCanvas = false;
@@ -151,6 +155,23 @@ angular.module('pedaleswitchApp')
           }
           tables.tableEffet.splice(index,1);
         }
+
+        // Pour la bonne projection de table.
+        index = canvasGlobalServ.searchTabByIdReturnIndex(boite.masterBoite.projections[effet.projSide].effets, effet._id, effet.key);
+        if (index !== false) {
+          effet.inCanvas = false;
+          removeIndex = [];
+          for (var i = 0  ; i < boite.masterBoite.projections[effet.projSide].composants.length ; i++) {
+            if (effet.key === boite.masterBoite.projections[effet.projSide].composants[i].key) {
+              removeIndex.push(i);
+            }
+          }
+          for (i = removeIndex.length -1; i >= 0; i--){
+            boite.masterBoite.projections[effet.projSide].composants.splice(removeIndex[i],1);
+          }
+          boite.masterBoite.projections[effet.projSide].effets.splice(index,1);
+        }
+
       },
 
       /**
