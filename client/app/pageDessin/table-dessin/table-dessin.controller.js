@@ -37,11 +37,11 @@ angular.module('pedaleswitchApp')
           // MouseUp par default : passe les selects à false.
           canv.addEventListener('mouseup', mouseHelper.mouseUpDefault);
 
-          // Listener pour regarder si l'on a cliquer sur :
-          // Check les bordures de la boite
-          // Check la boite
-          // Check les obj
+          // Listener pour regarder quand on clique.
           canv.addEventListener('mousedown', mouseHelper.mouseDown);
+
+          // Quand on sort du canvas.
+          canv.addEventListener('mouseout', mouseHelper.mouseOut);
 
           var handler1 = $rootScope.$on('click-on-border-boite', function(){
             canv.removeEventListener('mouseup', mouseHelper.mouseUpDefault);

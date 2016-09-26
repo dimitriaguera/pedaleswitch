@@ -8,7 +8,7 @@ angular.module('pedaleswitchApp')
 
     var timea, timeb;
     var DELAY_DRAG = 100;
-    var DELAY_CLICK = 500;
+    var DELAY_CLICK = 200;
 
     var olddragid = null;
 
@@ -90,8 +90,6 @@ angular.module('pedaleswitchApp')
       
       /**
        * Listener quand la souris bouge mais ne clique pas.
-       * Check les bordures de la boite
-       * Puis dans la tables actives.
        * Quand on clique on passe au listener mousedown (cf. table-dessin.controller.js dans le link).
        */
       mouseMove: function (e) {
@@ -103,42 +101,50 @@ angular.module('pedaleswitchApp')
         // Si il y a des obj dans le canvas.
         if (tables.tableActive.length > 0) {
 
-          // Si en mode deco on peut agrandir les obj par les angles.
+          // Si en mode deco.
           if (canvasGlobal.state.isActive === 'deco') {
-            drag = checkCollision.checkMouseCorner(mousePos, tables.tableActive, 10, ['all']);
-            if (drag && tables.tableActive[drag.id].type !== 'text') {
-              tables.tableActive[drag.id].setSelected(true);
-              drag.type = 'cornerdeco';
-              update(drag.pointer.type);
+            // Agrandir deco si selectionné
+            if (canvasGlobalServ.findIsSelected(tables.tableActive)){
+              drag = checkCollision.checkMouseCorner(mousePos, tables.tableActive, 10, ['all']);
+              if (drag && tables.tableActive[drag.id].type !== 'text') {
+                //tables.tableActive[drag.id].setSelected(true);
+                drag.type = 'cornerdeco';
+                update(drag.pointer.type);
+                return;
+              }
+            }
+            // Bouge deco ?
+            drag = checkCollision.checkMouseBox(mousePos, tables.tableActive, 10);
+            if (drag) {
+              drag.type = 'deco';
+              update('move');
               return;
             }
           }
 
-          // Regarde si la souris est sur un effet ou un composant ou un element de deco.
-          drag = checkCollision.checkMouseBox(mousePos, tables.tableActive, 10);
-          if (drag) {
-
-            // On drague soit un obj soit un élément de déco.
-            if (tables.tableActive[drag.id].fonction === 'deco') {
-              drag.type = 'deco';
-            } else {
-              drag.type = 'thing';
-            }
-
-            // Met isSelect a l'objet en cours.
-            // Et enlève l'ancien sélectionner.
-            // Redraw si nécessaire.
-            if (olddragid !== drag.id){
-              tables.tableActive[drag.id].setSelected(true);
-              if (olddragid !== null){
-                tables.tableActive[olddragid].setSelected(false);
-              }
-              olddragid = drag.id;
-              canvasDraw.drawStuff();
-            }
-            return;
-          }
+          // On est pas en mode deco
           else {
+            // Bouger effet compo ?
+            drag = checkCollision.checkMouseBox(mousePos, tables.tableActive, 10);
+            if (drag) {
+              drag.type = 'thing';
+              update('move');
+              return;
+            }
+
+            /*
+             // Met isSelect a l'objet en cours.
+             // Et enlève l'ancien sélectionner.
+             // Redraw si nécessaire.
+             if (olddragid !== drag.id){
+             tables.tableActive[drag.id].setSelected(true);
+             if (olddragid !== null){
+             tables.tableActive[olddragid].setSelected(false);
+             }
+             olddragid = drag.id;
+             canvasDraw.drawStuff();
+             }
+
             // Si on est pas sur un obj mais
             // qu'avant oui alors le désélectionner
             // et redessine.
@@ -150,15 +156,15 @@ angular.module('pedaleswitchApp')
               canvasDraw.drawStuff();
             }
             olddragid = null;
+            return;
+            */
           }
         }
 
-        // Si une boite existe et que l'on est pas en mode déco.
+        // Regarde si bord de la obite ou corner pour l'agrendir
         if (boite.projBoite.titre !== undefined && canvasGlobal.state.isActive !== 'deco'){
-
           // Selon la vue, on regarde si la souris est sur les corners ou les borders.
           switch(canvasGlobalServ.getViewState()){
-
             case 'up':
               drag = checkCollision.checkMouseBorder(mousePos, [boite.projBoite], 10);
               if (drag) {
@@ -167,7 +173,6 @@ angular.module('pedaleswitchApp')
                 return;
               }
               break;
-
             case 'left' :
               drag = checkCollision.checkMouseCorner(mousePos, [boite.projBoite], 10, ['top-left']);
               if (drag) {
@@ -182,7 +187,6 @@ angular.module('pedaleswitchApp')
                 return;
               }
               break;
-
             case 'right' :
               drag = checkCollision.checkMouseCorner(mousePos, [boite.projBoite], 10, ['top-right']);
               if (drag) {
@@ -197,25 +201,22 @@ angular.module('pedaleswitchApp')
                 return;
               }
               break;
-
             case 'top':
               break;
-
             case 'bottom':
               break;
-
             case 'down':
               break;
-
             default:
               return console.log('ERROR ' + canvasGlobalServ.getViewState() + ' is not a valid state');
           }
-          // Regarde si la souris est sur la boite pour permettre de la déplacer
-          // drag = checkCollision.checkMouseBox(mousePos, [boite.projBoite], 10);
-          // if(drag){
-          //  drag.type = 'boite';
-          // }
         }
+
+        // Regarde si la souris est sur la boite pour permettre de la déplacer
+        // drag = checkCollision.checkMouseBox(mousePos, [boite.projBoite], 10);
+        // if(drag){
+        //  drag.type = 'boite';
+        // }
       },
       
       /**
@@ -223,7 +224,13 @@ angular.module('pedaleswitchApp')
        */
       mouseDown: function (e) {
 
+        // Prend la position de la souris
         mousePos = {x: e.layerX, y: e.layerY};
+        if (isNaN(mousePos.x) || isNaN(mousePos.y)) {
+          $rootScope.$emit('no-click-on-element');
+          drag = {};
+          return;
+        }
 
         // Cette ligne enlève les pop-up car on commence un drag.
         canvasGlobalServ.resetActiveItem();
@@ -262,27 +269,18 @@ angular.module('pedaleswitchApp')
        * On déplace de la deco
        */
       mouseMoveDeco: function(e){
-
-        // On verifie si l'item est selected.
-        if (tables.tableActive[drag.id].isSelected === true) {
-
-          // Delais avant le drag
-          timeb = (new Date()).getTime() - timea;
-          if (timeb < DELAY_DRAG) {
-            return;
-          }
-
-          // Affecte la nouvelle position.
-          tables.tableActive[drag.id].move({x: e.layerX - mousePos.x, y: e.layerY - mousePos.y});
-          mousePos = {x: e.layerX, y: e.layerY};
-
-          // Met le bon pointeur de souris
-          update('move');
-
-
-          // Dessine.
-          canvasDraw.drawStuff();
+        // Delais avant le drag
+        timeb = (new Date()).getTime() - timea;
+        if (timeb < DELAY_DRAG) {
+          return;
         }
+
+        // Affecte la nouvelle position.
+        tables.tableActive[drag.id].move({x: e.layerX - mousePos.x, y: e.layerY - mousePos.y});
+        mousePos = {x: e.layerX, y: e.layerY};
+
+        // Dessine.
+        canvasDraw.drawStuff();
       },
 
       /**
@@ -611,6 +609,7 @@ angular.module('pedaleswitchApp')
         var delta = {x: boite.projBoite.points[0].x, y: boite.projBoite.points[0].y};
         // Deplace la boite.
         boite.projBoite.move({x: e.layerX - mousePos.x, y: e.layerY - mousePos.y});
+        mousePos = {x: e.layerX, y: e.layerY};
 
         // Deplace la boite si elle depasse depasse le canvas.
         boite.projBoite.moveCloseBorder(canvasGlobal.canvas.canvas, canvasGlobal.canvas.marginCanvas);
@@ -624,8 +623,6 @@ angular.module('pedaleswitchApp')
 
         // Dessine.
         canvasDraw.drawStuff();
-
-        mousePos = {x: e.layerX, y: e.layerY};
       },
 
       /**
@@ -641,9 +638,6 @@ angular.module('pedaleswitchApp')
         // Deplace le thing.
         tables.tableActive[drag.id].move({x: e.layerX - mousePos.x, y: e.layerY - mousePos.y});
         mousePos = {x: e.layerX, y: e.layerY};
-
-        // Met le bon pointeur de souris
-        update('move');
 
         // Deplace l'obj si sa nouvelle position depasse le canvas.
         tables.tableActive[drag.id].moveCloseBorder(canvasGlobal.canvas.canvas, canvasGlobal.canvas.marginCanvas, boite.projBoite.margin);
@@ -665,14 +659,13 @@ angular.module('pedaleswitchApp')
         canvasDraw.drawStuff();
       },
 
-
       /**
        * Mouse up par default.
        * Listener est bindé par défault dans le controleur table-dessin.
        * Désactivé au profit de MouseUp si un emit est créé par mouseDown.
-       *
        */
-      mouseUpDefault: function (e){
+      mouseUpDefault: function (){
+        mousePos = {};
 
         // Verifier si on click ou si on draggue.
         timeb = (new Date()).getTime() - timea;
@@ -680,6 +673,10 @@ angular.module('pedaleswitchApp')
         // Si click, on enleve les selects et on redessine.
         if (timeb < DELAY_CLICK){
           canvasGlobalServ.resetIsSelected(tables.tableActive);
+          // Cette ligne enlève les pop-up car on commence un drag.
+          canvasGlobalServ.resetActiveItem();
+          // Met le bon pointeur de souris
+          update('default');
           canvasDraw.drawStuff();
         }
       },
@@ -688,24 +685,21 @@ angular.module('pedaleswitchApp')
        * Mouse up.
        */
       mouseUp: function () {
+        mousePos = {};
 
         // Verifier si on click ou si on draggue pour l'affichage des pop-up.
         timeb = (new Date()).getTime() - timea;
 
-        // Si oui, on annule le isSelected.
-        if (timeb < DELAY_CLICK) {
-          canvasGlobalServ.resetIsSelected(tables.tableActive);
-        }
-
         // Si oui on click.
-        if (timeb < DELAY_CLICK && drag.type !=='boite' && tables.tableActive[drag.id]){
-          canvasGlobalServ.setActiveItem(tables.tableActive[drag.id]);
-          if (drag.type === 'deco'){
+        if (timeb < DELAY_CLICK) {
+          console.log('slected');
+          canvasGlobalServ.resetIsSelected(tables.tableActive);
+          // on ne reviens pas d'un deplacement de bordure de boite.
+          if (drag.type.indexOf('boite') < 0){
             tables.tableActive[drag.id].setSelected(true);
+            canvasGlobalServ.setActiveItem(tables.tableActive[drag.id]);
           }
         }
-
-        mousePos = {};
 
         // Met le bon pointeur de souris
         update('default');
@@ -722,6 +716,13 @@ angular.module('pedaleswitchApp')
         canvasGlobalServ.setTableAlignLine([]);
 
         canvasDraw.drawStuff();
+      },
+
+      // @todo pour l'instant = a mouseUp
+      // 2 solutions soit trouver une moyen d'appeler directement mouseup depuis ici
+      // Soit dans table-dessin.controller atacher a l'ev out mouseUp.
+      mouseOut: function() {
+
       }
       
 

@@ -20,7 +20,8 @@
         right: '&',
         left: '&',
         top: '&',
-        bottom: '&'
+        bottom: '&',
+        getTable: '&'
       },
       controller: NavigationDessin
     });

@@ -187,6 +187,16 @@ angular.module('pedaleswitchApp')
         }
       },
 
+      findIsSelected: function(tab){
+        var isTab = [];
+        for (var i = 0; i < tab.length; i++){
+          if (tab[i].isSelected) {
+            isTab.push(i);
+          }
+        }
+        return (isTab) ? false : isTab ;
+      },
+
       searchTabByIdReturnIndex: function(tab, id, key){
         for(var i = 0; i < tab.length; i++){
           if(tab[i]._id === id && tab[i].key === key) {
