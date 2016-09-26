@@ -106,7 +106,7 @@ angular.module('pedaleswitchApp')
           // Si en mode deco on peut agrandir les obj par les angles.
           if (canvasGlobal.state.isActive === 'deco') {
             drag = checkCollision.checkMouseCorner(mousePos, tables.tableActive, 10, ['all']);
-            if (drag) {
+            if (drag && tables.tableActive[drag.id].type !== 'text') {
               tables.tableActive[drag.id].setSelected(true);
               drag.type = 'cornerdeco';
               update(drag.pointer.type);
@@ -215,7 +215,6 @@ angular.module('pedaleswitchApp')
           // if(drag){
           //  drag.type = 'boite';
           // }
-          return;
         }
       },
       
@@ -291,8 +290,9 @@ angular.module('pedaleswitchApp')
        */
       mouseMoveCornerDeco: function(e){
 
-        // On verifie si l'item est selected.
+        // On verifie si l'item est selected et que c bien un deco et pas un texte
         if (tables.tableActive[drag.id].isSelected === true) {
+
           mousePos = canvasControl.newPoint({x: e.layerX, y: e.layerY});
 
           var num = drag.pointer.pointNum;
