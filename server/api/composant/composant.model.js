@@ -3,14 +3,36 @@
 import mongoose from 'mongoose';
 
 var ComposantSchema = new mongoose.Schema({
-  titre: String,
-  type: String,
-  description: Boolean,
-  prix_additionnel: Number,
-  shape: String,
+  type: {
+    type: String,
+    required: [true, 'Champ type du composant requis']
+  },
+  titre: {
+    type: String,
+    required: [true, 'Champ titre du composant requis']
+  },
+  description: {
+    type: String,
+    required: [true, 'Champ description du composant requis']
+  },
+  prix_additionnel: {
+    type: Number,
+    required: [true, 'Champ prix additionnel du composant requis']
+  },
+  shape: {
+    type: String,
+    required: [true, 'Champ shape (forme) du composant requis'],
+    default: 'Rect',
+  },
   size: {
-    w:Number,
-    h:Number
+    w:{
+      type: Number,
+      required: [true, 'Champ largeur du composant requis']
+    },
+    h:{
+      type: Number,
+      required: [true, 'Champ hauteur du composant requis']
+    }
   },
   media: [],
   publie: {
