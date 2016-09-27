@@ -236,6 +236,7 @@ class PageDessinComponent {
     if (this.deco) {
       this.canvasGlobal.state.isActive = 'deco';
       this.canvasControl.canvasDrawState(this.canvasGlobal.state.isActive);
+      this.switchDecoSub();
       this.canvasDraw.drawStuff();
     }
     else {
@@ -257,7 +258,7 @@ class PageDessinComponent {
    * deco et que l'on choisit soit imgDeco, soit textDeco ...
    */
   switchDecoSub(mode){
-
+    mode = mode || this.canvasGlobal.state.decoState;
     // Si il reste des items actifs donc qu'ils ont un rectangle dessiné autour d'eux
     // le sup et redessine.
     this.canvasGlobalServ.resetIsSelected(this.canvasGlobal.tables.tableActive);
