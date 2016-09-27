@@ -195,7 +195,7 @@ angular.module('pedaleswitchApp')
             isTab.push(i);
           }
         }
-        return (isTab) ? false : isTab ;
+        return (isTab.length>=1) ? isTab : false ;
       },
 
       searchTabByIdReturnIndex: function(tab, id, key){
