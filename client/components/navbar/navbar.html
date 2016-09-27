@@ -17,7 +17,29 @@
         <li ng-show="nav.isAdmin()" ui-sref-active="active"><a ui-sref="admin">Admin</a></li>
       </ul>
 
+
       <ul class="nav navbar-nav navbar-right">
+
+        <li class="btn-group" uib-dropdown>
+          <a href="" class="dropdown-toggle" uib-dropdown-toggle>
+            Composants <span class="caret"></span>
+          </a>
+          <ul class="uib-dropdown-menu dropdown-menu" role="menu">
+            <li role="menuitem"><a ui-sref="composants">Composants</a></li>
+            <li role="menuitem"><a ui-sref="typeComposant">Types de Composants</a></li>
+          </ul>
+        </li>
+
+        <li class="btn-group" uib-dropdown>
+          <a href="" class="dropdown-toggle" uib-dropdown-toggle>
+            Effets <span class="caret"></span>
+          </a>
+          <ul class="uib-dropdown-menu dropdown-menu" role="menu">
+            <li role="menuitem"><a ui-sref="effets">Effets</a></li>
+            <li role="menuitem"><a ui-sref="typeEffet">Types d'effets</a></li>
+          </ul>
+        </li>
+
         <li ng-hide="nav.isLoggedIn()" ui-sref-active="active"><a ui-sref="signup">Sign up</a></li>
         <li ng-hide="nav.isLoggedIn()" ui-sref-active="active"><a ui-sref="login">Login</a></li>
         <li ng-show="nav.isLoggedIn()"><p class="navbar-text">Hello {{ nav.getCurrentUser().name }}</p> </li>
