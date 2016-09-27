@@ -16,10 +16,11 @@
 
         <!-- Champ type du composant  -->
         <div class="form-group" show-errors>
-            <label>Type :</label>
+            <label>Type de composant :</label>
             <select name="composantType" class="form-control" ng-model="$ctrl.entity.type" required>
                 <option ng-repeat="type in $ctrl.types" value="{{type.titre}}">{{type.titre}}</option>
             </select>
+            <p class="help-block">Si le type de composant recherché n'existe pas, <a ui-sref="typeComposant">ajoutez-le</a>.</p>
         </div>
 
         <!-- Champ forme du composant  -->
@@ -33,14 +34,14 @@
         </div>
 
         <!-- Champ largeur du composant  -->
-        <div class="form-group" show-errors>
-            <label>{{ $ctrl.entity.shape == 'Cercle'? 'Diamètre :' : 'Largeur :' }}</label>
+        <div class="form-group">
+            <label>{{ $ctrl.entity.shape == 'Cercle'? 'Diamètre (en mm) :' : 'Largeur (en mm) :' }}</label>
             <input name="composantLargeur" type="number" class="form-control" placeholder="largeur du composant" ng-model="$ctrl.entity.size.w" required />
         </div>
 
         <!-- Champ hauteur du composant  -->
-        <div class="form-group" show-errors ng-hide="$ctrl.entity.shape === 'Cercle'">
-            <label>Hauteur :</label>
+        <div class="form-group" ng-hide="$ctrl.entity.shape === 'Cercle'">
+            <label>Hauteur (en mm) :</label>
             <input name="composantHauteur" type="number" class="form-control" placeholder="hauteur du composant" ng-if="$ctrl.entity.shape !== 'Cercle'" ng-model="$ctrl.entity.size.h" required />
         </div>
 

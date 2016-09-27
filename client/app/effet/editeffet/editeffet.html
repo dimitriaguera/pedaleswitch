@@ -22,10 +22,11 @@
 
         <!-- Champ type d'effet  -->
         <div class="form-group" show-errors>
-            <label>Type :</label>
+            <label>Type d'effet :</label>
             <select name="effetType" class="form-control" ng-model="$ctrl.entity.type" required>
                 <option ng-repeat="type in $ctrl.types" value="{{type.titre}}">{{type.titre}}</option>
             </select>
+            <p class="help-block">Si le type d'effet recherché n'existe pas, <a ui-sref="typeEffet">ajoutez-le</a>.</p>
         </div>
 
         <!-- Injection du formulaire d'options  -->
