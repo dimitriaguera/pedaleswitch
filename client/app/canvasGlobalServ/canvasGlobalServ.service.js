@@ -13,7 +13,8 @@ angular.module('pedaleswitchApp')
       state: {
         debrayable: false,
         viewState: 'up',
-        isActive: 'Effet'
+        isActive: 'Effet',
+        decoState: 'colorBox'
       },
       zoomOptions: {
         resolution: 2,

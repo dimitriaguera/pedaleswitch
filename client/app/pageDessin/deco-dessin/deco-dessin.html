@@ -1,22 +1,22 @@
 <div class="panier-dessin-menu">
 <div class="btn-group">
-  <button class="btn btn-default" title="Changer la couleur du boitier" ng-model="$ctrl.choose" ng-click="$ctrl.switchDecoSub({mode:$ctrl.choose})" uib-btn-radio="'colorBox'">
+  <button class="btn btn-default" title="Changer la couleur du boitier" ng-model="$ctrl.global.state.decoState" ng-click="$ctrl.switchDecoSub()" uib-btn-radio="'colorBox'">
     <i class="glyphicon glyphicon-tint"></i>
   </button>
-  <button class="btn btn-default" title="Ajouter du texte" ng-model="$ctrl.choose" ng-click="$ctrl.switchDecoSub({mode:$ctrl.choose})" uib-btn-radio="'textDeco'">
+  <button class="btn btn-default" title="Ajouter du texte" ng-model="$ctrl.global.state.decoState" ng-click="$ctrl.switchDecoSub()" uib-btn-radio="'textDeco'">
     <i class="glyphicon glyphicon-font"></i>
   </button>
-  <button class="btn btn-default" title="Ajouter des figures" ng-model="$ctrl.choose" ng-click="$ctrl.switchDecoSub({mode:$ctrl.choose})" uib-btn-radio="'shapeDeco'">
+  <button class="btn btn-default" title="Ajouter des figures" ng-model="$ctrl.global.state.decoState" ng-click="$ctrl.switchDecoSub()" uib-btn-radio="'shapeDeco'">
     <i class="glyphicon glyphicon-th-large"></i>
   </button>
-  <button class="btn btn-default" title="Ajouter des images" ng-model="$ctrl.choose" ng-click="$ctrl.switchDecoSub({mode:$ctrl.choose})" uib-btn-radio="'imgDeco'">
+  <button class="btn btn-default" title="Ajouter des images" ng-model="$ctrl.global.state.decoState" ng-click="$ctrl.switchDecoSub()" uib-btn-radio="'imgDeco'">
     <i class="glyphicon glyphicon-picture"></i>
   </button>
 </div>
 </div>
 
 <div class="panier-dessin-content">
-<div ng-if="$ctrl.choose === 'colorBox'">
+<div ng-if="$ctrl.global.state.decoState === 'colorBox'">
   <h4>Couleur du boitier - facette {{ $ctrl.global.state.viewState }}</h4>
   <color-picker
     ng-model='$ctrl.global.boite.projBoite.color'
@@ -26,7 +26,7 @@
   </color-picker>
 </div>
 
-<div ng-if="$ctrl.choose === 'textDeco'">
+<div ng-if="$ctrl.global.state.decoState === 'textDeco'">
   <div class="deco-dessin-header">
     <form class="form-inline">
       <div class="form-group">
@@ -51,7 +51,7 @@
 </div>
 
 
-<div ng-if="$ctrl.choose === 'shapeDeco'">
+<div ng-if="$ctrl.global.state.decoState === 'shapeDeco'">
   <div class="deco-dessin-header">
     <div class="btn-group">
       <label class="btn btn-default" ng-model="$ctrl.shape" uib-btn-radio="'Cercle'">Cercle</label>
@@ -84,7 +84,7 @@
 </div>
 
 
-<div ng-if="$ctrl.choose === 'imgDeco'">
+<div ng-if="$ctrl.global.state.decoState === 'imgDeco'">
     <div class="deco-dessin-header">
       <button type="file" class="btn btn-default" ngf-select="$ctrl.uploadFiles($file, $invalidFiles)" accept="image/*">Ajouter une image</button>
       <div style="font:smaller">{{$ctrl.errFile.name}} {{$ctrl.errFile.$error}} {{$ctrl.errFile.$errorParam}}

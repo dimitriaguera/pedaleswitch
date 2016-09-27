@@ -210,13 +210,18 @@ angular.module('pedaleswitchApp')
             default:
               return console.log('ERROR ' + canvasGlobalServ.getViewState() + ' is not a valid state');
           }
+
+          // Regarde si la souris est sur la boite pour permettre de la déplacer et pas mode deco
+          drag = checkCollision.checkMouseBox(mousePos, [boite.projBoite], 10);
+          if(drag){
+            drag.type = 'boite';
+          }
+
         }
 
-        // Regarde si la souris est sur la boite pour permettre de la déplacer
-        // drag = checkCollision.checkMouseBox(mousePos, [boite.projBoite], 10);
-        // if(drag){
-        //  drag.type = 'boite';
-        // }
+
+
+
       },
       
       /**

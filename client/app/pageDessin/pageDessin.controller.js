@@ -22,13 +22,13 @@ class PageDessinComponent {
     this.initialisation();
 
     //@todo a supp et verifier dans le constructor de virer http et OrderArray.
-    this.$http.get('/api/effets').then(response => {
-      this.effets = response.data;
-       if(this.selections.length === 0){
-        this.instanceDessin.setEffet(this.effets[0], this.effets[0].options[0]);
-    //    this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
-       }
-    })
+    // this.$http.get('/api/effets').then(response => {
+    //   this.effets = response.data;
+    //    if(this.selections.length === 0){
+    //     this.instanceDessin.setEffet(this.effets[0], this.effets[0].options[0]);
+    // //    this.instanceDessin.setEffet(this.effets[1], this.effets[1].options[0]);
+    //    }
+    // })
   }
 
   /**
@@ -219,6 +219,10 @@ class PageDessinComponent {
    * Appeler par menu-dessin.html
    */
   switchDeb(){
+    // Reset des obj actif et select
+    this.canvasGlobalServ.resetIsSelected(this.tables.tableActive);
+    this.canvasGlobalServ.resetActiveItem();
+
     this.canvasGlobalServ.setDeb(this.debrayable);
     this.canvasControl.resetCompPos(this.debrayable);
     if(!this.debrayable){
@@ -231,11 +235,16 @@ class PageDessinComponent {
    * Appeler par menu-dessin.html
    */
   switchDeco(){
+    // Reset des obj actif et select
+    this.canvasGlobalServ.resetIsSelected(this.tables.tableActive);
+    this.canvasGlobalServ.resetActiveItem();
+
     // Cette ligne est pour etre sur que le .clip du canvas ne soit plus actif.
     this.canvasGlobal.canvas.canvas.width += 1;
     if (this.deco) {
       this.canvasGlobal.state.isActive = 'deco';
       this.canvasControl.canvasDrawState(this.canvasGlobal.state.isActive);
+      this.switchDecoSub();
       this.canvasDraw.drawStuff();
     }
     else {
@@ -257,11 +266,11 @@ class PageDessinComponent {
    * deco et que l'on choisit soit imgDeco, soit textDeco ...
    */
   switchDecoSub(mode){
+    mode = mode || this.canvasGlobal.state.decoState;
 
-    // Si il reste des items actifs donc qu'ils ont un rectangle dessiné autour d'eux
-    // le sup et redessine.
-    this.canvasGlobalServ.resetIsSelected(this.canvasGlobal.tables.tableActive);
-    this.canvasDraw.drawStuff();
+    // Reset des obj actif et select
+    this.canvasGlobalServ.resetIsSelected(this.tables.tableActive);
+    this.canvasGlobalServ.resetActiveItem();
 
     switch(mode){
       case 'colorBox':
@@ -278,6 +287,7 @@ class PageDessinComponent {
         break;
       default :
     }
+    this.canvasDraw.drawStuff();
   }
 
   /**
@@ -286,6 +296,10 @@ class PageDessinComponent {
    * pas dessiner.
    */
   activeEffet(){
+    // Reset des obj actif et select
+    this.canvasGlobalServ.resetIsSelected(this.tables.tableActive);
+    this.canvasGlobalServ.resetActiveItem();
+
     this.canvasGlobal.state.isActive = 'effet';
     if (this.canvasControl.canvasDrawState(this.canvasGlobal.state.isActive)) {
       this.canvasDraw.drawStuff();
@@ -296,13 +310,17 @@ class PageDessinComponent {
    * Appeler par menu-dessin.html
    */
   activeCompo(){
+    // Reset des obj actif et select
+    this.canvasGlobalServ.resetIsSelected(this.tables.tableActive);
+    this.canvasGlobalServ.resetActiveItem();
+
     this.canvasGlobal.state.isActive = 'composant';
     if (this.canvasControl.canvasDrawState(this.canvasGlobal.state.isActive)) {
       this.canvasDraw.drawStuff();
     }
   }
 
-  general(string){
+  switchViewState(string){
     this.canvasControl.canvasViewState(string);
     this.canvasControl.canvasDrawState(this.canvasGlobal.state.isActive);
     this.canvasControl.resizeCanvas();
@@ -311,27 +329,27 @@ class PageDessinComponent {
   }
 
   up(){
-    this.general('up');
+    this.switchViewState('up');
   }
 
   down(){
-    this.general('down');
+    this.switchViewState('down');
   }
 
   right(){
-    this.general('right');
+    this.switchViewState('right');
   }
 
   left(){
-    this.general('left');
+    this.switchViewState('left');
   }
 
   top(){
-    this.general('top');
+    this.switchViewState('top');
   }
 
   bottom(){
-    this.general('bottom');
+    this.switchViewState('bottom');
   }
   /////////////////////////// SWITCH, Active, View State part
 
