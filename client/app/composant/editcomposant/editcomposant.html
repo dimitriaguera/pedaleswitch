@@ -33,13 +33,13 @@
         </div>
 
         <!-- Champ largeur du composant  -->
-        <div class="form-group" show-errors>
+        <div class="form-group">
             <label>{{ $ctrl.entity.shape == 'Cercle'? 'Diamètre :' : 'Largeur :' }}</label>
             <input name="composantLargeur" type="number" class="form-control" placeholder="largeur du composant" ng-model="$ctrl.entity.size.w" required />
         </div>
 
         <!-- Champ hauteur du composant  -->
-        <div class="form-group" show-errors ng-hide="$ctrl.entity.shape === 'Cercle'">
+        <div class="form-group" ng-hide="$ctrl.entity.shape === 'Cercle'">
             <label>Hauteur :</label>
             <input name="composantHauteur" type="number" class="form-control" placeholder="hauteur du composant" ng-if="$ctrl.entity.shape !== 'Cercle'" ng-model="$ctrl.entity.size.h" required />
         </div>
