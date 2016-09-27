@@ -31,18 +31,21 @@
       <div class="form-group">
         <label>Choix de composants possibles :</label>
         <modal-composants one-composant="$ctrl.oneOption.composants[$index]"></modal-composants>
+        <p class="help-block">Quels composants les utilisateurs pourrons-t-ils choisir pour ce slot ?</p>
       </div>
 
       <!-- Champ positionx du composant d'option  -->
       <div class="form-group" show-errors>
-        <label>Position x :</label>
+        <label>Position x (en mm) :</label>
         <input name="composant-posx-{{ $index }}" type="number" class="form-control" placeholder="coord. X" ng-model="$ctrl.oneOption.composants[$index].pos.x" required />
+        <p class="help-block">Position horizontale du centre du composant sur le PCB, en partant de la gauche.</p>
       </div>
 
       <!-- Champ positiony du composant d'option  -->
       <div class="form-group" show-errors>
-        <label>Position y :</label>
+        <label>Position y (en mm) :</label>
         <input name="composant-posy-{{ $index }}" type="number" class="form-control" placeholder="coord. Y" ng-model="$ctrl.oneOption.composants[$index].pos.y" required />
+        <p class="help-block">Position verticale du centre du composant sur le PCB, en partant du haut.</p>
       </div>
     </uib-tab>
 </uib-tabset>
