@@ -15,7 +15,8 @@ angular.module('pedaleswitchApp', [
   'jdFontselect',
   'smart-table',
   'ngMessages',
-  'ngFileUpload'
+  'ngFileUpload',
+  'ngFileSaver'
 ])
   .config(function($urlRouterProvider, $locationProvider) {
     $urlRouterProvider

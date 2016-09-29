@@ -1,0 +1,22 @@
+<form class="typeForm">
+  <div class="form-group">
+    <div class="input-group">
+      <input name="path" type="text" class="form-control" placeholder="path to file" ng-model="$ctrl.path" required />
+      <span class="input-group-btn">
+                <button type="submit" class="btn btn-primary" ng-click="$ctrl.addPath()">Ajouter</button>
+            </span>
+    </div>
+  </div>
+</form>
+
+<div>coucou : {{ $ctrl.getCurrentUser().name }}</div>
+
+
+<button type="submit" class="btn btn-primary" ng-click="$ctrl.findPath()">Get</button>
+
+<img ng-src="{{$ctrl.myImg}}">
+
+<a ng-href="{{$ctrl.myImg}}">Afficher dans une nouvelle fenetre</a>
+<a ng-href="{{$ctrl.myImg}}" download="{{$this.filename}}">download</a>
+
+<a href="" class="btn btn-dark btn-small" ng-click="$ctrl.download()">Download avec Fileserver</a>

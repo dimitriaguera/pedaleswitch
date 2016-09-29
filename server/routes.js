@@ -17,6 +17,7 @@ export default function(app) {
   app.use('/api/effets', require('./api/effet'));
   app.use('/api/composants', require('./api/composant'));
   app.use('/api/things', require('./api/thing'));
+  app.use('/api/userData', require('./api/userData'));
   app.use('/api/users', require('./api/user'));
 
   app.use('/auth', require('./auth').default);
